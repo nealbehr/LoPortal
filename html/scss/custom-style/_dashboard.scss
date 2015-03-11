@@ -24,12 +24,12 @@
 .page-title {
     border-bottom: 1px solid #ededed;
     padding-bottom: 34px;
-    margin-bottom: 46px;
+    margin-bottom: 19px;
     h1 {
         margin: -2px 0 0;
     }
 }
-.thumbnails {padding-bottom: 20px;}
+.thumbnails {padding: 27px 0 20px;}
 .thumbnail{
     box-shadow: 0 1px 3px rgba(180,180,180,0.6);
     margin-bottom: 30px;
@@ -55,20 +55,149 @@
         border-top: 1px solid #ededed;
         padding: 22px 10px 24px;
         text-align: center;
-    }
-    .download {
-        position: relative;
-        padding-left: 35px;
-        display: inline-block;
         font-size: 15px;
-        &:before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: 0;
-            width: 22px;
-            height: 26px;
-            background: url('../images/sprite.png') no-repeat -72px 0;
+    }
+}
+.queue {
+    .panel {
+        border: none;
+        box-shadow: none;
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #ededed;
+        &:last-child {
+            border: none;
         }
+        .panel-heading {
+            background: none;
+            padding-left: 32px;
+        }
+        .panel-title {
+            font-size: 20px;
+            position: relative;
+            strong {
+                cursor: pointer;
+            }
+            a {
+                background: transparent;
+                span {
+                    position: absolute;
+                    content: '';
+                    top: 1px;
+                    left: -33px;
+                    width: 21px;
+                    height: 21px;
+                    border: 1px solid #c5c5c5;
+                    border-radius: 4px;
+                    &:after, &:before {
+                        bottom: 50%;
+                        left: 50%;
+                        border: solid transparent;
+                        content: " ";
+                        height: 0;
+                        width: 0;
+                        position: absolute;
+                        pointer-events: none;
+                        margin-bottom: -2px;
+                    }
+                    &:after {
+                        border-color: rgba(255, 255, 255, 0);
+                        border-bottom-color: #ffffff;
+                        border-width: 4px;
+                        margin-left: -4px;
+                    }
+                    &:before {
+                        border-color: rgba(105, 105, 105, 0);
+                        border-bottom-color: #c5c5c5;
+                        border-width: 5px;
+                        margin-left: -5px;
+                    }
+                }
+                &.collapsed span {
+                    &:after, &:before {
+                        top: 50%;
+                        bottom: auto;
+                        margin-top: -2px;
+                    }
+                    &:after {
+                        border-color: rgba(255, 255, 255, 0);
+                        border-top-color: #ffffff;
+                    }
+                    &:before {
+                        border-color: rgba(105, 105, 105, 0);
+                        border-top-color: #c5c5c5;
+                    }
+                }
+            }
+        }
+    }
+    table {
+        font-size: 14px;
+        thead {
+            @media (max-width: 767px)  {
+                display: none;
+            }
+        }
+        th {
+            border: none !important;
+            &:first-child {
+                padding-left: 30px;
+            }
+        }
+        tr {
+            @media (max-width: 767px)  {
+                display: block;
+                width: 100% !important;
+                padding: 15px 0  !important;
+            }
+        }
+        td {
+            border: none !important;
+            width: 18%;
+            @media (max-width: 767px)  {
+                display: block;
+                width: 100% !important;
+                padding: 5px 10px !important;
+            }
+            &:first-child {
+                padding-left: 32px;
+            }
+            &:nth-child(2) {
+                width: 30%;
+            }
+            &:last-child {
+                width: 16%;
+            }
+        }
+    }
+}
+.cancel {
+    display: inline-block;
+    position: relative;
+    padding-left: 15px;
+    &:before {
+        position: absolute;
+        background: url('../images/sprite.png') no-repeat -60px -16px;
+        content: '';
+        width: 9px;
+        height: 9px;
+        overflow: hidden;
+        top: 50%;
+        margin-top: -5px;
+        left: 0;
+    }
+}
+.download {
+    position: relative;
+    padding-left: 35px;
+    display: inline-block;
+    &:before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: 0;
+        width: 22px;
+        height: 26px;
+        background: url('../images/sprite.png') no-repeat -72px 0;
     }
 }
