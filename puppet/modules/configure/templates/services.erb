@@ -1,0 +1,50 @@
+{
+	"environment": "<%= scope.lookupvar('::environment') %>",
+	"debug": false,
+	"path.root": "%base_path%",
+	"path.images_root": "%base_path%/web/assets",
+	"monolog.name": "broadway",
+	"monolog.logfile": "%base_path%/var/logs/monolog.log",
+
+	"facebook_app_id":"<%= @facebook_app_id %>",
+	"facebook_app_secret":"<%= @facebook_app_secret %>",
+	"db.options":{
+		"host":"<%= @percona_host %>",
+		"driver":"pdo_mysql",
+		"dbname":"<%= @percona_database %>",
+		"user":"<%= @percona_user %>",
+		"password":"<%= @percona_password %>"
+	},
+	"http_cache.cache_dir" : "%base_path%/var/cache/",
+	"http_cache.esi" : null,
+	"locale_fallbacks" : ["en"],
+	"orm.proxies_dir" : "%base_path%/var/proxy",
+	"orm.em.options" : {
+		"mappings" : [
+			{
+				"type" : "annotation",
+				"namespace" : "Broadway\\Model\\Entity",
+				"path" : "%base_path%/src/Broadway/Model/Entity"
+			}
+		]
+	},
+	"stripe_api_key": "<%= @stripe_api_key %>",
+	"stripe_api_publishable": "<%= @stripe_api_publishable %>",
+    "paypal_mode": "<%= @paypal_mode %>",
+    "paypal_client_id": "<%= @paypal_client_id %>",
+    "paypal_client_secret": "<%= @paypal_client_secret %>",
+    "knp_paginator": {
+        "page_range": 5,
+        "default_options": {
+            "page_name": "page",
+            "sort_field_name": "sort",
+            "sort_direction_name": "direction",
+            "distinct": true
+        },
+        "template": {
+            "pagination": "pagination.twig",
+            "sortable":   "Pagination/sortable_link.html.twig"
+        }
+    }
+
+}

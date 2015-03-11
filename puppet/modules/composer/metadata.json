@@ -1,0 +1,34 @@
+{
+  "name": "tPl0ch-composer",
+  "version": "0.1.0",
+  "source": "UNKNOWN",
+  "author": "tPl0ch - Thomas Ploch <profiploch@gmail.com>",
+  "license": "Apache License, Version 2.0",
+  "summary": "This module provides the 'Composer' PHP dependency manager.",
+  "description": "This module installs the 'Composer' PHP dependency manager and provides some custom types to create, update\n    and install projects. Until now only the Debian OS family is supported.",
+  "project_page": "https://github.com/tPl0ch/puppet-composer",
+  "dependencies": [
+    {
+      "name": "puppetlabs/git",
+      "version_requirement": "0.0.2"
+    }
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "LICENSE": "5080e2c321103f2d87384deb4c7e9962",
+    "Modulefile": "3ecf2e9ec8b3935157c23dccf84f3805",
+    "README.md": "4ca2dc3773f4be552dcb6cf488368c7b",
+    "manifests/exec.pp": "a912f9d94b2fcb524d166854db87fd96",
+    "manifests/init.pp": "2187a0b36c61cc55526355d9b05f3a6d",
+    "manifests/params.pp": "4aa6d82968d0a37264d496a0f18577cb",
+    "manifests/project.pp": "a0d6a529d5ea4ad6193957e61c956302",
+    "spec/classes/composer_spec.rb": "62493b66358f3c7acf24b0cfe8a98391",
+    "spec/spec.opts": "841ff248f09ff26ea499e7621d3fef33",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "templates/exec.erb": "5ee89bdcce9c6d6c5e2005afa7b8a631",
+    "tests/init.pp": "f21bd9da2126079c4a9401b4e5c355ec",
+    "tests/project.pp": "43872b97171b27ca7639c9daf698d928"
+  }
+}

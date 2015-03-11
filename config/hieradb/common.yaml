@@ -1,0 +1,85 @@
+apache::purge_configs: false
+apache::default_vhost: false
+apache::sendfile: "Off"
+
+percona::server: true
+percona::percona_version: "5.5"
+
+configure::basepath: /var/www/vhosts/common.broadwaytenniscenter.com/current
+configure::vhost: common.lo-portal.com
+configure::owner: deploy
+configure::group: deploy
+configure::percona_host: localhost
+configure::percona_database: loportal
+configure::percona_user: loportal
+configure::percona_password: GPz3quD4YXK7aaY9
+
+#configure::config_path: "/home/%{hiera('configure::owner')}/services-%{::environment}.json"
+
+apache::vhosts:
+  "%{hiera('configure::vhost')}":
+    port: 80
+    docroot: "%{hiera('configure::basepath')}/web/"
+    docroot_owner: "%{hiera('configure::owner')}"
+    docroot_group: "%{hiera('configure::group')}"
+    priority: 1
+    override: All
+    serveraliases:
+      - "%{hiera('configure::vhost')}"
+
+#  "ssl.%{hiera('configure::vhost')}":
+#    servername: "%{hiera('configure::vhost')}"
+#    port: 443
+#    docroot: "%{hiera('configure::basepath')}/web/"
+#    docroot_owner: "%{hiera('configure::owner')}"
+#    docroot_group: "%{hiera('configure::group')}"
+#    priority: 1
+#    override: All
+#    ssl: true
+#    ssl_cert: /etc/ssl/cert.pem
+#    ssl_chain: /etc/ssl/bundle.crt
+#    serveraliases:
+#      - "%{hiera('configure::vhost')}"
+
+percona::database:
+  "%{hiera('configure::percona_database')}": {}
+
+percona::rights:
+  loportal:
+    user    : "%{hiera('configure::percona_user')}"
+    database: "%{hiera('configure::percona_database')}"
+    password: "%{hiera('configure::percona_password')}"
+
+php::module:
+  opcache:
+    ensure: installed
+  process:
+    ensure: installed
+  xml:
+    ensure: installed
+  pdo:
+    ensure: installed
+  mcrypt:
+    ensure: installed
+  mbstring:
+    ensure: installed
+  pear:
+    ensure: installed
+  pear-DB:
+    ensure: installed
+  pecl-apc:
+    ensure: installed
+
+php::module::ini:
+  opcache:
+    settings:
+      opcache.enable: 1
+      opcache.enable_cli: 1
+      opcache.memory_consumption: 128
+      opcache.interned_strings_buffer: 16
+      opcache.max_accelerated_files: 4000
+      opcache.file_update_protection: 0
+      opcache.enable_file_override: 1
+      opcache.revalidate_freq: 0
+      opcache.validate_timestamps: 0
+      opcache.fast_shutdown: 1

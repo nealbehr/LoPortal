@@ -1,0 +1,41 @@
+[global]
+ApplicationName=withWebServer
+AwsCredentialFile=.elasticbeanstalk/aws_credential_file
+DevToolsEndpoint=git.elasticbeanstalk.us-west-1.amazonaws.com
+EnvironmentName=lo-portal
+EnvironmentTier=WebServer::Standard::1.0
+EnvironmentType=LoadBalanced
+InstanceProfileName=aws-elasticbeanstalk-ec2-role
+OptionSettingFile=.elasticbeanstalk/optionsettings.withwebserver-stage
+RdsEnabled=No
+Region=us-west-1
+ServiceEndpoint=https://elasticbeanstalk.us-west-1.amazonaws.com
+SolutionStack=64bit Amazon Linux 2014.03 v1.0.3 running PHP 5.5
+
+[aws:elasticbeanstalk:sns:topics]
+Notification Endpoint=serhii.samoilenko@appsorama.com
+Notification Protocol=email
+
+
+[branches]
+develop=lo-portal-stage
+master=lo-portal-prod
+
+[branch:develop]
+ApplicationVersionName=Sample Application
+EnvironmentName=lo-portal-stage
+EnvironmentTier=WebServer::Standard::1.0
+EnvironmentType=LoadBalanced
+InstanceProfileName=aws-elasticbeanstalk-ec2-role
+OptionSettingFile=.elasticbeanstalk/optionsettings.withwebserver-stage
+RdsEnabled=No
+
+[branch:master]
+ApplicationVersionName=Sample Application
+EnvironmentName=lo-portal-prod
+EnvironmentTier=WebServer::Standard::1.0
+EnvironmentType=LoadBalanced
+InstanceProfileName=aws-elasticbeanstalk-ec2-role
+OptionSettingFile=.elasticbeanstalk/optionsettings.withwebserver-prod
+RdsEnabled=No
+

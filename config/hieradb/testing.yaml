@@ -1,0 +1,15 @@
+configure::basepath: /var/www/vhosts/testing.broadwaytenniscenter.com/current
+configure::vhost: testing.broadwaytenniscenter.com
+configure::percona_database: broadway_testing
+configure::percona_user: broadway_testing
+configure::percona_password: GPz4qsDgYXKdaaY3
+
+configure::stripe_api_key: sk_test_1ejyI4Sn5Ax5KlmILv80T3UV
+configure::stripe_api_publishable: pk_test_vJXrRyWzjyCs6zd4FQDg6mnT
+
+configure::paypal_mode: sandbox
+configure::paypal_client_id: AUpQN887vaiH4DuGrUeWpk_4QUfGBr-ybMas7uidgi1LPb95okzA9ysFWYWZ7JOLKMyB7GXzlXbIkkhP
+configure::paypal_client_secret: EIxHh7Dlgo13hoPF2J_HaaR-x_TX-dOV60Ze9p0nPrtWDWWc5faW5AV5wJ4UUS4XIh0wLOQxBMVz9lca
+
+configure::facebook_app_id: 1556637024577353
+configure::facebook_app_secret: a58b5208138c776a3f9803dd8a415e37

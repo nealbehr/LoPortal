@@ -1,0 +1,99 @@
+label:
+  first_name: First name
+  last_name: Last name
+  last_name: Last name
+  email : Email
+  password: Password
+  confirm_password: Confirm Password
+  birth_date: Birth date
+  gender: Gender
+  phone: Phone
+  weight: Weight
+  height: Height
+  state: State
+  city: City
+  street_address: Street address
+  zip_code: Zip code
+  relations: Relations
+  confirmation:
+    coach: Coach
+    court: Court
+    date: Date
+    time_from: Time from
+    time_to: to
+
+gender:
+  choose: Choose an option
+  male: Male
+  female: Female
+
+empty_value:
+  confirmation:
+    coach: Choose a coach
+    court: Choose a court
+
+meta:
+  home:
+    title: Broadway Tennis Center
+    description: Broadway Tennis Center
+  mission:
+    title: Mission | Broadway Tennis Center
+    description: Mission | Broadway Tennis Center
+  facility:
+    title: Facility | Broadway Tennis Center
+    description: Facility | Broadway Tennis Center
+  programs:
+    title: Programs | Broadway Tennis Center
+    description: Programs | Broadway Tennis Center
+  coaches:
+    title: Coaches | Broadway Tennis Center
+    description: Coaches | Broadway Tennis Center
+  profile:
+    title: Profile | Broadway Tennis Center
+    description: Profile | Broadway Tennis Center
+  profile_edit:
+    title: Profile | Broadway Tennis Center
+    description: Profile | Broadway Tennis Center
+  agreement:
+    title: Agreement and release from liability | Broadway Tennis Center
+    description: Agreement and release from liability | Broadway Tennis Center
+  error:
+    title: Something went wrong | Broadway Tennis Center
+    description: Something went wrong | Broadway Tennis Center
+  checkout:
+    confirmation:
+      title: Court Rental / Private Lessons | Broadway Tennis Center
+      description: Court Rental / Private Lessons | Broadway Tennis Center
+    confirmation_program:
+      title: Confirm booking | Broadway Tennis Center
+      description: Confirm booking | Broadway Tennis Center
+    error:
+      title: Something went wrong | Broadway Tennis Center
+      description: Something went wrong | Broadway Tennis Center
+    successfully:
+      title: You have successfully booked a court | Broadway Tennis Center
+      description: You have successfully booked a court | Broadway Tennis Center
+  authorize:
+    forgot:
+      title: Forgot password | Broadway Tennis Center
+      description: Forgot password | Broadway Tennis Center
+    signin:
+      title: Sign in your account | Broadway Tennis Center
+      description: Sign in your account | Broadway Tennis Center
+    signup:
+      title: Sign up your account | Broadway Tennis Center
+      description: Sign up your account | Broadway Tennis Center
+
+program:
+  name: Program
+  description: Description
+  available: Available
+  days: Weekdays
+  note: Notice
+  price: Price
+  months: Enter duration
+  start: Start date
+  end: End date
+program_hours:
+  start: Start date
+  end: End date

@@ -1,0 +1,11 @@
+---
+:backends: yaml
+
+:logger: noop
+
+:yaml:
+  :datadir: config/hieradb
+
+:hierarchy:
+  - "%{::environment}"
+  - common

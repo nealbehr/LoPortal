@@ -1,25 +1,38 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
 
-    config.vm.box = "centos6.5"
-    config.vm.box_url = "https://github.com/2creatives/vagrant-centos/releases/download/v6.5.1/centos65-x86_64-20131205.box"
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-    config.vm.provision :shell, :path => "provision/bootstrap.sh"
+  config.vm.box = "CentOs65"
+  config.vm.box_url = "http://puppet-vagrant-boxes.puppetlabs.com/centos-65-x64-virtualbox-puppet.box"
+  config.vm.hostname = "lo.portal.1rex.com"
 
-    config.vm.define "dev" do |dev|
-        dev.vm.network :private_network, ip: "192.168.2.11"
-        dev.vm.network :forwarded_port, guest: 80, host: 5009
-        dev.vm.network :forwarded_port, guest: 443, host: 5006
+  config.vm.network :private_network, ip: '192.168.50.9'
+  config.vm.network :forwarded_port, guest: 80, host: 10080
+  config.vm.network :forwarded_port, guest: 443, host: 10081
 
-        dev.vm.provision :puppet do |puppet|
-            puppet.manifests_path = "provision/manifests"
-            puppet.manifest_file  = "dev-box.pp"
-            puppet.module_path = "provision/modules"
-        end
-	    dev.vm.provider :virtualbox do |v|
-	        v.memory = 512
-	    end
-    end
+  config.vm.synced_folder '.', '/vagrant', nfs: true
+
+  config.vm.provider "virtualbox" do |v|
+
+    cpus = `sysctl -n hw.ncpu`.to_i
+    mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
+    v.customize ["modifyvm", :id, "--memory", mem]
+    v.customize ["modifyvm", :id, "--cpus", cpus]
+  end
+
+  config.vm.provision :shell, :path => "puppet/bootstrap.sh"
+  config.vm.provision :puppet do |puppet|
+    puppet.manifests_path = "puppet/manifests"
+    puppet.manifest_file  = "deploy.pp"
+    puppet.module_path = "puppet/modules"
+    puppet.options = '--environment vagrant'
+    puppet.hiera_config_path = "hiera.yaml"
+    puppet.working_directory = "/vagrant"
+  end
+
+
 end
