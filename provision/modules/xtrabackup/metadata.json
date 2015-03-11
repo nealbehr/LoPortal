@@ -1,0 +1,26 @@
+{
+  "name": "bashtoni-xtrabackup",
+  "version": "0.0.3",
+  "source": "UNKNOWN",
+  "author": "Sam Bashton",
+  "license": "GNU GPL, Version 2.0",
+  "summary": "Configure and schedule MySQL backups with Percona Xtrabackup",
+  "description": "Configures the wonder Percona Xtrabackup utlility to make non-blocking backups of your MySQL databases.",
+  "project_page": "https://github.com/BashtonLtd/puppet-xtrabackup",
+  "dependencies": [
+
+  ],
+  "types": [
+
+  ],
+  "checksums": {
+    "LICENSE": "b234ee4d69f5fce4486a80fdaf4a4263",
+    "Modulefile": "df16f50cf19017a015baaa693c345812",
+    "README": "b1b428b2122d356d0bc9964f77935762",
+    "manifests/init.pp": "a00b823ec3b65d8bacb59765a71e10f2",
+    "spec/spec_helper.rb": "a55d1e6483344f8ec6963fcb2c220372",
+    "templates/backupscript.sh.erb": "d2dfa28ea55f47af65bab11005fff536",
+    "templates/restorescript.sh.erb": "121ef2cac185a6b0964b649bd1c329e3",
+    "tests/init.pp": "7589c690dae4e390fc36118ad4b7204c"
+  }
+}

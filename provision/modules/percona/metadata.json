@@ -1,0 +1,157 @@
+{
+  "types": [
+    {
+      "doc": "Manage a database user.",
+      "properties": [
+        {
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`.",
+          "name": "ensure"
+        },
+        {
+          "doc": "The password hash of the user. Use mysql_password() for creating such a hash.  Values can match `/\\w+/`.",
+          "name": "password_hash"
+        }
+      ],
+      "name": "mysql_user",
+      "providers": [
+        {
+          "doc": "Use mysql as database.\n\nRequired binaries: `mysql`, `mysqladmin`.  Default for `kernel` == `Linux`.",
+          "name": "mysql"
+        }
+      ],
+      "parameters": [
+        {
+          "doc": "The name of the user. This uses the 'username@hostname' form.",
+          "name": "name"
+        },
+        {
+          "doc": "The my.cnf to use for calls.",
+          "name": "mgmt_cnf"
+        }
+      ]
+    },
+    {
+      "doc": "Manage a database user's rights.",
+      "properties": [
+        {
+          "doc": "The privileges the user should have. The possible values are implementation dependent.",
+          "name": "privileges"
+        }
+      ],
+      "name": "mysql_grant",
+      "providers": [
+        {
+          "doc": "Uses mysql as database.\n\nRequired binaries: `mysql`, `mysqladmin`.  Default for `kernel` == `Linux`.",
+          "name": "mysql"
+        }
+      ],
+      "parameters": [
+        {
+          "doc": "The primary key: either user@host for global privilges or user@host/database for database specific privileges",
+          "name": "name"
+        },
+        {
+          "doc": "The my.cnf to use for calls.",
+          "name": "mgmt_cnf"
+        }
+      ]
+    },
+    {
+      "doc": "Manage a database.",
+      "properties": [
+        {
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`.",
+          "name": "ensure"
+        },
+        {
+          "doc": "The characterset to use for a database  Values can match `/^\\S+$/`.",
+          "name": "charset"
+        }
+      ],
+      "name": "mysql_database",
+      "providers": [
+        {
+          "doc": "Use mysql as database.\n\nRequired binaries: `mysql`, `mysqladmin`.  Default for `kernel` == `Linux`.",
+          "name": "mysql"
+        }
+      ],
+      "parameters": [
+        {
+          "doc": "The name of the database.",
+          "name": "name"
+        },
+        {
+          "doc": "The my.cnf to use for calls.",
+          "name": "mgmt_cnf"
+        }
+      ]
+    }
+  ],
+  "description": "Managed your percona server, optimized for use with hiera.",
+  "author": "Jan Vansteenkiste <jan@vstone.eu>",
+  "source": "git://github.com/vStone/puppet-percona.git",
+  "checksums": {
+    "manifests/adminpass.pp": "bd23fb47604569b97a21bcbc9761569f",
+    "manifests/database.pp": "655ff14b327d01ce492061a2f768bc42",
+    "manifests/config/server.pp": "75ff172895b65bcf3674b2f24a191f77",
+    "manifests/init.pp": "e3911666c88c00b9b73c74063676f1cc",
+    "templates/mgmt_cnf.erb": "492f8ec16d9f60447f309c72e4dbac65",
+    "lib/puppet/parser/functions/percona_hash_print.rb": "61463d57f6a92c4a9f33e6ba06afd703",
+    "spec/classes/percona_init_spec.rb": "cae3e4a55abc7c654ea5ae80d404c254",
+    "spec/functions/percona_hash_print_spec.rb": "2de558044d50d6cb59836052aa306be4",
+    "manifests/rights.pp": "fe0609c159fe52fa213dd67cde97d634",
+    "manifests/config.pp": "fe889351e2c0cbb60621fbf2b2000086",
+    "lib/puppet/parser/functions/percona_hash_print_section.rb": "6b9fbe78197174cd669433f675ec65fd",
+    "Modulefile": "05d4893d61c193a81a3e2be413f0416c",
+    "spec/classes/percona_params_spec.rb": "a2bfbee3bee22607bf26f307502176e0",
+    "manifests/repo/yum.pp": "91f572f20c777ad4a3d83d5b2cf95fbb",
+    "spec/functions/percona_hash_print_section_spec.rb": "63ceb2900f570d47690eac19442876c5",
+    "manifests/params.pp": "4c86fad34099e712e85cb1a458ae831c",
+    "manifests/conf.pp": "6b1a02ba452371ee0dba01117d646fcb",
+    "templates/repo/sources.list.erb": "bbddc9f4b6081c071821f49bf607905e",
+    "lib/puppet/type/mysql_database.rb": "6ba32091fb33d073c25a04ad7688ee2c",
+    "lib/puppet/provider/mysql_user/mysql.rb": "aa9eb5e8248d604726bead5bdb07616c",
+    "spec/classes/percona_preinstall_spec.rb": "4f2703af32dab592795f34c168c6edac",
+    "spec/functions/percona_hash_merge_spec.rb": "bb31d3862a6f3e4ba7dfea2368e91e2a",
+    "templates/my.cnf.erb": "b02f74c1aad19d6330396e7b0c391d9e",
+    "lib/puppet/provider/mysql_database/mysql.rb": "c35a93800717fad1fc638004bbae7125",
+    "lib/facter/mysql_facts.rb": "bafc4e2ff6dbe128c5bce6fd493701ce",
+    "spec/classes/percona_install_spec.rb": "23f6e48d578da9024327ffe84a22cf3e",
+    "spec/functions/percona_hash_sections_spec.rb": "f64443b98644bf07d77a21ddc5055cc1",
+    "lib/puppet/provider/mysql_grant/mysql.rb": "c877c53865cde7cf564c022c3bea079e",
+    "Gemfile.lock": "829b2ad7dd0740e5c664a4a8eb5d20fc",
+    "Guardfile": "c57f43568d6baa2d23927eabb7c67eda",
+    "lib/facter/meminbytes.rb": "32275918d8bbb5e7fbc439504eee5454",
+    "Rakefile": "ea88b4eba8546a5bc8b8f76e86a96f34",
+    "spec/spec_helper.rb": "1d6168b959c678f7a4f72980c054b723",
+    "spec/functions/percona_hash_sanitize_spec.rb": "3221a416182f5b23aa915e3f1702181f",
+    "lib/puppet/type/mysql_user.rb": "7d2de78f7fd3afc02275a179051e70a9",
+    "LICENSE": "1906cc9accb05dcaf61c8cda63402170",
+    "spec/be_matching.rb": "cc58fd55fa7602b8a6c80d8dc76cb29e",
+    "spec/spec.opts": "19e24badad2823f90a3697dd99105209",
+    "manifests/mgmt_cnf.pp": "01cfd2670e29934e1ea4af6802d62496",
+    "spec/functions/mysql_password_spec.rb": "50bbd23f3ba5830ce26af7683ef45c9b",
+    "manifests/service.pp": "4451c038f7fe80d093bcaf4924f7ebe0",
+    "README.md": "5bd6ed5a45a75103607a4e4f25243b6a",
+    "lib/puppet/parser/functions/percona_hash_merge.rb": "957ffe2e701d7ec78ba279d70ff7e236",
+    "lib/puppet/parser/functions/percona_hash_sanitize.rb": "0773dd8d15fad7394192406439965c7b",
+    "Gemfile": "36325a5c6a6ad494d5f84a1ec2f957b5",
+    "manifests/module.pp": "8546cdda74dd1140138e34fe10ff9670",
+    "manifests/repo/apt.pp": "7a1d6c54d0e28f01240dcb76c4f7a1df",
+    "manifests/install.pp": "c942b574e6a77385052a43234ca6c6f6",
+    "manifests/preinstall.pp": "698cd7355c76ed6a02d84db090da1619",
+    "manifests/augeas.pp": "1c27769ee61e40b18445a759190f1833",
+    "templates/my.cnf.Debian.erb": "3a1f84d28f31cf3f488cf30fe300ddb6",
+    "lib/puppet/parser/functions/mysql_password.rb": "08aaa14cfbe99ceac1b59053685ee4c0",
+    "lib/puppet/parser/functions/percona_hash_sections.rb": "6bcb042e2e054828e1bde6bdfb1467b5",
+    "lib/puppet/type/mysql_grant.rb": "70f493e0e3485802cad8354e7e266032"
+  },
+  "project_page": "https://github.com/vStone/puppet-percona",
+  "version": "1.3.1",
+  "summary": "Manage mysql/percona server configuration",
+  "license": "Apache License Version 2.0",
+  "name": "vStone-percona",
+  "dependencies": [
+
+  ]
+}

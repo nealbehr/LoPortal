@@ -1,0 +1,5 @@
+:backends: yaml
+:yaml:
+  :datadir: /tmp/hiera
+:hierarchy: common
+:logger: console

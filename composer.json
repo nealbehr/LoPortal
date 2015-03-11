@@ -1,0 +1,41 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "4.1.*",
+        "mockery/mockery": "@stable"
+    },
+    "require": {
+        "php": ">=5.3.3",
+        "silex/silex": "v1.2.3",
+        "monolog/monolog": "~1.4,>=1.4.1",
+        "twig/twig": ">=1.8,<2.0-dev",
+
+        "symfony/twig-bridge": ">=2.5.8",
+        "symfony/security": ">=2.5.8",
+        "symfony/locale": ">=2.5.8",
+        "symfony/translation": ">=2.5.8",
+        "symfony/yaml": ">=2.5.8",
+        "symfony/form": ">=2.5.8",
+        "symfony/validator": ">=2.5.8",
+        "symfony/console": ">=2.5.8",
+        "symfony/doctrine-bridge": ">=2.5.8",
+        "symfony/dependency-injection": ">=2.5.8",
+        "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~2.0",
+
+        "facebook/php-sdk-v4" : "4.0.*",
+        "stripe/stripe-php": "1.*",
+        "robmorgan/phinx": "*",
+        "dflydev/doctrine-orm-service-provider": "v1.0.6",
+        "igorw/config-service-provider": "dev-master",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "paypal/rest-api-sdk-php" : "v1.0.0",
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "twig/extensions": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Broadway\\Controller" : "src/",
+            "Broadway" : ["src/", "tests/"]
+        }
+    }
+}

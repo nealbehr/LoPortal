@@ -1,0 +1,23 @@
+debug: false
+links:
+  appleStore: https://itunes.apple.com/app/blackjack-with-comrades/id894525318
+  googlePlay: https://play.google.com/store/apps/details?id=com.appsorama.bjc
+name: Black Jack with comrades
+monolog.config:
+    monolog.name:    bdcards-mail
+    monolog.logfile: /var/www/bjm-web/shared/logs/prod.log
+    monolog.level:   DEBUG
+bj.api:
+    server.url: https://blackjackwithcomrades.com/
+facebook:
+  app.id: 1438529036362399
+email:
+  subject: sent you a Blackjack with Comrades request
+  body: |
+        I challenge you, Comrade, to a game of Blackjack. There's no way you can win.
+        http://goo.gl/qrOVX9
+messages:
+  not.enough.chips: You're out of chips! Proceed to the Cashier to exchange coins for chips.
+  not.enough.coins: Visit the cashier to purchase more coins in order to use New Card.
+sessionM:
+  appId: fc56fc2aa21146c98b3c17f91eeb831ecb6e99f4

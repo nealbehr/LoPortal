@@ -1,0 +1,45 @@
+{
+  "license": "Apache 2.0",
+  "summary": "PHP module",
+  "checksums": {
+    "tests/ini.pp": "6ccaff70f981929198f22e398beca6ff",
+    "tests/fpm/daemon.pp": "6804b102876223b40b3382668bf61434",
+    "Modulefile": "853f793e0baf0e27e4639242da631c7b",
+    "tests/fpm/conf.pp": "8ab22d2e1e3821072e57c30734de70cd",
+    "templates/php.ini-el6.orig": "a82c6a40a5bbd7188c2cbd81d98e5faa",
+    "manifests/ini.pp": "650eb90ed1d577bd5834d6321274e064",
+    "manifests/fpm/daemon.pp": "a1d4f6906c944fd449f8b215a640cb34",
+    "tests/mod_php5.pp": "ff071f8ba0eb1a2b90e71a6de246df30",
+    "README.md": "7272461addebfcb79bcd60786da968a9",
+    "manifests/module/ini.pp": "268c11349a858da59ecc1d0cfa3dde8f",
+    "manifests/common.pp": "8adb91897a43611c7bceecc2792c8057",
+    "manifests/params.pp": "1d8bfead81a36bc636999abb6f5862d7",
+    "templates/php.ini-el6.erb": "75fe88af260ba524d11bafa2eb20361e",
+    "templates/fpm/php-fpm.conf.erb": "b936e3b3b09686a8693fe741c4abe13b",
+    "templates/httpd/php.conf.erb": "67cdc86b03fefa7cfb2631c5adc7e94f",
+    "ChangeLog": "5ae57265065efca4410469fd3ede6c46",
+    "manifests/mod_php5.pp": "0ddf0d9f09bf4f9983934693988df569",
+    "manifests/fpm/conf.pp": "c362ebefa2f399b0a4373ef6a4845b73",
+    "manifests/cli.pp": "3e7b14b01f94d2c6add65e504dd065e5",
+    "templates/httpd/php.conf.orig": "50015ff8bb23090aae4f8556987c5e40",
+    "manifests/module.pp": "9c2ee3964690312e0484cb3ac49d6d9e",
+    "tests/module.pp": "461e492ab58e9777a3b09e7da5e69c54",
+    "tests/module/ini.pp": "ba5ad8ccc8bf36c6a4f513c8498262d8",
+    "tests/cli.pp": "4acf74bcea023f76f2e9eb7acf38bbb3",
+    "templates/module.ini.erb": "f6f67a64c7e3fef16cf12b3d034feb66",
+    "templates/fpm/pool.conf.erb": "9d9667d27fd6502e47966bb3e74b84e3",
+    "LICENSE": "99219472697a01561e7630d63aaecdc1"
+  },
+  "source": "git://github.com/thias/puppet-php",
+  "author": "Matthias Saou",
+  "description": "Install and configure PHP for any of CLI, Apache httpd module and FastCGI.",
+  "name": "thias-php",
+  "version": "0.3.8",
+  "project_page": "https://github.com/thias/puppet-php",
+  "types": [
+
+  ],
+  "dependencies": [
+
+  ]
+}
