@@ -15,8 +15,8 @@ exec { "enable-remi":
   require => Package["remi-release"],
 }
 
-exec { "enable-remi-php55":
-  command => "/usr/bin/yum-config-manager --enable remi-php55",
+exec { "enable-remi-php56":
+  command => "/usr/bin/yum-config-manager --enable remi-php56",
   require => Package["remi-release"],
 }
 

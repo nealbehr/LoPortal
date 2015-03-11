@@ -1,11 +1,5 @@
 .idea
-generic-php-project.iml
 .vagrant
 composer.phar
 .DS_Store
-behat/vendor/
-config/development.php
-config/services.json
 vendor
-var/*
-web/assets/*

@@ -1,6 +1,5 @@
 debug: true
 monolog.config:
-    monolog.name:    bdcards-mail
     monolog.logfile: /var/www/bjm-web/shared/logs/stage.log
     monolog.level:   DEBUG
 bj.api:
