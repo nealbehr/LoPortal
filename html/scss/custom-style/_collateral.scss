@@ -1,0 +1,74 @@
+.btn-holder {
+    float: right;
+    padding-top: 2px;
+    @media (max-width: 991px)  {
+        float: none;
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+    .btn {
+        float: left;
+        margin-left: 30px;
+        width: 213px;
+        padding: 9px 12px;
+        @media (max-width: 767px)  {
+            margin: 10px 0 0;
+            width: 100%;
+        }
+        &:first-child {
+            margin: 0;
+        }
+    }
+}
+.page-title {
+    border-bottom: 1px solid #ededed;
+    padding-bottom: 34px;
+    margin-bottom: 46px;
+    h1 {
+        margin: -2px 0 0;
+    }
+}
+.thumbnails {padding-bottom: 20px;}
+.thumbnail{
+    box-shadow: 0 1px 3px rgba(180,180,180,0.6);
+    margin-bottom: 30px;
+    img {
+        border-radius: 3px 3px 0 0;
+        margin: -1px;
+        width: 101%;
+        max-width: 101%;
+    }
+    address {
+        margin: 0;
+        @media (min-width: 992px)  {
+            max-height: 42px;
+            overflow: hidden;
+        }
+        @media (min-width: 768px) and (max-width: 991px)  {
+            font-size: 13px;
+            max-height: 37px;
+            overflow: hidden;
+        }
+    }
+    .link {
+        border-top: 1px solid #ededed;
+        padding: 22px 10px 24px;
+        text-align: center;
+    }
+    .download {
+        position: relative;
+        padding-left: 35px;
+        display: inline-block;
+        font-size: 15px;
+        &:before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 22px;
+            height: 26px;
+            background: url('../images/sprite.png') no-repeat -72px 0;
+        }
+    }
+}

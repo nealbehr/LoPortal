@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=PT+Sans);
+@import url(http://fonts.googleapis.com/css?family=PT+Sans|PT+Serif:400italic);
 html,body {
     height: 100%;
 }
@@ -30,6 +30,7 @@ input[type="checkbox"] + label span{
 input[type="checkbox"]:checked + label span {
     background: url('../images/sprite.png') no-repeat -56px 0;
 }
+h1 {font-style: italic;}
 #wrapper {
     min-height: 100%;
     padding-bottom: 90px;
@@ -38,5 +39,6 @@ input[type="checkbox"]:checked + label span {
 
 @import "custom-style/navbar";
 @import "custom-style/login-form";
+@import "custom-style/collateral";
 @import "custom-style/footer";
 @import "custom-style/modal";
