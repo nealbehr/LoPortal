@@ -14,6 +14,9 @@ html,body {
 :-ms-input-placeholder {
     opacity: 1;
 }
+input[type="text"], input[type="email"], input[type="password"] {
+    box-shadow: none;
+}
 input[type="checkbox"] {
     display:none;
 }
@@ -30,10 +33,41 @@ input[type="checkbox"] + label span{
 input[type="checkbox"]:checked + label span {
     background: url('../images/sprite.png') no-repeat -56px 0;
 }
+.input-lg {
+    font-size: 16px;
+}
 h1 {font-style: italic;}
 #wrapper {
     min-height: 100%;
     padding-bottom: 90px;
+}
+.approval-form {padding-top: 20px;}
+.approval-form input {
+    margin-bottom: 20px;
+}
+.approval-form button {
+    width: 100%;
+}
+#location {
+    height: 390px;
+    width: 100%;
+    margin: 20px 0 50px;
+}
+.back {
+    padding-left: 30px;
+    margin-top: 20px;
+    position: relative;
+    display: inline-block;
+    &:before {
+        position: absolute;
+        content:'';
+        top: 50%;
+        left: 0;
+        background: url('../images/sprite.png') no-repeat -56px -25px;
+        width: 16px;
+        height: 9px;
+        margin-top: -4px;
+    }
 }
 
 
