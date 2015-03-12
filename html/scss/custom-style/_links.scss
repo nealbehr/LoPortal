@@ -1,0 +1,76 @@
+.links {
+    display: inline-block;
+    position: relative;
+    &:before {
+        position: absolute;
+        background: url('../images/sprite.png') no-repeat;
+        content: '';
+        overflow: hidden;
+        top: 50%;
+        left: 0;
+    }
+}
+.cancel {
+    @extend .links;
+    padding-left: 15px;
+    &:before {
+        background-position: -60px -16px;
+        width: 9px;
+        height: 9px;
+        margin-top: -5px;
+    }
+}
+.download {
+    @extend .links;
+    padding-left: 35px;
+    &:before {
+        background-position: -72px 0;
+        width: 22px;
+        height: 26px;
+        margin-top: -14px;
+    }
+}
+.navbar-nav .user-menu .dropdown-menu .logout {
+    @extend .links;
+    padding-left: 33px !important;
+    color: #4c84ea !important;
+    &:before {
+        background-position: -49px -28px;
+        width: 24px;
+        height: 21px;
+        margin-top: -11px;
+    }
+}
+.back {
+    @extend .links;
+    padding-left: 30px;
+    margin-top: 20px;
+    &:before {
+        background-position: -73px -44px;
+        width: 16px;
+        height: 9px;
+        margin-top: -4px;
+    }
+}
+.upload {
+    @extend .links;
+    padding-left: 30px;
+    font-size: 15px;
+    &:before {
+        background-position: -28px -28px;
+        width: 21px;
+        height: 24px;
+        margin-top: -10px;
+    }
+}
+.change {
+    @extend .links;
+    padding-left: 28px;
+    font-size: 15px;
+    &:before {
+        background-position: -73px -26px;
+        width: 20px;
+        height: 18px;
+        margin-top: -12px;
+    }
+}
