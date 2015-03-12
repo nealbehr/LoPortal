@@ -41,38 +41,12 @@ h1 {font-style: italic;}
     min-height: 100%;
     padding-bottom: 90px;
 }
-.approval-form {padding-top: 20px;}
-.approval-form input {
-    margin-bottom: 20px;
-}
-.approval-form button {
-    width: 100%;
-}
-#location {
-    height: 390px;
-    width: 100%;
-    margin: 20px 0 50px;
-}
-.back {
-    padding-left: 30px;
-    margin-top: 20px;
-    position: relative;
-    display: inline-block;
-    &:before {
-        position: absolute;
-        content:'';
-        top: 50%;
-        left: 0;
-        background: url('../images/sprite.png') no-repeat -56px -25px;
-        width: 16px;
-        height: 9px;
-        margin-top: -4px;
-    }
-}
 
 
 @import "custom-style/navbar";
 @import "custom-style/login-form";
 @import "custom-style/dashboard";
+@import "custom-style/approval";
+@import "custom-style/thank-you";
 @import "custom-style/footer";
 @import "custom-style/modal";

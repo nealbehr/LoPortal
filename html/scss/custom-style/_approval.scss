@@ -1,0 +1,31 @@
+
+.approval-form {
+    padding-top: 20px;
+    input {
+        margin-bottom: 20px;
+    }
+    button {
+        width: 100%;
+    }
+}
+#location {
+    height: 390px;
+    width: 100%;
+    margin: 20px 0 50px;
+}
+.back {
+    padding-left: 30px;
+    margin-top: 20px;
+    position: relative;
+    display: inline-block;
+    &:before {
+        position: absolute;
+        content:'';
+        top: 50%;
+        left: 0;
+        background: url('../images/sprite.png') no-repeat -56px -25px;
+        width: 16px;
+        height: 9px;
+        margin-top: -4px;
+    }
+}
