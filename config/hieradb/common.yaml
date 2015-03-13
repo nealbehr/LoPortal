@@ -5,7 +5,7 @@ apache::sendfile: "Off"
 percona::server: true
 percona::percona_version: "5.5"
 
-configure::basepath: /var/www/vhosts/common.broadwaytenniscenter.com/current
+configure::basepath: /var/www/vhosts/common.loportal.com/current
 configure::vhost: common.lo-portal.com
 configure::owner: deploy
 configure::group: deploy

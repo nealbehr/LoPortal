@@ -4,7 +4,7 @@
         "mockery/mockery": "@stable"
     },
     "require": {
-        "php": ">=5.6.6",
+        "php": ">=5.5",
         "silex/silex": "~1.2",
 
         "symfony/security": ">=2.5.8",
@@ -16,10 +16,12 @@
         "symfony/console": ">=2.5.8",
         "symfony/doctrine-bridge": ">=2.5.8",
         "twbs/bootstrap":            ">=3.2.0",
-
+        "monolog/monolog":     "~1.7",
         "robmorgan/phinx": "*",
         "ext-json": "*",
-        "knplabs/knp-paginator-bundle": "~2.4"
+        "knplabs/knp-paginator-bundle": "~2.4",
+        "dflydev/doctrine-orm-service-provider": "v1.0.6",
+        "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~2.0"
     },
     "autoload": {
         "psr-0": {

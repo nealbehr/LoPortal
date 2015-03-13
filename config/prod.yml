@@ -1,11 +1,22 @@
 debug: false
-name: Black Jack with comrades
+name: Loan Officers portal
 monolog.config:
     monolog.name:    bdcards-mail
     monolog.logfile: /var/www/bjm-web/shared/logs/prod.log
     monolog.level:   DEBUG
-email:
-  subject: sent you a Blackjack with Comrades request
-  body: |
-        I challenge you, Comrade, to a game of Blackjack. There's no way you can win.
-        http://goo.gl/qrOVX9
+orm.em.options:
+    mappings:
+      0:
+        type: "annotation"
+        namespace: "LO\\Model\\Entity"
+        path: "%base_path%/src/LO/Model/Entity"
+
+db.options:
+    driver:   pdo_mysql
+    host:     localhost
+    dbname:   loportal
+    user:     loportal
+    password: GPz3quD4YXK7aaY9
+    charset:  utf8
+user:
+    token.expire: 432000 # 5 days

@@ -2,9 +2,3 @@ debug: true
 monolog.config:
     monolog.logfile: /var/www/bjm-web/shared/logs/stage.log
     monolog.level:   DEBUG
-bj.api:
-    server.url: https://stage.blackjackwithcomrades.com/
-facebook:
-  app.id: 1548685485346753
-sessionM:
-  appId: 60f3bfacdeca1bc75e4e90db7305a194d78e443b
