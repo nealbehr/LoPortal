@@ -49,7 +49,7 @@
             }
             a {
                 background: transparent;
-                span {
+                .arrow {
                     position: absolute;
                     content: '';
                     top: 1px;
@@ -82,7 +82,7 @@
                         margin-left: -5px;
                     }
                 }
-                &.collapsed span {
+                &.collapsed .arrow {
                     &:after, &:before {
                         top: 50%;
                         bottom: auto;
@@ -98,20 +98,13 @@
                     }
                 }
             }
-            em {
+            .badge {
                 background: #d5d5d5;
-                border-radius: 10px;
-                display: inline-block;
                 color: #fff;
-                font-size: 14px;
-                font-style: normal;
-                line-height: 22px;
                 min-width: 30px;
-                padding: 0 8px;
                 text-align: center;
                 top: -2px;
                 position: relative;
-                margin-left: 10px;
             }
         }
     }

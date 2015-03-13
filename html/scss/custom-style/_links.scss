@@ -97,11 +97,12 @@
 .delete {
     @extend .links;
     padding-left: 30px;
+    color: #ea5a5a !important;
     &:before {
         background-position: -73px -53px;
         width: 19px;
         height: 19px;
-        margin-top: -9px;
+        margin-top: -10px;
     }
 }
 .action {
