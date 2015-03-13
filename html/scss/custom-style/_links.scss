@@ -74,3 +74,43 @@
         margin-top: -12px;
     }
 }
+.reset {
+    @extend .links;
+    padding-left: 30px;
+    &:before {
+        background-position: -51px -49px;
+        width: 21px;
+        height: 25px;
+        margin-top: -12px;
+    }
+}
+.impersonate {
+    @extend .links;
+    padding-left: 30px;
+    &:before {
+        background-position: -26px -53px;
+        width: 25px;
+        height: 22px;
+        margin-top: -11px;
+    }
+}
+.delete {
+    @extend .links;
+    padding-left: 30px;
+    &:before {
+        background-position: -73px -53px;
+        width: 19px;
+        height: 19px;
+        margin-top: -9px;
+    }
+}
+.action {
+    width: 26px;
+    height: 6px;
+    background: url('../images/sprite.png') no-repeat 0 -56px;
+    display: inline-block;
+    overflow: hidden;
+    text-indent: -9999px;
+    border: none;
+    outline: none;
+}

@@ -43,12 +43,11 @@ h1 {font-style: italic;}
 }
 .btn-holder {
     float: right;
-    padding-top: 2px;
-    margin-bottom: 20px;
     @media (max-width: 991px)  {
         float: none;
         width: 100%;
         overflow: hidden;
+        margin-bottom: 10px;
     }
     .btn {
         float: left;
@@ -98,11 +97,15 @@ h1 {font-style: italic;}
             float: none;
             width: 100%;
             overflow: hidden;
+            font-size: 14px;
         }
         li {
             float: left;
             border-left: 1px solid #d2d2d2;
             padding: 0 29px;
+            @media (max-width: 767px)  {
+                padding: 0 10px;
+            }
             &:first-child {
                 border: none;
                 @media (max-width: 767px)  {
@@ -158,5 +161,6 @@ h1 {font-style: italic;}
 @import "custom-style/approval";
 @import "custom-style/thank-you";
 @import "custom-style/listing";
+@import "custom-style/admin-panel";
 @import "custom-style/footer";
 @import "custom-style/modal";
