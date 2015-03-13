@@ -51,11 +51,11 @@ $font-family-sans-serif:  'PT Sans', Helvetica, Arial, sans-serif
 // $font-family-base:        $font-family-sans-serif
 
 $font-size-base:          16px
-// $font-size-large:         ceil(($font-size-base * 1.25)) // ~18px
+$font-size-large:         22px
 // $font-size-small:         ceil(($font-size-base * 0.85)) // ~12px
 
 $font-size-h1:            35px
-// $font-size-h2:            floor(($font-size-base * 2.15)) // ~30px
+$font-size-h2:            24px
 // $font-size-h3:            ceil(($font-size-base * 1.7)) // ~24px
 // $font-size-h4:            ceil(($font-size-base * 1.25)) // ~18px
 // $font-size-h5:            $font-size-base
@@ -93,10 +93,10 @@ $headings-font-weight:    normal
 //
 //## Define common padding and border radius sizes and more. Values based on 14px text and 1.428 line-height (~20px to start).
 
-// $padding-base-vertical:     6px
+$padding-base-vertical:     9px
 // $padding-base-horizontal:   12px
 
-// $padding-large-vertical:    10px
+$padding-large-vertical:    15px
 // $padding-large-horizontal:  16px
 
 // $padding-small-vertical:    5px
@@ -128,14 +128,14 @@ $border-radius-large:       4px
 //## Customizes the `.table` component with basic values, each used across all table variations.
 
 //** Padding for `<th>`s and `<td>`s.
-// $table-cell-padding:            8px
+$table-cell-padding:            16px 8px
 //** Padding for cells in `.table-condensed`.
 // $table-condensed-cell-padding:  5px
 
 //** Default background color used for all tables.
 // $table-bg:                      transparent
 //** Background color used for `.table-striped`.
-// $table-bg-accent:               #f9f9f9
+$table-bg-accent:               #fafafa
 //** Background color used for `.table-hover`.
 // $table-bg-hover:                #f5f5f5
 // $table-bg-active:               $table-bg-hover
@@ -150,9 +150,9 @@ $border-radius-large:       4px
 
 // $btn-font-weight:                normal
 
-// $btn-default-color:              #333
-// $btn-default-bg:                 #fff
-// $btn-default-border:             #ccc
+$btn-default-color:              #fff
+$btn-default-bg:                 #6ac0ed
+$btn-default-border:             #6ac0ed
 
 // $btn-primary-color:              #fff
 // $btn-primary-bg:                 $brand-primary
@@ -209,7 +209,7 @@ $input-color-placeholder:        $gray-dark
 //** Default `.form-control` height
 // $input-height-base:              ($line-height-computed + ($padding-base-vertical * 2) + 2)
 //** Large `.form-control` height
-// $input-height-large:             (ceil($font-size-large * $line-height-large) + ($padding-large-vertical * 2) + 2)
+$input-height-large:             62px
 //** Small `.form-control` height
 // $input-height-small:             (floor($font-size-small * $line-height-small) + ($padding-small-vertical * 2) + 2)
 
@@ -860,4 +860,4 @@ $thumbnail-caption-padding:   19px 20px 21px
 //** Width of horizontal description list titles
 // $dl-horizontal-offset:        $component-offset-horizontal
 //** Horizontal line color.
-// $hr-border:                   $gray-lighter
+$hr-border:                   #c7c7c7

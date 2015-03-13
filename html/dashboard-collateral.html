@@ -31,11 +31,11 @@
                         <li class="dropdown user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Lars Sparrowsong <img src="images/ava.jpg" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
+                                <li><a href="#">Requests Queue</a></li>
+                                <li><a href="#">Custom Collateral</a></li>
+                                <li><a href="#">Request flyer</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#" class="logout">Log out</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -43,13 +43,17 @@
             </div>
         </nav>
         <section class="container">
-           <header class="page-title">
+            <header class="page-title">
+               <h1>Dashboard</h1>
+               <ul class="tabset">
+                   <li><a href="#">Requests Queue</a></li>
+                   <li class="active"><a href="#">Custom Collateral</a></li>
+               </ul>
                <div class="btn-holder">
-                   <a href="#" class="btn btn-info">New Property Approval</a>
-                   <a href="#" class="btn btn-info">New Listing Flyer</a>
+                   <a href="#" class="btn btn-default">New Property Approval</a>
+                   <a href="#" class="btn btn-default">New Listing Flyer</a>
                </div>
-               <h1>Dashboard: Custom Collateral</h1>
-           </header>
+            </header>
             <div class="row thumbnails">
                 <div class="col-sm-4 col-lg-3">
                     <div class="thumbnail">
@@ -152,24 +156,5 @@
             </ul>
         </div>
     </footer>
-    <div class="modal fade" id="resetPass" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Reset password</h4>
-                <p>Enter your email address and we will send you a new password.</p>
-              </div>
-              <div class="modal-body">
-                  <div class="input">
-                      <input type="email" placeholder="Email" class="form-control">
-                  </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-info">Reset password</button>
-              </div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

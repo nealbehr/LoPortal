@@ -1,0 +1,83 @@
+.listing {
+    margin-top: 36px;
+    margin-bottom: 50px;
+    overflow: hidden;
+    h2 {
+        color: #333;
+        font-family: 'PT Sans';
+        font-weight: 700;
+        margin: 0 0 11px;
+    }
+    .sidebar {
+        margin-bottom: -9999px;
+        padding-bottom: 9999px;
+        border-right: 1px solid #e4e4e4;
+        .change {
+            display: inline-block;
+            margin-bottom: 28px;
+        }
+        dl {
+            dt {
+                font: bold 15px 'PT Sans Caption', sans-serif;
+                margin-bottom: 2px;
+                @media (max-width: 767px)  {
+                    float: left;
+                    width: 40%;
+                }
+            }
+            dd {
+                margin-bottom: 18px;
+                @media (max-width: 767px)  {
+                    float: left;
+                    width: 60%;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+    main {
+        h2 {
+            margin-bottom: 34px;
+        }
+        .thumbnail {
+            margin-bottom: 40px;
+        }
+        hr {
+            margin: 0 0 32px;
+            border-style: dashed;
+        }
+        .btn {
+            width: 100%;
+        }
+    }
+    .main-info {
+        width: 100%;
+        padding-left: 150px;
+        overflow: hidden;
+        margin-bottom: 35px;
+        @media (max-width: 767px)  {
+            padding-left: 0;
+        }
+        .inputs-holder {
+            margin-bottom: 0;
+        }
+        .user-photo {
+            width: 123px;
+            float: left;
+            margin-left: -150px;
+            @media (max-width: 767px)  {
+                float: none;
+                margin: 0 auto 20px;
+            }
+            > div {
+                width: 123px;
+                height: 123px;
+                border-radius: 3px;
+                overflow: hidden;
+                margin-bottom: 11px;
+            }
+        }
+    }
+}

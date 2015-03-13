@@ -65,5 +65,26 @@
                 margin-left: -6px;
             }
         }
+        .dropdown-menu {
+            top: 114%;
+            border-radius: 3px;
+            padding: 10px 30px;
+            font-size: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            @media (max-width: 767px)  {
+                padding: 0 15px;
+                box-shadow: none;
+            }
+            li {
+                min-width: 200px;
+            }
+            a {
+                padding: 8px 0 !important;
+                &:hover {
+                    background: none;
+                    color: #0d0d0d;
+                }
+            }
+        }
     }
 }
