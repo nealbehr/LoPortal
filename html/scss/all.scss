@@ -87,6 +87,34 @@ h1 {font-style: italic;}
             margin-left: 0;
         }
     }
+    .tabset {
+        float: left;
+        list-style: none;
+        padding: 13px 0 0;
+        margin: 0 0 20px 8px;
+        @media (max-width: 767px)  {
+            margin-left: 0;
+            padding: 0;
+            float: none;
+            width: 100%;
+            overflow: hidden;
+        }
+        li {
+            float: left;
+            border-left: 1px solid #d2d2d2;
+            padding: 0 29px;
+            &:first-child {
+                border: none;
+                @media (max-width: 767px)  {
+                    padding-left: 0;
+                }
+            }
+            &.active a {
+                color: #626262;
+                text-decoration: none !important;
+            }
+        }
+    }
 }
 .inputs-holder {
     border: 1px solid #cacaca;
