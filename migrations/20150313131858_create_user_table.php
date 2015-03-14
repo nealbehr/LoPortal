@@ -25,8 +25,8 @@ class CreateUserTable extends AbstractMigration
         $this->execute(<<<EOL
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `first_name` varchar(50) NOT NULL,
-  `last_name` varchar(50) NOT NULL,
+  `first_name` varchar(50),
+  `last_name` varchar(50),
   `email` varchar(50) NOT NULL,
   `gender` enum('male', 'female') NULL,
   `password` varchar(255) NOT NULL,

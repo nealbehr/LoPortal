@@ -124,14 +124,16 @@ class Application extends \Silex\Application{
 
     private function setupErrorHandler(){
         $this->error(function (\Exception $e, $code) {
-            $this->getMonolog()->addError($e);
-            switch ($e->getCode()) {
+            $this->getMonolog()->addError($code);
+            switch ($e->getCode() || $code) {
                 case Response::HTTP_NOT_FOUND:
                     $message      = 'The requested page could not be found.';
                     $responseCode = $code;
+                    break;
                 case Response::HTTP_METHOD_NOT_ALLOWED:
                     $message      = 'Request method Not Allowed.';
                     $responseCode = $code;
+                    break;
                 default:
                     $message = 'We are sorry, but something went terribly wrong.';
                     $responseCode = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -176,7 +178,7 @@ class Application extends \Silex\Application{
 
             ],
             'login' => [
-                'pattern' => '^/(partials|login)',
+                'pattern' => '^/(partials|login|authorize/autocomplete)',
             ],
 
             $typeFirewall => [

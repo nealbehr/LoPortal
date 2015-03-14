@@ -1,0 +1,8 @@
+.ui-autocomplete.ui-widget-content{
+    background: white;
+    border: 1px solid #cacaca;
+}
+
+.ui-state-focus {
+    border: 1px solid #cacaca;
+}

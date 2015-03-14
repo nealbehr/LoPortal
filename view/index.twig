@@ -6,8 +6,11 @@
     <title>{{ app.getConfigByName('name') }}</title>
 
     <!-- build:css < CSS_FILENAME > -->
+        <link rel="stylesheet" href="/css/jquery-ui.structure.min.css" type="text/css">
+        <link rel="stylesheet" href="/css/jquery-ui.min.css" type="text/css">
         <link rel="stylesheet" href="/css/bootstrap.css" type="text/css">
         <link rel="stylesheet" href="/css/all.css" type="text/css">
+        <link rel="stylesheet" href="/css/css.css" type="text/css">
     <!-- /build -->
 </head>
 <body ng-cloak>
@@ -23,7 +26,6 @@
             </ul>
         </div>
     </footer>
-
     <script>
         var settings = {debug:            '{{ app.getConfigByName('debug') }}',
                         expiresTokenDays: 3,
@@ -39,6 +41,7 @@
     <!--[if IE]><script type="text/javascript" src="/js/non-min/excanvas.compiled.js"></script><![endif]-->
 
     <!-- build:js < JS_FILENAME > -->
+        <script src="/js/jquery-ui.min.js"></script>
         <script src="/js/app.js"></script>
         <script src="/js/service/helper.js"></script>
         <script src="/js/modules/dashboard.js"></script>

@@ -29,47 +29,47 @@ class User {
      * @Column(type="bigint")
      * @GeneratedValue(strategy="AUTO")
      */
-    public $id;
+    protected $id;
 
     /**
      * @Column(type="string")
      */
-    public $first_name;
+    protected $first_name;
 
     /**
      * @Column(type="string")
      */
-    public $last_name;
+    protected $last_name;
 
     /**
      * @Column(type="string")
      */
-    public $email;
+    protected $email;
 
     /**
      * @Column(type="string", nullable=true)
      */
-    public $gender;
+    protected $gender;
 
     /**
      * @Column(type="string", nullable=false)
      */
-    public $password;
+    protected $password;
 
     /**
      * @Column(type="string", length=20)
      */
-    public $picture;
+    protected $picture;
 
     /**
      * @Column(type="array")
      */
-    public $roles;
+    protected $roles;
 
     /**
      * @Column(type="smallint")
      */
-    public $state;
+    protected $state;
 
     /**
      * @Column(type="datetime")
@@ -95,9 +95,9 @@ class User {
      */
     public static function getStates(){
         return [
-            self::STATE_ACTIVE  => 'Active',
-            self::STATE_BANNED  => 'Ban',
-            self::STATE_DELETED => 'Delete',
+            self::STATE_ACTIVE,
+            self::STATE_BANNED,
+            self::STATE_DELETED,
         ];
     }
 
@@ -158,6 +158,8 @@ class User {
     public function setPassword($password)
     {
         $this->password = $password;
+
+        return $this;
     }
 
     /**
@@ -267,6 +269,8 @@ class User {
      */
     public function addRole($role) {
         $this->roles[] = $role;
+
+        return $this;
     }
 
     public function getState(){

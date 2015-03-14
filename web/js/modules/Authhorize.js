@@ -13,13 +13,38 @@
     }]);
 
     authorize.controller('authorizeCtrl', ['$scope', '$http', function($scope, $http){
-//        $http.get('/login')
-//            .then(function(data){
-//
-//            })
-//            .finally(function(){
-//
-//            });
-//        ;
+        $scope.user = {email: "", password: ""};
+
+        $scope.isValidEmail = function(formLogin){
+            return (formLogin.$submitted || formLogin.email.$touched) && (formLogin.email.$error.email || formLogin.email.$error.required);
+        }
+
+        $scope.isValidPassword = function(formLogin){
+            return (formLogin.$submitted || formLogin.password.$touched) && (formLogin.password.$error.required);
+        }
+
+        $scope.complete = function($event){
+            angular.element($event.target).autocomplete({
+                source: function( request, response ) {
+                    $http.get('/authorize/autocomplete/' + request.term)
+                        .success(function(data){
+                            response(data);
+                        })
+                    ;
+                },
+                minLength: 3
+            });
+        }
+
+        $scope.submit = function(){
+            $http.post('/signin', this.user)
+                .then(function(data){
+
+                })
+                .finally(function(){
+
+                });
+            ;
+        }
     }]);
 })(settings);

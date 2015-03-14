@@ -31,8 +31,11 @@ class AuthorizeProvider implements ControllerProviderInterface {
         $controllers = $app["controllers_factory"];
 
         $controllers
-            ->get("signin", "auth.controller:signinAction")
+            ->post("signin", "auth.controller:signinAction")
             ->bind("signin");
+
+        $controllers
+            ->get("/autocomplete/{email}", "auth.controller:autocompleteAction");
 
 
         return $controllers;
