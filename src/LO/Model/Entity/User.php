@@ -72,6 +72,11 @@ class User {
     protected $state;
 
     /**
+     * @Column(type="string", length=10)
+     */
+    protected $salt;
+
+    /**
      * @Column(type="datetime")
      */
     protected $created_at;
@@ -86,7 +91,7 @@ class User {
      */
     public function __construct() {
 
-//        $this->salt           = md5(time().rand(1,1000));
+        $this->salt           = $this->generateSalt();
         $this->state          = self::STATE_ACTIVE;
     }
 
@@ -282,5 +287,15 @@ class User {
      */
     public function __toString() {
         return $this->first_name . " " . $this->last_name;
+    }
+
+    public function setSalt($salt){
+        $this->salt = $salt;
+
+        return $this;
+    }
+
+    public function generateSalt(){
+        return substr(md5(time()), 0, mt_rand(5, 10));
     }
 } 

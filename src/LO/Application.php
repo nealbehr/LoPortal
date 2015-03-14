@@ -16,6 +16,7 @@ use Saxulum\DoctrineOrmManagerRegistry\Silex\Provider\DoctrineOrmManagerRegistry
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
 use LO\Model\Manager\User;
 use LO\Provider as LOProvider;
+use LO\Security\CryptDigestPasswordEncoder;
 
 class Application extends \Silex\Application{
     use SecurityTrait;
@@ -178,7 +179,7 @@ class Application extends \Silex\Application{
 
             ],
             'login' => [
-                'pattern' => '^/(partials|login|authorize/autocomplete)',
+                'pattern' => '^/(partials|authorize/signin|authorize/autocomplete)',
             ],
 
             $typeFirewall => [
@@ -233,6 +234,13 @@ class Application extends \Silex\Application{
      */
     public function getUserManager(){
         return $this['manager.user'];
+    }
+
+    /**
+     * @return CryptDigestPasswordEncoder
+     */
+    public function getEncoderDigest(){
+        return $this['security.encoder.digest'];
     }
 
 

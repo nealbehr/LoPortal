@@ -30,6 +30,7 @@ CREATE TABLE `users` (
   `email` varchar(50) NOT NULL,
   `gender` enum('male', 'female') NULL,
   `password` varchar(255) NOT NULL,
+  salt varchar(10) not null,
   picture varchar(255) default null,
   state tinyINt(4) default null,
   `roles` varchar(255) NOT NULL,

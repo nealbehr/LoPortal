@@ -32,4 +32,8 @@ class User {
                     ->execute();
         ;
     }
+
+    public function findByEmailPassword($email, $password){
+        return false;
+    }
 } 

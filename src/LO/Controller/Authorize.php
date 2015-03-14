@@ -3,13 +3,29 @@ namespace LO\Controller;
 
 use Doctrine\ORM\Query;
 use LO\Application;
+use LO\Model\Entity\Token;
 use LO\Model\Entity\User;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Authorize {
     const MAX_EMAILS = 5;
-    public function loginAction(){
+    public function signinAction(Application $app, Request $request){
+        $user = $app->getUserManager()->findByEmailPassword($request->get('email'), $request->get('password'));
+
+        if(!$user){
+            return $app->json(['message' => 'Entered credentials are not valid'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $token = new Token();
+        $token->set
+
+//        1) create token
+//        2) save token_get_all
+//        3) return hash
 //        Response::HTTP_FORBIDDEN
+
+        return $app->json($_POST);
     }
 
     public function autocompleteAction(Application $app, $email){

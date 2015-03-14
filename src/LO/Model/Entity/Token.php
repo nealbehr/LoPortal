@@ -46,4 +46,31 @@ class Token {
      */
     protected $updated_at;
 
+    public function __construct(){
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
+        $this->hash       = $this->generateHash();
+    }
+
+    public function setUserId($id){
+        $this->user_id = $id;
+
+        return $this;
+    }
+
+    public function setExpirationTime(\DateTime $time){
+        $this->expiration_time = $time;
+
+        return $this;
+    }
+
+    public function setHash($hash){
+        $this->hash = $hash;
+
+        return $this;
+    }
+
+    public function generateHash(){
+        return md5
+    }
 }

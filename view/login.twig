@@ -2,7 +2,12 @@
     <div class="container">
         <div class="row">
             <div class="ligin-form col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
-                <form ng-submit="submit()" class="css-form" novalidate name="formLogin">
+                <form ng-submit="formLogin.$valid && submit()" class="css-form" novalidate name="formLogin">
+                    <div class="alert alert-danger fade in" role="alert" ng-show="errorMessage">
+                        [[ errorMessage ]]
+                    </div>
+
+
                     <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formLogin)">
                         <span ng-show="formLogin.email.$error.email">The entered email is invalid.</span>
                         <span ng-show="formLogin.email.$error.required">Email can't be empty.</span>

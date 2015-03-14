@@ -11,12 +11,13 @@
         $interpolateProvider.startSymbol('[[')
                             .endSymbol(']]');
 
-        $httpProvider.interceptors.push(function($q, $location) {
+        $httpProvider.interceptors.push(function($q, $location, redirect) {
             return {
                 'responseError': function(rejection) {
                     console.log(rejection);
+                    console.log($location.url());
                     if (rejection.status === HTTP_CODES.FORBIDDEN) {
-                        $location.path('/login');
+                        redirect('/login', $location.url());
                     }
 
                     return $q.reject(rejection);

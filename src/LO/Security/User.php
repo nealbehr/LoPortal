@@ -9,6 +9,7 @@ class User implements UserInterface{
     private $pass;
     private $token;
     private $expire;
+    private $salt;
     
     public function getId(){
         return $this->id;
@@ -23,7 +24,7 @@ class User implements UserInterface{
     }
 
     public function getSalt(){
-        return null;
+        return $this->salt;
     }
 
     public function getUsername(){

@@ -12,8 +12,9 @@
             });
     }]);
 
-    authorize.controller('authorizeCtrl', ['$scope', '$http', function($scope, $http){
+    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', function($scope, $http, redirect){
         $scope.user = {email: "", password: ""};
+        $scope.errorMessage = null;
 
         $scope.isValidEmail = function(formLogin){
             return (formLogin.$submitted || formLogin.email.$touched) && (formLogin.email.$error.email || formLogin.email.$error.required);
@@ -37,12 +38,17 @@
         }
 
         $scope.submit = function(){
-            $http.post('/signin', this.user)
-                .then(function(data){
-
+            this.errorMessage = null;
+            // 1) show gray screen
+            $http.post('/authorize/signin', this.user)
+                .success(function(data){
+                    redirect('/');
+                })
+                .error(function(data){
+                    $scope.errorMessage = data.message;
                 })
                 .finally(function(){
-
+                    // 1) hide gray screen
                 });
             ;
         }
