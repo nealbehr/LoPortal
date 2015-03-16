@@ -1,0 +1,222 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>firstREX</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/all.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div id="wrapper">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#"><img src="images/logo.png" width="94" height="49" alt="firstREX"></a>
+                    <div class="dropdown user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="hidden-xs">Lars Sparrowsong</span> <img src="images/ava.jpg" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Requests Queue</a></li>
+                            <li><a href="#">Custom Collateral</a></li>
+                            <li><a href="#">Request flyer</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" class="logout">Log out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <section class="container">
+            <header class="page-title">
+               <h1>Admin Panel</h1>
+               <ul class="tabset">
+                   <li class="active"><a href="#">User Management</a></li>
+                   <li><a href="#">Request Management</a></li>
+               </ul>
+               <div class="btn-holder">
+                   <a href="#" class="btn btn-default">Add User</a>
+               </div>
+            </header>
+            <div class="admin-table user-managment">
+                <div class="table-holder">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th><span>Request ID</span></th>
+                                <th><span>User ID</span></th>
+                                <th>Property Address</th>
+                                <th>MLS<br>Number</th>
+                                <th>Created</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="attention" data-toggle="tooltip" data-placement="bottom" title="Please note, this row is duplicate of row with Request ID: 6813">Dublicate</span>1498</td>
+                                <td>21</td>
+                                <td>127 S Eldorado St San Mateo CA 94905</td>
+                                <td>135094</td>
+                                <td>Jun 01 2014<br>11:29AM</td>
+                                <td>Property Approval</td>
+                                <td>Approved</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" class="change">Edit</a></li>
+                                            <li><a href="#" class="approve" data-toggle="modal" data-target="#approve-request1">Approve</a></li>
+                                            <li><a href="#" class="delete" data-toggle="modal" data-target="#decline-request1">Decline</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2494</td>
+                                <td>12</td>
+                                <td>127 S Eldorado St San Mateo CA 94905</td>
+                                <td>235003</td>
+                                <td>Sep 01 2014<br>11:29AM</td>
+                                <td>Property Approval</td>
+                                <td>Approved</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" class="change">Edit</a></li>
+                                            <li><a href="#" class="approve" data-toggle="modal" data-target="#approve-request2">Approve</a></li>
+                                            <li><a href="#" class="delete">Decline</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3492</td>
+                                <td>45</td>
+                                <td>127 S Eldorado St San Mateo CA 94905</td>
+                                <td>230003</td>
+                                <td>Jun 01 2014<br>12:29AM</td>
+                                <td>Property Approval</td>
+                                <td>Approved</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" class="change">Edit</a></li>
+                                            <li><a href="#" class="approve">Approve</a></li>
+                                            <li><a href="#" class="delete">Decline</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="attention" data-toggle="tooltip" data-placement="bottom" title="Please note, this row is duplicate of row with Request ID: 6813">Dublicate</span>498</td>
+                                <td>6</td>
+                                <td>391 S Eldorado St San Mateo CA 11309</td>
+                                <td>35094</td>
+                                <td>Jun 01 2015<br>11:29AM</td>
+                                <td>Property Approval</td>
+                                <td>Approved</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                                        <ul class="dropdown-menu dropdown-menu-right">
+                                            <li><a href="#" class="change">Edit</a></li>
+                                            <li><a href="#" class="approve">Approve</a></li>
+                                            <li><a href="#" class="delete">Decline</a></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+    <footer id="footer">
+        <div class="container">
+            <a class="hidden-xs" href="#"><img src="images/logo-footer.png" width="77" height="40" alt="firstREX"></a>
+            <ul>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Use</a></li>
+                <li><a href="#">Disclosure</a></li>
+            </ul>
+        </div>
+    </footer>
+    
+    <div class="modal fade" id="approve-request1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Approve the request</h4>
+              </div>
+              <div class="modal-body">
+                  <textarea cols="30" rows="3" class="form-control">Reason</textarea>
+                  <div class="attach">
+                    <p>Upload final marketing collateral:</p>
+                    <div class="wrap">
+                        <a href="#" class="upload">Attach the document</a>
+                        <span>PDF format only</span>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg">Approve</button>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="approve-request2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Approve the request</h4>
+              </div>
+              <div class="modal-body">
+                  <textarea cols="30" rows="3" class="form-control">Reason</textarea>
+                  <div class="attach">
+                    <p>Upload final marketing collateral:</p>
+                    <div class="wrap">
+                        <a href="#" class="download">Example Listing Flyer.pdf</a>
+                        <div class="pull-right">
+                            <a href="#" class="change">Change</a> |
+                            <a href="#" class="remove">Remove</a>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg">Approve</button>
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="decline-request1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Decline the request</h4>
+              </div>
+              <div class="modal-body">
+                  <textarea cols="30" rows="3" class="form-control">Reason</textarea>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg">Approve</button>
+              </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        });
+    </script>
+</body>
+</html>
