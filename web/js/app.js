@@ -33,6 +33,7 @@
                 'responseError': function(rejection) {
                     console.log(rejection);
                     if (rejection.status === HTTP_CODES.FORBIDDEN) {
+                        $cookieStore.remove(TOKEN_KEY);
                         redirect('/login', $location.url());
                     }
 

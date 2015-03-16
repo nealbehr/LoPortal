@@ -77,7 +77,7 @@ class Token {
     }
 
     public function generateHash(){
-        return password_hash(time(),PASSWORD_DEFAULT);
+        return password_hash(time() . mt_rand(1000, 1000000), PASSWORD_DEFAULT);
     }
 
     public function getHash(){

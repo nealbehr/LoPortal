@@ -19,7 +19,7 @@
             })
             .finally(function(){
 
-            });
+            })
         ;
     }]);
 })(settings);

@@ -18,7 +18,8 @@ class UserProvider implements UserProviderInterface{
     public function loadUserByUsername($email){
         $user = $this->app
                      ->getEntityManager()
-                     ->getRepository(User::class)->findBy(['email' => $email])
+                     ->getRepository(User::class)
+                     ->findOneBy(['email' => $email])
         ;
 
         if (!$user) {

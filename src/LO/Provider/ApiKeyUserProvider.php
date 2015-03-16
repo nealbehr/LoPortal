@@ -32,11 +32,7 @@ class ApiKeyUserProvider extends UserProvider{
      * so we don't throw any Exception here.
      */
     public function getUsernameForApiKey($apiKey){
-        $user = $this->userManager->findByToken($apiKey);
-
-        return $user
-                ? $user->getUsername()
-                : false;
+        return $this->userManager->findByToken($apiKey);
     }
 
 }

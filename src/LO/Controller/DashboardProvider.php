@@ -31,8 +31,8 @@ class DashboardProvider implements ControllerProviderInterface {
         $controllers = $app["controllers_factory"];
 
         $controllers
-            ->get("/", "auth.controller:indexAction")
-            ->bind("index");
+            ->get("/", "dashboard.controller:indexAction")
+            ->bind("dashboard-index");
 
 
         return $controllers;

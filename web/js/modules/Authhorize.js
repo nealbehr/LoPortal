@@ -12,7 +12,11 @@
             });
     }]);
 
-    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', function($scope, $http, redirect, $cookieStore){
+    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', function($scope, $http, redirect, $cookieStore, TOKEN_KEY){
+        if($cookieStore.get(TOKEN_KEY)){
+            redirect('/');
+        }
+
         $scope.user = {email: "", password: ""};
         $scope.errorMessage = null;
 
@@ -42,7 +46,8 @@
             // 1) show gray screen
             $http.post('/authorize/signin', $.param(this.user))
                 .success(function(data){
-                    $cookieStore.put('access_token', data);
+                    console.log(TOKEN_KEY)
+                    $cookieStore.put(TOKEN_KEY, data);
                     redirect('/');
                 })
                 .error(function(data){

@@ -8,9 +8,10 @@
 
 namespace LO\Controller;
 
+use LO\Application;
 
 class Dashboard {
-    public function getAction(){
-
+    public function indexAction(Application $app){
+        return $app->json(['ok']);
     }
 } 

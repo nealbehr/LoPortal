@@ -22,16 +22,18 @@ class UserManager {
     }
 
     public function findByToken($token){
-        return $this->app->getEntityManager()->createQueryBuilder()
+        return $this->app->getEntityManager()
+                    ->getRepository(EntityUser::class)
+                    ->createQueryBuilder('u')
                     ->select('u')
-                    ->from(EntityUser::class, 'u')
-                    ->join(Token::class, 't', Expr\Join::WITH)
+                    ->join(Token::class, 't', Expr\Join::WITH, 'u.id = t.user_id')
                     ->where('t.hash = :token')
-                    ->andWhere('t.$expiration_time > :expireTime')
+                    ->andWhere('t.expiration_time > :expireTime')
                     ->setParameter('token', $token)
                     ->setParameter('expireTime', new \DateTime())
+                    ->setMaxResults(1)
                     ->getQuery()
-                    ->execute();
+                    ->getOneOrNullResult()
         ;
     }
 

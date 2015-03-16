@@ -176,9 +176,9 @@ class Application extends \Silex\Application{
     }
 
     public function initRoutes(){
-        $this->mount('/authorize', new Controller\AuthorizeProvider());
+        $this->mount('/authorize',  new Controller\AuthorizeProvider());
         $this->mount('/partials',   new Controller\PartialProvider());
-        $this->mount('/dashboard',          new Controller\DashboardProvider());
+        $this->mount('/dashboard',  new Controller\DashboardProvider());
 
         $this->match('/', function(){
             return $this->getTwig()->render('index.twig');

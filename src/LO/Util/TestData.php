@@ -24,7 +24,9 @@ class TestData {
         foreach(range(1, 40) as $v){
             $user = new User();
             $user->setEmail($this->generateRandomString(mt_rand(5, 7)).'@'.$this->generateRandomString(mt_rand(4, 7)).'.'.$domains[mt_rand(0, count($domains) - 1)]  )
-                 ->setSalt($user->generateSalt());
+                 ->setSalt($user->generateSalt())
+                 ->addRole(User::ROLE_USER)
+            ;
             $user->setPassword($this->app->encodePassword($user, '123456'));
 
             $this->app->getEntityManager()->persist($user);
@@ -37,7 +39,9 @@ class TestData {
         $user = new User();
         $user->setEmail('s.samoilenko@gmail.com')
              ->setSalt($user->generateSalt())
-             ->setPassword($this->app->encodePassword($user, '123456'));
+             ->setPassword($this->app->encodePassword($user, '123456'))
+             ->addRole(User::ROLE_USER)
+        ;
 
         $this->app->getEntityManager()->persist($user);
         $this->app->getEntityManager()->flush();
