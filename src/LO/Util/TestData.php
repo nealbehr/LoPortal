@@ -24,14 +24,23 @@ class TestData {
         foreach(range(1, 40) as $v){
             $user = new User();
             $user->setEmail($this->generateRandomString(mt_rand(5, 7)).'@'.$this->generateRandomString(mt_rand(4, 7)).'.'.$domains[mt_rand(0, count($domains) - 1)]  )
-                 ->setSalt($user->generateSalt())
-                 ->setPassword($this->app->encodePassword());
+                 ->setSalt($user->generateSalt());
+            $user->setPassword($this->app->encodePassword($user, '123456'));
 
-            $this->app->getEntityManager()->persist(
-
-
-            );
+            $this->app->getEntityManager()->persist($user);
         }
+
+        $this->app->getEntityManager()->flush();
+    }
+
+    public function createMe(){
+        $user = new User();
+        $user->setEmail('s.samoilenko@gmail.com')
+             ->setSalt($user->generateSalt())
+             ->setPassword($this->app->encodePassword($user, '123456'));
+
+        $this->app->getEntityManager()->persist($user);
+        $this->app->getEntityManager()->flush();
     }
 
     public function generateRandomString($length = 10) {

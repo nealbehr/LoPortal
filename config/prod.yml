@@ -19,4 +19,4 @@ db.options:
     password: GPz3quD4YXK7aaY9
     charset:  utf8
 user:
-    token.expire: 432000 # 5 days
+    token.expire: 5 # 5 days

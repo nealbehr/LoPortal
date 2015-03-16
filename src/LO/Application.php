@@ -5,8 +5,6 @@ use Silex\Application\SecurityTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider;
 use LO\Provider\UserProvider;
-use LO\Security\Firewall\Listener;
-use LO\Security\Authentication\Provider as AuthenticationProvider;
 use LO\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,9 +12,11 @@ use Symfony\Component\Yaml\Yaml;
 use Doctrine\ORM\EntityManager;
 use Saxulum\DoctrineOrmManagerRegistry\Silex\Provider\DoctrineOrmManagerRegistryProvider;
 use Dflydev\Silex\Provider\DoctrineOrm\DoctrineOrmServiceProvider;
-use LO\Model\Manager\User;
+use LO\Model\Manager\UserManager;
 use LO\Provider as LOProvider;
 use LO\Security\CryptDigestPasswordEncoder;
+use LO\Provider\ApiKeyAuthenticationServiceProvider;
+use LO\Provider\ApiKeyUserServiceProvider;
 
 class Application extends \Silex\Application{
     use SecurityTrait;
@@ -99,6 +99,8 @@ class Application extends \Silex\Application{
             ->register(new Provider\ValidatorServiceProvider())
             ->register(new Provider\SecurityServiceProvider())
             ->register(new DoctrineOrmManagerRegistryProvider())
+            ->register(new ApiKeyAuthenticationServiceProvider())
+            ->register(new ApiKeyUserServiceProvider())
             ->register(new LOProvider\Managers())
             ->register(new DoctrineOrmServiceProvider(), [
                 "orm.custom.functions.numeric" => [
@@ -151,28 +153,6 @@ class Application extends \Silex\Application{
             return new CryptDigestPasswordEncoder();
         });
 
-        $typeFirewall = 'fc';
-        $this['security.authentication_listener.factory.'.$typeFirewall] = $this->protect(function ($name, $options) use ($typeFirewall) {
-            // define the authentication provider object
-            $this['security.authentication_provider.'.$name.'.'.$typeFirewall] = $this->share(function () {
-                return new AuthenticationProvider(new UserProvider($this),
-                                                  $this->getConfigByName('user', 'token.expire')
-                );
-            });
-
-            // define the authentication listener object
-            $this['security.authentication_listener.'.$name.'.'.$typeFirewall] = $this->share(function (){
-                return new Listener($this['security'], $this['security.authentication_manager']);
-            });
-
-            return [
-                'security.authentication_provider.'.$name.'.'.$typeFirewall,// the authentication provider id
-                'security.authentication_listener.'.$name.'.'.$typeFirewall,// the authentication listener id
-                null,// the entry point id
-                'pre_auth'// the position of the listener in the stack
-            ];
-        });
-
         $this['security.firewalls'] = [
             'root' => [
                 'pattern' => '^/$',
@@ -182,11 +162,10 @@ class Application extends \Silex\Application{
                 'pattern' => '^/(partials|authorize/signin|authorize/autocomplete)',
             ],
 
-            $typeFirewall => [
+            'api' => [
                 'pattern' => '^.*$',
 //                'switch_user' => array('parameter' => '_switch_user', 'role' => 'ROLE_ALLOWED_TO_SWITCH'),
-                #'stateless'   => true,
-                $typeFirewall => true,
+                'apikey' => true,
                 'users'   => $this->share(function (){
                         return new UserProvider($this);
                     }),
@@ -230,7 +209,7 @@ class Application extends \Silex\Application{
     }
 
     /**
-     * @return User
+     * @return UserManager
      */
     public function getUserManager(){
         return $this['manager.user'];

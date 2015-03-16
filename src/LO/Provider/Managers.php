@@ -8,7 +8,7 @@
 
 namespace LO\Provider;
 
-use LO\Model\Manager\User;
+use LO\Model\Manager\UserManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 
@@ -24,7 +24,7 @@ class Managers implements ServiceProviderInterface{
      */
     public function register(Application $app){
         $app['manager.user'] = $app->share(function() use ($app) {
-            return new User($app);
+            return new UserManager($app);
         });
 
     }

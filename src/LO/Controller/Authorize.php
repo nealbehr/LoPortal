@@ -17,15 +17,14 @@ class Authorize {
             return $app->json(['message' => 'Entered credentials are not valid'], Response::HTTP_BAD_REQUEST);
         }
 
-        $token = new Token();
-//        $token->set
+        $token = (new Token())->setUserId($user->getId())
+                              ->setExpirationTime($app->getConfigByName('user', 'token.expire'))
+        ;
 
-//        1) create token
-//        2) save token_get_all
-//        3) return hash
-//        Response::HTTP_FORBIDDEN
+        $app->getEntityManager()->persist($token);
+        $app->getEntityManager()->flush();
 
-        return $app->json($_POST);
+        return $app->json($token->getHash());
     }
 
     public function autocompleteAction(Application $app, $email){

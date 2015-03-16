@@ -58,8 +58,14 @@ class Token {
         return $this;
     }
 
-    public function setExpirationTime(\DateTime $time){
-        $this->expiration_time = $time;
+    /**
+     * @param \DateTime $time
+     * @return $this
+     */
+    public function setExpirationTime($time){
+        $this->expiration_time = $time instanceof \DateTime
+                                        ? $time
+                                        : (new \DateTime())->modify(sprintf('+%d day', $time));
 
         return $this;
     }
@@ -71,6 +77,10 @@ class Token {
     }
 
     public function generateHash(){
-        return md5
+        return password_hash(time(),PASSWORD_DEFAULT);
+    }
+
+    public function getHash(){
+        return $this->hash;
     }
 }

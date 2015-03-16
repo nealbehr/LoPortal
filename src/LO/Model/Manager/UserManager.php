@@ -13,7 +13,7 @@ use Doctrine\ORM\Query\Expr;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User as EntityUser;
 
-class User {
+class UserManager {
     /** @var \LO\Application  */
     private $app;
 
@@ -27,13 +27,26 @@ class User {
                     ->from(EntityUser::class, 'u')
                     ->join(Token::class, 't', Expr\Join::WITH)
                     ->where('t.hash = :token')
+                    ->andWhere('t.$expiration_time > :expireTime')
                     ->setParameter('token', $token)
+                    ->setParameter('expireTime', new \DateTime())
                     ->getQuery()
                     ->execute();
         ;
     }
 
     public function findByEmailPassword($email, $password){
-        return false;
+        /** @var EntityUser $user */
+        $user = $this->app
+            ->getEntityManager()
+            ->getRepository(EntityUser::class)
+            ->findOneBy(['email' => $email])
+        ;
+
+        if(!$user || !$this->app['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $password, $user->getSalt())){
+            return false;
+        }
+
+        return $user;
     }
 } 

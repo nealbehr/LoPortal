@@ -6,7 +6,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use LO\Application,
-    LO\Security\User;
+    LO\Model\Entity\User;
 
 class UserProvider implements UserProviderInterface{
     private $app;
@@ -15,11 +15,14 @@ class UserProvider implements UserProviderInterface{
         $this->app = $app;
     }
 
-    public function loadUserByUsername($token){
-        $user = $this->app->getUserManager()->findByToken($token);
+    public function loadUserByUsername($email){
+        $user = $this->app
+                     ->getEntityManager()
+                     ->getRepository(User::class)->findBy(['email' => $email])
+        ;
 
         if (!$user) {
-            throw new UsernameNotFoundException(sprintf('User token "%s" does not exist.', $token));
+            throw new UsernameNotFoundException(sprintf('User token "%s" does not exist.', $email));
         }
 
         return $user;
@@ -34,6 +37,6 @@ class UserProvider implements UserProviderInterface{
     }
 
     public function supportsClass($class){
-        return $class === '\LO\Security\User';
+        return $class === '\LO\Model\Entity\User';
     }
 }

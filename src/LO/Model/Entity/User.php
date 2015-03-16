@@ -8,12 +8,14 @@
 
 namespace LO\Model\Entity;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+
 /**
  * @Entity
  * @Table(name="users",
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
-class User {
+class User implements UserInterface{
     /**
      * Roles list
      */
@@ -296,6 +298,14 @@ class User {
     }
 
     public function generateSalt(){
-        return substr(md5(time()), 0, mt_rand(5, 10));
+        return md5(time() + mt_rand(10000, 1000000000));
     }
-} 
+
+    public function getSalt(){
+        return $this->salt;
+    }
+
+    public function eraseCredentials(){
+
+    }
+}
