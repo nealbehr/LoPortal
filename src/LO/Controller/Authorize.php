@@ -18,7 +18,7 @@ class Authorize {
         }
 
         $token = new Token();
-        $token->set
+//        $token->set
 
 //        1) create token
 //        2) save token_get_all

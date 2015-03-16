@@ -91,8 +91,8 @@ class User {
      */
     public function __construct() {
 
-        $this->salt           = $this->generateSalt();
-        $this->state          = self::STATE_ACTIVE;
+        $this->salt   = $this->generateSalt();
+        $this->state  = self::STATE_ACTIVE;
     }
 
     /**

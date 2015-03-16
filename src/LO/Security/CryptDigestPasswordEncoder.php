@@ -5,11 +5,11 @@ use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 
 class CryptDigestPasswordEncoder implements PasswordEncoderInterface{
     public function encodePassword($raw, $salt){
-        return crypt($raw, $raw);
+        return password_hash($raw, PASSWORD_BCRYPT, ['salt' => $salt]);
     }
 
     public function isPasswordValid($encoded, $raw, $salt){
-        return true;
+        return hash_equals($this->encodePassword($raw, $salt), $encoded);
     }
 
 } 
