@@ -7,9 +7,12 @@
             padding: 25px 20px 15px;
         }
         .modal-title {
-            font-size: 30px;
+            font: 30px 'PT Sans';
             margin-bottom: 9px;
             color: #0d0d0d;
+            @media (max-width: 767px)  {
+                font-size: 25px;
+            }
         }
         .close {
             width: 28px;
@@ -30,6 +33,51 @@
         }
         input {
             padding: 0 30px;
+        }
+        textarea {
+            margin-bottom: 23px;
+            height: 112px;
+            max-width: 100%;
+            min-height: 65px;
+            min-width: 100%;
+            padding: 20px 30px;
+        }
+        .attach {
+            border-bottom: 1px solid #e4e4e4;
+            padding-bottom: 10px;
+            p {
+                margin-bottom: 20px;
+            }
+            .wrap {
+                width: 100%;
+                font-size: 15px;
+                color: #b9b9b9;
+                >a {
+                    margin-bottom: 10px;
+                }
+                span {
+                    float: right;
+                    font-size: 13px;
+                    margin-top: 3px;
+                }
+                >div {
+                    margin-bottom: 10px;
+                }
+                .change {
+                    margin-right:10px;
+                }
+                .remove {
+                    margin-left: 10px;
+                    position: relative;
+                    top: 1px;
+                }
+                &:after {
+                    content: '';
+                    width: 100%;
+                    clear: both;
+                    display: block;
+                }
+            }
         }
     }
     .modal-footer {

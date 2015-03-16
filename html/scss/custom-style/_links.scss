@@ -145,3 +145,11 @@
     overflow: hidden;
     background: url('../images/sprite.png') no-repeat 0 -74px;
 }
+.remove {
+    background: url('../images/sprite.png') no-repeat -18px -75px;
+    width: 9px;
+    height: 9px;
+    text-indent: -999px;
+    overflow: hidden;
+    display: inline-block;
+}
