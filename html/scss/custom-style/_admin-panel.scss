@@ -37,6 +37,7 @@
     th {
         border: none !important;
         padding: 14px 8px 9px;
+        line-height: 16px !important;
         &:first-child {
             text-align: center;
         }
@@ -45,6 +46,7 @@
         border: none !important;
         vertical-align: middle !important;
         height: 56px;
+        line-height: 16px !important;
         &:first-child {
             width: 50px;
             text-align: center;
@@ -54,24 +56,54 @@
         }
     }
     .dropdown {
-        height: 6px;
+        height: 26px;
     }
     .dropdown-menu {
-        margin-top: 20px;
-        padding: 13px 30px;
+        margin-top: 4px;
+        padding: 0;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         font-size: 15px;
-        li {
-            min-width: 200px;
-        }
+        width: 260px;
         a {
-            padding: 10px 0 6px 33px;
+            padding: 18px 30px 16px 60px;
             color: #4c84ea;
             background: none !important;
+            &:hover {
+                color: #4c84ea;
+                background: #f7f9fb !important;
+            }
+            &:before {
+                left: 30px;
+            }
         }
         .delete:before {
             margin-top: -9px;
         }
+    }
+    .tooltip {
+        left: 0 !important;
+        opacity: 1;
+        .tooltip-arrow {
+            display: none;
+        }
+        .tooltip-inner {
+            border: 1px solid #bdbdbd;
+            border-radius: 3px;
+            font-size: 14px;
+            padding: 20px;
+            text-align: left;
+        }
+    }
+    tr:last-child .tooltip {
+        top: auto !important;
+        bottom: 40px;
+    }
+}
+.user-managment {
+    td:first-child {
+        padding-left: 40px;
+        width: 12%;
+        text-align: left;
     }
 }
 .edit-user {
