@@ -44,7 +44,7 @@
                 content: "";
                 background: url('../images/sprite.png') no-repeat 0 -28px;
             }
-            input {
+            &.error input {
                 border-color: #FF776A;
             }
         }
