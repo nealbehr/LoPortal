@@ -15,12 +15,7 @@
             }
         }
         .close {
-            width: 28px;
-            height: 28px;
-            background: url(../images/sprite.png) no-repeat -28px 0;
-            overflow: hidden;
-            text-indent: -999px;
-            opacity: 1;
+            background: #dedede;
             margin: -6px -36px 0 0;
             @media (max-width: 767px)  {
                 margin: -6px -10px 0 0;
