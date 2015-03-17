@@ -45,7 +45,7 @@
                 <h4 class="modal-title">Reset password</h4>
                 <p>Enter your email address and we will send you a new password.</p>
             </div>
-            <form ng-submit="formResetPassword.$valid && resetPassword(formResetPassword)" class="css-form" novalidate name="formResetPassword">
+            <form ng-submit="formResetPassword.$valid && resetPassword(formResetPassword)" novalidate name="formResetPassword">
                 <div class="modal-body">
                     <div class="input" ng-class="{error: isValidEmail(formResetPassword)}">
                         <input type="email" placeholder="Email" class="form-control input-lg" required="" name="email" value="" ng-model="emailForResetPassword">

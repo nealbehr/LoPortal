@@ -4,6 +4,37 @@
 
     var helperService = angular.module('helperService', []);
 
+    helperService.run(['$templateCache', function($templateCache){
+        $templateCache.put('message.html', "<div class=\"alert fade in\" role=\"alert\" ng-class=\"{'alert-danger': isDanger(), 'alert-success': !isDanger()}\">" +
+                                               "<a href=\"#\" class=\"close\"  data-dismiss=\"alert\" aria-label=\"Close\">close</a>" +
+                                               "[[ loBody ]]" +
+                                           "</div>");
+    }]);
+
+    helperService.directive('loMessage', [function(){
+        return { restrict: 'EA',
+            templateUrl: 'message.html',
+            scope: {
+                'loType':        "@",
+                'loBody':        "@"
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.isDanger = function(){
+                    return scope.loType == 'danger';
+                }
+
+                scope.$watch('loType', function (newValue) {
+                    scope.loType = newValue;
+                });
+
+                scope.$watch('loBody', function (newValue) {
+                    scope.loBody = newValue;
+                });
+
+            }
+        }
+    }]);
+
     helperService.factory("redirect", ['$location', function($location){
         return function(path, redirectUrl){
             if(undefined != redirectUrl){

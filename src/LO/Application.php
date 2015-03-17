@@ -159,7 +159,7 @@ class Application extends \Silex\Application{
 
             ],
             'login' => [
-                'pattern' => '^/(partials|authorize/signin|authorize/autocomplete)',
+                'pattern' => '^/(partials|authorize/signin|authorize/autocomplete|authorize/reset)',
             ],
 
             'api' => [

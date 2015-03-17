@@ -12,7 +12,7 @@
             });
     }]);
 
-    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', function($scope, $http, redirect, $cookieStore, TOKEN_KEY){
+    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', '$compile', function($scope, $http, redirect, $cookieStore, TOKEN_KEY, $compile){
         if($cookieStore.get(TOKEN_KEY)){
             redirect('/');
         }
@@ -68,7 +68,28 @@
         }
 
         $scope.resetPassword = function(form){
-            console.log(form);
+            $http.post('/authorize/reset/' + this.emailForResetPassword, {})
+                .success(function(data){
+                    $scope.renderMessage(data, "success");
+                })
+                .error(function(data){
+                    $scope.renderMessage(data.message, "danger");
+                })
+                .finally(function(){
+                    $('#resetPass').modal('hide')
+                    // 1) hide gray screen
+                });
+            ;
+        }
+
+        $scope.renderMessage = function(message, type){
+            var angularDomEl = angular.element('<div lo-message></div>')
+                                      .attr({
+                                            'lo-body': message,
+                                            'lo-type': type
+            });
+
+            angular.element("form[name='formLogin']").prepend($compile(angularDomEl)($scope));
         }
     }]);
 })(settings);

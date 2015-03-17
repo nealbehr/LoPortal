@@ -52,12 +52,12 @@ class Authorize {
             $user = $app->getUserManager()->findByEmail($email);
 
             if($user == null){
-                throw new NotFoundHttpException(sprintf('User \'%s\' not found', $email));
+                throw new NotFoundHttpException("There is no account with entered email.");
             }
 
-            return $app->json(['success']);
+            return $app->json("Please check your email for the new password.");
         }catch(HttpException $e){
-            return $app->json(['message' => $e->getMessage()], $e->getCode());
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
     }
 }
