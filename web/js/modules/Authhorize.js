@@ -18,14 +18,23 @@
         }
 
         $scope.user = {email: "", password: ""};
-        $scope.errorMessage = null;
+        $scope.errorMessage          = null;
+        $scope.emailForResetPassword = null;
 
-        $scope.isValidEmail = function(formLogin){
-            return (formLogin.$submitted || formLogin.email.$touched) && (formLogin.email.$error.email || formLogin.email.$error.required);
+        $scope.isValidEmail = function(form){
+            if(!form.email){
+                return;
+            }
+
+            return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
         }
 
-        $scope.isValidPassword = function(formLogin){
-            return (formLogin.$submitted || formLogin.password.$touched) && (formLogin.password.$error.required);
+        $scope.isValidPassword = function(form){
+            if(!form.password){
+                return;
+            }
+
+            return (form.$submitted || form.password.$touched) && (form.password.$error.required);
         }
 
         $scope.complete = function($event){
@@ -41,12 +50,11 @@
             });
         }
 
-        $scope.submit = function(){
+        $scope.signin = function(){
             this.errorMessage = null;
             // 1) show gray screen
             $http.post('/authorize/signin', $.param(this.user))
                 .success(function(data){
-                    console.log(TOKEN_KEY)
                     $cookieStore.put(TOKEN_KEY, data);
                     redirect('/');
                 })
@@ -57,6 +65,10 @@
                     // 1) hide gray screen
                 });
             ;
+        }
+
+        $scope.resetPassword = function(form){
+            console.log(form);
         }
     }]);
 })(settings);

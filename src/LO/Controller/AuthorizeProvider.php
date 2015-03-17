@@ -37,6 +37,9 @@ class AuthorizeProvider implements ControllerProviderInterface {
         $controllers
             ->get("/autocomplete/{email}", "auth.controller:autocompleteAction");
 
+        $controllers
+            ->post("/reset/{email}", "auth.controller:resetPasswordAction");
+
 
         return $controllers;
     }

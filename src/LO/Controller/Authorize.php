@@ -5,9 +5,10 @@ use Doctrine\ORM\Query;
 use LO\Application;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User;
-use LO\Util\TestData;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Authorize {
     const MAX_EMAILS = 5;
@@ -44,5 +45,19 @@ class Authorize {
         ;
 
         return $app->json($emails);
+    }
+
+    public function resetPasswordAction(Application $app, $email){
+        try{
+            $user = $app->getUserManager()->findByEmail($email);
+
+            if($user == null){
+                throw new NotFoundHttpException(sprintf('User \'%s\' not found', $email));
+            }
+
+            return $app->json(['success']);
+        }catch(HttpException $e){
+            return $app->json(['message' => $e->getMessage()], $e->getCode());
+        }
     }
 }

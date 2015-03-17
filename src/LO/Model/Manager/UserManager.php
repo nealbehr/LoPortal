@@ -38,17 +38,24 @@ class UserManager {
     }
 
     public function findByEmailPassword($email, $password){
-        /** @var EntityUser $user */
-        $user = $this->app
-            ->getEntityManager()
-            ->getRepository(EntityUser::class)
-            ->findOneBy(['email' => $email])
-        ;
+        $user = $this->findByEmail($email);
 
         if(!$user || !$this->app['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $password, $user->getSalt())){
             return false;
         }
 
         return $user;
+    }
+
+    /**
+     * @param $email
+     * @return null|EntityUser
+     */
+    public function findByEmail($email){
+        return $this->app
+                     ->getEntityManager()
+                     ->getRepository(EntityUser::class)
+                     ->findOneBy(['email' => $email])
+        ;
     }
 } 

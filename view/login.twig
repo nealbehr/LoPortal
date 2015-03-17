@@ -2,7 +2,7 @@
     <div class="container">
         <div class="row">
             <div class="ligin-form col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
-                <form ng-submit="formLogin.$valid && submit()" class="css-form" novalidate name="formLogin">
+                <form ng-submit="formLogin.$valid && signin()" class="css-form" novalidate name="formLogin">
                     <div class="alert alert-danger fade in" role="alert" ng-show="errorMessage">
                         [[ errorMessage ]]
                     </div>
@@ -29,8 +29,6 @@
                     </div>
                     <div class="wrap">
                         <a href="#"  data-toggle="modal" data-target="#resetPass">Reset password</a>
-                        <input id="remember" type="checkbox" checked>
-                        <label for="remember"><span></span>Remember me</label>
                     </div>
                     <button class="btn btn-default btn-lg">Log in</button>
                     <p class="note">Do not have an account yet? <a href="mailto:info@1rex.com">Register</a></p>
@@ -47,14 +45,16 @@
                 <h4 class="modal-title">Reset password</h4>
                 <p>Enter your email address and we will send you a new password.</p>
             </div>
-            <div class="modal-body">
-                <div class="input">
-                    <input type="email" placeholder="Email" class="form-control input-lg">
+            <form ng-submit="formResetPassword.$valid && resetPassword(formResetPassword)" class="css-form" novalidate name="formResetPassword">
+                <div class="modal-body">
+                    <div class="input" ng-class="{error: isValidEmail(formResetPassword)}">
+                        <input type="email" placeholder="Email" class="form-control input-lg" required="" name="email" value="" ng-model="emailForResetPassword">
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-lg">Reset password</button>
-            </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default btn-lg">Reset password</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
