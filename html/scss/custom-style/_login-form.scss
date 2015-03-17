@@ -32,16 +32,5 @@
     .alert {
         position: absolute;
         top: -120px;
-        width: 100%;
-        text-align: center;
-        .close {
-            width: 28px;
-            height: 28px;
-            text-indent: -999px;
-            overflow: hidden;
-            background: url('../images/sprite.png');
-            opacity: 1;
-            margin-top: -3px;
-        }
     }
 }
