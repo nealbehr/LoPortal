@@ -31,6 +31,20 @@
         @media (max-width: 767px)  {
             padding: 0 20px 25px;
         }
+        .input {
+            position: relative;
+            &.error:after {
+            width: 28px;
+            height: 28px;
+            text-indent: -999px;
+            overflow: hidden;
+            position: absolute;
+            top: 17px;
+            right: 9px;
+            content: "";
+            background: url('../images/sprite.png') no-repeat 0 -28px;
+        }
+        }
         input {
             padding: 0 30px;
         }
