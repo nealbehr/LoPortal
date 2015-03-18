@@ -5,7 +5,7 @@
     var helperService = angular.module('helperService', []);
 
     helperService.run(['$templateCache', function($templateCache){
-        $templateCache.put('message.html', "<div class=\"alert fade in\" role=\"alert\" ng-class=\"{'alert-danger': isDanger(), 'alert-success': !isDanger()}\">" +
+        $templateCache.put('message.html', "<div class=\"alert fade in\" style=\"z-index: 5;\" role=\"alert\" ng-class=\"{'alert-danger': isDanger(), 'alert-success': !isDanger()}\">" +
                                                "<a href=\"#\" class=\"close\"  data-dismiss=\"alert\" aria-label=\"Close\">close</a>" +
                                                "[[ loBody ]]" +
                                            "</div>");
