@@ -71,7 +71,7 @@
         var map=new google.maps.Map(document.getElementById("location"),mapProp);
         var marker=new google.maps.Marker({
             position:new google.maps.LatLng(51.508742,-0.120850),
-            icon:'images/marker.png'
+            icon: new google.maps.MarkerImage('images/marker.svg', null, null, null, new google.maps.Size(140,70))
         });
 
         marker.setMap(map);

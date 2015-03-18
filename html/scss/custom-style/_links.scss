@@ -4,7 +4,8 @@
     text-decoration: none !important;
     &:before {
         position: absolute;
-        background: url('../images/sprite.png') no-repeat;
+        background: url('../images/sprite.svg') no-repeat;
+        background-size: 159px 70px;
         content: '';
         overflow: hidden;
         top: 50%;
@@ -15,7 +16,7 @@
     @extend .links;
     padding-left: 15px;
     &:before {
-        background-position: -27px -52px;
+        background-position: -27px -54px;
         width: 9px;
         height: 9px;
         margin-top: -5px;
@@ -99,7 +100,7 @@
     @extend .links;
     padding-left: 30px;
     &:before {
-        background-position: -46px -25px;
+        background-position: -46px -26px;
         width: 23px;
         height: 18px;
         margin-top: -11px;
@@ -131,7 +132,7 @@
         left: 50%;
         margin-top: -3px;
         margin-left: -13px;
-        background-position: -18px -46px;
+        background-position: -18px -47px;
     }
     &:hover, .open & {
         border: 1px solid #dcdcdc;
@@ -144,10 +145,12 @@
     left: 14px;
     text-indent: -999px;
     overflow: hidden;
-    background: url('../images/sprite.png') no-repeat 0 -47px;
+    background: url('../images/sprite.svg') no-repeat 0 -47px;
+    background-size: 159px 70px;
 }
 .remove {
-    background: url('../images/sprite.png') no-repeat -18px -52px;
+    background: url('../images/sprite.svg') no-repeat -18px -54px;
+    background-size: 159px 70px;
     width: 9px;
     height: 9px;
     text-indent: -999px;

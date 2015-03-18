@@ -27,7 +27,8 @@
             text-indent: -999px;
             width: 49px;
             &:before {
-                background: url('../images/sprite.png') no-repeat -66px -37px;
+                background: url('../images/sprite.svg') no-repeat -66px -37px;
+                background-size: 159px 70px;
                 content: '';
                 position: absolute;
                 top: 50%;
