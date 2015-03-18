@@ -1,6 +1,7 @@
 .links {
     display: inline-block;
     position: relative;
+    text-decoration: none !important;
     &:before {
         position: absolute;
         background: url('../images/sprite.png') no-repeat;
@@ -14,7 +15,7 @@
     @extend .links;
     padding-left: 15px;
     &:before {
-        background-position: -60px -16px;
+        background-position: -27px -52px;
         width: 9px;
         height: 9px;
         margin-top: -5px;
@@ -24,18 +25,18 @@
     @extend .links;
     padding-left: 35px;
     &:before {
-        background-position: -72px 0;
+        background-position: -46px 0;
         width: 22px;
         height: 26px;
         margin-top: -14px;
     }
 }
-.navbar-nav .user-menu .dropdown-menu .logout {
+.navbar .user-menu .dropdown-menu .logout {
     @extend .links;
     padding-left: 33px !important;
     color: #4c84ea !important;
     &:before {
-        background-position: -49px -28px;
+        background-position: -21px 0;
         width: 24px;
         height: 21px;
         margin-top: -11px;
@@ -46,7 +47,7 @@
     padding-left: 30px;
     margin-top: 20px;
     &:before {
-        background-position: -73px -44px;
+        background-position: 0 -61px;
         width: 16px;
         height: 9px;
         margin-top: -4px;
@@ -54,13 +55,13 @@
 }
 .upload {
     @extend .links;
-    padding-left: 30px;
+    padding: 2px 0 2px 30px;
     font-size: 15px;
     &:before {
-        background-position: -28px -28px;
+        background-position: 0 0;
         width: 21px;
         height: 24px;
-        margin-top: -10px;
+        margin-top: -11px;
     }
 }
 .change {
@@ -68,17 +69,17 @@
     padding-left: 28px;
     font-size: 15px;
     &:before {
-        background-position: -73px -26px;
+        background-position: -69px -19px;
         width: 20px;
         height: 18px;
-        margin-top: -11px;
+        margin-top: -10px;
     }
 }
 .reset {
     @extend .links;
     padding-left: 30px;
     &:before {
-        background-position: -51px -49px;
+        background-position: -25px -21px;
         width: 21px;
         height: 25px;
         margin-top: -15px;
@@ -88,7 +89,7 @@
     @extend .links;
     padding-left: 30px;
     &:before {
-        background-position: -26px -53px;
+        background-position: 0 -24px;
         width: 25px;
         height: 22px;
         margin-top: -11px;
@@ -98,10 +99,10 @@
     @extend .links;
     padding-left: 30px;
     &:before {
-        background-position: 0 -56px;
+        background-position: -46px -25px;
         width: 23px;
         height: 18px;
-        margin-top: -12px;
+        margin-top: -11px;
     }
 }
 .delete {
@@ -109,7 +110,7 @@
     padding-left: 30px;
     color: #ea5a5a !important;
     &:before {
-        background-position: -73px -53px;
+        background-position: -70px 0;
         width: 19px;
         height: 19px;
         margin-top: -10px;
@@ -130,7 +131,7 @@
         left: 50%;
         margin-top: -3px;
         margin-left: -13px;
-        background-position: -93px -70px;
+        background-position: -18px -46px;
     }
     &:hover, .open & {
         border: 1px solid #dcdcdc;
@@ -143,10 +144,10 @@
     left: 14px;
     text-indent: -999px;
     overflow: hidden;
-    background: url('../images/sprite.png') no-repeat 0 -74px;
+    background: url('../images/sprite.png') no-repeat 0 -47px;
 }
 .remove {
-    background: url('../images/sprite.png') no-repeat -18px -75px;
+    background: url('../images/sprite.png') no-repeat -18px -52px;
     width: 9px;
     height: 9px;
     text-indent: -999px;

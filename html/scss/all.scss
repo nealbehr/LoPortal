@@ -31,7 +31,7 @@ input[type="checkbox"] + label span{
     vertical-align: middle;
 }
 input[type="checkbox"]:checked + label span {
-    background: url('../images/sprite.png') no-repeat -56px 0;
+    background: url('../images/sprite.png') no-repeat -48px -44px;
 }
 .input-lg {
     font-size: 16px;
@@ -175,14 +175,16 @@ h1 {font-style: italic;}
         opacity: 1;
     }
     &:before {
-        content: "X";
-        width: 100%;
+        content: "";
+        width: 10px;
+        height: 10px;
         position: absolute;
-        top: 0;
-        left: 0;
+        top: 9px;
+        left: 9px;
         text-indent: 1px;
         text-shadow: none;
         font: 11px/28px Arial;
+        background: url('../images/sprite.png') no-repeat -36px -52px;
     }
 }
 .alert {
