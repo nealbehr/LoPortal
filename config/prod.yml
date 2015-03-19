@@ -1,8 +1,8 @@
 debug: false
 name: Loan Officers portal
 monolog.config:
-    monolog.name:    bdcards-mail
-    monolog.logfile: /var/www/bjm-web/shared/logs/prod.log
+    monolog.name:    loportal
+    monolog.logfile: logs/prod.log
     monolog.level:   DEBUG
 orm.em.options:
     mappings:

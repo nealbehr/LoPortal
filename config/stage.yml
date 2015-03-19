@@ -1,4 +1,4 @@
 debug: true
 monolog.config:
-    monolog.logfile: /var/www/bjm-web/shared/logs/stage.log
+    monolog.logfile: logs/stage.log
     monolog.level:   DEBUG
