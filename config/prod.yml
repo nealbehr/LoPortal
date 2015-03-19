@@ -13,8 +13,8 @@ orm.em.options:
 
 db.options:
     driver:   pdo_mysql
-    host:     localhost
-    dbname:   loportal
+    host:     aa1y1n8bqe8k2rg.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
+    dbname:   ebdb
     user:     loportal
     password: GPz3quD4YXK7aaY9
     charset:  utf8
