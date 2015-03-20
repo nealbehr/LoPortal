@@ -4,3 +4,10 @@ monolog.config:
     monolog.name:    lo
     monolog.logfile: ../logs/dev.log
     monolog.level:   DEBUG
+db.options:
+    driver:   pdo_mysql
+    host:     localhost
+    dbname:   loportal
+    user:     loportal
+    password: GPz3quD4YXK7aaY9
+    charset:  utf8

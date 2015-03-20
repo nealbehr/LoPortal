@@ -69,4 +69,36 @@ class TestData {
 
         return $randomString;
     }
+
+    public function getImportUsers($filename){
+        if (($handle = fopen($filename, "r")) === FALSE) {
+            throw new \Exception(sprintf("File \'%s\' not found.", $filename));
+        }
+
+        $result = [];
+
+        while (($data = fgetcsv($handle, null, ";")) !== FALSE){
+            if(empty($data[11])){
+                $this->app->getMonolog()->addError('USER_NOT_FOUND: '.implode(';', $data));
+                continue;
+            }
+
+            unset($data[4], $data[12]);
+
+            $data = array_map(function($el){
+                return '"'.$el.'"';
+            }, $data);
+
+            $data[] = '"$2y$10$6f8494e32b77d03dd13aeua9.lXIhP.WOmvJGDGhWYVQUUILCnDiS"';
+            $data[] = '"6f8494e32b77d03dd13ae2fc3b4fb51f"';
+            $data[] = user::STATE_ACTIVE;
+            $data[] = '"a:1:{i:0;s:9:\"ROLE_USER\";}"';
+            $result[] = '('.implode(',', $data).')';
+        }
+        fclose($handle);
+
+        return ["insert into users(first_name, last_name, title, account_name, street, city,
+                                      province, zip_code, phone, mobile, email, nmls, pmp, territory,
+                                      sales_director, password, salt, state, roles) VALUES " => $result];
+    }
 } 
