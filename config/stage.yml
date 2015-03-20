@@ -1,7 +1,7 @@
 debug: true
 name: STAGE Loan Officers portal
 monolog.config:
-    monolog.logfile: logs/stage.log
+    monolog.logfile: ../logs/stage.log
     monolog.level:   DEBUG
 db.options:
     driver:   pdo_mysql
