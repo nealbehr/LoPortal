@@ -17,7 +17,7 @@
 
         $cookiesProvider.expires = date;
 
-        $httpProvider.interceptors.push(function($q, $location, $cookieStore, redirect) {
+        $httpProvider.interceptors.push(["$q", "$location", "$cookieStore", "redirect", function($q, $location, $cookieStore, redirect) {
             return {
                 request: function(config) {
                     if($cookieStore.get(TOKEN_KEY)){
@@ -40,7 +40,7 @@
                     return $q.reject(rejection);
                 }
             };
-        });
+        }]);
     }])
     .run(['$rootScope', function($rootScope){
             $rootScope.debug = settings.debug;
