@@ -14,7 +14,7 @@ environments:
         charset: utf8
     stage:
         adapter: mysql
-        host: aa1y1n8bqe8k2rg.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
+        host: aatkmlh9y3txxy.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
         name: ebdb
         user: loportal
         pass: GPz3quD4YXK7aaY9
