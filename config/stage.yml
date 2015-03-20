@@ -1,4 +1,12 @@
 debug: true
+name: STAGE Loan Officers portal
 monolog.config:
-    monolog.logfile: logs/stage.log
+    monolog.logfile: ../logs/stage.log
     monolog.level:   DEBUG
+db.options:
+    driver:   pdo_mysql
+    host:     aatkmlh9y3txxy.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
+    dbname:   ebdb
+    user:     loportal
+    password: GPz3quD4YXK7aaY9
+    charset:  utf8

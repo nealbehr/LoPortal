@@ -89,6 +89,55 @@ class User implements UserInterface{
     protected $updated_at;
 
     /**
+     * @Column(type="string", length=100)
+     */
+    protected $title;
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $account_name;
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $street;
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $city;
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $province;
+    /**
+     * @Column(type="integer")
+     */
+    protected $zip_code;
+    /**
+     * @Column(type="string", length=100)
+     */
+    protected $phone;
+    /**
+     * @Column(type="string", length=100)
+     */
+    protected $mobile;
+    /**
+     * @Column(type="integer")
+     */
+    protected $nmls;
+    /**
+     * @Column(type="string", length=10)
+     */
+    protected $pmp;
+    /**
+     * @Column(type="string", length=20)
+     */
+    protected $territory;
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $sales_director;
+
+    /**
      * Init entity
      */
     public function __construct() {
@@ -198,11 +247,14 @@ class User implements UserInterface{
     }
 
     /**
-     * @param mixed $first_name
+     * @param $first_name
+     * @return $this
      */
     public function setFirstName($first_name)
     {
         $this->first_name = $first_name;
+
+        return $this;
     }
 
     /**
@@ -230,11 +282,14 @@ class User implements UserInterface{
     }
 
     /**
-     * @param mixed $last_name
+     * @param $last_name
+     * @return $this
      */
     public function setLastName($last_name)
     {
         $this->last_name = $last_name;
+
+        return $this;
     }
 
 
@@ -307,5 +362,125 @@ class User implements UserInterface{
 
     public function eraseCredentials(){
 
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setTitle($param){
+        $this->title = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setAccountName($param){
+        $this->account_name = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setStreet($param){
+        $this->street = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setCity($param){
+        $this->city = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setProvince($param){
+        $this->province = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setZipCode($param){
+        $this->zip_code = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setPhone($param){
+        $this->phone = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setMobile($param){
+        $this->mobile = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setNmls($param){
+        $this->nmls = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setPmp($param){
+        $this->pmp = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setTerritory($param){
+        $this->territory = $param;
+
+        return $this;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setSalesDirector($param){
+        $this->sales_director = $param;
+
+        return $this;
     }
 }
