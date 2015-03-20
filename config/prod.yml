@@ -13,7 +13,7 @@ orm.em.options:
 
 db.options:
     driver:   pdo_mysql
-    host:     aa1y1n8bqe8k2rg.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
+    host:     aatkmlh9y3txxy.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
     dbname:   ebdb
     user:     loportal
     password: GPz3quD4YXK7aaY9
