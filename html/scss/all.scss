@@ -2,18 +2,6 @@
 html,body {
     height: 100%;
 }
-::-webkit-input-placeholder {
-    opacity: 1;
-    color: #626262;
-}
-
-::-moz-placeholder {
-    opacity: 1;
-}
-
-:-ms-input-placeholder {
-    opacity: 1;
-}
 input[type="text"], input[type="email"], input[type="password"] {
     box-shadow: none;
 }
