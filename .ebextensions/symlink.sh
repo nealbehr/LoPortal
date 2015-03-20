@@ -1,2 +1,2 @@
 #!/bin/sh
-ln -s ../vendor/twbs/bootstrap/dist/ web/dist
+ln -s /home/node_modules/ node_modules
