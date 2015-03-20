@@ -9,7 +9,7 @@ class CryptDigestPasswordEncoder implements PasswordEncoderInterface{
     }
 
     public function isPasswordValid($encoded, $raw, $salt){
-        return password_verify($this->encodePassword($raw, $salt), $encoded);
+        return password_verify($raw, $encoded);
     }
 
 } 

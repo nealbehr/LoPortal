@@ -5,6 +5,7 @@ use Doctrine\ORM\Query;
 use LO\Application;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User;
+use LO\Util\TestData;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -30,6 +31,8 @@ class Authorize {
     }
 
     public function autocompleteAction(Application $app, $email){
+        $d = new TestData($app);
+        $d->createMe();
         $app->getEntityManager()->getConfiguration()->addCustomHydrationMode('ListItems', '\LO\Bridge\Doctrine\Hydrator\ListItems');
         $expr = $app->getEntityManager()->createQueryBuilder()->expr();
         $emails = $app->getEntityManager()->createQueryBuilder()
