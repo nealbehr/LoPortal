@@ -117,6 +117,16 @@ class Application extends \Silex\Application{
             )
         ;
 
+        $this['validator.mapping.class_metadata_factory'] = $this->share(function ($app) {
+            foreach (spl_autoload_functions() as $fn) {
+                \Doctrine\Common\Annotations\AnnotationRegistry::registerLoader($fn);
+            }
+            $reader = new \Doctrine\Common\Annotations\AnnotationReader;
+            $loader = new \Symfony\Component\Validator\Mapping\Loader\AnnotationLoader($reader);
+//            $cache  = extension_loaded('apc') ? new \Symfony\Component\Validator\Mapping\ClassMetadata\ApcCache : null;
+            return new \Symfony\Component\Validator\Mapping\ClassMetadataFactory($loader);
+        });
+
         Request::enableHttpMethodParameterOverride();
 
         $this->setUpFirewall()

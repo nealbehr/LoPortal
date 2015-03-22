@@ -9,6 +9,13 @@
 namespace LO\Model\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 /**
  * @Entity
@@ -35,6 +42,7 @@ class User implements UserInterface{
 
     /**
      * @Column(type="string")
+     *
      */
     protected $first_name;
 
@@ -50,6 +58,7 @@ class User implements UserInterface{
 
     /**
      * @Column(type="string", nullable=true)
+     * @NotBlank
      */
     protected $gender;
 
@@ -209,7 +218,8 @@ class User implements UserInterface{
     }
 
     /**
-     * @param mixed $password
+     * @param $password
+     * @return $this
      */
     public function setPassword($password)
     {
@@ -327,7 +337,8 @@ class User implements UserInterface{
 
 
     /**
-     * @param string $role
+     * @param $role
+     * @return $this
      */
     public function addRole($role) {
         $this->roles[] = $role;

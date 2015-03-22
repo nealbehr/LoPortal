@@ -14,6 +14,11 @@
 
     dashboard.controller('dashboardCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', function($scope, $http, redirect, $cookieStore, TOKEN_KEY){
         $scope.user = {};
+
+        angular.element("#inProcessTable").tablesorter();
+        angular.element("#requestedTable").tablesorter();
+        angular.element("#approvedTable").tablesorter();
+
         $http.get('/dashboard/')
              .success(function(data){
                 if('user' in data){
