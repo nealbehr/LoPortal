@@ -31,26 +31,25 @@ use Psr\Log\LoggerInterface;
 use LO\Provider\ApiKeyUserProvider;
 
 
-class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface, AuthenticationFailureHandlerInterface
-{
-    protected $userProvider;
-    protected $paramName;
+class ApiKeyAuthenticator implements SimplePreAuthenticatorInterface, AuthenticationFailureHandlerInterface{
+    const PARAM_NAME = 'x-session-token';
 
-    public function __construct(ApiKeyUserProvider $userProvider, $paramName, LoggerInterface $logger)
+    protected $userProvider;
+
+    public function __construct(ApiKeyUserProvider $userProvider, LoggerInterface $logger)
     {
-        $this->paramName = $paramName;
         $this->userProvider = $userProvider;
     }
 
     public function createToken(Request $request, $providerKey)
     {
-        if (!$request->headers->has($this->paramName)) {
+        if (!$request->headers->has(self::PARAM_NAME)) {
             throw new BadCredentialsException('No API key found');
         }
 
         return new PreAuthenticatedToken(
             'anon.',
-            $request->headers->get($this->paramName),
+            $request->headers->get(self::PARAM_NAME),
             $providerKey
         );
     }

@@ -12,9 +12,9 @@
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', '$http', function($scope, $http){
+    dashboard.controller('dashboardCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', function($scope, $http, redirect, $cookieStore, TOKEN_KEY){
         $scope.user = {};
-        $http.get('/dashboard')
+        $http.get('/dashboard/')
              .success(function(data){
                 if('user' in data){
                     $scope.user = data.user;
@@ -31,7 +31,8 @@
             e.preventDefault();
             $http.delete('/logout')
                 .success(function(data){
-
+                    $cookieStore.remove(TOKEN_KEY)
+                    redirect('/login');
                 })
                 .finally(function(){
 

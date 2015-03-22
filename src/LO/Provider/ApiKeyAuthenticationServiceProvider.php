@@ -10,6 +10,7 @@
 namespace LO\Provider;
 
 use LO\Security\JsonLogoutSuccessHandler;
+use LO\Security\TokenLogoutHandler;
 use Silex\Application,
     Silex\ServiceProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\SimpleAuthenticationProvider,
@@ -28,7 +29,6 @@ class ApiKeyAuthenticationServiceProvider implements ServiceProviderInterface
         $app['security.apikey.authenticator'] = $app->protect(function () use ($app) {
             return new ApiKeyAuthenticator(
                 $app['security.user_provider.apikey'](),
-                'x-session-token',
                 $app['logger']
             );
         });
@@ -81,14 +81,15 @@ class ApiKeyAuthenticationServiceProvider implements ServiceProviderInterface
                     null
                 );
 
+                $listener->addHandler(new TokenLogoutHandler($app));
                 $listener->addHandler(new SessionLogoutHandler());
                 $listener->addHandler(new CookieClearingLogoutHandler(['access_token' => ['path' => '/', 'domain' => null]]));
+
 
                 return $listener;
             });
 
-            $provider = 'anonymous' === $type ? 'anonymous' : 'dao';
-            $app['security.authentication_provider.'.$name.'.'.$type] = $app['security.authentication_provider.'.$provider.'._proto']($name);
+            $app['security.authentication_provider.'.$name.'.'.$type] = $app['security.authentication_provider.dao._proto']($name);
 
             return array(
                 'security.authentication_provider.'.$name.'.'.$type,
