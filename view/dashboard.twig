@@ -1,2 +1,172 @@
-DASHBOARD
-[[ user ]]
+<div ng-cloak>
+    <div id="wrapper">
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#"><img src="images/logo.png" width="94" height="49" alt="firstREX"></a>
+                    <div class="dropdown user-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="hidden-xs">[[ user.full_name ]]</span> <img ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">Requests Queue</a></li>
+                            <li><a href="#">Custom Collateral</a></li>
+                            <li><a href="#">Request flyer</a></li>
+                            <li class="divider"></li>
+                            <li><a href="#" class="logout" ng-click="logout($event)">Log out</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <section class="container">
+            <header class="page-title">
+                <h1>Dashboard</h1>
+                <ul class="tabset">
+                    <li class="active"><a href="#">Requests Queue</a></li>
+                    <li><a href="#">Custom Collateral</a></li>
+                </ul>
+                <div class="btn-holder">
+                    <a href="#" class="btn btn-default">New Property Approval</a>
+                    <a href="#" class="btn btn-default">New Listing Flyer</a>
+                </div>
+            </header>
+            <div class="panel-group queue">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" href="#inProcess" aria-controls="inProcess"><span class="arrow"></span>In process <span class="badge">4</span></a>
+                        </strong>
+                    </div>
+                    <div id="inProcess" class="panel-collapse collapse">
+                        <table class="tablesorter table table-striped" id="inProcessTable">
+                            <thead>
+                            <tr>
+                                <th><span>Created</span></th>
+                                <th><span>Property Address</span></th>
+                                <th><span>Type</span></th>
+                                <th><span>Status</span></th>
+                                <th><span>Actions</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>928 S Eldorado St San Mateo CA 94402</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" href="#requested" aria-controls="requested"><span class="arrow"></span>Requested <span class="badge">19</span></a>
+                        </strong>
+                    </div>
+                    <div id="requested" class="panel-collapse collapse">
+                        <table class="tablesorter table table-striped" id="requestedTable">
+                            <thead>
+                            <tr>
+                                <th><span>Created</span></th>
+                                <th><span>Property Address</span></th>
+                                <th><span>Type</span></th>
+                                <th><span>Status</span></th>
+                                <th><span>Actions</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>928 S Eldorado St San Mateo CA 94402</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="cancel">Cancel</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong class="panel-title">
+                            <a class="collapsed" data-toggle="collapse" href="#approved" aria-controls="approved"><span class="arrow"></span>Approved  <span class="badge">2</span></a>
+                        </strong>
+                    </div>
+                    <div id="approved" class="panel-collapse collapse">
+                        <table class="tablesorter table table-striped" id="approvedTable">
+                            <thead>
+                            <tr>
+                                <th><span>Created</span></th>
+                                <th><span>Property Address</span></th>
+                                <th><span>Type</span></th>
+                                <th><span>Status</span></th>
+                                <th><span>Actions</span></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="download">Download PDF</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>928 S Eldorado St San Mateo CA 94402</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="download">Download PDF</a></td>
+                            </tr>
+                            <tr>
+                                <td>Mar 11 2015, 11:20 AM</td>
+                                <td>1 Infinite Loop Cupertino CA 95014</td>
+                                <td>Listing Flyer</td>
+                                <td>In process</td>
+                                <td><a href="#" class="download">Download PDF</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

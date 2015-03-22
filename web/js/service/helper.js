@@ -35,6 +35,12 @@
         }
     }]);
 
+    helperService.filter('avatar', function(){
+        return function(input){
+            return input == null ? "images/ava.jpg": input;
+        }
+    });
+
     helperService.factory("redirect", ['$location', function($location){
         return function(path, redirectUrl){
             if(undefined != redirectUrl){

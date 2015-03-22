@@ -166,9 +166,10 @@ class Application extends \Silex\Application{
                 'pattern' => '^.*$',
 //                'switch_user' => array('parameter' => '_switch_user', 'role' => 'ROLE_ALLOWED_TO_SWITCH'),
                 'apikey' => true,
+                'apiLogout' => array('logout_path' => '/logout'),
                 'users'   => $this->share(function (){
                         return new UserProvider($this);
-                    }),
+                }),
             ],
         ];
 

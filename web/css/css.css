@@ -6,3 +6,7 @@
 .ui-state-focus {
     border: 1px solid #cacaca;
 }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
