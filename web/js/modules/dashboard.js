@@ -8,7 +8,30 @@
                 $routeProvider.
                     when('/', {
                         templateUrl: '/partials/dashboard',
-                        controller:  'dashboardCtrl'
+                        controller:  'dashboardCtrl',
+                        resolve: {user: function($q, $http){
+                            var deferred = $q.defer();
+
+                            $http.get('/dashboard/')
+                                .success(function(data){
+                                    if('user' in data){
+                                        deferred.resolve(data.user)
+                                    }
+
+                                    console.log(data);
+                                })
+                                .error(function(data){
+                                    //actually you'd want deffered.reject(data) here
+                                    //but to show what would happen on success..
+                                    deferred.resolve(data);
+                                })
+                                .finally(function(){
+
+                                })
+                            ;
+
+                            return deferred.promise;
+                        }}
                     });
     }]);
 
@@ -19,18 +42,6 @@
         angular.element("#requestedTable").tablesorter();
         angular.element("#approvedTable").tablesorter();
 
-        $http.get('/dashboard/')
-             .success(function(data){
-                if('user' in data){
-                    $scope.user = data.user;
-                }
-
-                console.log(data);
-            })
-            .finally(function(){
-
-            })
-        ;
 
         $scope.logout = function(e){
             e.preventDefault();
