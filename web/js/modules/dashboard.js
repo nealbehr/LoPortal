@@ -28,12 +28,13 @@
                                 ;
 
                                 return deferred.promise;
-                        }]}
+                            }]
+                        }
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', function($scope, $http, redirect, $cookieStore, TOKEN_KEY){
-        $scope.user = {};
+    dashboard.controller('dashboardCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', 'user', function($scope, $http, redirect, $cookieStore, TOKEN_KEY, user){
+        $scope.user = user;
 
         angular.element("#inProcessTable").tablesorter();
         angular.element("#requestedTable").tablesorter();
