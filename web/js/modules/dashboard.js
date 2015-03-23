@@ -9,7 +9,7 @@
                     when('/', {
                         templateUrl: '/partials/dashboard',
                         controller:  'dashboardCtrl',
-                        resolve: {user: function($q, $http){
+                        resolve: {user: ["$q", "$http", function($q, $http){
                             var deferred = $q.defer();
 
                             $http.get('/dashboard/')
@@ -31,7 +31,7 @@
                             ;
 
                             return deferred.promise;
-                        }}
+                        }]}
                     });
     }]);
 
