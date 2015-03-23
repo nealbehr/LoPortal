@@ -75,9 +75,9 @@ module.exports = function(grunt) {
             dynamic: {
                 files: [{
                     expand: true,
-                    cwd: 'web/img/',
+                    cwd: 'web/images/',
                     src: ['**/*.{png,jpg,gif,svg}'],
-                    dest: 'web/img'
+                    dest: 'web/images'
                 }]
             }
         },
@@ -86,7 +86,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'web/css',
-                    src: ['*.css'],
+                    src: ['jquery-ui.structure.min.css', 'jquery-ui.min.css', 'bootstrap.css', 'all.css', 'css.css'],
                     dest: 'web/build/css',
                     ext: '.min.css'
                 },
@@ -107,7 +107,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     // Задача по умолчанию
-    grunt.registerTask('default', ['concat', 'uglify', 'string-replace', 'processhtml'/*, 'imagemin'*/, 'cssmin']);
+    grunt.registerTask('default', ['concat', 'uglify', 'string-replace', 'processhtml', 'imagemin', 'cssmin']);
 };
 
 //"grunt-contrib-imagemin": "^0.9.2",

@@ -9,28 +9,25 @@
                     when('/', {
                         templateUrl: '/partials/dashboard',
                         controller:  'dashboardCtrl',
-                        resolve: {user: ["$q", "$http", function($q, $http){
-                            var deferred = $q.defer();
+                        resolve: {
+                            user: ["$q", "$http", function($q, $http){
+                                var deferred = $q.defer();
 
-                            $http.get('/dashboard/')
-                                .success(function(data){
-                                    if('user' in data){
+                                $http.get('/dashboard/')
+                                    .success(function(data){
                                         deferred.resolve(data.user)
-                                    }
+                                    })
+                                    .error(function(data){
+                                        //actually you'd want deffered.reject(data) here
+                                        //but to show what would happen on success..
+                                        deferred.resolve(data);
+                                    })
+                                    .finally(function(){
 
-                                    console.log(data);
-                                })
-                                .error(function(data){
-                                    //actually you'd want deffered.reject(data) here
-                                    //but to show what would happen on success..
-                                    deferred.resolve(data);
-                                })
-                                .finally(function(){
+                                    })
+                                ;
 
-                                })
-                            ;
-
-                            return deferred.promise;
+                                return deferred.promise;
                         }]}
                     });
     }]);
