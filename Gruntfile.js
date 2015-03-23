@@ -86,7 +86,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'web/css',
-                    src: ['jquery-ui.structure.min.css', 'jquery-ui.min.css', 'bootstrap.css', 'all.css', 'css.css'],
+                    src: ['jquery-ui.structure.min.css', 'jquery-ui.min.css', 'bootstrap.css', 'all.css', 'css.css', 'ng-img-crop.css'],
                     dest: 'web/build/css',
                     ext: '.min.css'
                 },

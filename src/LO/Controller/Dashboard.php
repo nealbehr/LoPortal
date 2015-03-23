@@ -13,14 +13,6 @@ use LO\Model\Entity\User;
 
 class Dashboard {
     public function indexAction(Application $app){
-        return $app->json(['user' => $this->getUserInfo4TopMenu($app->user())]);
-    }
-
-
-    private function getUserInfo4TopMenu(User $user){
-        return [
-            'full_name' => (string)$user,
-            'picture'   => $user->getPicture(),
-        ];
+        return $app->json(['user' => $app->user()->getPublicInfo()]);
     }
 } 

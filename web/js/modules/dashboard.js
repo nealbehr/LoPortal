@@ -10,12 +10,12 @@
                         templateUrl: '/partials/dashboard',
                         controller:  'dashboardCtrl',
                         resolve: {
-                            user: ["$q", "$http", function($q, $http){
+                            data: ["$q", "$http", function($q, $http){
                                 var deferred = $q.defer();
 
                                 $http.get('/dashboard/')
                                     .success(function(data){
-                                        deferred.resolve(data.user)
+                                        deferred.resolve(data)
                                     })
                                     .error(function(data){
                                         //actually you'd want deffered.reject(data) here
@@ -33,27 +33,16 @@
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', 'user', function($scope, $http, redirect, $cookieStore, TOKEN_KEY, user){
-        $scope.user = user;
+    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', function($scope, redirect, data){
+        $scope.user = data.user;
 
         angular.element("#inProcessTable").tablesorter();
         angular.element("#requestedTable").tablesorter();
         angular.element("#approvedTable").tablesorter();
 
-
-        $scope.logout = function(e){
+        $scope.createListingFlyerRequest = function(e){
             e.preventDefault();
-            $http.delete('/logout')
-                .success(function(data){
-                    $cookieStore.remove(TOKEN_KEY)
-                    redirect('/login');
-                })
-                .finally(function(){
-
-                })
-            ;
-
-            return false;
+            redirect("/flyer/new");
         }
     }]);
 })(settings);

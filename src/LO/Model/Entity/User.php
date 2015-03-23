@@ -494,4 +494,15 @@ class User implements UserInterface{
 
         return $this;
     }
+
+    public function toArray(){
+        return get_object_vars($this);
+    }
+
+    public function getPublicInfo(){
+        $result = $this->toArray();
+        unset($result['password'], $result['salt'], $result['state']);
+
+        return $result;
+    }
 }

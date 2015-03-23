@@ -190,6 +190,7 @@ class Application extends \Silex\Application{
         $this->mount('/authorize',  new Controller\AuthorizeProvider());
         $this->mount('/partials',   new Controller\PartialProvider());
         $this->mount('/dashboard',  new Controller\DashboardProvider());
+        $this->mount('/user',       new Controller\UserProvider());
 
         $this->match('/', function(){
             return $this->getTwig()->render('index.twig');

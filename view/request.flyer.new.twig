@@ -1,0 +1,36 @@
+<div>
+    <lo-navbar-head></lo-navbar-head>
+
+
+    <div>
+        <div>USER INFO</div>
+        <a href="#">Edit</a>
+        <div ng-repeat="(k, v) in user">[[ k ]]: [[ v ]]</div>
+    </div>
+
+    <div>
+        <div>Property Info</div>
+        Property Address
+        <input type="text" ng-model="request.address">
+        MLS Number
+        <input type="text" ng-model="request.mls">
+        Property Image
+        <img-crop>
+    </div>
+
+    <div>
+        <div>Realtor Info</div>
+        Name
+        <input type="text" ng-model="realtor.name">
+        BRE Number
+        <input type="text" ng-model="realtor.bre">
+        Real Estate Agency
+        <input type="text" ng-model="realtor.agency">
+        Phone
+        <input type="text" ng-model="realtor.phone">
+        Email
+        <input type="text" ng-model="realtor.email">
+        Photo
+        <img-crop>
+    </div>
+</div>

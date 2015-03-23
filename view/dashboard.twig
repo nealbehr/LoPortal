@@ -1,21 +1,5 @@
 <div ng-cloak>
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#"><img src="images/logo.png" width="94" height="49" alt="firstREX"></a>
-                <div class="dropdown user-menu">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="hidden-xs">[[ user.full_name ]]</span> <img ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Requests Queue</a></li>
-                        <li><a href="#">Custom Collateral</a></li>
-                        <li><a href="#">Request flyer</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#" class="logout" ng-click="logout($event)">Log out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <lo-navbar-head></lo-navbar-head>
     <section class="container">
         <header class="page-title">
             <h1>Dashboard</h1>
@@ -25,7 +9,7 @@
             </ul>
             <div class="btn-holder">
                 <a href="#" class="btn btn-default">New Property Approval</a>
-                <a href="#" class="btn btn-default">New Listing Flyer</a>
+                <a href="#" class="btn btn-default" ng-click="createListingFlyerRequest($event)">New Listing Flyer</a>
             </div>
         </header>
         <div class="panel-group queue">

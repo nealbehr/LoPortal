@@ -35,9 +35,37 @@
         }
     }]);
 
+    helperService.directive('loNavbarHead', ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', function($http, $cookieStore, redirect, TOKEN_KEY){
+        return { restrict: 'EA',
+            templateUrl: '/partials/navbar.head',
+            link: function(scope, element, attrs, controllers){
+                scope.logout = function(e){
+                    e.preventDefault();
+                    $http.delete('/logout')
+                        .success(function(data){
+                            $cookieStore.remove(TOKEN_KEY)
+                            redirect('/login');
+                        })
+                        .finally(function(){
+
+                        })
+                    ;
+
+                    return false;
+                }
+            }
+        }
+    }]);
+
     helperService.filter('avatar', function(){
         return function(input){
             return input == null ? "images/ava.jpg": input;
+        }
+    });
+
+    helperService.filter('fullName', function(){
+        return function(user){
+            return user.first_name + " " + user.last_name;
         }
     });
 
