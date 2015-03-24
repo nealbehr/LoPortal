@@ -20,3 +20,9 @@ db.options:
     charset:  utf8
 user:
     token.expire: 5 # 5 days
+firstrex:
+  api:
+    user: FirstREX
+    pass: Admin007
+google:
+  apiKey: NotPresent

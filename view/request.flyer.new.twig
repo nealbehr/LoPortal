@@ -7,30 +7,63 @@
         <a href="#">Edit</a>
         <div ng-repeat="(k, v) in user">[[ k ]]: [[ v ]]</div>
     </div>
+    newFlyer.$valid &&
+    <form ng-submit="save()" novalidate name="newFlyer">
+        <div>
+            <div>Property Info</div>
+            Property Address
+            <input id="pac-input" name="address" class="controls" type="text" ng-model="request.property.address" required="">
+            <div ng-show="newFlyer.$submitted || newFlyer.address.$touched">
+                <div ng-show="newFlyer.address.$error.required">Required.</div>
+            </div>
+            MLS Number
+            <input type="text" ng-model="request.property.mls">
+            Property Image
+            <input id="propertyImage" type="file" valid-file name="fileimage" required2="" ng-model="fake.property.imagePath">
+            <div ng-show="newFlyer.$submitted">
+                <div ng-show="newFlyer.fileimage.$error.required">Required.</div>
+            </div>
+            <div class="property-photo">
+                <img-crop image="propertyImage" result-image="request.property.image" area-type="square"></img-crop>
+            </div>
+        </div>
 
-    <div>
-        <div>Property Info</div>
-        Property Address
-        <input type="text" ng-model="request.address">
-        MLS Number
-        <input type="text" ng-model="request.mls">
-        Property Image
-        <img-crop>
-    </div>
-
-    <div>
-        <div>Realtor Info</div>
-        Name
-        <input type="text" ng-model="realtor.name">
-        BRE Number
-        <input type="text" ng-model="realtor.bre">
-        Real Estate Agency
-        <input type="text" ng-model="realtor.agency">
-        Phone
-        <input type="text" ng-model="realtor.phone">
-        Email
-        <input type="text" ng-model="realtor.email">
-        Photo
-        <img-crop>
-    </div>
+        <div>
+            <div>Realtor Info</div>
+            Name
+            <input type="text" ng-model="request.realtor.name" required="" name="name">
+            <div ng-show="newFlyer.$submitted || newFlyer.name.$touched">
+                <div ng-show="newFlyer.name.$error.required">Required.</div>
+            </div>
+            BRE Number
+            <input type="text" ng-model="request.realtor.bre" name="bre">
+            <div ng-show="newFlyer.$submitted || newFlyer.bre.$touched">
+                <div ng-show="newFlyer.bre.$error.required">Required.</div>
+            </div>
+            Real Estate Agency
+            <input type="text" ng-model="request.realtor.agency" name="agency">
+            <div ng-show="newFlyer.$submitted || newFlyer.agency.$touched">
+                <div ng-show="newFlyer.agency.$error.required">Required.</div>
+            </div>
+            Phone
+            <input type="text" ng-model="request.realtor.phone" required="" name="phone">
+            <div ng-show="newFlyer.$submitted || newFlyer.phone.$touched">
+                <div ng-show="newFlyer.phone.$error.required">Required.</div>
+            </div>
+            Email
+            <input type="email" ng-model="request.realtor.email" required="" name="email">
+            <div ng-show="newFlyer.$submitted || newFlyer.email.$touched">
+                <div ng-show="newFlyer.email.$error.required">Required.</div>
+            </div>
+            Photo
+            <input id="realtorImage" type="file" valid-file name="realtorfileimage" required2="" ng-model="fake.realtor.imagePath">
+            <div ng-show="newFlyer.$submitted">
+                <div ng-show="newFlyer.realtorfileimage.$error.required">Required.</div>
+            </div>
+            <div class="realtor-photo">
+                <img-crop image="realtorImage" result-image="request.realtor.image" area-type="square"></img-crop>
+            </div>
+        </div>
+        <button>Save</button>
+    </form>
 </div>

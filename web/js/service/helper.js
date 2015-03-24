@@ -57,6 +57,25 @@
         }
     }]);
 
+    helperService.directive('validFile', function () {
+        return {
+            require: 'ngModel',
+            restrict: 'E',
+            link: function (scope, el, attrs, ngModel) {
+                ngModel.$render = function () {
+                    ngModel.$setViewValue(el.val());
+                };
+
+                el.bind('change', function () {
+                    scope.$apply(function () {
+                        ngModel.$render();
+                    });
+                });
+            }
+        };
+    });
+
+
     helperService.filter('avatar', function(){
         return function(input){
             return input == null ? "images/ava.jpg": input;
@@ -107,13 +126,11 @@
 
            bgImg.onabort = function(){
                loadImages(images);
-//                alert('Please, reload game.');
                console.log(image + ' loading has been aborted.')
            }
 
            bgImg.onerror = function(){
                loadImages(images);
-//                alert('Please, reload game.');
                console.log(image + ' error loading.')
            }
 

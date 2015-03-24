@@ -11,3 +11,5 @@ db.options:
     user:     loportal
     password: GPz3quD4YXK7aaY9
     charset:  utf8
+google:
+  apiKey: AIzaSyA9KM6CujuJcpQ093vUcZlzzRSS_be3rU4
