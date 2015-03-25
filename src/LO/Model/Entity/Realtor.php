@@ -12,14 +12,7 @@ namespace LO\Model\Entity;
  * @Entity
  * @Table(name="realtor")
  */
-class Realtor {
-    /**
-     * @Id
-     * @Column(type="bigint")
-     * @GeneratedValue(strategy="AUTO")
-     */
-    protected $id;
-
+class Realtor extends Base{
     /**
      * @Column(type="string", length=255)
      */
@@ -39,4 +32,41 @@ class Realtor {
      * @Column(type="string", length=65536)
      */
     protected $photo;
+
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $estate_agency;
+
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $full_name;
+
+    public function setBre($param){
+        $this->bre_number = $param;
+
+        return $this;
+    }
+    public function setPhone($param){
+        $this->phone = $param;
+
+        return $this;
+    }
+    public function setEmail($param){
+        $this->email = $param;
+
+        return $this;
+    }
+    public function set($param){
+        $this->phone = $param;
+
+        return $this;
+    }
+
+    public function setAgency($param){
+        $this->estate_agency = $param;
+
+        return $this;
+    }
 }

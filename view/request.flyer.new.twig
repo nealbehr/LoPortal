@@ -31,17 +31,17 @@
         <div>
             <div>Realtor Info</div>
             Name
-            <input type="text" ng-model="request.realtor.name" required="" name="name">
+            <input type="text" ng-model="request.realtor.full_name" required="" name="name">
             <div ng-show="newFlyer.$submitted || newFlyer.name.$touched">
                 <div ng-show="newFlyer.name.$error.required">Required.</div>
             </div>
             BRE Number
-            <input type="text" ng-model="request.realtor.bre" name="bre">
+            <input type="text" ng-model="request.realtor.bre_number" name="bre">
             <div ng-show="newFlyer.$submitted || newFlyer.bre.$touched">
                 <div ng-show="newFlyer.bre.$error.required">Required.</div>
             </div>
             Real Estate Agency
-            <input type="text" ng-model="request.realtor.agency" name="agency">
+            <input type="text" ng-model="request.realtor.estate_agency" name="agency">
             <div ng-show="newFlyer.$submitted || newFlyer.agency.$touched">
                 <div ng-show="newFlyer.agency.$error.required">Required.</div>
             </div>

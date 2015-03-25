@@ -191,8 +191,10 @@ class Application extends \Silex\Application{
         $this->mount('/partials',   new Controller\PartialProvider());
         $this->mount('/dashboard',  new Controller\DashboardProvider());
         $this->mount('/user',       new Controller\UserProvider());
+        $this->mount('/request',    new Controller\LoRequestProvider());
 
         $this->match('/', function(){
+            $this->getTwig()->addFilter(new \Twig_SimpleFilter('ebase64', 'base64_encode'));
             return $this->getTwig()->render('index.twig');
         });
 

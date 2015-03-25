@@ -22,7 +22,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @Table(name="users",
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
-class User implements UserInterface{
+class User extends Base implements UserInterface{
     /**
      * Roles list
      */
@@ -88,16 +88,6 @@ class User implements UserInterface{
     protected $salt;
 
     /**
-     * @Column(type="datetime")
-     */
-    protected $created_at;
-
-    /**
-     * @Column(type="datetime")
-     */
-    protected $updated_at;
-
-    /**
      * @Column(type="string", length=100)
      */
     protected $title;
@@ -150,7 +140,7 @@ class User implements UserInterface{
      * Init entity
      */
     public function __construct() {
-
+        parent::__construct();
         $this->salt   = $this->generateSalt();
         $this->state  = self::STATE_ACTIVE;
     }
@@ -311,14 +301,6 @@ class User implements UserInterface{
     public function getUsername()
     {
         return $this->email;
-    }
-
-    /**
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
@@ -493,10 +475,6 @@ class User implements UserInterface{
         $this->sales_director = $param;
 
         return $this;
-    }
-
-    public function toArray(){
-        return get_object_vars($this);
     }
 
     public function getPublicInfo(){

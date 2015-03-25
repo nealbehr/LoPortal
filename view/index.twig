@@ -29,7 +29,8 @@
     <script>
         var settings = {debug:            '{{ app.getConfigByName('debug') }}',
                         expiresTokenDays: '{{ app.getConfigByName('user', 'token.expire') }}',
-                        requestTimeout:   15000 //15 seconds
+                        requestTimeout:   15000, //15 seconds
+                        firstRexHash:     '{{ (app.getConfigByName('firstrex', 'api', 'user')~':'~app.getConfigByName('firstrex', 'api', 'pass'))|ebase64 }}'
         }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>

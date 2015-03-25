@@ -43,9 +43,9 @@
                 image: null
             },
             realtor: {
-                name: "2",
-                bre: "3",
-                agency: "4",
+                full_name: "2",
+                bre_number: "3",
+                estate_agency: "4",
                 phone: "5",
                 email: "6",
                 image: null
@@ -76,11 +76,7 @@
         $scope.save = function(){
             this.codeAddress(this.request.property.address)
                 .then(function(data){
-                    return $scope.senRequestTo1Rex(data);
-                })
-                .then(function(id){
-                    console.log(data);
-                    $scope.request.property.first_rex_id = id;
+                    $scope.request.address = data;
                     return $http.post('/request/', $scope.request);
                 })
                 .then(function(data){
@@ -90,36 +86,16 @@
                     alert("We have some problems. Please try later.");
                 })
             ;
-            console.log('fffff');
-        }
-
-        $scope.senRequestTo1Rex = function(data){
-//        var deferred = $q.defer();
-//            $http.defaults.headers.common.Authorization = 'Basic YmVlcDpib29w'
-            return $http.post('http://tools.1rex.com/inquiries.json', data, {
-                headers: {
-                    'Authorization': 'FirstREX Admin007'
-                }
-            })
-//                .success(function(data){
-//                deferred.resolve(data.id);
-//                })
-//            .error(function(data){
-//                deferred.reject(data);
-//            })
-                ;
-//        return deferred.promise;
         }
 
         $scope.codeAddress = function(address){
-            //return $http.get('https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key=');
-
             var deferred = $q.defer();
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode( { 'address': address}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
-                    console.log(results[0]);
-                    deferred.resolve(results[0]);
+                    deferred.resolve(
+                        $scope.parseGoogleAddressComponents(results[0].address_components)
+                    );
                 } else {
                     alert("Geocode was not successful for the following reason: " + status);
                     deferred.reject(results);
@@ -127,6 +103,44 @@
             });
 
             return deferred.promise;
+        }
+
+        $scope.parseGoogleAddressComponents = function(data){
+            var result = {
+                address: '',
+                city:    null,
+                state:   null,
+                zip:     null
+            }
+
+            for(var i in data){
+                if($.inArray("street_number", data[i].types) != -1){
+                    result.address = data[i].long_name + ' ' + result.address;
+                    continue;
+                }
+
+                if($.inArray("route", data[i].types) != -1){
+                    result.address += ' ' + data[i].long_name;
+                    continue;
+                }
+
+                if($.inArray("locality", data[i].types) != -1){
+                    result.city = data[i].long_name;
+                    continue;
+                }
+
+                if($.inArray("administrative_area_level_1", data[i].types) != -1){
+                    result.state = data[i].short_name;
+                    continue;
+                }
+
+                if($.inArray("postal_code", data[i].types) != -1){
+                    result.zip = data[i].long_name;
+                    continue;
+                }
+            }
+
+            return result;
         }
     }]);
 })(settings);

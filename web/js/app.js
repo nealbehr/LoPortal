@@ -28,6 +28,10 @@
                         config.timeout = settings.requestTimeout;
                     }
 
+                    if('data' in config){
+                        config.data = $.param(config.data);
+                    }
+
                     return config;
                 },
                 'responseError': function(rejection) {
