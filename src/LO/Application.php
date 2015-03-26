@@ -17,6 +17,8 @@ use LO\Provider as LOProvider;
 use LO\Security\CryptDigestPasswordEncoder;
 use LO\Provider\ApiKeyAuthenticationServiceProvider;
 use LO\Provider\ApiKeyUserServiceProvider;
+use LO\Provider\Amazon;
+use Symfony\Component\Validator\Validator;
 
 class Application extends \Silex\Application{
     use SecurityTrait;
@@ -97,6 +99,7 @@ class Application extends \Silex\Application{
             ->register(new Provider\UrlGeneratorServiceProvider())
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\ValidatorServiceProvider())
+            ->register(new Amazon())
             ->register(new Provider\SecurityServiceProvider())
             ->register(new DoctrineOrmManagerRegistryProvider())
             ->register(new ApiKeyAuthenticationServiceProvider())
@@ -236,5 +239,17 @@ class Application extends \Silex\Application{
         return $this['security.encoder.digest'];
     }
 
+    /**
+     * @return Validator
+     */
+    public function getValidator(){
+        return $this['validator'];
+    }
 
-} 
+    /**
+     * @return \Aws\S3\S3Client
+     */
+    public function getS3(){
+        return $this['amazon.s3'];
+    }
+}

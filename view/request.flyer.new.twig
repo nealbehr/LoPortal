@@ -1,69 +1,143 @@
 <div>
     <lo-navbar-head></lo-navbar-head>
 
+    <section class="container">
+        <header class="page-title">
+            <h1>Listing Flyer Request Form</h1>
+            <div class="link">
+                <a href="#" class="download">Download Sample</a>
+            </div>
+        </header>
+        <div class="row listing">
+            <aside class="sidebar col-sm-3">
+                <h2>Loan Officer Info</h2>
+                <a href="#" class="change">Change</a>
+                <dl>
+                    <dt>First Name</dt>
+                    <dd>[[ user.first_name ]]</dd>
+                    <dt>Last name</dt>
+                    <dd>[[ user.last_name ]]</dd>
+                    <dt>Title</dt>
+                    <dd>[[ user.title ]]</dd>
+                    <dt>Sales Director</dt>
+                    <dd>[[ user.sales_director ]]</dd>
+                    <!-- dt>Lender</dt>
+                    <dd>Some gorgeous man</dd -->
+                    <dt>Primary Phone</dt>
+                    <dd>[[ user.phone ]]</dd>
+                    <dt>Email Address</dt>
+                    <dd><a ng-href="mailto:[[ user.email ]]">[[ user.email ]]</a></dd>
+                    <dt>NMLS #</dt>
+                    <dd>[[ user.nmls ]]</dd>
+                </dl>
+            </aside>
 
-    <div>
-        <div>USER INFO</div>
-        <a href="#">Edit</a>
-        <div ng-repeat="(k, v) in user">[[ k ]]: [[ v ]]</div>
-    </div>
-    newFlyer.$valid &&
-    <form ng-submit="save()" novalidate name="newFlyer">
-        <div>
-            <div>Property Info</div>
-            Property Address
-            <input id="pac-input" name="address" class="controls" type="text" ng-model="request.property.address" required="">
-            <div ng-show="newFlyer.$submitted || newFlyer.address.$touched">
-                <div ng-show="newFlyer.address.$error.required">Required.</div>
-            </div>
-            MLS Number
-            <input type="text" ng-model="request.property.mls">
-            Property Image
-            <input id="propertyImage" type="file" valid-file name="fileimage" required2="" ng-model="fake.property.imagePath">
-            <div ng-show="newFlyer.$submitted">
-                <div ng-show="newFlyer.fileimage.$error.required">Required.</div>
-            </div>
-            <div class="property-photo">
-                <img-crop image="propertyImage" result-image="request.property.image" area-type="square"></img-crop>
-            </div>
-        </div>
+            <form ng-submit="newFlyer.$valid && save()" novalidate name="newFlyer">
+                <main class="col-sm-8 col-md-6 col-lg-5 col-sm-offset-1">
+                    <h2>Property Info</h2>
+                    <div class="thumbnail">
+                        <div class="property-photo">
+                            <img ng-src="[[ propertyImage ]]" height="258" alt="">
+                        </div>
+                        <div class="caption">
+                            <div ng-show="newFlyer.$submitted">
+                                <div ng-show="newFlyer.fileimage.$error.required">Required.</div>
+                            </div>
+                            <span class="upload">
+                                Upload Property image
+                                <div><input class="upload" id="propertyImage" type="file" valid-file name="fileimage" required="" ng-model="propertyImage"></div>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="inputs-holder">
+                        <div class="input">
+                            <input class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" ng-model="request.property.address" required="">
+                            <div ng-show="newFlyer.$submitted || newFlyer.address.$touched">
+                                <div ng-show="newFlyer.address.$error.required">Required.</div>
+                            </div>
+                        </div>
+                        <div class="input">
+                            <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls">
+                        </div>
+                        <div class="input">
+                            <input class="input-lg" type="text" placeholder="MLS number" ng-model="request.property.mls_number">
+                        </div>
+                    </div>
+                    <hr>
+                    <h2>Realtor Info</h2>
+                    <div class="main-info">
+                        <div class="user-photo">
+                            <div ng-show="newFlyer.$submitted">
+                                <div ng-show="newFlyer.realtorfileimage.$error.required">Required.</div>
+                            </div>
 
-        <div>
-            <div>Realtor Info</div>
-            Name
-            <input type="text" ng-model="request.realtor.full_name" required="" name="name">
-            <div ng-show="newFlyer.$submitted || newFlyer.name.$touched">
-                <div ng-show="newFlyer.name.$error.required">Required.</div>
-            </div>
-            BRE Number
-            <input type="text" ng-model="request.realtor.bre_number" name="bre">
-            <div ng-show="newFlyer.$submitted || newFlyer.bre.$touched">
-                <div ng-show="newFlyer.bre.$error.required">Required.</div>
-            </div>
-            Real Estate Agency
-            <input type="text" ng-model="request.realtor.estate_agency" name="agency">
-            <div ng-show="newFlyer.$submitted || newFlyer.agency.$touched">
-                <div ng-show="newFlyer.agency.$error.required">Required.</div>
-            </div>
-            Phone
-            <input type="text" ng-model="request.realtor.phone" required="" name="phone">
-            <div ng-show="newFlyer.$submitted || newFlyer.phone.$touched">
-                <div ng-show="newFlyer.phone.$error.required">Required.</div>
-            </div>
-            Email
-            <input type="email" ng-model="request.realtor.email" required="" name="email">
-            <div ng-show="newFlyer.$submitted || newFlyer.email.$touched">
-                <div ng-show="newFlyer.email.$error.required">Required.</div>
-            </div>
-            Photo
-            <input id="realtorImage" type="file" valid-file name="realtorfileimage" required2="" ng-model="fake.realtor.imagePath">
-            <div ng-show="newFlyer.$submitted">
-                <div ng-show="newFlyer.realtorfileimage.$error.required">Required.</div>
-            </div>
-            <div class="realtor-photo">
-                <img-crop image="realtorImage" result-image="request.realtor.image" area-type="square"></img-crop>
-            </div>
+                            <div class="realtor-photo">
+                                <img ng-src="[[ realtorImage ]]" alt="">
+                            </div>
+                            <span class="upload">
+                                Upload Photo
+                                <div><input id="realtorImage" type="file" valid-file name="realtorfileimage" required="" ng-model="realtorImage"></div>
+                            </span>
+                        </div>
+                        <div class="inputs-holder">
+                            <div class="input">
+                                <div ng-show="newFlyer.$submitted || newFlyer.first_.$touched">
+                                    <div ng-show="newFlyer.first_name.$error.required">Required.</div>
+                                </div>
+
+                                <input class="input-lg" type="text" placeholder="First name" ng-model="request.realtor.first_name" required="" name="first_name">
+                            </div>
+                            <div class="input">
+                                <div ng-show="newFlyer.$submitted || newFlyer.last_name.$touched">
+                                    <div ng-show="newFlyer.last_name.$error.required">Required.</div>
+                                </div>
+
+                                <input class="input-lg" type="text" placeholder="Last name" ng-model="request.realtor.last_name" required="" name="last_name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputs-holder">
+                        <div class="input">
+                            <div ng-show="newFlyer.$submitted || newFlyer.phone.$touched">
+                                <div ng-show="newFlyer.phone.$error.required">Required.</div>
+                            </div>
+
+                            <input class="input-lg" type="text" placeholder="Phone number" ng-model="request.realtor.phone" required="" name="phone">
+                        </div>
+                        <div class="input">
+                            <div ng-show="newFlyer.$submitted || newFlyer.email.$touched">
+                                <div ng-show="newFlyer.email.$error.required">Required.</div>
+                            </div>
+
+                            <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">
+                        </div>
+                    </div>
+                    <div class="inputs-holder">
+                        <div class="input">
+                            <div ng-show="newFlyer.$submitted || newFlyer.bre.$touched">
+                                <div ng-show="newFlyer.bre.$error.required">Required.</div>
+                            </div>
+
+                            <input class="input-lg" type="text" placeholder="BRE number" ng-model="request.realtor.bre_number" name="bre">
+                        </div>
+                        <div class="input">
+                            <div ng-show="newFlyer.$submitted || newFlyer.agency.$touched">
+                                <div ng-show="newFlyer.agency.$error.required">Required.</div>
+                            </div>
+
+                            <input class="input-lg" type="text" placeholder="Real estate agency" ng-model="request.realtor.estate_agency" name="agency">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-4 pull-right">
+                            <button class="btn btn-default btn-lg">Submit</button>
+                        </div>
+                        <div class="col-sm-8">
+                            <a href="#" class="back" ng-click="goToDashboard($event)">Back to dashboard</a>
+                        </div>
+                    </div>
+                </main>
+            </form>
         </div>
-        <button>Save</button>
-    </form>
+    </section>
 </div>

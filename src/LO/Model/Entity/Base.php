@@ -8,6 +8,10 @@
 
 namespace LO\Model\Entity;
 
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\UniqueConstraint;
+use Doctrine\ORM\Mapping\Column;
 
 class Base {
     /**

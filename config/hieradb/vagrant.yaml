@@ -57,6 +57,8 @@ php::module:
     ensure: installed
   pecl-apc:
     ensure: installed
+  pecl-imagick:
+    ensure: installed
 
 php::module::ini:
   opcache:

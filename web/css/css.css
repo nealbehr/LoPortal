@@ -11,7 +11,35 @@
     display: none !important;
 }
 
-.realtor-photo, .property-photo{
-    width: 500px;
-    height: 500px;
+.property-photo{
+    width: inherit;
+    height: 258px;
+}
+
+.property-photo > img{
+    width: inherit;
+}
+
+.realtor-photo{
+    width: inherit;
+    height: inherit;
+}
+.realtor-photo > img{
+    width: inherit;
+    height: inherit;
+}
+
+.upload{
+    position: relative;
+    cursor: pointer;
+}
+
+.upload > div{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.upload input{
+    opacity: 0;
 }
