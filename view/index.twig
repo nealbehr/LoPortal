@@ -10,7 +10,8 @@
         <link rel="stylesheet" href="/css/bootstrap.css" type="text/css">
         <link rel="stylesheet" href="/css/all.css" type="text/css">
         <link rel="stylesheet" href="/css/css.css" type="text/css">
-        <link rel="stylesheet" href="/css/ng-img-crop.css" type="text/css">
+        <!-- link rel="stylesheet" href="/css/ng-img-crop.css" type="text/css" -->
+        <link rel="stylesheet" href="/css/cropper.css" type="text/css">
     <!-- /build -->
 </head>
 <body>
@@ -29,7 +30,8 @@
     <script>
         var settings = {debug:            '{{ app.getConfigByName('debug') }}',
                         expiresTokenDays: '{{ app.getConfigByName('user', 'token.expire') }}',
-                        requestTimeout:   15000 //15 seconds
+                        requestTimeout:   15000, //15 seconds
+                        firstRexHash:     '{{ (app.getConfigByName('firstrex', 'api', 'user')~':'~app.getConfigByName('firstrex', 'api', 'pass'))|ebase64 }}'
         }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -39,7 +41,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-resource.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-cookies.min.js"></script>
-    <!--[if IE]><script type="text/javascript" src="/js/non-min/excanvas.compiled.js"></script><![endif]-->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ app.getConfigByName('google', 'apiKey') }}&libraries=places"></script>
 
     <!-- build:js < JS_FILENAME > -->
         <script src="/js/jquery-ui.min.js"></script>
@@ -49,12 +51,18 @@
         <script src="/js/modules/dashboard.js"></script>
         <script src="/js/modules/authorize.js"></script>
         <script src="/js/modules/request.js"></script>
-        <script src="/js/ng-img-crop.js"></script>
+        <!-- script src="/js/ng-img-crop.js"></script -->
+        <script src="/js/cropper.js"></script>
     <!-- /build -->
 
     <script type="text/javascript">
         angular.element(document).ready(function(){
             angular.bootstrap(document, ['loApp']);
+//            var script = document.createElement('script');
+//            script.type = 'text/javascript';
+//            script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
+//                    '&signed_in=true&libraries=places';
+//            document.body.appendChild(script);
         });
     </script>
 </body>

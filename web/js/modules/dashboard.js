@@ -20,7 +20,7 @@
                                     .error(function(data){
                                         //actually you'd want deffered.reject(data) here
                                         //but to show what would happen on success..
-                                        deferred.resolve(data);
+                                        deferred.reject(data);
                                     })
                                     .finally(function(){
 

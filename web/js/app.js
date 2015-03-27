@@ -2,7 +2,7 @@
     "use strict";
     settings = settings || {};
 
-    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'ngImgCrop']);
+    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule']);
 
     app.constant('HTTP_CODES', {FORBIDDEN: 403});
     app.constant('TOKEN_KEY', 'access_token');
@@ -26,6 +26,10 @@
 
                     if(settings.requestTimeout && settings.debug == false){
                         config.timeout = settings.requestTimeout;
+                    }
+
+                    if('data' in config){
+                        config.data = $.param(config.data);
                     }
 
                     return config;

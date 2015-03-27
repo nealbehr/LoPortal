@@ -53,7 +53,7 @@
         $scope.signin = function(){
             this.errorMessage = null;
             // 1) show gray screen
-            $http.post('/authorize/signin', $.param(this.user))
+            $http.post('/authorize/signin', this.user)
                 .success(function(data){
                     $cookieStore.put(TOKEN_KEY, data);
                     redirect('/');
