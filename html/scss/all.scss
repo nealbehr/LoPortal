@@ -131,7 +131,7 @@ h1 {font-style: italic;}
 }
 .input {
     position: relative;
-    &.error:after {
+    &.error:after, span {
         width: 28px;
         height: 28px;
         border-radius: 100%;
@@ -144,6 +144,24 @@ h1 {font-style: italic;}
         text-align: center;
         color: #fff;
         font: 18px/28px Arial;
+        cursor: pointer;
+    }
+    .tooltip.right {
+        margin-left: 40px;
+        width: 275px;
+        line-height: 56px;
+        top: 0 !important;
+        @media (max-width: 1199px)  {
+            display: none !important;
+        }
+        .tooltip-inner {
+            background: #f99c9c;
+            color: #fff;
+            font-size: 15px;
+        }
+        .tooltip-arrow {
+            border-right-color: #f99c9c;
+        }
     }
 }
 .close {

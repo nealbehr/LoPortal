@@ -64,7 +64,9 @@
                 <main class="col-sm-8 col-md-6 col-lg-5 col-sm-offset-1">
                     <h2>Property Info</h2>
                     <div class="thumbnail">
-                        <img src="images/img04.jpg" width="458" height="258" alt="">
+                        <div class="thumb-holder">
+                            <img src="images/empty-big.png" width="458" height="258" alt="">
+                        </div>
                         <div class="caption">
                             <a href="#" class="upload">Upload Property image</a>
                         </div>
@@ -72,9 +74,11 @@
                     <div class="inputs-holder">
                         <div class="input">
                             <input class="input-lg" type="text" placeholder="Property Address">
+                            <span data-toggle="tooltip" data-placement="right" title="The Property address is invalid.">!</span>
                         </div>
                         <div class="input">
                             <input class="input-lg" type="text" placeholder="MLS Number (Optional)">
+                            <span data-toggle="tooltip" data-placement="right" title="The Listing price is required.">!</span>
                         </div>
                         <div class="input">
                             <input class="input-lg" type="text" placeholder="Listing Price">
@@ -85,7 +89,7 @@
                     <div class="main-info">
                        <div class="user-photo">
                            <div>
-                               <img src="images/img05.jpg" alt="user">
+                               <img src="images/empty.png" alt="user">
                            </div>
                            <a href="#" class="upload">Upload Photo</a>
                        </div>
