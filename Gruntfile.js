@@ -86,12 +86,18 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'web/css',
-                    src: ['jquery-ui.structure.min.css', 'jquery-ui.min.css', 'bootstrap.css',  'css.css', 'cropper.css'],
+                    src: ['*.css', '!*.min.css'],
                     dest: 'web/build/css',
                     ext: '.min.css'
                 },
                 {
-                    'web/<%= grunt.nameCSSMinFile %>': ['<%= cssmin.target.files[0].dest %>/*.css']
+                    'web/<%= grunt.nameCSSMinFile %>': [
+                        'web/css/*.min.css',
+                        '<%= cssmin.target.files[0].dest %>/bootstrap.min.css',
+                        '<%= cssmin.target.files[0].dest %>/all.min.css',
+                        '<%= cssmin.target.files[0].dest %>/css.css',
+                        '<%= cssmin.target.files[0].dest %>/croper.css'
+                    ]
                 }
                 ]
             }
