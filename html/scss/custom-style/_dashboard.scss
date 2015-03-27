@@ -2,11 +2,13 @@
 .thumbnail{
     box-shadow: 0 1px 3px rgba(180,180,180,0.6);
     margin-bottom: 30px;
+    .thumb-holder {
+        margin: -1px;
+    }
     img {
         border-radius: 3px 3px 0 0;
-        margin: -1px;
-        width: 101%;
-        max-width: 101%;
+        width: 100%;
+        max-width: 100%;
     }
     address {
         margin: 0;
