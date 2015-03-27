@@ -8,21 +8,13 @@
 
 namespace LO\Model\Manager;
 
-use \LO\Application;
 use Doctrine\ORM\Query\Expr;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User as EntityUser;
 
-class UserManager {
-    /** @var \LO\Application  */
-    private $app;
-
-    public function __construct(Application $app){
-        $this->app = $app;
-    }
-
+class UserManager extends Base{
     public function findByToken($token){
-        return $this->app->getEntityManager()
+        return $this->getApp()->getEntityManager()
                     ->getRepository(EntityUser::class)
                     ->createQueryBuilder('u')
                     ->select('u')
@@ -40,7 +32,7 @@ class UserManager {
     public function findByEmailPassword($email, $password){
         $user = $this->findByEmail($email);
 
-        if(!$user || !$this->app['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $password, $user->getSalt())){
+        if(!$user || !$this->getApp()['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $password, $user->getSalt())){
             return false;
         }
 
@@ -52,7 +44,7 @@ class UserManager {
      * @return null|EntityUser
      */
     public function findByEmail($email){
-        return $this->app
+        return $this->getApp()
                      ->getEntityManager()
                      ->getRepository(EntityUser::class)
                      ->findOneBy(['email' => $email])

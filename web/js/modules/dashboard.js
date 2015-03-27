@@ -33,8 +33,9 @@
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', function($scope, redirect, data){
-        $scope.user = data.user;
+    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', '$http', function($scope, redirect, data, $http){
+        $scope.user      = data.user;
+        $scope.dashboard = data.dashboard;
 
         angular.element("#inProcessTable").tablesorter();
         angular.element("#requestedTable").tablesorter();
@@ -44,5 +45,27 @@
             e.preventDefault();
             redirect("/flyer/new");
         }
+
+        angular.element('.queue').click(function(e){
+            var target = angular.element(e.target);
+
+            if(target.is('a.cancel')){
+                e.preventDefault();
+
+                $http.patch('/queue/cancel/' + target.data('id'), [])
+                    .success(function(data){
+                        var badge = $('.badge', target.parents('div.panel-default'));
+                        badge.html(badge.html() - 1);
+                        target.parents('tr').remove();
+                    })
+                    .error(function(data){
+                        console.log(data);
+                    })
+                    .finally(function(){
+
+                    })
+                ;
+            }
+        });
     }]);
 })(settings);

@@ -88,6 +88,12 @@
         }
     });
 
+    helperService.filter('dashboardType', function(){
+        return function(type){
+            return type == 1? 'Listing Flyer': 'Property Approval';
+        }
+    });
+
     helperService.factory("redirect", ['$location', function($location){
         return function(path, redirectUrl){
             if(undefined != redirectUrl){

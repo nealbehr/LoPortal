@@ -8,6 +8,7 @@
 
 namespace LO\Provider;
 
+use LO\Model\Manager\DashboardManager;
 use LO\Model\Manager\UserManager;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
@@ -27,5 +28,8 @@ class Managers implements ServiceProviderInterface{
             return new UserManager($app);
         });
 
+        $app['manager.dashboard'] = $app->share(function() use ($app) {
+            return new DashboardManager($app);
+        });
     }
 } 

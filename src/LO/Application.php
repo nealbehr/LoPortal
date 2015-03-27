@@ -18,6 +18,7 @@ use LO\Security\CryptDigestPasswordEncoder;
 use LO\Provider\ApiKeyAuthenticationServiceProvider;
 use LO\Provider\ApiKeyUserServiceProvider;
 use LO\Provider\Amazon;
+use LO\Model\Manager\DashboardManager;
 use Symfony\Component\Validator\Validator;
 
 class Application extends \Silex\Application{
@@ -195,6 +196,7 @@ class Application extends \Silex\Application{
         $this->mount('/dashboard',  new Controller\DashboardProvider());
         $this->mount('/user',       new Controller\UserProvider());
         $this->mount('/request',    new Controller\LoRequestProvider());
+        $this->mount('/queue',      new Controller\QueueProvider());
 
         $this->match('/', function(){
             $this->getTwig()->addFilter(new \Twig_SimpleFilter('ebase64', 'base64_encode'));
@@ -230,6 +232,13 @@ class Application extends \Silex\Application{
      */
     public function getUserManager(){
         return $this['manager.user'];
+    }
+
+    /**
+     * @return DashboardManager
+     */
+    public function getDashboardManager(){
+        return $this['manager.dashboard'];
     }
 
     /**

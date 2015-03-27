@@ -13,10 +13,10 @@
             </div>
         </header>
         <div class="panel-group queue">
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-show="dashboard[1].length > 0">
                 <div class="panel-heading">
                     <strong class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" href="#inProcess" aria-controls="inProcess"><span class="arrow"></span>In process <span class="badge">4</span></a>
+                        <a class="collapsed" data-toggle="collapse" href="#inProcess" aria-controls="inProcess"><span class="arrow"></span>In process <span class="badge">[[ dashboard[1].length ]]</span></a>
                     </strong>
                 </div>
                 <div id="inProcess" class="panel-collapse collapse">
@@ -26,47 +26,24 @@
                             <th><span>Created</span></th>
                             <th><span>Property Address</span></th>
                             <th><span>Type</span></th>
-                            <th><span>Status</span></th>
                             <th><span>Actions</span></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>928 S Eldorado St San Mateo CA 94402</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
-                        </tr>
+                            <tr ng-repeat="v in dashboard[1]">
+                                <td>[[ v.created_at ]]</td>
+                                <td>[[ v.address ]]</td>
+                                <td>[[ v.type|dashboardType ]]</td>
+                                <td><a href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-show="dashboard[2].length > 0">
                 <div class="panel-heading">
                     <strong class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" href="#requested" aria-controls="requested"><span class="arrow"></span>Requested <span class="badge">19</span></a>
+                        <a class="collapsed" data-toggle="collapse" href="#requested" aria-controls="requested"><span class="arrow"></span>Requested <span class="badge">[[ dashboard[2].length ]]</span></a>
                     </strong>
                 </div>
                 <div id="requested" class="panel-collapse collapse">
@@ -76,40 +53,24 @@
                             <th><span>Created</span></th>
                             <th><span>Property Address</span></th>
                             <th><span>Type</span></th>
-                            <th><span>Status</span></th>
                             <th><span>Actions</span></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>928 S Eldorado St San Mateo CA 94402</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="cancel">Cancel</a></td>
+                        <tr ng-repeat="v in dashboard[1]">
+                            <td>[[ v.created_at ]]</td>
+                            <td>[[ v.address ]]</td>
+                            <td>[[ v.type|dashboardType ]]</td>
+                            <td><a href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default" ng-show="dashboard[3].length > 0">
                 <div class="panel-heading">
                     <strong class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" href="#approved" aria-controls="approved"><span class="arrow"></span>Approved  <span class="badge">2</span></a>
+                        <a class="collapsed" data-toggle="collapse" href="#approved" aria-controls="approved"><span class="arrow"></span>Approved  <span class="badge">[[ dashboard[3].length ]]</span></a>
                     </strong>
                 </div>
                 <div id="approved" class="panel-collapse collapse">
@@ -119,31 +80,15 @@
                             <th><span>Created</span></th>
                             <th><span>Property Address</span></th>
                             <th><span>Type</span></th>
-                            <th><span>Status</span></th>
                             <th><span>Actions</span></th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="download">Download PDF</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>928 S Eldorado St San Mateo CA 94402</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="download">Download PDF</a></td>
-                        </tr>
-                        <tr>
-                            <td>Mar 11 2015, 11:20 AM</td>
-                            <td>1 Infinite Loop Cupertino CA 95014</td>
-                            <td>Listing Flyer</td>
-                            <td>In process</td>
-                            <td><a href="#" class="download">Download PDF</a></td>
+                        <tr ng-repeat="v in dashboard[1]">
+                            <td>[[ v.created_at ]]</td>
+                            <td>[[ v.address ]]</td>
+                            <td>[[ v.type|dashboardType ]]</td>
+                            <td><a ng-href="[[ v.pdf_link ]]" class="download">Download PDF</a></td>
                         </tr>
                         </tbody>
                     </table>

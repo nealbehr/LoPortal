@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Column;
 
 class Base {
+    const DATE_FORMAT = 'Y-m-d H:i:s a';
+
     /**
      * @Id
      * @Column(type="bigint")
@@ -37,7 +39,12 @@ class Base {
     }
 
     public function toArray(){
-        return get_object_vars($this);
+        $result = get_object_vars($this);
+        if($this->created_at){
+            $result['created_at'] = $this->created_at->format('M d Y, h:i A');
+        }
+
+        return $result;
     }
 
     public function fillFromArray(array $param){

@@ -62,6 +62,7 @@ class LoRequest {
                                     ->set1RexId($id)
                                     ->setRealtorId($realtor->getId())
                                     ->setType(Queue::TYPE_FLYER)
+                                    ->setUserId($app->user()->getId())
 
             ;
 

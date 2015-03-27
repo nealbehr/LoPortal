@@ -21,9 +21,10 @@ class Queue extends Base{
     const STATE_IN_PROGRESS = 1;
     const STATE_REQUESTED   = 2;
     const STATE_APPROVED    = 3;
+    const STATE_CANCELED    = 4;
 
-    const TYPE_FLYER   = 1;
-    const TYPE_REQUEST = 2;
+    const TYPE_FLYER             = 1;
+    const TYPE_PROPERTY_APPROVAL = 2;
 
     /**
      * @Column(type="integer")
@@ -90,6 +91,13 @@ class Queue extends Base{
      */
     protected $photo;
 
+    /**
+     * @Column(type="integer")
+     * @Assert\NotBlank()
+     * @Assert\Type(type="numeric")
+     */
+    protected $user_id;
+
     public function __construct(){
         parent::__construct();
 
@@ -116,6 +124,22 @@ class Queue extends Base{
 
     public function setType($param){
         $this->request_type = $param;
+
+        return $this;
+    }
+
+    public function setUserId($param){
+        $this->user_id = $param;
+
+        return $this;
+    }
+
+    public function getState(){
+        return $this->state;
+    }
+
+    public function setState($param){
+        $this->state = $param;
 
         return $this;
     }
