@@ -13,89 +13,12 @@
             </div>
         </header>
         <div class="panel-group queue">
-            <div class="panel panel-default" ng-show="dashboard[1].length > 0">
-                <div class="panel-heading">
-                    <strong class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" href="#inProcess" aria-controls="inProcess"><span class="arrow"></span>In process <span class="badge">[[ dashboard[1].length ]]</span></a>
-                    </strong>
-                </div>
-                <div id="inProcess" class="panel-collapse collapse">
-                    <table class="tablesorter table table-striped" id="inProcessTable">
-                        <thead>
-                        <tr>
-                            <th><span>Created</span></th>
-                            <th><span>Property Address</span></th>
-                            <th><span>Type</span></th>
-                            <th><span>Actions</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="v in dashboard[1]">
-                                <td>[[ v.created_at ]]</td>
-                                <td>[[ v.address ]]</td>
-                                <td>[[ v.request_type|dashboardType ]]</td>
-                                <td><a href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="panel panel-default" ng-show="dashboard[2].length > 0">
-                <div class="panel-heading">
-                    <strong class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" href="#requested" aria-controls="requested"><span class="arrow"></span>Requested <span class="badge">[[ dashboard[2].length ]]</span></a>
-                    </strong>
-                </div>
-                <div id="requested" class="panel-collapse collapse">
-                    <table class="tablesorter table table-striped" id="requestedTable">
-                        <thead>
-                        <tr>
-                            <th><span>Created</span></th>
-                            <th><span>Property Address</span></th>
-                            <th><span>Type</span></th>
-                            <th><span>Actions</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="v in dashboard[2]">
-                            <td>[[ v.created_at ]]</td>
-                            <td>[[ v.address ]]</td>
-                            <td>[[ v.request_type|dashboardType ]]</td>
-                            <td><a href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="panel panel-default" ng-show="dashboard[3].length > 0">
-                <div class="panel-heading">
-                    <strong class="panel-title">
-                        <a class="collapsed" data-toggle="collapse" href="#approved" aria-controls="approved"><span class="arrow"></span>Approved  <span class="badge">[[ dashboard[3].length ]]</span></a>
-                    </strong>
-                </div>
-                <div id="approved" class="panel-collapse collapse">
-                    <table class="tablesorter table table-striped" id="approvedTable">
-                        <thead>
-                        <tr>
-                            <th><span>Created</span></th>
-                            <th><span>Property Address</span></th>
-                            <th><span>Type</span></th>
-                            <th><span>Actions</span></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr ng-repeat="v in dashboard[3]">
-                            <td>[[ v.created_at ]]</td>
-                            <td>[[ v.address ]]</td>
-                            <td>[[ v.request_type|dashboardType ]]</td>
-                            <td>
-                                <a ng-href="[[ v.pdf_link ]]" class="download">Download PDF</a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <lo-dashboard-row ng-repeat="(k,v) in settingRows"
+                              lo-items="dashboard[k]"
+                              lo-id="[[ v.id ]]"
+                              lo-title="[[ v.title ]]"
+                              lo-is-expand="v.isExpand"
+            ></lo-dashboard-row>
         </div>
     </section>
 </div>

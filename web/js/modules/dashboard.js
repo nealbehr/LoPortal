@@ -33,21 +33,18 @@
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', '$http', function($scope, redirect, data, $http){
+    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', '$http', '$timeout', function($scope, redirect, data, $http, $timeout){
         $scope.user      = data.user;
         $scope.dashboard = data.dashboard;
+        $scope.settingRows = {}
+        $scope.settingRows[settings.queue.stateInProgres] = {id: 'inProcess', title: 'In process', isExpand: false};
+        $scope.settingRows[settings.queue.stateRequested]   = {id: 'requested', title: 'Requested', isExpand: false};
+        $scope.settingRows[settings.queue.stateApproved]    = {id: 'approved', title: 'Approved', isExpand: false};
 
-        angular.element("#inProcessTable").tablesorter();
-        angular.element("#requestedTable").tablesorter();
-        angular.element("#approvedTable").tablesorter();
-
-        var idsTable = {1: 'inProcess', 2: 'requested', 3: 'approved'}
-
+        var isExpand = true;
         for(var i in $scope.dashboard){
-            if($scope.dashboard[i].length > 0){
-                $('#' + idsTable[i]).collapse('show');
-                break;
-            }
+            $scope.settingRows[i].isExpand = isExpand && $scope.dashboard[i].length > 0;
+            isExpand = !($scope.dashboard[i].length > 0)
         }
 
         $scope.createListingFlyerRequest = function(e){
@@ -65,7 +62,12 @@
                     .success(function(data){
                         var badge = $('.badge', target.parents('div.panel-default'));
                         badge.html(badge.html() - 1);
-                        target.parents('tr').remove();
+                        if(badge.html() == 0){
+                            badge.parents('.panel-default').remove();
+                        }else{
+                            target.parents('tr').remove();
+                        }
+
                     })
                     .error(function(data){
                         console.log(data);

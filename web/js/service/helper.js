@@ -57,6 +57,31 @@
         }
     }]);
 
+    helperService.directive('loDashboardRow', ['$timeout', function($timeout){
+        return { restrict: 'EA',
+            templateUrl: '/partials/dashboard.row',
+            scope: {
+                items: '=loItems',
+                id:    '@loId',
+                title: '@loTitle',
+                isExpand: '=loIsExpand'
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.$watch('items', function (newValue) {
+                    scope.items = newValue;
+
+                    if(scope.isExpand){
+                        $('#' + scope.id).collapse('show');
+                    }
+                });
+
+                $timeout(function(){
+                    angular.element("#" + scope.id + " > table").tablesorter();
+                });
+            }
+        }
+    }]);
+
     helperService.directive('validFile', function () {
         return {
             require: 'ngModel',
