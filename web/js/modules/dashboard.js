@@ -41,6 +41,15 @@
         angular.element("#requestedTable").tablesorter();
         angular.element("#approvedTable").tablesorter();
 
+        var idsTable = {1: 'inProcess', 2: 'requested', 3: 'approved'}
+
+        for(var i in $scope.dashboard){
+            if($scope.dashboard[i].length > 0){
+                $('#' + idsTable[i]).collapse('show');
+                break;
+            }
+        }
+
         $scope.createListingFlyerRequest = function(e){
             e.preventDefault();
             redirect("/flyer/new");

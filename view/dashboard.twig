@@ -33,7 +33,7 @@
                             <tr ng-repeat="v in dashboard[1]">
                                 <td>[[ v.created_at ]]</td>
                                 <td>[[ v.address ]]</td>
-                                <td>[[ v.type|dashboardType ]]</td>
+                                <td>[[ v.request_type|dashboardType ]]</td>
                                 <td><a href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a></td>
                             </tr>
                         </tbody>
@@ -57,10 +57,10 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="v in dashboard[1]">
+                        <tr ng-repeat="v in dashboard[2]">
                             <td>[[ v.created_at ]]</td>
                             <td>[[ v.address ]]</td>
-                            <td>[[ v.type|dashboardType ]]</td>
+                            <td>[[ v.request_type|dashboardType ]]</td>
                             <td><a href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a></td>
                         </tr>
                         </tbody>
@@ -84,11 +84,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="v in dashboard[1]">
+                        <tr ng-repeat="v in dashboard[3]">
                             <td>[[ v.created_at ]]</td>
                             <td>[[ v.address ]]</td>
-                            <td>[[ v.type|dashboardType ]]</td>
-                            <td><a ng-href="[[ v.pdf_link ]]" class="download">Download PDF</a></td>
+                            <td>[[ v.request_type|dashboardType ]]</td>
+                            <td>
+                                <a ng-href="[[ v.pdf_link ]]" class="download">Download PDF</a>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
