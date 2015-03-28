@@ -77,7 +77,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'web/images/',
                     src: ['**/*.{png,jpg,gif,svg}'],
-                    dest: 'web/build/images/'
+                    dest: 'web/images/'
                 }]
             }
         },
@@ -95,8 +95,8 @@ module.exports = function(grunt) {
                         'web/css/*.min.css',
                         '<%= cssmin.target.files[0].dest %>/bootstrap.min.css',
                         '<%= cssmin.target.files[0].dest %>/all.min.css',
-                        '<%= cssmin.target.files[0].dest %>/css.css',
-                        '<%= cssmin.target.files[0].dest %>/croper.css'
+                        '<%= cssmin.target.files[0].dest %>/css.min.css',
+                        '<%= cssmin.target.files[0].dest %>/croper.min.css'
                     ]
                 }
                 ]
