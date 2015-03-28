@@ -34,9 +34,11 @@
     }]);
 
     dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', '$http', '$timeout', function($scope, redirect, data, $http, $timeout){
-        $scope.user      = data.user;
-        $scope.dashboard = data.dashboard;
-        $scope.settingRows = {}
+        $scope.user         = data.user;
+        $scope.dashboard    = data.dashboard;
+        $scope.settingRows  = {}
+        $scope.queueChecked = true;
+        $scope.queueStateApproved = settings.queue.stateApproved;
         $scope.settingRows[settings.queue.stateInProgres] = {id: 'inProcess', title: 'In process', isExpand: false};
         $scope.settingRows[settings.queue.stateRequested]   = {id: 'requested', title: 'Requested', isExpand: false};
         $scope.settingRows[settings.queue.stateApproved]    = {id: 'approved', title: 'Approved', isExpand: false};
@@ -45,6 +47,11 @@
         for(var i in $scope.dashboard){
             $scope.settingRows[i].isExpand = isExpand && $scope.dashboard[i].length > 0;
             isExpand = !($scope.dashboard[i].length > 0)
+        }
+
+        $scope.show = function(e, tab){
+            e.preventDefault();
+            this.queueChecked = tab == 'queue';
         }
 
         $scope.createListingFlyerRequest = function(e){

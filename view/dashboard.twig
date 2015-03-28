@@ -4,15 +4,15 @@
         <header class="page-title">
             <h1>Dashboard</h1>
             <ul class="tabset">
-                <li class="active"><a href="#">Requests Queue</a></li>
-                <li><a href="#">Custom Collateral</a></li>
+                <li ng-class="{active: queueChecked}"><a href="#" ng-click="show($event, 'queue')">Requests Queue</a></li>
+                <li ng-class="{active: !queueChecked}"><a href="#" ng-click="show($event, 'collateral')">Custom Collateral</a></li>
             </ul>
             <div class="btn-holder">
                 <a href="#" class="btn btn-default">New Property Approval</a>
                 <a href="#" class="btn btn-default" ng-click="createListingFlyerRequest($event)">New Listing Flyer</a>
             </div>
         </header>
-        <div class="panel-group queue">
+        <div class="panel-group queue" ng-if="queueChecked">
             <lo-dashboard-row ng-repeat="(k,v) in settingRows"
                               lo-items="dashboard[k]"
                               lo-id="[[ v.id ]]"
@@ -20,5 +20,7 @@
                               lo-is-expand="v.isExpand"
             ></lo-dashboard-row>
         </div>
+
+        <dashboard-collateral ng-if="!queueChecked" lo-items="dashboard[queueStateApproved]"></dashboard-collateral>
     </section>
 </div>

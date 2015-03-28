@@ -100,6 +100,21 @@
         };
     });
 
+    helperService.directive('dashboardCollateral', function () {
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/dashboard.collateral',
+            scope: {
+                items: '=loItems'
+            },
+            link: function (scope, el, attrs, ngModel) {
+                scope.$watch('items', function(newValue){
+                    scope.items = newValue;
+                });
+            }
+        };
+    });
+
 
     helperService.filter('avatar', function(){
         return function(input){
