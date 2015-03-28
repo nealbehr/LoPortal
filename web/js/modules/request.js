@@ -80,7 +80,7 @@
         $scope.realtorImage  = '';
 
         $scope.cropperPropertyImage = {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}};
-        $scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 4 / 3}};
+        $scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 4 / 3, minContainerWidth: 100}};
 
         angular.element(document.querySelector('#propertyImage')).on('change',function(e){
             $scope.fileSelect(e, 'propertyImage', $scope.cropperPropertyImage);
