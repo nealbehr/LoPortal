@@ -9,29 +9,38 @@
             when('/flyer/new', {
                 templateUrl: '/partials/request.flyer.new',
                 controller:  'requestCtrl',
-                resolve: {
-                    data: ["$q", "$http", function($q, $http){
-                        var deferred = $q.defer();
-
-                        $http.get('/user/me')
-                            .success(function(data){
-                                deferred.resolve(data)
-                            })
-                            .error(function(data){
-                                //actually you'd want deffered.reject(data) here
-                                //but to show what would happen on success..
-                                deferred.reject(data);
-                            })
-                            .finally(function(){
-
-                            })
-                        ;
-
-                        return deferred.promise;
-                    }]
-                }
+                resolve: request.resolve()
+            })
+            .when('/request/success',{
+                templateUrl: '/partials/request.success',
+                controller:  'requestSuccessCtrl',
+                resolve: request.resolve()
             });
     }]);
+
+    request.resolve = function(){
+        return {
+            data: ["$q", "$http", function($q, $http){
+                var deferred = $q.defer();
+
+                $http.get('/user/me')
+                    .success(function(data){
+                        deferred.resolve(data)
+                    })
+                    .error(function(data){
+                        //actually you'd want deffered.reject(data) here
+                        //but to show what would happen on success..
+                        deferred.reject(data);
+                    })
+                    .finally(function(){
+
+                    })
+                ;
+
+                return deferred.promise;
+            }]
+        }
+    }
 
     request.controller('requestCtrl', ['$scope', 'redirect', 'data', '$http', '$q', '$timeout', function($scope, redirect, data, $http, $q, $timeout){
         var data, file;
@@ -121,6 +130,7 @@
                 })
                 .then(function(data){
                     //success save on backend
+                    redirect('/request/success');
                 })
                 .catch(function(e){
                     alert("We have some problems. Please try later.");
@@ -181,6 +191,15 @@
             }
 
             return result;
+        }
+    }]);
+
+    request.controller('requestSuccessCtrl', ['redirect', '$scope', 'data', function(redirect, $scope, data){
+        $scope.user = data;
+        $scope.goto = function(e, path){
+            e.preventDefault();
+
+            redirect(path);
         }
     }]);
 })(settings);
