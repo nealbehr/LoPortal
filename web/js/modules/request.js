@@ -15,7 +15,13 @@
                 templateUrl: '/partials/request.success',
                 controller:  'requestSuccessCtrl',
                 resolve: request.resolve()
-            });
+            })
+            .when('/request/approval', {
+                templateUrl: '/partials/request.property.approval',
+                controller:  'requestPropertyApprovalCtrl',
+                resolve: request.resolve()
+            })
+        ;
     }]);
 
     request.resolve = function(){
@@ -42,23 +48,111 @@
         }
     }
 
-    request.controller('requestCtrl', ['$scope', 'redirect', 'data', '$http', '$q', '$timeout', function($scope, redirect, data, $http, $q, $timeout){
+    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder){
+        $scope.goto = function(e){
+            e.preventDefault();
+
+            redirect('/');
+        }
+
+        $scope.address = '';
+
+        var input = document.getElementById('searchPlace');
+
+        function initialize() {
+        var markers = [];
+            var mapProp = {
+                center:new google.maps.LatLng(51.508742, -0.120850),
+                zoom:10,
+                disableDefaultUI:true,
+                mapTypeId:google.maps.MapTypeId.ROADMAP
+            };
+            var map=new google.maps.Map(document.getElementById("location"),mapProp);
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                waitingScreen.show();
+                getInfoFromGeocoder({location: event.latLng})
+                                .then(function(address){
+                                    if(address.length > 0){
+                                        $scope.address = address[0].formatted_address;
+                                    }
+                                })
+                                .finally(function(){
+                                    waitingScreen.hide();
+                                })
+                ;
+            });
+
+
+
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        google.maps.event.addListener(searchBox, 'places_changed', function() {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            for (var i = 0, marker; marker = markers[i]; i++) {
+                marker.setMap(null);
+            }
+
+            // For each place, get the icon, place name, and location.
+            markers = [];
+            var bounds = new google.maps.LatLngBounds();
+            for (var i = 0, place; place = places[i]; i++) {
+                console.log(place)
+                var image = {
+                    url: place.url,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                var marker = new google.maps.Marker({
+                    map: map,
+                    icon: image,
+                    title: place.name,
+                    position: place.geometry.location
+                });
+
+                markers.push(marker);
+
+                bounds.extend(place.geometry.location);
+            }
+
+            map.fitBounds(bounds);
+        });
+
+        google.maps.event.addListener(map, 'bounds_changed', function() {
+            var bounds = map.getBounds();
+            searchBox.setBounds(bounds);
+        });
+        }
+        loadGoogleMapsApi(initialize);
+    }]);
+
+    request.controller('requestCtrl', ['$scope', 'redirect', 'data', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', function($scope, redirect, data, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder){
+        loadGoogleMapsApi();
         var data, file;
         $scope.user = data;
         $scope.request = {
             property: {
                 first_rex_id: null,
-                address: "60 Edwards Court Burlingame",
-                mls_number: "1",
+                address: null,
+                mls_number: null,
                 image: null
             },
             realtor: {
-                first_name: "firstName",
-                last_name: "LastName",
-                bre_number: "4",
-                estate_agency: "5",
-                phone: "6",
-                email: "s.samoilenko@gmail.com",
+                first_name: null,
+                last_name: null,
+                bre_number: null,
+                estate_agency: null,
+                phone: null,
+                email: null,
                 image: null
             }
         }
@@ -118,9 +212,9 @@
         }
 
         $scope.save = function(){
-            this.codeAddress(this.request.property.address)
+            getInfoFromGeocoder({address:this.request.property.address})
                 .then(function(data){
-                    $scope.request.address = data;
+                    $scope.request.address = $scope.parseGoogleAddressComponents(data[0].address_components);
                     $scope.request.property.image = $scope.prepareImage($scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
                     $scope.request.realtor.image  = $scope.prepareImage($scope.cropperRealtorImage.container, 600, 300, 800, 400);
 
@@ -136,23 +230,6 @@
                     alert("We have some problems. Please try later.");
                 })
             ;
-        }
-
-        $scope.codeAddress = function(address){
-            var deferred = $q.defer();
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode( { 'address': address}, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    deferred.resolve(
-                        $scope.parseGoogleAddressComponents(results[0].address_components)
-                    );
-                } else {
-                    alert("Geocode was not successful for the following reason: " + status);
-                    deferred.reject(results);
-                }
-            });
-
-            return deferred.promise;
         }
 
         $scope.parseGoogleAddressComponents = function(data){
@@ -202,4 +279,5 @@
             redirect(path);
         }
     }]);
+
 })(settings);

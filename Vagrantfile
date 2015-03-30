@@ -11,7 +11,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.hostname = "lo.portal.1rex.com"
 
   config.vm.network :private_network, ip: '192.168.50.9'
-  config.vm.network :forwarded_port, guest: 80, host: 10080
+  config.vm.network :forwarded_port, guest: 80, host: 5009
   config.vm.network :forwarded_port, guest: 443, host: 10081
 
   config.vm.synced_folder '.', '/vagrant', nfs: true

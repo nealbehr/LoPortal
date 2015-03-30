@@ -43,3 +43,7 @@
 .upload input{
     opacity: 0;
 }
+
+.waiting{
+    display: none;
+}

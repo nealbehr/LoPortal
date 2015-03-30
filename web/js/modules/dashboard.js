@@ -59,6 +59,11 @@
             redirect("/flyer/new");
         }
 
+        $scope.createNewApproval = function(e){
+            e.preventDefault();
+            redirect('/request/approval');
+        }
+
         angular.element('.queue').click(function(e){
             var target = angular.element(e.target);
 

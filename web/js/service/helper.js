@@ -189,4 +189,53 @@
             return deferred.promise;
         };
     }]);
+
+    helperService.factory("loadGoogleMapsApi", [function(){
+        return function(initialize){
+            initialize = initialize || function(){};
+
+            if('google' in window){
+                initialize();
+
+                return;
+            }
+
+            window.initialize = initialize;
+
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places&callback=initialize';
+            document.body.appendChild(script);
+        }
+    }]);
+
+    helperService.factory("waitingScreen", [function(){
+        var container = angular.element('#waiting');
+        return {
+            show: function(){
+                container.show();
+            },
+            hide: function(){
+                container.hide();
+            }
+        }
+
+    }]);
+
+    helperService.factory("getInfoFromGeocoder", ['$q', function($q){
+        return function(request){
+            var deferred = $q.defer();
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode( request, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    deferred.resolve(results);
+                } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                    deferred.reject(results);
+                }
+            });
+
+            return deferred.promise;
+        }
+    }]);
 })(settings);
