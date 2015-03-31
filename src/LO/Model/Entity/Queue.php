@@ -41,7 +41,7 @@ class Queue extends Base{
 
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"flyer"})
      * @Assert\Type(type="numeric")
      */
     protected $realtor_id;
@@ -83,7 +83,7 @@ class Queue extends Base{
 
     /**
      * @Column(type="string")
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"flyer"})
      * @Assert\Length(
      *              max = 65536,
      *              maxMessage = "photo url cannot be longer than {{ limit }} characters"
@@ -140,6 +140,12 @@ class Queue extends Base{
 
     public function setState($param){
         $this->state = $param;
+
+        return $this;
+    }
+
+    public function setAddress($param){
+        $this->address = $param;
 
         return $this;
     }

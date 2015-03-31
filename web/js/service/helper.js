@@ -115,6 +115,22 @@
         };
     });
 
+    helperService.directive('googleAddress', ['getInfoFromGeocoder', '$q', function(getInfoFromGeocoder, $q) {
+        return {
+            require: 'ngModel',
+            restrict: '',
+            link: function(scope, elm, attrs, ctrl) {
+                if (!ctrl) {
+                    return;
+                }
+
+                ctrl.$asyncValidators.googleAddress = function(modelValue) {
+                    return getInfoFromGeocoder({address: modelValue});
+                };
+            }
+        };
+    }]);
+
 
     helperService.filter('avatar', function(){
         return function(input){
@@ -222,16 +238,59 @@
 
     }]);
 
+    helperService.factory("parseGoogleAddressComponents", [function(){
+        return function(data){
+            var result = {
+                address: '',
+                city:    null,
+                state:   null,
+                zip:     null
+            }
+
+            for(var i in data){
+                if($.inArray("street_number", data[i].types) != -1){
+                    result.address = data[i].long_name + ' ' + result.address;
+                    continue;
+                }
+
+                if($.inArray("route", data[i].types) != -1){
+                    result.address += ' ' + data[i].long_name;
+                    continue;
+                }
+
+                if($.inArray("locality", data[i].types) != -1){
+                    result.city = data[i].long_name;
+                    continue;
+                }
+
+                if($.inArray("administrative_area_level_1", data[i].types) != -1){
+                    result.state = data[i].short_name;
+                    continue;
+                }
+
+                if($.inArray("postal_code", data[i].types) != -1){
+                    result.zip = data[i].long_name;
+                    continue;
+                }
+            }
+
+            return result;
+        }
+    }]);
+
     helperService.factory("getInfoFromGeocoder", ['$q', function($q){
         return function(request){
             var deferred = $q.defer();
+            if(!('google' in window)) {
+                return $q.when();
+            }
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode( request, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     deferred.resolve(results);
                 } else {
-                    alert("Geocode was not successful for the following reason: " + status);
-                    deferred.reject(results);
+                    console.log("Geocode was not successful for the following reason: " + status);
+                    deferred.reject(status);
                 }
             });
 

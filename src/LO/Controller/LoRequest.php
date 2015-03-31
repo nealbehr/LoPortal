@@ -20,22 +20,46 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\ConstraintViolation;
 
 class LoRequest {
+    public function AddApprovalAction(Application $app, Request $request){
+        try{
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$app->user());
+            $queue = (new Queue())
+                ->setAddress($request->get('approval', [])['address'])
+                ->set1RexId($id)
+                ->setType(Queue::TYPE_PROPERTY_APPROVAL)
+                ->setUserId($app->user()->getId())
+
+            ;
+
+            $errors = $app->getValidator()->validate($queue);
+            if(count($errors)){
+                $data['property'] = [];
+                /** @var ConstraintViolation $error */
+                foreach($errors as $error){
+                    $data['property'][] = [$error->getPropertyPath() => $error->getMessage()];
+                }
+
+                throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+        }catch (\Exception $e){
+            $app->getMonolog()->addError($e);
+            $data['message'] = $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.';
+            return $app->json($data, $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
     public function addAction(Application $app, Request $request){
         try {
             $data = [];
             $app->getEntityManager()->beginTransaction();
 
-            $id = $this->sendRequestTo1Rex($app,
-                array_merge(
-                    $request->get('address'),
-                    [
-                        'inquiry_type' => 'Seller of home',
-                        'product_type' => 'HB',
-                        'inquirer' => 'mcoudsi',
-                        'agent_name' => (string)$app->user()
-                    ]
-                )
-            );
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$app->user());
 
             $helper = new Image($app, $request->get('realtor')['image'], '1rex.realtor');
             $photoUrl = $helper->downloadPhotoToS3andGetUrl(time().mt_rand(1, 100000));
@@ -71,7 +95,7 @@ class LoRequest {
 
             $queue->setPhoto($photoUrl);
 
-            $errors = $app->getValidator()->validate($queue);
+            $errors = $app->getValidator()->validate($queue, ['Default', 'flyer']);
             if(count($errors)){
                 $data['property'] = [];
                 /** @var ConstraintViolation $error */
@@ -96,8 +120,18 @@ class LoRequest {
         return $app->json("success");
     }
 
-    protected function sendRequestTo1Rex(Application $app, array $data){
+    protected function sendRequestTo1Rex(Application $app, array $address, $userName){
         try{
+            $data = array_merge(
+                $address,
+                [
+                    'inquiry_type' => 'Seller of home',
+                    'product_type' => 'HB',
+                    'inquirer' => 'mcoudsi',
+                    'agent_name' => $userName
+                ]
+            );
+
             $curl = new Curl();
             $curl->setBasicAuthentication($app->getConfigByName('firstrex', 'api', 'user'), $app->getConfigByName('firstrex', 'api', 'pass'));
             $curl->setHeader('Content-Type', 'application/json');

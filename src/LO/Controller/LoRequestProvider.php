@@ -24,6 +24,9 @@ class LoRequestProvider implements ControllerProviderInterface{
         $controllers
             ->post("/", "lo.request.controller:addAction");
 
+        $controllers
+            ->post("/approval", "lo.request.controller:AddApprovalAction");
+
         return $controllers;
     }
 } 

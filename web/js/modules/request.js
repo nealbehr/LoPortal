@@ -48,21 +48,54 @@
         }
     }
 
-    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder){
+    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', 'parseGoogleAddressComponents', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder, parseGoogleAddressComponents){
         $scope.goto = function(e){
             e.preventDefault();
 
             redirect('/');
         }
 
-        $scope.address = '';
+        $scope.message = null;
+
+        $scope.request = {
+            approval: {
+                address: ''
+            },
+            address: null
+        };
 
         var input = document.getElementById('searchPlace');
+
+        $scope.save = function(){
+            $scope.message = null;
+            waitingScreen.show();
+            getInfoFromGeocoder({address: this.request.approval.address})
+                .then(function(data){
+                    $scope.request.address = parseGoogleAddressComponents(data[0].address_components);
+                    $scope.request.approval.address = data[0].formatted_address;
+                    return $http.post('/request/approval', $scope.request);
+                })
+                .then(function(data){
+                    //success save on backend
+//                    redirect('/request/success');
+                }, function(error){
+                    if('message' in error.data){
+                        throw error.data.message;
+                    }
+                })
+                .catch(function(e){
+                    $scope.message = typeof e == 'string'? e: e.message;
+                })
+                .finally(function(){
+                    waitingScreen.hide();
+                })
+            ;
+        }
 
         function initialize() {
         var markers = [];
             var mapProp = {
-                center:new google.maps.LatLng(51.508742, -0.120850),
+                center:new google.maps.LatLng(38.88943782536077, -77.03526377677917),
                 zoom:10,
                 disableDefaultUI:true,
                 mapTypeId:google.maps.MapTypeId.ROADMAP
@@ -74,7 +107,7 @@
                 getInfoFromGeocoder({location: event.latLng})
                                 .then(function(address){
                                     if(address.length > 0){
-                                        $scope.address = address[0].formatted_address;
+                                        $scope.request.approval.address = address[0].formatted_address;
                                     }
                                 })
                                 .finally(function(){
@@ -102,9 +135,8 @@
             markers = [];
             var bounds = new google.maps.LatLngBounds();
             for (var i = 0, place; place = places[i]; i++) {
-                console.log(place)
                 var image = {
-                    url: place.url,
+                    url: place.icon,
                     size: new google.maps.Size(71, 71),
                     origin: new google.maps.Point(0, 0),
                     anchor: new google.maps.Point(17, 34),
@@ -135,7 +167,7 @@
         loadGoogleMapsApi(initialize);
     }]);
 
-    request.controller('requestCtrl', ['$scope', 'redirect', 'data', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', function($scope, redirect, data, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder){
+    request.controller('requestCtrl', ['$scope', 'redirect', 'data', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, data, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
         loadGoogleMapsApi();
         var data, file;
         $scope.user = data;
@@ -212,9 +244,11 @@
         }
 
         $scope.save = function(){
+            waitingScreen.show();
             getInfoFromGeocoder({address:this.request.property.address})
                 .then(function(data){
-                    $scope.request.address = $scope.parseGoogleAddressComponents(data[0].address_components);
+                    $scope.request.address = parseGoogleAddressComponents(data[0].address_components);
+                    $scope.request.property.address = data[0].formatted_address;
                     $scope.request.property.image = $scope.prepareImage($scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
                     $scope.request.realtor.image  = $scope.prepareImage($scope.cropperRealtorImage.container, 600, 300, 800, 400);
 
@@ -229,45 +263,10 @@
                 .catch(function(e){
                     alert("We have some problems. Please try later.");
                 })
+                .finally(function(){
+                    waitingScreen.hide();
+                })
             ;
-        }
-
-        $scope.parseGoogleAddressComponents = function(data){
-            var result = {
-                address: '',
-                city:    null,
-                state:   null,
-                zip:     null
-            }
-
-            for(var i in data){
-                if($.inArray("street_number", data[i].types) != -1){
-                    result.address = data[i].long_name + ' ' + result.address;
-                    continue;
-                }
-
-                if($.inArray("route", data[i].types) != -1){
-                    result.address += ' ' + data[i].long_name;
-                    continue;
-                }
-
-                if($.inArray("locality", data[i].types) != -1){
-                    result.city = data[i].long_name;
-                    continue;
-                }
-
-                if($.inArray("administrative_area_level_1", data[i].types) != -1){
-                    result.state = data[i].short_name;
-                    continue;
-                }
-
-                if($.inArray("postal_code", data[i].types) != -1){
-                    result.zip = data[i].long_name;
-                    continue;
-                }
-            }
-
-            return result;
         }
     }]);
 
