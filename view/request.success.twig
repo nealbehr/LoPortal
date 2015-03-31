@@ -8,7 +8,7 @@
             <strong>What do you want to do next?</strong>
             <div class="btn-holder">
                 <a href="#" class="btn btn-default" ng-click="goto($event, '/')">Back to Dashboard</a>
-                <a href="#" class="btn btn-default" ng-click="goto($event, '/flyer/new')">Request Another Flyer</a>
+                <a href="#" class="btn btn-default" ng-click="goto($event, request.url)">[[ request.title ]]</a>
             </div>
         </div>
     </div>

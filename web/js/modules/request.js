@@ -2,7 +2,7 @@
     "use strict";
     settings = settings || {};
 
-    var request = angular.module('requestModule', ['helperService'/*, 'ngImgCrop'*/]);
+    var request = angular.module('requestModule', ['helperService']);
 
     request.config(['$routeProvider', function($routeProvider) {
         $routeProvider.
@@ -11,7 +11,7 @@
                 controller:  'requestCtrl',
                 resolve: request.resolve()
             })
-            .when('/request/success',{
+            .when('/request/success/:type',{
                 templateUrl: '/partials/request.success',
                 controller:  'requestSuccessCtrl',
                 resolve: request.resolve()
@@ -77,7 +77,7 @@
                 })
                 .then(function(data){
                     //success save on backend
-//                    redirect('/request/success');
+                    redirect('/request/success/approval');
                 }, function(error){
                     if('message' in error.data){
                         throw error.data.message;
@@ -104,6 +104,22 @@
 
             google.maps.event.addListener(map, 'click', function(event) {
                 waitingScreen.show();
+
+                for (var i = 0, marker; marker = markers[i]; i++) {
+                    marker.setMap(null);
+                }
+
+                markers = [];
+
+                var marker = new google.maps.Marker({
+                    position: event.latLng,
+                    map: map
+                });
+
+                markers.push(marker);
+
+                map.setCenter(event.latLng);
+
                 getInfoFromGeocoder({location: event.latLng})
                                 .then(function(address){
                                     if(address.length > 0){
@@ -258,7 +274,7 @@
                 })
                 .then(function(data){
                     //success save on backend
-                    redirect('/request/success');
+                    redirect('/request/success/flyer');
                 })
                 .catch(function(e){
                     alert("We have some problems. Please try later.");
@@ -270,12 +286,27 @@
         }
     }]);
 
-    request.controller('requestSuccessCtrl', ['redirect', '$scope', 'data', function(redirect, $scope, data){
+    request.controller('requestSuccessCtrl', ['redirect', '$scope', 'data', '$routeParams', function(redirect, $scope, data, $routeParams){
         $scope.user = data;
+
+        $scope.request = getRequestByType($routeParams.type);
+
         $scope.goto = function(e, path){
             e.preventDefault();
 
             redirect(path);
+        }
+
+
+        function getRequestByType(type){
+            return type == 'approval'
+                        ? new requestBase('Request property approval', '/request/approval')
+                        : new requestBase('Request Another Flyer', '/request/approval')
+            ;
+        }
+        function requestBase(title, url){
+            this.title = title;
+            this.url   = url;
         }
     }]);
 
