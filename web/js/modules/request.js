@@ -301,7 +301,7 @@
         function getRequestByType(type){
             return type == 'approval'
                         ? new requestBase('Request property approval', '/request/approval')
-                        : new requestBase('Request Another Flyer', '/request/approval')
+                        : new requestBase('Request Another Flyer', '/flyer/new')
             ;
         }
         function requestBase(title, url){
