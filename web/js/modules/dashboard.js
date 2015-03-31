@@ -10,20 +10,21 @@
                         templateUrl: '/partials/dashboard',
                         controller:  'dashboardCtrl',
                         resolve: {
-                            data: ["$q", "$http", function($q, $http){
-                                var deferred = $q.defer();
-
-                                $http.get('/dashboard/')
+                            user: ["userService", function(userService){
+                                return userService.get();
+                            }],
+                            data: ["$q", "$http", 'waitingScreen', function($q, $http, waitingScreen){
+                                   var deferred = $q.defer();
+                                   waitingScreen.show();
+                                   $http.get('/dashboard/')
                                     .success(function(data){
                                         deferred.resolve(data)
                                     })
                                     .error(function(data){
-                                        //actually you'd want deffered.reject(data) here
-                                        //but to show what would happen on success..
                                         deferred.reject(data);
                                     })
                                     .finally(function(){
-
+                                        waitingScreen.hide();
                                     })
                                 ;
 
@@ -33,15 +34,15 @@
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', 'data', '$http', '$timeout', function($scope, redirect, data, $http, $timeout){
-        $scope.user         = data.user;
+    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'user', 'data', function($scope, redirect, $http, user, data){
+        $scope.user         = user;
         $scope.dashboard    = data.dashboard;
         $scope.settingRows  = {}
         $scope.queueChecked = true;
         $scope.queueStateApproved = settings.queue.stateApproved;
         $scope.settingRows[settings.queue.stateInProgres] = {id: 'inProcess', title: 'In process', isExpand: false};
-        $scope.settingRows[settings.queue.stateRequested]   = {id: 'requested', title: 'Requested', isExpand: false};
-        $scope.settingRows[settings.queue.stateApproved]    = {id: 'approved', title: 'Approved', isExpand: false};
+        $scope.settingRows[settings.queue.stateRequested] = {id: 'requested', title: 'Requested', isExpand: false};
+        $scope.settingRows[settings.queue.stateApproved]  = {id: 'approved', title: 'Approved', isExpand: false};
 
         var isExpand = true;
         for(var i in $scope.dashboard){

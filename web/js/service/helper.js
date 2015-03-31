@@ -280,10 +280,10 @@
 
     helperService.factory("getInfoFromGeocoder", ['$q', function($q){
         return function(request){
-            var deferred = $q.defer();
             if(!('google' in window)) {
                 return $q.when();
             }
+            var deferred = $q.defer();
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode( request, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {

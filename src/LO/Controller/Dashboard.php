@@ -16,7 +16,6 @@ class Dashboard {
     public function indexAction(Application $app){
 
         return $app->json([
-            'user'      => $app->user()->getPublicInfo(),
             'dashboard' => $app->getDashboardManager()->getByUserId($app->user()->getId()),
         ]);
     }

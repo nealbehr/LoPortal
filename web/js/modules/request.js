@@ -26,29 +26,14 @@
 
     request.resolve = function(){
         return {
-            data: ["$q", "$http", function($q, $http){
-                var deferred = $q.defer();
-
-                $http.get('/user/me')
-                    .success(function(data){
-                        deferred.resolve(data)
-                    })
-                    .error(function(data){
-                        //actually you'd want deffered.reject(data) here
-                        //but to show what would happen on success..
-                        deferred.reject(data);
-                    })
-                    .finally(function(){
-
-                    })
-                ;
-
-                return deferred.promise;
+            user: ["userService", function(userService){
+                return userService.get();
             }]
         }
     }
 
-    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', 'parseGoogleAddressComponents', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder, parseGoogleAddressComponents){
+    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', 'parseGoogleAddressComponents', 'user', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder, parseGoogleAddressComponents, user){
+        $scope.user = user;
         $scope.goto = function(e){
             e.preventDefault();
 
@@ -183,10 +168,9 @@
         loadGoogleMapsApi(initialize);
     }]);
 
-    request.controller('requestCtrl', ['$scope', 'redirect', 'data', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, data, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
+    request.controller('requestCtrl', ['$scope', 'redirect', 'user', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, user, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
         loadGoogleMapsApi();
-        var data, file;
-        $scope.user = data;
+        $scope.user = user;
         $scope.request = {
             property: {
                 first_rex_id: null,
@@ -286,8 +270,8 @@
         }
     }]);
 
-    request.controller('requestSuccessCtrl', ['redirect', '$scope', 'data', '$routeParams', function(redirect, $scope, data, $routeParams){
-        $scope.user = data;
+    request.controller('requestSuccessCtrl', ['redirect', '$scope', 'user', '$routeParams', function(redirect, $scope, user, $routeParams){
+        $scope.user = user;
 
         $scope.request = getRequestByType($routeParams.type);
 
