@@ -57,6 +57,43 @@
         }
     }]);
 
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", function(redirect, userService, $http){
+        return { restrict: 'EA',
+            templateUrl: '/partials/user.form',
+            scope: {
+                officer: "=loOfficer",
+                title:   "@loTitle",
+                roles:   "=loRoles"
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.selected;
+                scope.$watch('roles', function(newVal, oldVal){
+                    if(newVal == oldVal){
+                        return;
+                    }
+
+                    scope.selected = scope.officer.roles.length > 0? scope.officer.roles[0]: scope.roles[0].key;
+                });
+
+                userService.get()
+                    .then(function(user){
+                        scope.user = user;
+                });
+
+
+                scope.save = function(){
+                    scope.officer.roles = [scope.selected];
+                    scope.officer.save()
+                        .then(function(data){
+                            console.log(data);
+                    }).finally(function(){
+
+                    });
+                }
+            }
+        }
+    }]);
+
     helperService.directive('loDashboardRow', ['$timeout', function($timeout){
         return { restrict: 'EA',
             templateUrl: '/partials/dashboard.row',
@@ -297,4 +334,13 @@
             return deferred.promise;
         }
     }]);
+
+    helperService.filter('ucFirst', function(){
+        return function(input){
+            return input == undefined? input: input.replace(/\b[a-z]/, function(letter) {
+                return letter.toUpperCase();
+            });
+        }
+    })
+
 })(settings);

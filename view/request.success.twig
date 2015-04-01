@@ -7,8 +7,8 @@
             <hr>
             <strong>What do you want to do next?</strong>
             <div class="btn-holder">
-                <a href="#" class="btn btn-default" ng-click="goto($event, '/')">Back to Dashboard</a>
-                <a href="#" class="btn btn-default" ng-click="goto($event, request.url)">[[ request.title ]]</a>
+                <a ng-href="/#/" class="btn btn-default">Back to Dashboard</a>
+                <a ng-href="/#/[[ request.url ]]" class="btn btn-default">[[ request.title ]]</a>
             </div>
         </div>
     </div>

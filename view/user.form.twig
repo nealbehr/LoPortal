@@ -1,0 +1,44 @@
+<form ng-submit="formLogin.$valid && save()" class="css-form" novalidate name="formLogin">
+    <div class="row edit-user">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+            <h2>[[ title ]]</h2>
+            <select class="form-control input-lg" ng-if="user.id != officer.id" ng-model="selected">
+                <option ng-repeat="role in roles|orderBy:'-title'" value="[[ role.key ]]">[[ role.title|ucFirst ]]</option>
+            </select>
+            <div class="inputs-holder">
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="First Name" ng-model="officer.first_name">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="Last Name" ng-model="officer.last_name">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="Title" ng-model="officer.title">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="Sales Director" ng-model="officer.sales_director">
+                </div>
+            </div>
+            <!-- textarea class="form-control" cols="30" rows="2" placeholder="Lender"></textarea -->
+            <div class="inputs-holder">
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="Primary Phone" ng-model="officer.phone">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="Mobile Phone" ng-model="officer.mobile">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="email" placeholder="Email" ng-model="officer.email">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="NMLS #" ng-model="officer.nmls">
+                </div>
+            </div>
+            <button class="btn btn-default btn-lg">Save</button>
+            <div class="bottom-nav">
+                <a ng-if="officer.id && user.id != officer.id" href="#" class="delete pull-right">Delete user</a>
+                <a href="#" class="back">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

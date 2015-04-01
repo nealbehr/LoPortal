@@ -9,7 +9,6 @@
 namespace LO\Model\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Id;
@@ -58,7 +57,6 @@ class User extends Base implements UserInterface{
 
     /**
      * @Column(type="string", nullable=true)
-     * @NotBlank
      */
     protected $gender;
 
@@ -161,9 +159,8 @@ class User extends Base implements UserInterface{
      */
     public static function getAllowedRoles(){
         return [
-            static::ROLE_ADMIN,
-            static::ROLE_COACH,
-            static::ROLE_USER,
+            'user'  => static::ROLE_USER,
+            'admin' => static::ROLE_ADMIN,
         ];
     }
 
@@ -328,6 +325,14 @@ class User extends Base implements UserInterface{
         return $this;
     }
 
+    public function removeRole($role){
+
+    }
+
+    public function setRoles(array $roles){
+
+    }
+
     public function getState(){
         return $this->state;
     }
@@ -482,5 +487,25 @@ class User extends Base implements UserInterface{
         unset($result['password'], $result['salt'], $result['state']);
 
         return $result;
+    }
+
+    public function getTitle(){
+        return $this->title;
+    }
+
+    public function getSalesDirector(){
+        return $this->sales_director;
+    }
+
+    public function getPhone(){
+        return $this->phone;
+    }
+
+    public function getMobile(){
+        return $this->mobile;
+    }
+
+    public function getNmls(){
+        return $this->nmls;
     }
 }

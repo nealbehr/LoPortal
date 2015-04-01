@@ -43,12 +43,6 @@
 
     request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', 'parseGoogleAddressComponents', 'user', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder, parseGoogleAddressComponents, user){
         $scope.user = user;
-        $scope.goto = function(e){
-            e.preventDefault();
-
-            redirect('/');
-        }
-
         $scope.message = null;
 
         $scope.request = {
@@ -198,12 +192,6 @@
             }
         }
 
-        $scope.goToDashboard = function(e){
-            e.preventDefault();
-
-            redirect('/');
-        }
-
         $scope.fileSelect = function(evt, variable, imageInfo) {
             var file = evt.currentTarget.files[0];
 
@@ -284,17 +272,10 @@
 
         $scope.request = getRequestByType($routeParams.type);
 
-        $scope.goto = function(e, path){
-            e.preventDefault();
-
-            redirect(path);
-        }
-
-
         function getRequestByType(type){
             return type == 'approval'
-                        ? new requestBase('Request property approval', '/request/approval')
-                        : new requestBase('Request Another Flyer', '/flyer/new')
+                        ? new requestBase('Request property approval', 'request/approval')
+                        : new requestBase('Request Another Flyer', 'flyer/new')
             ;
         }
         function requestBase(title, url){

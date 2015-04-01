@@ -5,6 +5,7 @@
             <div class="dropdown user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="hidden-xs">[[ user|fullName ]]</span> <img ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
                 <ul class="dropdown-menu" role="menu">
+                    <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>
                     <li><a href="#">Requests Queue</a></li>
                     <li><a href="#">Custom Collateral</a></li>
                     <li><a href="#">Request flyer</a></li>

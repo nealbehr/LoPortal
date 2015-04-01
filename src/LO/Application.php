@@ -1,6 +1,8 @@
 <?php
 namespace LO;
 
+use LO\Model\Entity\User;
+use LO\Validator\UniqueValidator;
 use Silex\Application\SecurityTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider;
@@ -20,6 +22,7 @@ use LO\Provider\ApiKeyUserServiceProvider;
 use LO\Provider\Amazon;
 use LO\Model\Manager\DashboardManager;
 use Symfony\Component\Validator\Validator;
+use Symfony\Component\Form\FormFactory;
 
 class Application extends \Silex\Application{
     use SecurityTrait;
@@ -98,8 +101,10 @@ class Application extends \Silex\Application{
         $this->register(new Provider\MonologServiceProvider(), $this->getConfigByName('monolog.config'))
             ->register(new Provider\DoctrineServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
+            ->register(new LOProvider\UniqueValidatorServiceProvider())
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\ValidatorServiceProvider())
+            ->register(new Provider\FormServiceProvider())
             ->register(new Amazon())
             ->register(new Provider\SecurityServiceProvider())
             ->register(new DoctrineOrmManagerRegistryProvider())
@@ -187,6 +192,10 @@ class Application extends \Silex\Application{
             ],
         ];
 
+        $this['security.access_rules'] = [
+            ['^/admin'  , User::ROLE_ADMIN],
+        ];
+
         return $this;
     }
 
@@ -197,6 +206,7 @@ class Application extends \Silex\Application{
         $this->mount('/user',       new Controller\UserProvider());
         $this->mount('/request',    new Controller\LoRequestProvider());
         $this->mount('/queue',      new Controller\QueueProvider());
+        $this->mount('/admin',      new Controller\AdminProvider());
 
         $this->match('/', function(){
             $this->getTwig()->addFilter(new \Twig_SimpleFilter('ebase64', 'base64_encode'));
@@ -260,5 +270,12 @@ class Application extends \Silex\Application{
      */
     public function getS3(){
         return $this['amazon.s3'];
+    }
+
+    /**
+     * @return FormFactory
+     */
+    public final function getFormFactory() {
+        return $this["form.factory"];
     }
 }
