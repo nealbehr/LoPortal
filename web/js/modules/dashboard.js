@@ -9,6 +9,9 @@
                     when('/', {
                         templateUrl: '/partials/dashboard',
                         controller:  'dashboardCtrl',
+                        access: {
+                            isFree: false
+                        },
                         resolve: {
                             user: ["userService", function(userService){
                                 return userService.get();

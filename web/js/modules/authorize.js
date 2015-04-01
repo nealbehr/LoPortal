@@ -8,11 +8,14 @@
         $routeProvider.
             when('/login', {
                 templateUrl: '/partials/login',
-                controller:  'authorizeCtrl'
+                controller:  'authorizeCtrl',
+                access: {
+                    isFree: true
+                }
             });
     }]);
 
-    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', '$compile', function($scope, $http, redirect, $cookieStore, TOKEN_KEY, $compile){
+    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', '$compile', 'waitingScreen', function($scope, $http, redirect, $cookieStore, TOKEN_KEY, $compile, waitingScreen){
         if($cookieStore.get(TOKEN_KEY)){
             redirect('/');
         }
@@ -52,7 +55,7 @@
 
         $scope.signin = function(){
             this.errorMessage = null;
-            // 1) show gray screen
+            waitingScreen.show();
             $http.post('/authorize/signin', this.user)
                 .success(function(data){
                     $cookieStore.put(TOKEN_KEY, data);
@@ -62,7 +65,7 @@
                     $scope.errorMessage = data.message;
                 })
                 .finally(function(){
-                    // 1) hide gray screen
+                    waitingScreen.hide();
                 });
             ;
         }

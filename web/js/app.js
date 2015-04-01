@@ -46,9 +46,15 @@
             };
         }]);
     }])
-    .run(['$rootScope', function($rootScope){
+    .run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location', function($rootScope, TOKEN_KEY, $cookies, redirect, $location){
             $rootScope.debug = settings.debug;
-    }])
+
+            $rootScope.$on('$routeChangeStart', function(e, next, curr){
+                if ('access' in next && !next.access.isFree && $cookies[TOKEN_KEY] == undefined) {
+                    redirect('/login', $location.url());
+                }
+            })
+        }])
     ;
 
     app.config(['$routeProvider',

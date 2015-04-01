@@ -9,16 +9,25 @@
             when('/flyer/new', {
                 templateUrl: '/partials/request.flyer.new',
                 controller:  'requestCtrl',
+                access: {
+                    isFree: false
+                },
                 resolve: request.resolve()
             })
             .when('/request/success/:type',{
                 templateUrl: '/partials/request.success',
                 controller:  'requestSuccessCtrl',
+                access: {
+                    isFree: false
+                },
                 resolve: request.resolve()
             })
             .when('/request/approval', {
                 templateUrl: '/partials/request.property.approval',
                 controller:  'requestPropertyApprovalCtrl',
+                access: {
+                    isFree: false
+                },
                 resolve: request.resolve()
             })
         ;
