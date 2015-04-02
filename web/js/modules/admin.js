@@ -14,6 +14,14 @@
                     isFree: false
                 }
             })
+            .when('/admin/user/:id/edit', {
+                templateUrl: '/partials/admin.panel.user',
+                controller:  'adminUserEditCtrl',
+                resolve: admin.resolve(),
+                access: {
+                    isFree: false
+                }
+            })
             .when('/admin', {
                 templateUrl: '/partials/admin',
                 controller:  'adminCtrl',
@@ -28,24 +36,21 @@
         $scope.user    = user;
         $scope.officer = createUser();
 
-        $scope.roles   = [];
         $scope.messageContainer = angular.element("#adminMessage");
+    }]);
 
-        $http.get('/admin/roles')
-            .success(function(data){
-                $scope.roles = [];
-                for(var i in data){
-                    $scope.roles.push({'title': i, key: data[i]});
-                }
-            })
-            .error(function(data){
-                console.log(data);
-            });
+    admin.controller('adminUserEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'user', 'createUser', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, user, createUser, $routeParams){
+        $scope.user    = user;
+        createUser().get($routeParams.id)
+            .then(function(user){
+                $scope.officer = user;
+        });
 
+        $scope.messageContainer = angular.element("#adminMessage");
     }]);
 
     admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'user', function($scope, $http, redirect, $compile, waitingScreen, user){
-        $scope.user         = user;
+        $scope.user = user;
     }]);
 
     admin.directive('loAdminNavBar', [function(){

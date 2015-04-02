@@ -23,7 +23,7 @@
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
             <h2>[[ title ]]</h2>
             <select class="form-control input-lg"
-                    ng-if="user.id != officer.id"
+                    ng-if="user.id != officer.id && user.isAdmin()"
                     ng-model="$parent.selected"
                     ng-options="role.title|ucFirst for role in roles|orderBy:'-title' track by role.key"
             ></select>

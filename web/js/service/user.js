@@ -22,7 +22,7 @@
                 this.mobile;
                 this.email;
                 this.nmls;
-                this.roles = [];
+                this.roles = {};
 
                 var self = this;
 
@@ -40,16 +40,23 @@
                 }
 
                 this.isAdmin = function(){
-                    return $.inArray('ROLE_ADMIN', this.roles) != -1;
+                    for(var i in this.roles){
+                        if(this.roles[i] == 'ROLE_ADMIN'){
+                            return true;
+                        }
+                    }
+
+                    return false;
                 }
 
-                this.get = function(){
+                this.get = function(id){
+                    id = id || "me";
                     if(this.isLogged){
                         return $q.when(this);
                     }
 
                     var deferred = $q.defer();
-                    $http.get('/user/me')
+                    $http.get('/user/' + id)
                         .success(function(data){
                             self.isLogged = true;
                             for(var i in data){

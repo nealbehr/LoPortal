@@ -62,23 +62,37 @@
             templateUrl: '/partials/user.form',
             scope: {
                 officer:   "=loOfficer",
-                roles:     "=loRoles",
                 container: "=loContainer"
             },
             link: function(scope, element, attrs, controllers){
-                scope.selected;
+                scope.roles = [];
+                scope.selected = {};
+                scope.user = {}
+                scope.officer = {}
 
                 scope.$watch('officer.id', function(newVal, oldVal){
-                    scope.title   = newVal? 'Edit User': 'New User';
-                })
-
-                scope.$watch('roles', function(newVal, oldVal){
-                    if(newVal == oldVal){
+                    if(newVal == scope.user.id){
+                        scope.title = "Edit Profile";
                         return;
                     }
-                    scope.selected =  scope.roles[0];
+
+                    scope.title = newVal? 'Edit User': 'New User';
+                })
+
+                userService.get()
+                    .then(function(user){
+                        scope.user = user;
+                        if(scope.user.isAdmin() && scope.roles.length == 0){
+                            scope.loadRoles();
+                        }
                 });
 
+                scope.$watch('officer', function(newVal){
+                    scope.setSelected(newVal);
+                });
+                scope.$watch('roles', function(newVal){
+                    scope.setSelected(newVal);
+                });
 
                 scope.isValidEmail = function(form){
                     if(!form.email){
@@ -87,11 +101,6 @@
 
                     return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
                 }
-
-                userService.get()
-                    .then(function(user){
-                        scope.user = user;
-                });
 
                 scope.delete = function(e){
                     e.preventDefault();
@@ -148,6 +157,45 @@
                         });
 
                     container.html($compile(angularDomEl)(scope));
+                }
+
+                scope.loadRoles = function(){
+                    $http.get('/admin/roles')
+                        .success(function(data){
+                            scope.roles = [];
+                            for(var i in data){
+                                scope.roles.push({'title': i, key: data[i]});
+                            }
+
+                            if(!scope.selected.key){
+                                scope.selected =  scope.roles[0];
+                            }
+                        })
+                        .error(function(data){
+                            console.log(data);
+                        }
+                    );
+                }
+
+                scope.setSelected = function(newVal){
+                    if(!newVal || !scope.officer.roles || scope.roles.length < 1){
+                        return;
+                    }
+
+                    var officerRole;
+                    for(var i in scope.officer.roles){
+                        officerRole = scope.officer.roles[i];
+                        break;
+                    }
+
+                    console.log(scope.roles)
+
+                    for(var i in scope.roles){
+                        if(scope.roles[i].key == officerRole){
+                            scope.selected =  scope.roles[i];
+                            break;
+                        }
+                    }
                 }
 
             }
