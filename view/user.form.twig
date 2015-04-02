@@ -1,4 +1,24 @@
-<form ng-submit="formLogin.$valid && save()" class="css-form" novalidate name="formLogin">
+<form ng-submit="formUser.$valid && save()" class="css-form" novalidate name="formUser">
+    <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formUser)">
+        <span ng-show="formUser.email.$error.email">The entered email is invalid.</span>
+        <span ng-show="formUser.email.$error.required">Email can't be empty.</span>
+    </div>
+
+    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.phone.$error.usaPhoneFormat">
+        Please input a valid US phone number including 3 digit area code and 7 digit number.
+    </div>
+
+    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.first_name.$error.loName">
+        First name is invalid
+    </div>
+    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.last_name.$error.loName">
+        Last name is invalid
+    </div>
+
+    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.nmls.$error.number">
+        NMLS # should be of number.
+    </div>
+
     <div class="row edit-user">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
             <h2>[[ title ]]</h2>
@@ -9,10 +29,10 @@
             ></select>
             <div class="inputs-holder">
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="First Name" ng-model="officer.first_name">
+                    <input class="input-lg" type="text" placeholder="First Name" ng-model="officer.first_name" name="first_name" lo-name-validator ng-model-options="{ updateOn: 'blur' }">
                 </div>
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="Last Name" ng-model="officer.last_name">
+                    <input class="input-lg" type="text" placeholder="Last Name" ng-model="officer.last_name" name="last_name" lo-name-validator ng-model-options="{ updateOn: 'blur' }">
                 </div>
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Title" ng-model="officer.title">
@@ -24,16 +44,16 @@
             <!-- textarea class="form-control" cols="30" rows="2" placeholder="Lender"></textarea -->
             <div class="inputs-holder">
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="Primary Phone" ng-model="officer.phone">
+                    <input class="input-lg" type="text" placeholder="Primary Phone" ng-model="officer.phone" name="phone" usa-phone ng-model-options="{ updateOn: 'blur' }">
                 </div>
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Mobile Phone" ng-model="officer.mobile">
                 </div>
                 <div class="input">
-                    <input class="input-lg" type="email" placeholder="Email" ng-model="officer.email">
+                    <input class="input-lg" type="email" placeholder="Email" ng-model="officer.email" required="" name="email">
                 </div>
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="NMLS #" ng-model="officer.nmls">
+                    <input class="input-lg" type="number" placeholder="NMLS #" ng-model="officer.nmls" name="nmls" usa-phone ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
             <button class="btn btn-default btn-lg">Save</button>

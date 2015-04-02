@@ -79,6 +79,15 @@
                     scope.selected =  scope.roles[0];
                 });
 
+
+                scope.isValidEmail = function(form){
+                    if(!form.email){
+                        return;
+                    }
+
+                    return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
+                }
+
                 userService.get()
                     .then(function(user){
                         scope.user = user;
@@ -219,6 +228,49 @@
         };
     }]);
 
+    helperService.directive('usaPhone', [function(){
+        var phoneFormat = /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/;
+        return {
+            require: 'ngModel',
+            restrict: '',
+            link: function(scope, elm, attrs, ctrl) {
+                if (!ctrl) {
+                    return;
+                }
+
+                ctrl.$validators.usaPhoneFormat = function(modelValue, viewValue){
+                    if (ctrl.$isEmpty(modelValue)) {
+                        // consider empty models to be valid
+                        return true;
+                    }
+                    return phoneFormat.test(viewValue);
+                }
+
+            }
+        };
+    }]);
+
+    helperService.directive('loNameValidator', [function(){
+        var nameFormat = /^([A-Za-z0-9_\s]+)$/;
+        return {
+            require: 'ngModel',
+            restrict: '',
+            link: function(scope, elm, attrs, ctrl) {
+                if (!ctrl) {
+                    return;
+                }
+
+                ctrl.$validators.loName = function(modelValue, viewValue){
+                    if (ctrl.$isEmpty(modelValue)) {
+                        // consider empty models to be valid
+                        return true;
+                    }
+                    return nameFormat.test(viewValue);
+                }
+
+            }
+        };
+    }]);
 
     helperService.filter('avatar', function(){
         return function(input){

@@ -325,12 +325,20 @@ class User extends Base implements UserInterface{
         return $this;
     }
 
-    public function removeRole($role){
+    public function removeRole($removableRole){
+        foreach($this->roles as $k => $role){
+            if($role == $removableRole){
+                unset($this->roles[$k]);
+            }
+        }
 
+        return $this;
     }
 
     public function setRoles(array $roles){
+        $this->roles = $roles;
 
+        return $this;
     }
 
     public function getState(){
