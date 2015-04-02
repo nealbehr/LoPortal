@@ -26,6 +26,9 @@ class AdminProvider implements ControllerProviderInterface {
             ->get("/roles", "admin.controller:getRolesAction");
 
         $controllers
+            ->get("/user", "admin.controller:getUsersAction");
+
+        $controllers
             ->post("/user", "admin.controller:addUserAction");
 
         $controllers

@@ -30,7 +30,6 @@ class User extends Base implements UserInterface{
 
     const STATE_ACTIVE  = 1;
     const STATE_BANNED  = 2;
-    const STATE_DELETED = 3;
 
     /**
      * @Id
@@ -150,7 +149,6 @@ class User extends Base implements UserInterface{
         return [
             self::STATE_ACTIVE,
             self::STATE_BANNED,
-            self::STATE_DELETED,
         ];
     }
 

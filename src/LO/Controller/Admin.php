@@ -18,8 +18,55 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Form\Form;
 
 class Admin {
+    const USER_LIMIT    = 20;
+
+    const KEY_SEARCH    = 'filterValue';
+    const KEY_PAGE      = 'page';
+    const KEY_SORT      = 'sort';
+    const KEY_DIRECTION = 'direction';
+    const DEFAULT_SORT_FIELD_NAME = 'id';
+    const DEFAULT_SORT_DIRECTION  = 'asc';
+
+    const KEY_STATE           = 'state';
+
     /** @var array  */
     private $errors = [];
+
+    protected function getOrderDirection($direction){
+        return in_array(strtolower($direction), ['asc', 'desc'])? $direction: self::DEFAULT_SORT_DIRECTION;
+    }
+
+    public function getUsersAction(Application $app, Request $request){
+        /** @var \Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination $pagination */
+        $pagination = $app->getPaginator()->paginate(
+            $this->getUserList($request, $app),
+            (int) $request->get(self::KEY_PAGE, 1),
+            self::USER_LIMIT,
+            [
+                'pageParameterName'          => self::KEY_PAGE,
+                'sortFieldParameterName'     => self::KEY_SORT,
+                'filterValueParameterName'   => self::KEY_SEARCH,
+                'sortDirectionParameterName' => self::KEY_DIRECTION,
+                'defaultSortFieldName'       => self::DEFAULT_SORT_FIELD_NAME,
+                'defaultSortDirection'       => self::DEFAULT_SORT_DIRECTION,
+            ]
+        );
+
+        $items = [];
+        /** @var User $item */
+        foreach($pagination->getItems() as $item){
+            $items[$item->getId()] = $item->getPublicInfo();
+        }
+
+        $a = $pagination->getPaginationData();
+
+        return $app->json([
+            'pagination'    => $pagination->getPaginationData(),
+            'keySearch'     => self::KEY_SEARCH,
+            'keyState'      => self::KEY_STATE,
+            'users'         => $items,
+        ]);
+    }
 
     public function getRolesAction(Application $app){
         return $app->json(User::getAllowedRoles());
@@ -132,4 +179,37 @@ class Admin {
     private function removeExtraFields($requestData, $form){
         return array_intersect_key($requestData, $form->all());
     }
+
+    private function getUserList(Request $request, Application $app){
+        $q = $app->getEntityManager()->createQueryBuilder()
+            ->select('u')
+            ->from(User::class, 'u')
+            ->where('u.state = :deleted')
+            ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION)))
+            ->setParameter('deleted', User::STATE_ACTIVE)
+        ;
+
+        if($request->get(self::KEY_SEARCH)){
+            $q->andWhere(
+                    $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.first_name)", ':param'),
+                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.last_name)", ':param'),
+                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.email)", ':param'),
+                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.phone)", ':param'),
+                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.roles)", ':param')
+                    )
+                )
+                ->setParameter('param', '%'.strtolower($request->get(self::KEY_SEARCH)).'%')
+            ;
+        }
+
+        return $q->getQuery();
+    }
+
+    private function getOrderKey($id){
+        $allowFields = ['id', 'first_name', 'last_name', 'email'];
+
+        return 'u.'.(in_array($id, $allowFields)? $id: self::DEFAULT_SORT_FIELD_NAME);
+    }
+
 } 

@@ -106,6 +106,7 @@ class Application extends \Silex\Application{
             ->register(new Provider\ValidatorServiceProvider())
             ->register(new Provider\FormServiceProvider())
             ->register(new Amazon())
+            ->register(new LOProvider\Paginator())
             ->register(new Provider\SecurityServiceProvider())
             ->register(new DoctrineOrmManagerRegistryProvider())
             ->register(new ApiKeyAuthenticationServiceProvider())
@@ -277,5 +278,12 @@ class Application extends \Silex\Application{
      */
     public final function getFormFactory() {
         return $this["form.factory"];
+    }
+
+    /**
+     * @return \Knp\Component\Pager\Paginator
+     */
+    public function getPaginator(){
+        return $this['paginator'];
     }
 }

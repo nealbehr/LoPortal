@@ -31,3 +31,14 @@ amazon:
     securityCredentials:
       key:    AKIAJGGPNM46RAXZIFDA
       secret: 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
+
+knp_paginator:
+    page_range: 5
+    default_options:
+        page_name: page
+        sort_field_name: sort
+        sort_direction_name: direction
+        distinct: true
+    template:
+        pagination: pagination.twig,
+        sortable:   Pagination/sortable_link.html.twig

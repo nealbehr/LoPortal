@@ -62,6 +62,20 @@
         }
     }]);
 
+    admin.directive('loAdminUsers', ['$http', function($http){
+        return { restrict: 'EA',
+            templateUrl: '/partials/admin.panel.users',
+            link: function(scope, element, attrs, controllers){
+                scope.pagination = {};
+                scope.users = [];
+                $http.get('/admin/user').success(function(data){
+                    scope.pagination = data.pagination;
+                    scope.users      = data.users;
+                });
+            }
+        }
+    }]);
+
     admin.resolve = function(){
         return {
             user: ["userService", function(userService){
