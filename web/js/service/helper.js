@@ -35,7 +35,7 @@
         }
     }]);
 
-    helperService.directive('loNavbarHead', ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', function($http, $cookieStore, redirect, TOKEN_KEY){
+    helperService.directive('loNavbarHead', ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', 'userService', function($http, $cookieStore, redirect, TOKEN_KEY, userService){
         return { restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
@@ -44,7 +44,10 @@
                     $http.delete('/logout')
                         .success(function(data){
                             $cookieStore.remove(TOKEN_KEY)
-                            redirect('/login');
+                            userService.get().then(function(user){
+                                user.clear();
+                                redirect('/login');
+                            });
                         })
                         .finally(function(){
 
