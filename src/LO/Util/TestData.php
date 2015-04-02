@@ -47,6 +47,20 @@ class TestData {
         $this->app->getEntityManager()->flush();
     }
 
+    public function createAdmin(){
+        $user = new User();
+        $user->setEmail('admin@1rex.com')
+             ->setFirstName('AdminFirst')
+             ->setLastName('AdminLast')
+             ->setSalt($user->generateSalt())
+             ->setPassword($this->app->encodePassword($user, '123456'))
+             ->addRole(User::ROLE_ADMIN)
+        ;
+
+        $this->app->getEntityManager()->persist($user);
+        $this->app->getEntityManager()->flush();
+    }
+
     public function createAndrey(){
         $user = new User();
         $user->setEmail('andriy.lypovskiy@appsorama.com')

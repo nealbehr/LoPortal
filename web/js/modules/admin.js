@@ -26,10 +26,11 @@
 
     admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'user', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, user, createUser){
         $scope.user    = user;
-        $scope.title   = 'New User'
         $scope.officer = createUser();
-        console.log($scope.officer)
+
         $scope.roles   = [];
+        $scope.messageContainer = angular.element("#adminMessage");
+
         $http.get('/admin/roles')
             .success(function(data){
                 $scope.roles = [];

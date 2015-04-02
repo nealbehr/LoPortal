@@ -14,14 +14,14 @@
             return new function(){
                 this.isLogged = false;
                 this.id;
-                this.first_name = 'sergey';
-                this.last_name = 'samoilenko';
-                this.title = 'titlSerg';
-                this.sales_director = '';
-                this.phone = '0951295';
-                this.mobile = '';
-                this.email = 's.samoilenko@gmail.com';
-                this.nmls = '';
+                this.first_name;
+                this.last_name;
+                this.title;
+                this.sales_director;
+                this.phone;
+                this.mobile;
+                this.email;
+                this.nmls;
                 this.roles = [];
 
                 var self = this;
@@ -66,6 +66,38 @@
                     return deferred.promise;
                 }
 
+                this.clear = function(){
+                    for(var i in self){
+                        if(typeof self[i] == 'function'){
+                            continue;
+                        }
+
+                        this[i] = undefined;
+                    }
+
+                    this.roles = [];
+                    this.isLogged = false;
+                }
+
+                this.delete = function(){
+                    if(!this.id){
+                        alert('Have not set user id.');
+                    }
+
+                    var deferred = $q.defer();
+                    $http.delete('/admin/user/' + this.id, {})
+                        .success(function(data){
+                            deferred.resolve(data);
+                        })
+                        .error(function(data){
+                            console.log(data);
+                            deferred.reject(data);
+                        })
+                    ;
+
+                    return deferred.promise;
+                }
+
                 this.save = function(){
                     return this.id? this.update(): this.add();
                 }
@@ -89,6 +121,7 @@
                     var deferred = $q.defer();
                     $http.post('/admin/user', {user: getFields4Save()})
                         .success(function(data){
+                            self.id = data.id;
                             deferred.resolve(data);
                         })
                         .error(function(data){

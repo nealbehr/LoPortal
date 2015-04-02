@@ -28,6 +28,12 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers
             ->post("/user", "admin.controller:addUserAction");
 
+        $controllers
+            ->put("/user/{id}", "admin.controller:updateUserAction");
+
+        $controllers
+            ->delete("/user/{id}", "admin.controller:deleteAction");
+
         return $controllers;
     }
 }

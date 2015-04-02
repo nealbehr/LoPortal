@@ -57,22 +57,26 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", function(redirect, userService, $http){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "$compile", function(redirect, userService, $http, waitingScreen, $compile){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
-                officer: "=loOfficer",
-                title:   "@loTitle",
-                roles:   "=loRoles"
+                officer:   "=loOfficer",
+                roles:     "=loRoles",
+                container: "=loContainer"
             },
             link: function(scope, element, attrs, controllers){
                 scope.selected;
+
+                scope.$watch('officer.id', function(newVal, oldVal){
+                    scope.title   = newVal? 'Edit User': 'New User';
+                })
+
                 scope.$watch('roles', function(newVal, oldVal){
                     if(newVal == oldVal){
                         return;
                     }
-
-                    scope.selected = scope.officer.roles.length > 0? scope.officer.roles[0]: scope.roles[0].key;
+                    scope.selected =  scope.roles[0];
                 });
 
                 userService.get()
@@ -80,16 +84,63 @@
                         scope.user = user;
                 });
 
+                scope.delete = function(e){
+                    e.preventDefault();
+
+                    if(!confirm("Are you sure?")){
+                        return false;
+                    }
+
+                    waitingScreen.show();
+                    scope.officer.delete().
+                        then(function(data){
+                            scope.renderMessage("User was deleted.", "success", scope.container);
+                            scope.officer.clear();
+                        })
+                        .catch(function(data){
+                            if('message' in data){
+                                scope.renderMessage(data.message, "danger", scope.container);
+                            }
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        });
+                }
 
                 scope.save = function(){
-                    scope.officer.roles = [scope.selected];
+                    waitingScreen.show();
+                    scope.officer.roles = [scope.selected.key];
                     scope.officer.save()
                         .then(function(data){
-                            console.log(data);
-                    }).finally(function(){
+                            scope.renderMessage("Successfully saved.", "success", scope.container);
+                        }, function(data){
+                            var errors = "";
+                            if("message" in data){
+                                errors = data.message + " ";
+                            }
 
-                    });
+                            if("form_errors" in data){
+                                errors += data.form_errors.join(" ");
+                            }
+
+                            scope.renderMessage(errors, "danger", scope.container);
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        }
+                    );
                 }
+
+                scope.renderMessage = function(message, type, container){
+                    var angularDomEl = angular.element('<div lo-message></div>')
+                        .attr({
+                            'lo-body': message,
+                            'lo-type': type
+                        });
+
+                    container.html($compile(angularDomEl)(scope));
+                }
+
             }
         }
     }]);

@@ -9,6 +9,7 @@
 
     app.config(['$interpolateProvider', '$httpProvider', '$cookiesProvider', 'HTTP_CODES', 'TOKEN_KEY', function($interpolateProvider, $httpProvider, $cookiesProvider, HTTP_CODES, TOKEN_KEY) {
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+        $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
         $interpolateProvider.startSymbol('[[')
                             .endSymbol(']]');
 

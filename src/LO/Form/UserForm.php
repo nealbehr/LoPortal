@@ -92,6 +92,7 @@ class UserForm extends AbstractType {
                 new Assert\NotBlank(['message' => 'Email should not be blank.']),
                 new Assert\Email(),
                 new Unique([
+                    'groups' => ['New'],
                     'field'  => 'email',
                     'entity' => 'LO\\Model\\Entity\\User',
                     'notUniqueMessage' => 'Email address is already registered.'
@@ -111,6 +112,7 @@ class UserForm extends AbstractType {
 //            'required'           => false,
             'data_class'         => User::class,
             'csrf_protection' => false,
+            'validation_groups' => ['Default'],
         ]);
     }
 }
