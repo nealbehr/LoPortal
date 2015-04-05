@@ -60,7 +60,7 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "$compile", function(redirect, userService, $http, waitingScreen, $compile){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -86,7 +86,17 @@
                     .then(function(user){
                         scope.user = user;
                         if(scope.user.isAdmin() && scope.roles.length == 0){
-                            scope.loadRoles();
+                            getRoles()
+                                .then(function(data){
+                                    scope.roles = [];
+                                    for(var i in data){
+                                        scope.roles.push({'title': i, key: data[i]});
+                                    }
+
+                                    if(!scope.selected.key){
+                                        scope.selected =  scope.roles[0];
+                                    }
+                                });
                         }
                 });
 
@@ -115,12 +125,12 @@
                     waitingScreen.show();
                     scope.officer.delete().
                         then(function(data){
-                            scope.renderMessage("User was deleted.", "success", scope.container);
+                            renderMessage("User was deleted.", "success", scope.container, scope);
                             scope.officer.clear();
                         })
                         .catch(function(data){
                             if('message' in data){
-                                scope.renderMessage(data.message, "danger", scope.container);
+                                renderMessage(data.message, "danger", scope.container, scope);
                             }
                         })
                         .finally(function(){
@@ -133,7 +143,7 @@
                     scope.officer.roles = [scope.selected.key];
                     scope.officer.save()
                         .then(function(data){
-                            scope.renderMessage("Successfully saved.", "success", scope.container);
+                            renderMessage("Successfully saved.", "success", scope.container, scope);
                         }, function(data){
                             var errors = "";
                             if("message" in data){
@@ -144,38 +154,10 @@
                                 errors += data.form_errors.join(" ");
                             }
 
-                            scope.renderMessage(errors, "danger", scope.container);
+                            renderMessage(errors, "danger", scope.container, scope);
                         })
                         .finally(function(){
                             waitingScreen.hide();
-                        }
-                    );
-                }
-
-                scope.renderMessage = function(message, type, container){
-                    var angularDomEl = angular.element('<div lo-message></div>')
-                        .attr({
-                            'lo-body': message,
-                            'lo-type': type
-                        });
-
-                    container.html($compile(angularDomEl)(scope));
-                }
-
-                scope.loadRoles = function(){
-                    $http.get('/admin/roles')
-                        .success(function(data){
-                            scope.roles = [];
-                            for(var i in data){
-                                scope.roles.push({'title': i, key: data[i]});
-                            }
-
-                            if(!scope.selected.key){
-                                scope.selected =  scope.roles[0];
-                            }
-                        })
-                        .error(function(data){
-                            console.log(data);
                         }
                     );
                 }
@@ -469,6 +451,38 @@
         }
     }]);
 
+    helperService.factory("getRoles", ['$q', '$http', function($q, $http){
+        var roles = {}
+
+        return function(needReload){
+            needReload = needReload || false;
+            var deferred = $q.defer();
+
+            var counter = 0;
+            for(var i in roles){
+                counter++;
+                break;
+            }
+
+            if(counter != 0 && !needReload){
+                return $q.when(roles);
+            }
+
+            $http.get('/admin/roles')
+                .success(function(data){
+                    roles = data;
+                    deferred.resolve(data);
+                })
+                .error(function(data){
+                    console.log(data);
+                    deferred.reject(data);
+                }
+            );
+
+            return deferred.promise;
+        }
+    }]);
+
     helperService.factory("getInfoFromGeocoder", ['$q', function($q){
         return function(request){
             if(!('google' in window)) {
@@ -488,6 +502,19 @@
             return deferred.promise;
         }
     }]);
+
+    helperService.factory("renderMessage", ['$compile', function($compile){
+        return function(message, type, container, scope){
+            var angularDomEl = angular.element('<div lo-message></div>')
+                .attr({
+                    'lo-body': message,
+                    'lo-type': type
+                });
+
+            container.html($compile(angularDomEl)(scope));
+        }
+    }]);
+
 
     helperService.filter('ucFirst', function(){
         return function(input){

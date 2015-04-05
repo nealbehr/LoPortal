@@ -55,15 +55,15 @@ class Admin {
         $items = [];
         /** @var User $item */
         foreach($pagination->getItems() as $item){
-            $items[$item->getId()] = $item->getPublicInfo();
+            $items[] = $item->getPublicInfo();
         }
-
-        $a = $pagination->getPaginationData();
 
         return $app->json([
             'pagination'    => $pagination->getPaginationData(),
             'keySearch'     => self::KEY_SEARCH,
             'keyState'      => self::KEY_STATE,
+            'keySort'       => self::KEY_SORT,
+            'keyDirection'  => self::KEY_DIRECTION,
             'users'         => $items,
         ]);
     }
@@ -184,9 +184,10 @@ class Admin {
         $q = $app->getEntityManager()->createQueryBuilder()
             ->select('u')
             ->from(User::class, 'u')
-            ->where('u.state = :deleted')
+            ->where('u.state = :active')
+            ->setMaxResults(static::USER_LIMIT)
             ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION)))
-            ->setParameter('deleted', User::STATE_ACTIVE)
+            ->setParameter('active', User::STATE_ACTIVE)
         ;
 
         if($request->get(self::KEY_SEARCH)){
@@ -207,7 +208,7 @@ class Admin {
     }
 
     private function getOrderKey($id){
-        $allowFields = ['id', 'first_name', 'last_name', 'email'];
+        $allowFields = ['id', 'first_name', 'last_name'];
 
         return 'u.'.(in_array($id, $allowFields)? $id: self::DEFAULT_SORT_FIELD_NAME);
     }

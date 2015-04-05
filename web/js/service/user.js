@@ -59,9 +59,7 @@
                     $http.get('/user/' + id)
                         .success(function(data){
                             self.isLogged = true;
-                            for(var i in data){
-                                self[i] = data[i];
-                            }
+                            self.fill(data);
 
                             deferred.resolve(self)
                         })
@@ -71,6 +69,14 @@
                     ;
 
                     return deferred.promise;
+                }
+
+                this.fill = function(data){
+                    for(var i in data){
+                        self[i] = data[i];
+                    }
+
+                    return this;
                 }
 
                 this.clear = function(){

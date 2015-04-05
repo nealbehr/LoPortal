@@ -47,3 +47,7 @@
 .waiting{
     display: none;
 }
+
+.admin-table .isSortable{
+    cursor: pointer;
+}
