@@ -14,7 +14,6 @@ use LO\Model\Entity\User;
 
 class Dashboard {
     public function indexAction(Application $app){
-
         return $app->json([
             'dashboard' => $app->getDashboardManager()->getByUserId($app->user()->getId()),
         ]);

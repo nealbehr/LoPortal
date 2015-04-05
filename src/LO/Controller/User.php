@@ -20,6 +20,7 @@ class User {
     public function getByIdAction(Application $app, $id){
         try {
             if ("me" == $id || $app->user()->getId() == $id) {
+//                app.security.token is not null and is_granted("ROLE_PREVIOUS_ADMIN")
                 return $app->json($app->user()->getPublicInfo());
             }
 

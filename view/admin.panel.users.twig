@@ -18,7 +18,7 @@
 </div>
 <div class="admin-table">
     <div class="table-holder">
-        <table class="table table-striped">
+        <table class="table table-striped" ng-show="isLoaded">
             <thead>
             <tr>
                 <th ng-click="sortByKey(param)" ng-repeat="param in headParams" ng-class="{headerSortUp: isSortedUp(param.key), headerSortDown: isSortedDown(param.key), isSortable: param.isSortable}" ng-bind-html="param.title"></th>
@@ -43,7 +43,7 @@
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li><a href="/#/admin/user/[[ user.id ]]/edit" class="change">Edit</a></li>
                             <li><a href="#" class="reset">Reset Password</a></li>
-                            <li><a href="#" class="impersonate">Impersonate</a></li>
+                            <li><a href="/switch?_switch_user=[[ user.email ]]" class="impersonate">Impersonate</a></li>
                             <li><a href="#" ng-click="delete($event, key, user)" class="delete">Delete</a></li>
                         </ul>
                     </div>

@@ -23,6 +23,7 @@
                 this.email;
                 this.nmls;
                 this.roles = {};
+                this.isSwitched = false;
 
                 var self = this;
 
@@ -37,6 +38,10 @@
                     }
 
                     return result;
+                }
+
+                this.isSwitched = function(){
+                    return this.isSwitched;
                 }
 
                 this.isAdmin = function(){

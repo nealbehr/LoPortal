@@ -176,7 +176,6 @@ class Application extends \Silex\Application{
         $this['security.firewalls'] = [
             'root' => [
                 'pattern' => '^/$',
-
             ],
             'login' => [
                 'pattern' => '^/(partials|authorize/signin|authorize/autocomplete|authorize/reset)',
@@ -184,13 +183,17 @@ class Application extends \Silex\Application{
 
             'api' => [
                 'pattern' => '^.*$',
-//                'switch_user' => array('parameter' => '_switch_user', 'role' => 'ROLE_ALLOWED_TO_SWITCH'),
                 'apikey' => true,
+                'switch_user' => array('parameter' => '_switch_user', 'role' => 'ROLE_ALLOWED_TO_SWITCH'),
                 'apiLogout' => array('logout_path' => '/logout'),
                 'users'   => $this->share(function (){
                         return new UserProvider($this);
                 }),
             ],
+        ];
+
+        $this['security.role_hierarchy'] = [
+            User::ROLE_ADMIN => [User::ROLE_USER, "ROLE_ALLOWED_TO_SWITCH"]
         ];
 
         $this['security.access_rules'] = [
@@ -212,6 +215,10 @@ class Application extends \Silex\Application{
         $this->match('/', function(){
             $this->getTwig()->addFilter(new \Twig_SimpleFilter('ebase64', 'base64_encode'));
             return $this->getTwig()->render('index.twig');
+        });
+
+        $this->get('/switch', function(){
+            return $this->redirect('/');
         });
 
         return $this;
