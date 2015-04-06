@@ -74,7 +74,7 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -85,7 +85,7 @@
                 scope.roles = [];
                 scope.selected = {};
                 scope.user = {}
-                scope.officer = {}
+//                scope.officer = {}
 
                 scope.$watch('officer.id', function(newVal, oldVal){
                     if(newVal == scope.user.id){
@@ -99,20 +99,21 @@
                 userService.get()
                     .then(function(user){
                         scope.user = user;
-                        if(scope.user.isAdmin() && scope.roles.length == 0){
-                            getRoles()
-                                .then(function(data){
-                                    scope.roles = [];
-                                    for(var i in data){
-                                        scope.roles.push({'title': i, key: data[i]});
-                                    }
-
-                                    if(!scope.selected.key){
-                                        scope.selected =  scope.roles[0];
-                                    }
-                                });
+                        return scope.user.isAdmin() && scope.roles.length == 0
+                            ? getRoles()
+                            : $q.when({});
+                    })
+                    .then(function(data){
+                        scope.roles = [];
+                        for(var i in data){
+                            scope.roles.push({'title': i, key: data[i]});
                         }
-                });
+
+                        if(!scope.selected.key){
+                            scope.selected =  scope.roles[0];
+                        }
+                    })
+                ;
 
                 scope.$watch('officer', function(newVal){
                     scope.setSelected(newVal);
@@ -157,8 +158,10 @@
                     scope.officer.roles = [scope.selected.key];
                     scope.officer.save()
                         .then(function(data){
+                            $location.path();
                             renderMessage("Successfully saved.", "success", scope.container, scope);
-                        }, function(data){
+                        })
+                        .catch(function(data){
                             var errors = "";
                             if("message" in data){
                                 errors = data.message + " ";
@@ -186,8 +189,6 @@
                         officerRole = scope.officer.roles[i];
                         break;
                     }
-
-                    console.log(scope.roles)
 
                     for(var i in scope.roles){
                         if(scope.roles[i].key == officerRole){
