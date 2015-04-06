@@ -39,6 +39,13 @@
         return { restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
+                scope.user = {}
+                scope.isLoaded = false;
+                userService.get().then(function(user){
+                    scope.user     = user;
+                    scope.isLoaded = true;
+                });
+
                 scope.logout = function(e){
                     e.preventDefault();
                     $http.delete('/logout')

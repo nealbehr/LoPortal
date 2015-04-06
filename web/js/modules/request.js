@@ -11,38 +11,26 @@
                 controller:  'requestCtrl',
                 access: {
                     isFree: false
-                },
-                resolve: request.resolve()
+                }
             })
             .when('/request/success/:type',{
                 templateUrl: '/partials/request.success',
                 controller:  'requestSuccessCtrl',
                 access: {
                     isFree: false
-                },
-                resolve: request.resolve()
+                }
             })
             .when('/request/approval', {
                 templateUrl: '/partials/request.property.approval',
                 controller:  'requestPropertyApprovalCtrl',
                 access: {
                     isFree: false
-                },
-                resolve: request.resolve()
+                }
             })
         ;
     }]);
 
-    request.resolve = function(){
-        return {
-            user: ["userService", function(userService){
-                return userService.get();
-            }]
-        }
-    }
-
-    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', 'parseGoogleAddressComponents', 'user', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder, parseGoogleAddressComponents, user){
-        $scope.user = user;
+    request.controller('requestPropertyApprovalCtrl', ['redirect', '$scope', 'loadGoogleMapsApi', '$http', 'waitingScreen', '$q', 'getInfoFromGeocoder', 'parseGoogleAddressComponents', function(redirect, $scope, loadGoogleMapsApi, $http, waitingScreen, $q, getInfoFromGeocoder, parseGoogleAddressComponents){
         $scope.message = null;
 
         $scope.request = {
@@ -171,9 +159,8 @@
         loadGoogleMapsApi(initialize);
     }]);
 
-    request.controller('requestCtrl', ['$scope', 'redirect', 'user', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, user, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
+    request.controller('requestCtrl', ['$scope', 'redirect', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
         loadGoogleMapsApi();
-        $scope.user = user;
         $scope.request = {
             property: {
                 first_rex_id: null,
@@ -267,9 +254,7 @@
         }
     }]);
 
-    request.controller('requestSuccessCtrl', ['redirect', '$scope', 'user', '$routeParams', function(redirect, $scope, user, $routeParams){
-        $scope.user = user;
-
+    request.controller('requestSuccessCtrl', ['redirect', '$scope', '$routeParams', function(redirect, $scope, $routeParams){
         $scope.request = getRequestByType($routeParams.type);
 
         function getRequestByType(type){

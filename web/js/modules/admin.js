@@ -9,7 +9,6 @@
             when('/admin/user/new', {
                 templateUrl: '/partials/admin.panel.user',
                 controller:  'adminUserNewCtrl',
-                resolve: admin.resolve(),
                 access: {
                     isFree: false
                 }
@@ -17,7 +16,6 @@
             .when('/admin/user/:id/edit', {
                 templateUrl: '/partials/admin.panel.user',
                 controller:  'adminUserEditCtrl',
-                resolve: admin.resolve(),
                 access: {
                     isFree: false
                 }
@@ -25,22 +23,19 @@
             .when('/admin', {
                 templateUrl: '/partials/admin',
                 controller:  'adminCtrl',
-                resolve: admin.resolve(),
                 access: {
                     isFree: false
                 }
             });
     }]);
 
-    admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'user', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, user, createUser){
-        $scope.user    = user;
+    admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
         $scope.officer = createUser();
 
         $scope.messageContainer = angular.element("#adminMessage");
     }]);
 
-    admin.controller('adminUserEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'user', 'createUser', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, user, createUser, $routeParams){
-        $scope.user    = user;
+    admin.controller('adminUserEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
         createUser().get($routeParams.id)
             .then(function(user){
                 $scope.officer = user;
@@ -49,8 +44,7 @@
         $scope.messageContainer = angular.element("#adminMessage");
     }]);
 
-    admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'user', function($scope, $http, redirect, $compile, waitingScreen, user){
-        $scope.user = user;
+    admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
         $scope.messageContainer = angular.element("#adminMessage");
     }]);
 
@@ -244,14 +238,6 @@
             }
         }
     }]);
-
-    admin.resolve = function(){
-        return {
-            user: ["userService", function(userService){
-                return userService.get();
-            }]
-        }
-    }
 
     admin.filter('adminUserRole', function(){
         return function(input, roles){

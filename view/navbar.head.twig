@@ -3,8 +3,8 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="/#/"><img src="/images/logo.png" width="94" height="49" alt="firstREX"></a>
             <div class="dropdown user-menu">
-                <a href="/switch?_switch_user=_exit" ng-if="[[ user.isSwitched() ]]">exit </a>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="hidden-xs">[[ user|fullName ]]</span> <img ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
+                <a href="/switch?_switch_user=_exit" ng-if="user.isSwitched()">exit </a>
+                <a ng-href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span ng-show="isLoaded"><span class="hidden-xs">[[ user|fullName ]]</span> <img ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>
                     <li><a href="#">Requests Queue</a></li>

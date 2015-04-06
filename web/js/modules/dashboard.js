@@ -13,9 +13,6 @@
                             isFree: false
                         },
                         resolve: {
-                            user: ["userService", function(userService){
-                                return userService.get();
-                            }],
                             data: ["$q", "$http", 'waitingScreen', function($q, $http, waitingScreen){
                                    var deferred = $q.defer();
                                    waitingScreen.show();
@@ -37,8 +34,7 @@
                     });
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'user', 'data', function($scope, redirect, $http, user, data){
-        $scope.user         = user;
+    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', function($scope, redirect, $http, data){
         $scope.dashboard    = data.dashboard;
         $scope.settingRows  = {}
         $scope.queueChecked = true;

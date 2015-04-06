@@ -21,7 +21,8 @@ class User {
         try {
             if ("me" == $id || $app->user()->getId() == $id) {
 //                app.security.token is not null and is_granted("ROLE_PREVIOUS_ADMIN")
-                return $app->json($app->user()->getPublicInfo());
+                $info =$app->user()->getPublicInfo();
+                return $app->json(array_merge($info, ['switched' => $app['security']->isGranted("ROLE_PREVIOUS_ADMIN")]));
             }
 
             if ($app->user()->getId() != $id && !$app['security']->isGranted(UserEntity::ROLE_ADMIN)) {
