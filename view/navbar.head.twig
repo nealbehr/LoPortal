@@ -3,8 +3,11 @@
         <div class="navbar-header">
             <a class="navbar-brand" href="/#/"><img src="/images/logo.png" width="94" height="49" alt="firstREX"></a>
             <div class="dropdown user-menu">
-                <a href="/switch?_switch_user=_exit" ng-if="user.isSwitched()">exit </a>
-                <a ng-href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span ng-show="isUserLoaded" class="hidden-xs">[[ user|fullName ]]</span> <img ng-show="isUserLoaded" ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></a>
+                <span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <span ng-if="user.isSwitched()">You are logged in as </span>
+                    <span ng-show="isUserLoaded" class="hidden-xs">[[ user|fullName ]] </span>
+                    <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
+                    <img ng-show="isUserLoaded" ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava"> <span class="arrow-down"></span></span>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>
                     <li><a href="#">Requests Queue</a></li>

@@ -46,6 +46,13 @@
                     scope.isUserLoaded = true;
                 });
 
+                angular.element('.dropdown-toggle').click(function(e){
+                    var target = $(e.target);
+                    if(target.is('a')){
+                        e.stopPropagation();
+                    }
+                });
+
                 scope.logout = function(e){
                     e.preventDefault();
                     $http.delete('/logout')
