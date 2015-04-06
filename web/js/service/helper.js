@@ -74,18 +74,18 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
                 officer:   "=loOfficer",
-                container: "=loContainer"
+                redirectUrl: "@loRedirect"
             },
             link: function(scope, element, attrs, controllers){
                 scope.roles = [];
                 scope.selected = {};
                 scope.user = {}
-//                scope.officer = {}
+                scope.container = angular.element('#userProfileMessage');
 
                 scope.$watch('officer.id', function(newVal, oldVal){
                     if(newVal == scope.user.id){
@@ -109,6 +109,10 @@
                             scope.roles.push({'title': i, key: data[i]});
                         }
 
+                        if(scope.roles.length == 0){
+                            return;
+                        }
+
                         if(!scope.selected.key){
                             scope.selected =  scope.roles[0];
                         }
@@ -130,6 +134,18 @@
                     return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
                 }
 
+                scope.gotoErrorMessage = function(){
+                    $anchorScroll(scope.container.attr("id"));
+                }
+
+                scope.submit = function(formUser){
+                    if(!formUser.$valid){
+                        this.gotoErrorMessage();
+                        return false;
+                    }
+                    this.save();
+                }
+
                 scope.delete = function(e){
                     e.preventDefault();
 
@@ -140,12 +156,14 @@
                     waitingScreen.show();
                     scope.officer.delete().
                         then(function(data){
-                            renderMessage("User was deleted.", "success", scope.container, scope);
+                            sessionMessages.addSuccess("User was deleted.");
+                            $location.path(scope.redirectUrl);
                             scope.officer.clear();
                         })
                         .catch(function(data){
                             if('message' in data){
                                 renderMessage(data.message, "danger", scope.container, scope);
+                                scope.gotoErrorMessage();
                             }
                         })
                         .finally(function(){
@@ -156,10 +174,12 @@
                 scope.save = function(){
                     waitingScreen.show();
                     scope.officer.roles = [scope.selected.key];
+
                     scope.officer.save()
                         .then(function(data){
-                            $location.path();
-                            renderMessage("Successfully saved.", "success", scope.container, scope);
+                            sessionMessages.addSuccess("Successfully saved.")
+                            console.log(scope.redirectUrl);
+                            $location.path(scope.redirectUrl);
                         })
                         .catch(function(data){
                             var errors = "";
@@ -172,6 +192,7 @@
                             }
 
                             renderMessage(errors, "danger", scope.container, scope);
+                            scope.gotoErrorMessage();
                         })
                         .finally(function(){
                             waitingScreen.hide();
@@ -180,7 +201,7 @@
                 }
 
                 scope.setSelected = function(newVal){
-                    if(!newVal || !scope.officer.roles || scope.roles.length < 1){
+                    if(!newVal || !scope.officer || !scope.officer.roles || scope.roles.length < 1){
                         return;
                     }
 
@@ -316,6 +337,16 @@
                     return nameFormat.test(viewValue);
                 }
 
+            }
+        };
+    }]);
+
+    helperService.directive('loMessageContainer', ['sessionMessages', function(sessionMessages){
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/session.messages',
+            link: function(scope, elm, attrs, ctrl) {
+                scope.messages = sessionMessages.get();
             }
         };
     }]);
@@ -530,6 +561,45 @@
         }
     }]);
 
+    helperService.factory("sessionMessages", [function(){
+        return new function(){
+            console.log('create new sessionMessage');
+            var TYPE_DANGER  = "danger";
+            var TYPE_SUCCESS = "success";
+            var messages = [];
+
+            this.addDanger = function(message){
+                messages.push(this.createMessage(TYPE_DANGER, message));
+
+                return this;
+            }
+
+            this.addSuccess = function(message){
+                messages.push(this.createMessage(TYPE_SUCCESS, message));
+
+                return this;
+            }
+
+            this.createMessage = function(type, body){
+                var message = {}
+//                message.type = type;
+                message.body = body;
+                message.isDanger = TYPE_DANGER == type;
+
+                return message;
+            }
+
+            this.get = function(clear){
+                try{
+                    return messages;
+                }finally{
+                    if(clear != false){
+                        messages = [];
+                    }
+                }
+            }
+        }
+    }]);
 
     helperService.filter('ucFirst', function(){
         return function(input){

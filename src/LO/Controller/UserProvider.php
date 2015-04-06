@@ -33,6 +33,9 @@ class UserProvider implements ControllerProviderInterface {
         $controllers
             ->get("/{id}", "user.controller:getByIdAction");
 
+        $controllers
+            ->put("/{id}", "user.controller:updateAction");
+
 
         return $controllers;
     }

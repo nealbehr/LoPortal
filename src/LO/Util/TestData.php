@@ -61,6 +61,19 @@ class TestData {
         $this->app->getEntityManager()->flush();
     }
 
+    public function resetPasswordAllUsers(){
+        $user = new User();
+
+        $this->app->getEntityManager()->createQueryBuilder()
+            ->update(User::class, 'u')
+            ->set('u.salt', '?1')
+            ->set('u.password', '?2')
+            ->setParameter(1, $user->getSalt())
+            ->setParameter(2, $this->app->encodePassword($user, '123456'))
+        ->getQuery()
+        ->execute();
+    }
+
     public function createAndrey(){
         $user = new User();
         $user->setEmail('andriy.lypovskiy@appsorama.com')

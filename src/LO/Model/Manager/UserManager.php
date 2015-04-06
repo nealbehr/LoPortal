@@ -9,8 +9,12 @@
 namespace LO\Model\Manager;
 
 use Doctrine\ORM\Query\Expr;
+use LO\Form\UserForm;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User as EntityUser;
+use LO\Model\Entity\User;
+use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class UserManager extends Base{
     public function findByToken($token){
@@ -50,4 +54,46 @@ class UserManager extends Base{
                      ->findOneBy(['email' => $email])
         ;
     }
+
+    /**
+     * @param Request $request
+     * @param User $user
+     * @param UserForm $userForm
+     * @return array|bool
+     */
+    public function validateAndSaveUser(Request $request, User $user, UserForm $userForm){
+        $requestUser = $request->request->get('user');
+        $formOptions = [
+            'validation_groups' => ['Default'],
+        ];
+
+        if(!$user || (isset($requestUser['email']) && $user->getEmail() != $requestUser['email'])){//remove uniq constrain
+            $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ["New"]);
+        }
+
+        $form = $this->getApp()->getFormFactory()->create($userForm, $user, $formOptions);
+
+        $form->submit($this->removeExtraFields($requestUser, $form));
+
+        if(!$form->isValid()){
+            $errors = [];
+            foreach($form as $child){
+                if($child->getErrors()->count() > 0){
+                    $errors[] = str_replace("ERROR: ", "", (string)$child->getErrors());
+                }
+            }
+
+            return $errors;
+        }
+
+        $this->getApp()->getEntityManager()->persist($user);
+        $this->getApp()->getEntityManager()->flush();
+
+        return [];
+    }
+
+    private function removeExtraFields($requestData, $form){
+        return array_intersect_key($requestData, $form->all());
+    }
+
 } 

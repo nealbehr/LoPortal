@@ -5,7 +5,6 @@ use Doctrine\ORM\Query;
 use LO\Application;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User;
-use LO\Util\TestData;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;

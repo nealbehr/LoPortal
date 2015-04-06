@@ -65,6 +65,8 @@ class UserForm extends AbstractType {
             ]
         ]);
 
+        $builder->add('lender', 'text');
+
         $builder->add('phone', 'text', [
             'constraints' => [
                 new Assert\Length([

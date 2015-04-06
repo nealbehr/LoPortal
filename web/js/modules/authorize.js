@@ -45,6 +45,7 @@
                 source: function( request, response ) {
                     $http.get('/authorize/autocomplete/' + request.term)
                         .success(function(data){
+                            console.log(data)
                             response(data);
                         })
                     ;

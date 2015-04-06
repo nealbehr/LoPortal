@@ -1,0 +1,4 @@
+<div ng-repeat="message in messages" class="alert fade in" style="z-index: 5;" role="alert" ng-class="{'alert-danger': message.isDanger, 'alert-success': !message.isDanger}">
+    <a ng-href="#" class="close"  data-dismiss="alert" aria-label="Close">close</a>
+    [[ message.body ]]
+</div>

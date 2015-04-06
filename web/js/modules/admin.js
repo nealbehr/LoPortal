@@ -32,7 +32,6 @@
     admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
         $scope.officer = createUser();
 
-        $scope.messageContainer = angular.element("#adminMessage");
     }]);
 
     admin.controller('adminUserEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
@@ -40,12 +39,11 @@
             .then(function(user){
                 $scope.officer = user;
         });
-
-        $scope.messageContainer = angular.element("#adminMessage");
+        $scope.redirectUrl = '/admin';
     }]);
 
     admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
-        $scope.messageContainer = angular.element("#adminMessage");
+
     }]);
 
     admin.directive('loAdminNavBar', [function(){

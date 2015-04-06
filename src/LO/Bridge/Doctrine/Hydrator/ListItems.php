@@ -13,15 +13,14 @@ use Doctrine\ORM\Internal\Hydration\AbstractHydrator;
 class ListItems extends AbstractHydrator{
     protected function hydrateAllData(){
         $result = [];
-        $cache  = [];
         foreach($this->_stmt->fetchAll(\PDO::FETCH_NUM) as $row) {
-            $this->hydrateRowData($row, $cache, $result);
+            $this->hydrateRowData($row, $result);
         }
 
         return $result;
     }
 
-    protected function hydrateRowData(array $row, array &$cache, array &$result){
+    protected function hydrateRowData(array $row,  array &$result){
         if(count($row) == 0) {
             return false;
         }

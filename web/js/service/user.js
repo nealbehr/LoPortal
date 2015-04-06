@@ -9,152 +9,183 @@
         return createUser();
     }]);
 
-    userService.service("createUser", ["$q", "$http", function($q, $http){
+    userService.service("createProfileUser", ["$q", "$http", "createUserBase", function($q, $http, createUserBase){
         return function(){
-            return new function(){
-                this.isLogged = false;
-                this.id;
-                this.first_name;
-                this.last_name;
-                this.title;
-                this.sales_director;
-                this.phone;
-                this.mobile;
-                this.email;
-                this.nmls;
-                this.roles = {};
-                this.switched = false;
+            var userBase = new createUserBase();
 
-                var self = this;
+            userBase.save = function(){
+                var deferred = $q.defer();
+                $http.put('/user/' + this.id, {user: this.getFields4Save()})
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
 
-                var getFields4Save = function(){
-                    var result = {};
-                    for(var i in self){
-                        if(typeof self[i] == 'function'){
-                            continue;
-                        }
-
-                        result[i] = self[i];
-                    }
-
-                    return result;
-                }
-
-                this.isSwitched = function(){
-                    return this.switched;
-                }
-
-                this.isAdmin = function(){
-                    for(var i in this.roles){
-                        if(this.roles[i] == 'ROLE_ADMIN'){
-                            return true;
-                        }
-                    }
-
-                    return false;
-                }
-
-                this.get = function(id){
-                    id = id || "me";
-                    if(this.isLogged){
-                        return $q.when(this);
-                    }
-
-                    var deferred = $q.defer();
-                    $http.get('/user/' + id)
-                        .success(function(data){
-                            self.isLogged = true;
-                            self.fill(data);
-
-                            deferred.resolve(self)
-                        })
-                        .error(function(data){
-                            deferred.reject(data);
-                        })
-                    ;
-
-                    return deferred.promise;
-                }
-
-                this.fill = function(data){
-                    for(var i in data){
-                        self[i] = data[i];
-                    }
-
-                    return this;
-                }
-
-                this.clear = function(){
-                    for(var i in self){
-                        if(typeof self[i] == 'function'){
-                            continue;
-                        }
-
-                        this[i] = undefined;
-                    }
-
-                    this.roles = [];
-                    this.isLogged = false;
-                }
-
-                this.delete = function(){
-                    if(!this.id){
-                        alert('Have not set user id.');
-                    }
-
-                    var deferred = $q.defer();
-                    $http.delete('/admin/user/' + this.id, {})
-                        .success(function(data){
-                            deferred.resolve(data);
-                        })
-                        .error(function(data){
-                            console.log(data);
-                            deferred.reject(data);
-                        })
-                    ;
-
-                    return deferred.promise;
-                }
-
-                this.save = function(){
-                    return this.id? this.update(): this.add();
-                }
-
-                this.update = function(){
-                    var deferred = $q.defer();
-                    $http.put('/admin/user/' + this.id, {user: getFields4Save()})
-                        .success(function(data){
-                            deferred.resolve(data);
-                        })
-                        .error(function(data){
-                            console.log(data);
-                            deferred.reject(data);
-                        })
-                    ;
-
-                    return deferred.promise;
-                }
-
-                this.add = function(){
-                    var deferred = $q.defer();
-                    $http.post('/admin/user', {user: getFields4Save()})
-                        .success(function(data){
-                            self.id = data.id;
-                            deferred.resolve(data);
-                        })
-                        .error(function(data){
-                            console.log(data);
-                            deferred.reject(data);
-                        })
-                    ;
-
-                    return deferred.promise;
-                }
-
-
+                return deferred.promise;
             }
+
+            return userBase;
         }
     }]);
 
+    userService.service("createUser", ["$q", "$http", "createUserBase", function($q, $http, createUserBase){
+        return function(){
+            var userBase = new createUserBase();
 
+            userBase.delete = function(){
+                if(!this.id){
+                    alert('User id has not set.');
+                }
+
+                var deferred = $q.defer();
+                $http.delete('/admin/user/' + this.id, {})
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            }
+
+            userBase.save = function(){
+                return this.id? this.update(): this.add();
+            }
+
+            userBase.update = function(){
+                var deferred = $q.defer();
+                $http.put('/admin/user/' + this.id, {user: this.getFields4Save()})
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            }
+
+            userBase.add = function(){
+                var deferred = $q.defer();
+                $http.post('/admin/user', {user: this.getFields4Save()})
+                    .success(function(data){
+                        self.id = data.id;
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            }
+
+
+            return userBase;
+        }
+    }]);
+
+    userService.service("createUserBase", ["$q", "$http", function($q, $http){
+        return function(){
+            this.isLogged = false;
+            this.id;
+            this.first_name;
+            this.last_name;
+            this.title;
+            this.sales_director;
+            this.phone;
+            this.mobile;
+            this.email;
+            this.nmls;
+            this.lender;
+            this.roles = {};
+            this.switched = false;
+
+            var self = this;
+
+            this.getFields4Save = function(){
+                var result = {};
+                for(var i in self){
+                    if(typeof self[i] == 'function'){
+                        continue;
+                    }
+
+                    result[i] = self[i];
+                }
+
+                return result;
+            }
+
+            this.isSwitched = function(){
+                return this.switched;
+            }
+
+            this.isAdmin = function(){
+                for(var i in this.roles){
+                    if(this.roles[i] == 'ROLE_ADMIN'){
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+            this.get = function(id){
+                id = id || "me";
+                if(this.isLogged){
+                    return $q.when(this);
+                }
+
+                var deferred = $q.defer();
+                $http.get('/user/' + id)
+                    .success(function(data){
+                        self.isLogged = true;
+                        self.fill(data);
+
+                        deferred.resolve(self)
+                    })
+                    .error(function(data){
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            }
+
+            this.fill = function(data){
+                for(var i in data){
+                    self[i] = data[i];
+                }
+
+                return this;
+            }
+
+            this.clear = function(){
+                for(var i in self){
+                    if(typeof self[i] == 'function'){
+                        continue;
+                    }
+
+                    this[i] = undefined;
+                }
+
+                this.roles = [];
+                this.isLogged = false;
+            }
+
+            this.save = function(){
+                throw new Error("User add must be override");
+            }
+        }
+    }]);
 })(settings);

@@ -1,26 +1,28 @@
-<form ng-submit="formUser.$valid && save()" class="css-form" novalidate name="formUser">
-    <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formUser)">
-        <span ng-show="formUser.email.$error.email">The entered email is invalid.</span>
-        <span ng-show="formUser.email.$error.required">Email can't be empty.</span>
-    </div>
-
-    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.phone.$error.usaPhoneFormat">
-        Please input a valid US phone number including 3 digit area code and 7 digit number.
-    </div>
-
-    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.first_name.$error.loName">
-        First name is invalid
-    </div>
-    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.last_name.$error.loName">
-        Last name is invalid
-    </div>
-
-    <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.nmls.$error.number">
-        NMLS # should be of number.
-    </div>
-
+<form ng-submit="submit(formUser)" class="css-form" novalidate name="formUser">
     <div class="row edit-user">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+            <div id="userProfileMessage"></div>
+            <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formUser)">
+                <span ng-show="formUser.email.$error.email">The entered email is invalid.</span>
+                <span ng-show="formUser.email.$error.required">Email can't be empty.</span>
+            </div>
+
+            <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.phone.$error.usaPhoneFormat">
+                Please input a valid US phone number including 3 digit area code and 7 digit number.
+            </div>
+
+            <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.first_name.$error.loName">
+                First name is invalid
+            </div>
+            <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.last_name.$error.loName">
+                Last name is invalid
+            </div>
+
+            <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.nmls.$error.number">
+                NMLS # should be of number.
+            </div>
+
+
             <h2>[[ title ]]</h2>
             <select class="form-control input-lg"
                     ng-if="user.id != officer.id && user.isAdmin()"
@@ -41,7 +43,7 @@
                     <input class="input-lg" type="text" placeholder="Sales Director" ng-model="officer.sales_director">
                 </div>
             </div>
-            <!-- textarea class="form-control" cols="30" rows="2" placeholder="Lender"></textarea -->
+            <textarea class="form-control" cols="30" rows="2" placeholder="Lender" ng-model="officer.lender"></textarea>
             <div class="inputs-holder">
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Primary Phone" ng-model="officer.phone" name="phone" usa-phone ng-model-options="{ updateOn: 'blur' }">

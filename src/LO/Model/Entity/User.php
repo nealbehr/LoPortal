@@ -80,6 +80,11 @@ class User extends Base implements UserInterface{
     protected $state;
 
     /**
+     * @Column(type="string")
+     */
+    protected $lender;
+
+    /**
      * @Column(type="string", length=10)
      */
     protected $salt;
@@ -164,6 +169,16 @@ class User extends Base implements UserInterface{
 
     public function setState($sate){
         $this->state = $sate;
+
+        return $this;
+    }
+
+    public function getLender(){
+        return $this->lender;
+    }
+
+    public function setLender($param){
+        $this->lender = $param;
 
         return $this;
     }
