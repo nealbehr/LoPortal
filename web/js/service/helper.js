@@ -39,11 +39,11 @@
         return { restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
-                scope.user = {}
-                scope.isLoaded = false;
+                scope.user         = {}
+                scope.isUserLoaded = false;
                 userService.get().then(function(user){
-                    scope.user     = user;
-                    scope.isLoaded = true;
+                    scope.user         = user;
+                    scope.isUserLoaded = true;
                 });
 
                 scope.logout = function(e){
