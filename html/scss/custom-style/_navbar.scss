@@ -13,11 +13,12 @@
     @media (max-width: 767px)  {
         margin-right: 15px;
     }
-    > a {
+    > span {
         color: #0d0d0d !important;
         padding: 22px 0;
         float: left;
         text-decoration: none !important;
+        cursor: pointer;
         &:after {
             content:"";
             position: absolute;
