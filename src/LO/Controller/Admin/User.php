@@ -2,29 +2,23 @@
 /**
  * Created by IntelliJ IDEA.
  * User: samoilenko
- * Date: 3/12/15
- * Time: 4:05 PM
+ * Date: 4/7/15
+ * Time: 3:30 PM
  */
 
-namespace LO\Controller;
-
+namespace LO\Controller\Admin;
 
 use LO\Application;
 use LO\Form\UserAdminForm;
-use LO\Model\Entity\User;
 use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Form\Form;
+use LO\Model\Entity\User as EntityUser;
 
-class Admin {
+class User extends Base{
     const USER_LIMIT    = 20;
 
-    const KEY_SEARCH    = 'filterValue';
-    const KEY_PAGE      = 'page';
-    const KEY_SORT      = 'sort';
-    const KEY_DIRECTION = 'direction';
     const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION  = 'asc';
 
@@ -33,9 +27,6 @@ class Admin {
     /** @var array  */
     private $errors = [];
 
-    protected function getOrderDirection($direction){
-        return in_array(strtolower($direction), ['asc', 'desc'])? $direction: self::DEFAULT_SORT_DIRECTION;
-    }
 
     public function getUsersAction(Application $app, Request $request){
         /** @var \Knp\Bundle\PaginatorBundle\Pagination\SlidingPagination $pagination */
@@ -54,7 +45,7 @@ class Admin {
         );
 
         $items = [];
-        /** @var User $item */
+        /** @var EntityUser $item */
         foreach($pagination->getItems() as $item){
             $items[] = $item->getPublicInfo();
         }
@@ -66,11 +57,13 @@ class Admin {
             'keySort'       => self::KEY_SORT,
             'keyDirection'  => self::KEY_DIRECTION,
             'users'         => $items,
+            'defDirection'  => self::DEFAULT_SORT_DIRECTION,
+            'defField'      => self::DEFAULT_SORT_FIELD_NAME,
         ]);
     }
 
     public function getRolesAction(Application $app){
-        return $app->json(User::getAllowedRoles());
+        return $app->json(EntityUser::getAllowedRoles());
     }
 
     public function addUserAction(Application $app, Request $request){
@@ -97,7 +90,7 @@ class Admin {
     public function updateUserAction(Application $app, Request $request, $id){
         try{
             /** @var User $user */
-            $user = $app->getEntityManager()->getRepository(User::class)->find($id);
+            $user = $app->getEntityManager()->getRepository(EntityUser::class)->find($id);
 
             if(!$user){
                 throw new BadRequestHttpException("User not found.");
@@ -125,7 +118,7 @@ class Admin {
     public function deleteAction(Application $app, Request $request, $id){
         try {
             /** @var User $user */
-            $user = $app->getEntityManager()->getRepository(User::class)->find($id);
+            $user = $app->getEntityManager()->getRepository(EntityUser::class)->find($id);
 
             if (!$user) {
                 throw new BadRequestHttpException("User not found.");
@@ -155,23 +148,23 @@ class Admin {
     private function getUserList(Request $request, Application $app){
         $q = $app->getEntityManager()->createQueryBuilder()
             ->select('u')
-            ->from(User::class, 'u')
+            ->from(EntityUser::class, 'u')
             ->where('u.state = :active')
             ->setMaxResults(static::USER_LIMIT)
-            ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION)))
-            ->setParameter('active', User::STATE_ACTIVE)
+            ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION))
+            ->setParameter('active', EntityUser::STATE_ACTIVE)
         ;
 
         if($request->get(self::KEY_SEARCH)){
             $q->andWhere(
-                    $app->getEntityManager()->createQueryBuilder()->expr()->orX(
-                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.first_name)", ':param'),
-                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.last_name)", ':param'),
-                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.email)", ':param'),
-                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.phone)", ':param'),
-                        $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.roles)", ':param')
-                    )
+                $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.first_name)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.last_name)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.email)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.phone)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(u.roles)", ':param')
                 )
+            )
                 ->setParameter('param', '%'.strtolower($request->get(self::KEY_SEARCH)).'%')
             ;
         }
@@ -184,5 +177,4 @@ class Admin {
 
         return 'u.'.(in_array($id, $allowFields)? $id: self::DEFAULT_SORT_FIELD_NAME);
     }
-
 } 

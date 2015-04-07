@@ -149,4 +149,11 @@ class Queue extends Base{
 
         return $this;
     }
+
+    static public function getTypes(){
+        return [
+            static::TYPE_PROPERTY_APPROVAL,
+            static::TYPE_FLYER,
+        ];
+    }
 } 

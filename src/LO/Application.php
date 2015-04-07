@@ -211,6 +211,7 @@ class Application extends \Silex\Application{
         $this->mount('/request',    new Controller\LoRequestProvider());
         $this->mount('/queue',      new Controller\QueueProvider());
         $this->mount('/admin',      new Controller\AdminProvider());
+        $this->mount('/settings',   new Controller\SettingsProvider());
 
         $this->match('/', function(){
             $this->getTwig()->addFilter(new \Twig_SimpleFilter('ebase64', 'base64_encode'));

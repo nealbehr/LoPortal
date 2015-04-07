@@ -21,7 +21,7 @@
         <table class="table table-striped" ng-show="isLoaded">
             <thead>
             <tr>
-                <th ng-click="sortByKey(param)" ng-repeat="param in headParams" ng-class="{headerSortUp: isSortedUp(param.key), headerSortDown: isSortedDown(param.key), isSortable: param.isSortable}" ng-bind-html="param.title"></th>
+                <th class="header" ng-click="sortByKey(param)" ng-repeat="param in headParams" ng-class="{headerSortUp: param.isSortedUp(), headerSortDown: param.isSortedDown(), isSortable: param.isSortable}"><span ng-bind-html="param.title"></span></th>
             </tr>
             </thead>
             <tbody>

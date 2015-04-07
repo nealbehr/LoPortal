@@ -16,7 +16,11 @@ class AdminProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
 
         $app['admin.controller'] = $app->share(function() use ($app) {
-            return new Admin();
+            return new Admin\User();
+        });
+
+        $app['admin.queue.controller'] = $app->share(function() use ($app) {
+            return new Admin\Queue();
         });
 
         /** @var ControllerCollection $controllers */
@@ -36,6 +40,8 @@ class AdminProvider implements ControllerProviderInterface {
 
         $controllers
             ->delete("/user/{id}", "admin.controller:deleteAction");
+
+        $controllers->get('/queue', "admin.queue.controller:getAction");
 
         return $controllers;
     }
