@@ -227,6 +227,43 @@
         text-align: left;
     }
 }
+.attention {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 14px;
+    cursor: pointer;
+    &:before {
+        width: 18px;
+        height: 14px;
+        content: '';
+        position: absolute;
+        left: 0;
+        text-indent: -999px;
+        overflow: hidden;
+        background: url('../images/sprite.svg') no-repeat 0 -47px;
+        background-size: 159px 70px;
+    }
+    ul {
+        position: absolute;
+        top:100%;
+        left: -14px;
+        background: #fff;
+        border: 1px solid #bdbdbd;
+        margin: 5px 0 0;
+        padding: 15px 20px;
+        list-style: none;
+        width: 240px;
+        border-radius: 3px;
+        display: none;
+        li {
+            padding: 5px 0;
+        }
+    }
+    &:hover ul {
+        display: block;
+    }
+}
 .edit-user {
     padding-top: 20px;
     h2 {
