@@ -1,0 +1,3 @@
+<span ng-show="pagination.pageCount != undefined">Page [[ pagination.current ]] of [[ pagination.pageCount ]]</span>
+<a ng-href="[[ pagination.previous? getUrl(false): '' ]]" class="prev" ng-class="{inactive: !pagination.previous}">prev</a>
+<a ng-href="[[ pagination.next? getUrl(true): '' ]]" class="next" ng-class="{inactive: !pagination.next}">next</a>

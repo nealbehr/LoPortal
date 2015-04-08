@@ -1,19 +1,10 @@
 <div class="row top-bar">
     <div id="userMessage"></div>
     <div class="col-sm-4 col-lg-3">
-        <form ng-submit="search()">
-            <div class="input-group">
-                <input ng-trim="true" type="text" class="form-control" placeholder="Search" ng-model="searchingString">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit">Go!</button>
-                            </span>
-            </div>
-        </form>
+        <lo-admin-panel-search lo-search-key="searchKey" lo-searching-string="searchingString"></lo-admin-panel-search>
     </div>
     <div class="paging col-sm-4 col-sm-offset-4 col-lg-offset-5">
-        <span ng-show="isLoaded">Page [[ pagination.current ]] of [[ pagination.pageCount ]]</span>
-        <a ng-href="[[ pagination.previous? getUrl(false): '' ]]" class="prev" ng-class="{inactive: !pagination.previous}">prev</a>
-        <a ng-href="[[ pagination.next? getUrl(true): '' ]]" class="next" ng-class="{inactive: !pagination.next}">next</a>
+        <lo-admin-panel-pagination lo-pagination="pagination"></lo-admin-panel-pagination>
     </div>
 </div>
 <div class="admin-table">
@@ -21,7 +12,7 @@
         <table class="table table-striped" ng-show="isLoaded">
             <thead>
             <tr>
-                <th class="header" ng-click="sortByKey(param)" ng-repeat="param in headParams" ng-class="{headerSortUp: param.isSortedUp(), headerSortDown: param.isSortedDown(), isSortable: param.isSortable}"><span ng-bind-html="param.title"></span></th>
+                <th class="header" ng-click="param.sort()" ng-repeat="param in headParams" ng-class="{headerSortUp: param.isSortedUp(), headerSortDown: param.isSortedDown(), isSortable: param.isSortable}"><span ng-bind-html="param.title"></span></th>
             </tr>
             </thead>
             <tbody>

@@ -85,63 +85,21 @@
         }
     }]);
 
-    admin.directive('loAdminUsers', ['$http', "getRoles", "$q", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", function($http, getRoles, $q, $location, tableHeadCol, waitingScreen, createUser, renderMessage){
+    admin.directive('loAdminUsers', ['$http', "getRoles", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", "$q", function($http, getRoles, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q){
         return { restrict: 'EA',
             templateUrl: '/partials/admin.panel.users',
             link: function(scope, element, attrs, controllers){
-                var locationParams = $location.search();
-
                 scope.pagination = {};
                 scope.users = [];
                 scope.roles = {};
                 scope.searchingString;
-                scope.sortKey;
-                scope.directionKey;
                 scope.isLoaded = false;
                 scope.searchKey;
-
-                scope.sortByKey = function(param){
-                    if(!param.isSortable){
-                        return false;
-                    }
-
-                    var newLocationParams = {}
-
-                    if(locationParams[this.sortKey] == param.key){
-                        newLocationParams[this.directionKey] = locationParams[this.directionKey] != undefined && locationParams[this.directionKey] == "desc"? "asc": "desc";
-                    }
-
-                    newLocationParams[this.sortKey] = param.key;
-
-                    $location.search(newLocationParams);
-                }
-
-                scope.search = function(){
-                    if(this.searchingString == ""){
-                        delete locationParams[this.searchKey];
-                    }else{
-                        locationParams[this.searchKey] = this.searchingString;
-                    }
-
-                    $location.search(locationParams);
-                }
-
-                scope.getUrl = function(isNext){
-                    return '/#' + $location.path() + '?' + this.getParams(isNext? scope.pagination.next: scope.pagination.previous);
-                }
-
-                scope.getParams = function(page){
-                    var params = angular.copy(locationParams);
-                    if(page){
-                        params.page = page;
-                    }
-                    return $.param(params);
-                }
 
                 scope.getUsers = function(){
                     var deferred = $q.defer();
                     $http.get('/admin/user', {
-                        params: locationParams
+                        params: $location.search()
                     }).success(function(data){
                         return deferred.resolve(data);
                     })
@@ -162,13 +120,11 @@
                         for(var i in data.users){
                             scope.users.push(createUser().fill(data.users[i]));
                         }
-                        scope.searchingString = locationParams[data.keySearch];
+                        scope.searchingString = $location.search()[data.keySearch];
                         scope.searchKey = data.keySearch;
-                        scope.sortKey = data.keySort;
-                        scope.directionKey = data.keyDirection;
 
-                        tableHeadCol.prototype.directionKey     = scope.directionKey;
-                        tableHeadCol.prototype.sortKey          = scope.sortKey;
+                        tableHeadCol.prototype.directionKey     = data.keyDirection;
+                        tableHeadCol.prototype.sortKey          = data.keySort;
                         tableHeadCol.prototype.defaultDirection = data.defDirection;
                         tableHeadCol.prototype.defaultSortKey   = data.defField;
 
@@ -219,15 +175,20 @@
             templateUrl: '/partials/admin.panel.requests',
             link: function(scope, element, attrs, controllers){
                 scope.queue = []
-                var locationParams = $location.search();
+                scope.searchKey;
+                scope.searchingString;
+                scope.pagination = {};
 
-                $http.get('/admin/queue')
+                $http.get('/admin/queue', {
+                        params: $location.search()
+                    })
                     .success(function(data){
-                        scope.queue = data.queue;
-                        console.log(data)
-
-                        tableHeadCol.prototype.directionKey   = scope.directionKey;
-                        tableHeadCol.prototype.sortKey        = scope.sortKey;
+                        scope.queue     = data.queue;
+                        scope.searchKey = data.keySearch;
+                        scope.pagination = data.pagination;
+                        scope.searchingString = $location.search()[data.keySearch];
+                        tableHeadCol.prototype.directionKey     = data.keyDirection;
+                        tableHeadCol.prototype.sortKey          = data.keySort;
                         tableHeadCol.prototype.defaultDirection = data.defDirection;
                         tableHeadCol.prototype.defaultSortKey   = data.defField;
 
@@ -236,7 +197,7 @@
                             new tableHeadCol({key: "user_id", title: "User ID"}),
                             new tableHeadCol({key: "address", title: "Property Address"}),
                             new tableHeadCol({key: "mls_number", title: "MLS<br>Number"}),
-                            new tableHeadCol({key: "created_at", title: "Created", isSortable: false}),
+                            new tableHeadCol({key: "created_at", title: "Created", isSortable: true}),
                             new tableHeadCol({key: "request_type", title: "Type"}),
                             new tableHeadCol({key: "state", title: "Status"}),
                             new tableHeadCol({key: "action", title: "Actions", isSortable: false}),
@@ -253,6 +214,24 @@
             this.key;
             this.title;
             this.isSortable = true;
+
+            this.sort = function(){
+                if(!this.isSortable){
+                    return false;
+                }
+
+                var newLocationParams = {}
+
+                if(this.getLocationParams()[this.getSortKey()] == this.key || this.getLocationParams()[this.getSortKey()] == undefined){
+                    newLocationParams[this.getDirectionKey()] = this.getLocationParams()[this.getDirectionKey()] != undefined && this.getLocationParams()[this.getDirectionKey()] == "asc"? "desc": "asc";
+                }
+
+                newLocationParams[this.getSortKey()] = this.key;
+
+                console.log(newLocationParams)
+
+                this.location.search(newLocationParams);
+            }
 
             this.isSortedUp = function(){
                 return this.isSortedDirection('desc');
@@ -322,6 +301,53 @@
         headCol.prototype.sce      = $sce;
 
         return headCol;
+    }]);
+
+    admin.directive('loAdminPanelSearch', ["$location", function($location){
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/admin.panel.search',
+            scope: {
+                searchKey: "=loSearchKey",
+                searchingString: "=loSearchingString"
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.search = function(){
+                    var locationParams = $location.search();
+                    if(this.searchingString == ""){
+                        delete locationParams[scope.searchKey];
+                    }else{
+                        locationParams[scope.searchKey] = scope.searchingString;
+                    }
+
+                    $location.search(locationParams);
+                }
+            }
+        }
+    }]);
+
+    admin.directive('loAdminPanelPagination', ["$location", function($location){
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/admin.pagination',
+            scope: {
+                pagination: "=loPagination"
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.getUrl = function(isNext){
+                    return '/#' + $location.path() + '?' + this.getParams(isNext? scope.pagination.next: scope.pagination.previous);
+                }
+
+                scope.getParams = function(page){
+                    var params = angular.copy($location.search());
+                    if(page){
+                        params.page = page;
+                    }
+
+                    return $.param(params);
+                }
+            }
+        }
     }]);
 
     admin.filter('adminUserRole', function(){

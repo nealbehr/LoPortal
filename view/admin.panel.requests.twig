@@ -1,18 +1,9 @@
 <div class="row top-bar">
     <div class="col-sm-4 col-lg-3">
-        <form action="#">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">Go!</button>
-                            </span>
-            </div>
-        </form>
+        <lo-admin-panel-search lo-search-key="searchKey" lo-searching-string="searchingString"></lo-admin-panel-search>
     </div>
     <div class="paging col-sm-4 col-sm-offset-4 col-lg-offset-5">
-        Page 1 of 4
-        <a href="#" class="prev">prev</a>
-        <a href="#" class="next">next</a>
+        <lo-admin-panel-pagination lo-pagination="pagination"></lo-admin-panel-pagination>
     </div>
 </div>
 <div class="admin-table user-managment">
@@ -20,12 +11,19 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="header" ng-click="sortByKey(col)" ng-repeat="col in headParams" ng-class="{headerSortUp: col.isSortedUp(), headerSortDown: col.isSortedDown(), isSortable: col.isSortable}"><span ng-bind-html="col.title"></span></th>
+                    <th class="header" ng-click="col.sort()" ng-repeat="col in headParams" ng-class="{headerSortUp: col.isSortedUp(), headerSortDown: col.isSortedDown(), isSortable: col.isSortable}"><span ng-bind-html="col.title"></span></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="request in queue">
-                    <td><span class="attention" data-toggle="tooltip" data-placement="bottom" title="Please note, this row is duplicate of row with Request ID: 6813">Dublicate</span>[[ request.id ]]</td>
+                    <td>
+                        <div class="attention" ng-if="request.duplicates.length > 0">
+                            <ul>
+                                <li ng-repeat="duplicate in request.duplicates">Please note, this row is duplicate of row with Request ID: [[ duplicate.id ]]</li>
+                            </ul>
+                        </div>
+                        [[ request.id ]]
+                    </td>
                     <td>[[ request.user_id ]]</td>
                     <td>[[ request.address ]]</td>
                     <td>[[ request.mls_number ]]</td>

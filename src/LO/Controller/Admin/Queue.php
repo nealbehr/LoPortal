@@ -45,6 +45,11 @@ class Queue extends Base{
             $ids[] = $item->getId();
         }
 
+        $duplicates = $this->getDuplicates($app, $ids);
+        foreach($items as &$item){
+            $item['duplicates'] = isset($duplicates[$item['id']])? $duplicates[$item['id']]: [];
+        }
+
         return $app->json([
             'pagination'    => $pagination->getPaginationData(),
             'keySearch'     => self::KEY_SEARCH,
@@ -53,7 +58,6 @@ class Queue extends Base{
             'queue'         => $items,
             'defDirection'  => self::DEFAULT_SORT_DIRECTION,
             'defField'      => self::DEFAULT_SORT_FIELD_NAME,
-            'duplicate'     => $this->getDuplicates($app, $ids),
         ]);
     }
 
