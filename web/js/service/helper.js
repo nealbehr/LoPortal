@@ -78,8 +78,7 @@
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
-                officer:   "=loOfficer",
-                redirectUrl: "@loRedirect"
+                officer:   "=loOfficer"
             },
             link: function(scope, element, attrs, controllers){
                 scope.roles = [];
@@ -94,7 +93,13 @@
                     }
 
                     scope.title = newVal? 'Edit User': 'New User';
-                })
+                });
+
+                scope.cancel = function(e){
+                    e.preventDefault();
+
+                    history.back();
+                }
 
                 userService.get()
                     .then(function(user){
@@ -157,8 +162,8 @@
                     scope.officer.delete().
                         then(function(data){
                             sessionMessages.addSuccess("User was deleted.");
-                            $location.path(scope.redirectUrl);
                             scope.officer.clear();
+                            history.back();
                         })
                         .catch(function(data){
                             if('message' in data){
@@ -178,12 +183,7 @@
                     scope.officer.save()
                         .then(function(data){
                             sessionMessages.addSuccess("Successfully saved.")
-                            console.log(scope.redirectUrl)
-                            if('' == scope.redirectUrl){
-                                history.back();
-                            }else{
-                                $location.path(scope.redirectUrl);
-                            }
+                            history.back();
                         })
                         .catch(function(data){
                             var errors = "";

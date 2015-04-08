@@ -61,7 +61,7 @@
             <button class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
                 <a ng-if="officer.id && user.id != officer.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete user</a>
-                <a href="/#/admin" class="back">Cancel</a>
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>
     </div>

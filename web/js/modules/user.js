@@ -17,7 +17,6 @@
 
     user.controller('userProfileCtrl', ['$scope', 'createProfileUser', '$routeParams', 'userService', "$q", "$location", function($scope, createProfileUser, $routeParams, userService, $q, $location){
         $scope.officer = {};
-        $scope.redirectUrl = '';
 
         userService
             .get()

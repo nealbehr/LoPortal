@@ -50,7 +50,6 @@
             .then(function(user){
                 $scope.officer = user;
         });
-        $scope.redirectUrl = '/admin';
     }]);
 
     admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){

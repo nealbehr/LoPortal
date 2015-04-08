@@ -34,7 +34,6 @@ class RequestApprovalController extends RequestBaseController{
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
             $queueForm->handleRequest($request);
-            //$queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
 
             if(!$queueForm->isValid()){
                 $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);
