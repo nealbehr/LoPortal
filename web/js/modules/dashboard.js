@@ -39,9 +39,10 @@
         $scope.settingRows  = {}
         $scope.queueChecked = true;
         $scope.queueStateApproved = settings.queue.stateApproved;
-        $scope.settingRows[settings.queue.stateInProgres] = {id: 'inProcess', title: 'In process', isExpand: false};
+        $scope.settingRows[settings.queue.stateListingFlyerPending] = {id: 'stateListingFlyerPending', title: 'Pending', isExpand: false};
         $scope.settingRows[settings.queue.stateRequested] = {id: 'requested', title: 'Requested', isExpand: false};
         $scope.settingRows[settings.queue.stateApproved]  = {id: 'approved', title: 'Approved', isExpand: false};
+        $scope.settingRows[settings.queue.stateDeclined]  = {id: 'declined', title: 'Declined', isExpand: false};
 
         var isExpand = true;
         for(var i in $scope.dashboard){

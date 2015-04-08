@@ -4,9 +4,9 @@
 
     var userService = angular.module('userModule', []);
 
-    userService.factory("userService", ["createUser", function(createUser){
+    userService.factory("userService", ["createProfileUser", function(createProfileUser){
         console.log('called new User');
-        return createUser();
+        return createProfileUser();
     }]);
 
     userService.service("createProfileUser", ["$q", "$http", "createUserBase", function($q, $http, createUserBase){

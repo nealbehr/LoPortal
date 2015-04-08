@@ -34,7 +34,7 @@
         $scope.message = null;
 
         $scope.request = {
-            approval: {
+            property: {
                 address: ''
             },
             address: null
@@ -45,10 +45,10 @@
         $scope.save = function(){
             $scope.message = null;
             waitingScreen.show();
-            getInfoFromGeocoder({address: this.request.approval.address})
+            getInfoFromGeocoder({address: this.request.property.address})
                 .then(function(data){
                     $scope.request.address = parseGoogleAddressComponents(data[0].address_components);
-                    $scope.request.approval.address = data[0].formatted_address;
+                    $scope.request.property.address = data[0].formatted_address;
                     return $http.post('/request/approval', $scope.request);
                 })
                 .then(function(data){
@@ -99,7 +99,7 @@
                 getInfoFromGeocoder({location: event.latLng})
                                 .then(function(address){
                                     if(address.length > 0){
-                                        $scope.request.approval.address = address[0].formatted_address;
+                                        $scope.request.property.address = address[0].formatted_address;
                                     }
                                 })
                                 .finally(function(){
@@ -166,7 +166,7 @@
                 first_rex_id: null,
                 address: null,
                 mls_number: null,
-                image: null
+                photo: null
             },
             realtor: {
                 first_name: null,
@@ -175,7 +175,7 @@
                 estate_agency: null,
                 phone: null,
                 email: null,
-                image: null
+                photo: null
             }
         }
 
@@ -233,8 +233,8 @@
                 .then(function(data){
                     $scope.request.address = parseGoogleAddressComponents(data[0].address_components);
                     $scope.request.property.address = data[0].formatted_address;
-                    $scope.request.property.image = $scope.prepareImage($scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
-                    $scope.request.realtor.image  = $scope.prepareImage($scope.cropperRealtorImage.container, 600, 300, 800, 400);
+                    $scope.request.property.photo = $scope.prepareImage($scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
+                    $scope.request.realtor.photo  = $scope.prepareImage($scope.cropperRealtorImage.container, 600, 300, 800, 400);
 
 //                    $scope.propertyImage = $scope.request.property.image;
 

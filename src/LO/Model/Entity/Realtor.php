@@ -22,13 +22,13 @@ use LO\Validator\FullName;
 class Realtor extends Base{
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "Bre number should not be blank.")
      */
     protected $bre_number;
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "Phone should not be blank.")
      */
     protected $phone;
 
@@ -40,7 +40,7 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=65536)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "Photo should not be blank.")
      * @Assert\Length(
      *              max = 65536,
      *              maxMessage = "photo url cannot be longer than {{ limit }} characters"
@@ -50,7 +50,7 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "Estate agency should not be blank.")
      * @Assert\Length(
      *              max = 255,
      *              maxMessage = "agency cannot be longer than {{ limit }} characters"
@@ -60,19 +60,35 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "First name should not be blank.")
      * @FullName()
      */
     protected $first_name;
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message = "Last name should not be blank.")
      * @FullName()
      */
     protected $last_name;
 
-    public function setBre($param){
+    public function setLastName($param){
+        $this->last_name = $param;
+
+        return $this;
+    }
+
+    public function setEstateAgency($param){
+        $this->estate_agency = $param;
+
+        return $this;
+    }
+
+    public function setFirstName($param){
+        $this->first_name = $param;
+    }
+
+    public function setBreNumber($param){
         $this->bre_number = $param;
 
         return $this;
@@ -97,6 +113,34 @@ class Realtor extends Base{
         $this->estate_agency = $param;
 
         return $this;
+    }
+
+    public function getLastName(){
+        return $this->last_name;
+    }
+
+    public function getFirstName(){
+        return $this->first_name;
+    }
+
+    public function getEstateAgency(){
+        return $this->estate_agency;
+    }
+
+    public function getPhoto(){
+        return $this->photo;
+    }
+
+    public function getEmail(){
+        return $this->email;
+    }
+
+    public function getPhone(){
+        return $this->phone;
+    }
+
+    public function getBreNumber(){
+        return $this->bre_number;
     }
 
 

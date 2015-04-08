@@ -15,8 +15,11 @@ use LO\Model\Entity\User as EntityUser;
 use LO\Model\Entity\User;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use LO\Traits\GetFormErrors;
 
 class UserManager extends Base{
+    use GetFormErrors;
+
     public function findByToken($token){
         return $this->getApp()->getEntityManager()
                     ->getRepository(EntityUser::class)
@@ -76,14 +79,7 @@ class UserManager extends Base{
         $form->submit($this->removeExtraFields($requestUser, $form));
 
         if(!$form->isValid()){
-            $errors = [];
-            foreach($form as $child){
-                if($child->getErrors()->count() > 0){
-                    $errors[] = str_replace("ERROR: ", "", (string)$child->getErrors());
-                }
-            }
-
-            return $errors;
+            return $this->getFormErrors($form);
         }
 
         $this->getApp()->getEntityManager()->persist($user);
@@ -91,9 +87,4 @@ class UserManager extends Base{
 
         return [];
     }
-
-    private function removeExtraFields($requestData, $form){
-        return array_intersect_key($requestData, $form->all());
-    }
-
-} 
+}

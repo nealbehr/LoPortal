@@ -208,7 +208,7 @@ class Application extends \Silex\Application{
         $this->mount('/partials',   new Controller\PartialProvider());
         $this->mount('/dashboard',  new Controller\DashboardProvider());
         $this->mount('/user',       new Controller\UserProvider());
-        $this->mount('/request',    new Controller\LoRequestProvider());
+        $this->mount('/request',    new Controller\RequestProvider());
         $this->mount('/queue',      new Controller\QueueProvider());
         $this->mount('/admin',      new Controller\AdminProvider());
         $this->mount('/settings',   new Controller\SettingsProvider());

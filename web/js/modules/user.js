@@ -15,15 +15,22 @@
             })
     }]);
 
-    user.controller('userProfileCtrl', ['$scope', 'createProfileUser', '$routeParams', function($scope, createProfileUser, $routeParams){
+    user.controller('userProfileCtrl', ['$scope', 'createProfileUser', '$routeParams', 'userService', "$q", "$location", function($scope, createProfileUser, $routeParams, userService, $q, $location){
         $scope.officer = {};
-        createProfileUser().get($routeParams.id)
+        $scope.redirectUrl = '';
+
+        userService
+            .get()
+            .then(function(user){
+                if(user.id == $routeParams.id){
+                    return $q.when(user);
+                }
+
+                return createProfileUser().get($routeParams.id);
+            })
             .then(function(user){
                 $scope.officer = user;
             })
-        ;
-
-        $scope.redirectUrl = '/';
     }]);
 
 

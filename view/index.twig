@@ -33,9 +33,10 @@
                         requestTimeout:   15000, //15 seconds
                         firstRexHash:     '{{ (app.getConfigByName('firstrex', 'api', 'user')~':'~app.getConfigByName('firstrex', 'api', 'pass'))|ebase64 }}',
                         queue: {
-                            stateInProgres: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_IN_PROGRESS') }}',
+                            stateInProgres: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_LISTING_FLYER_PENDING') }}',
                             stateRequested:  '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_REQUESTED') }}',
-                            stateApproved:   '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}'
+                            stateApproved:   '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}',
+                            stateDeclined:   '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_DECLINED') }}',
                         }
         }
     </script>

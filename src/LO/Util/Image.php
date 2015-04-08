@@ -13,19 +13,20 @@ use Aws\S3\Enum\CannedAcl;
 use LO\Application;
 use LO\Exception\Http;
 use Symfony\Component\HttpFoundation\Response;
+use Aws\S3\S3Client;
 
 class Image {
-    private $app;
+    private $s3;
     private $img;
     private $ext;
     private $bucket;
 
-    public function __construct(Application $app, $blobImage, $bucket){
+    public function __construct(S3Client $s3, $blobImage, $bucket){
         if(empty($blobImage)){
             throw new Http('Image content is empty.', Response::HTTP_BAD_REQUEST);
         }
 
-        $this->app    = $app;
+        $this->s3     = $s3;
         $this->bucket = $bucket;
         $this->img    = $this->createImage($blobImage);
     }
@@ -53,7 +54,7 @@ class Image {
         /**
          * @var \Guzzle\Service\Resource\Model $answer
          */
-        $response = $this->app->getS3()->putObject([
+        $response = $this->s3->putObject([
             'Bucket' => $this->bucket,
             'Key'    => $filename.'.'.$this->ext,
             'Body'   => $this->img,

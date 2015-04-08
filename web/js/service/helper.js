@@ -178,8 +178,12 @@
                     scope.officer.save()
                         .then(function(data){
                             sessionMessages.addSuccess("Successfully saved.")
-                            console.log(scope.redirectUrl);
-                            $location.path(scope.redirectUrl);
+                            console.log(scope.redirectUrl)
+                            if('' == scope.redirectUrl){
+                                history.back();
+                            }else{
+                                $location.path(scope.redirectUrl);
+                            }
                         })
                         .catch(function(data){
                             var errors = "";
