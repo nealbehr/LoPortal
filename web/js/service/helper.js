@@ -87,12 +87,13 @@
                 scope.container = angular.element('#userProfileMessage');
 
                 scope.$watch('officer.id', function(newVal, oldVal){
-                    if(newVal == scope.user.id){
+                    console.log("new wal = " + newVal);
+                    if(undefined != newVal && newVal == scope.user.id){
                         scope.title = "Edit Profile";
                         return;
                     }
 
-                    scope.title = newVal? 'Edit User': 'New User';
+                    scope.title = newVal? 'Edit User': 'Add User';
                 });
 
                 scope.cancel = function(e){
