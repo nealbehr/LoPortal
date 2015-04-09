@@ -25,6 +25,12 @@ class RequestApproval extends Base{
      */
     protected $queue_id;
 
+    /**
+     * @OneToOne(targetEntity="Queue", fetch="LAZY")
+     * @JoinColumn(name="queue_id", referencedColumnName="id")
+     **/
+    protected $queue;
+
     public function setQueueId($param){
         $this->queue_id = $param;
 

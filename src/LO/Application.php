@@ -115,7 +115,7 @@ class Application extends \Silex\Application{
             ->register(new DoctrineOrmServiceProvider(), [
                 "orm.custom.functions.numeric" => [
                     "RAND" => "Broadway\\Bridge\\Doctrine2\\Functions\\Rand"
-                ]
+                ],
             ])
 //            ->register(new Provider\FormServiceProvider())
             ->register(new Provider\TwigServiceProvider(), ['twig.path' => __DIR__ . '/../../view'])

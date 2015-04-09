@@ -34,6 +34,9 @@ class DashboardProvider implements ControllerProviderInterface {
             ->get("/", "dashboard.controller:indexAction")
             ->bind("dashboard-index");
 
+        $controllers
+            ->get("/collateral", "dashboard.controller:getCollateralAction");
+
 
         return $controllers;
     }

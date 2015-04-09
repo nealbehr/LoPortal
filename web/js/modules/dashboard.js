@@ -31,14 +31,38 @@
                                 return deferred.promise;
                             }]
                         }
-                    });
+                    })
+                    .when('/dashboard/collateral', {
+                        templateUrl: '/partials/dashboard.collateral',
+                        controller:  'dashboardCustomCollateral',
+                        access: {
+                            isFree: false
+                        }
+                    })
+                ;
+    }]);
+
+    dashboard.controller('dashboardCustomCollateral', ["$scope", "waitingScreen", "$http", function($scope, waitingScreen, $http){
+        $scope.data ={}
+
+        waitingScreen.show();
+
+        $http.get("/dashboard/collateral")
+            .success(function(data){
+                $scope.data = data;
+            })
+            .finally(function(){
+                waitingScreen.hide();
+            })
+
+
     }]);
 
     dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', function($scope, redirect, $http, data){
         $scope.dashboard    = data.dashboard;
+
+        console.log($scope.dashboard)
         $scope.settingRows  = {}
-        $scope.queueChecked = true;
-        $scope.queueStateApproved = settings.queue.stateApproved;
         $scope.settingRows[settings.queue.stateListingFlyerPending] = {id: 'stateListingFlyerPending', title: 'Pending', isExpand: false};
         $scope.settingRows[settings.queue.stateRequested] = {id: 'requested', title: 'Requested', isExpand: false};
         $scope.settingRows[settings.queue.stateApproved]  = {id: 'approved', title: 'Approved', isExpand: false};
@@ -48,21 +72,6 @@
         for(var i in $scope.dashboard){
             $scope.settingRows[i].isExpand = isExpand && $scope.dashboard[i].length > 0;
             isExpand = !($scope.dashboard[i].length > 0)
-        }
-
-        $scope.show = function(e, tab){
-            e.preventDefault();
-            this.queueChecked = tab == 'queue';
-        }
-
-        $scope.createListingFlyerRequest = function(e){
-            e.preventDefault();
-            redirect("/flyer/new");
-        }
-
-        $scope.createNewApproval = function(e){
-            e.preventDefault();
-            redirect('/request/approval');
         }
 
         angular.element('.queue').click(function(e){

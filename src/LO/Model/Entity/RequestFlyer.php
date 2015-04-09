@@ -77,6 +77,10 @@ class RequestFlyer extends Base{
         return $this->pdf_link;
     }
 
+    public function getQueueId(){
+        return $this->queue_id;
+    }
+
     public static function getAllowedStates(){
         return [
             Queue::STATE_REQUESTED,
@@ -84,6 +88,20 @@ class RequestFlyer extends Base{
             Queue::STATE_DECLINED,
             Queue::STATE_LISTING_FLYER_PENDING,
         ];
+    }
+
+    /**
+     * @OneToOne(targetEntity="Queue", fetch="LAZY")
+     * @JoinColumn(name="queue_id", referencedColumnName="id")
+     **/
+    protected $queue;
+
+    public function getQueue(){
+        return $this->queue;
+    }
+
+    public function setQueue(){
+        $this->queue = $queue;
     }
 
 }

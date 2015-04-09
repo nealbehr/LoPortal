@@ -73,6 +73,16 @@ class Queue extends Base{
      */
     protected $user_id;
 
+    /**
+     * @OneToOne(targetEntity="RequestFlyer", mappedBy="queue")
+     */
+    private $flyer;
+
+    /**
+     * @OneToOne(targetEntity="RequestApproval", mappedBy="queue")
+     */
+    private $approval;
+
     public function __construct(){
         parent::__construct();
 

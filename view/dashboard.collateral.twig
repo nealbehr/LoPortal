@@ -1,15 +1,7 @@
-<div class="row thumbnails">
-    <div class="col-sm-4 col-lg-3" ng-repeat="v in items" ng-if="v.pdf_link != null">
-        <div class="thumbnail">
-            <div class="thumb-holder">
-                <img ng-src="[[ v.photo ]]" width="263" height="258" alt="">
-            </div>
-            <div class="caption">
-                <address>[[ v.address ]]</address>
-            </div>
-            <div class="link">
-                <a ng-href="[[ v.pdf_link ]]" class="download">Download Listing Flyer</a>
-            </div>
-        </div>
-    </div>
+<div>
+    <lo-navbar-head></lo-navbar-head>
+    <section class="container">
+        <lo-dashboard-head></lo-dashboard-head>
+        <dashboard-collateral lo-items="data"></dashboard-collateral>
+    </section>
 </div>

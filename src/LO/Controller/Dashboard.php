@@ -8,14 +8,19 @@
 
 namespace LO\Controller;
 
+use Doctrine\ORM\AbstractQuery;
 use LO\Application;
-use LO\Model\Entity\Queue;
-use LO\Model\Entity\User;
 
 class Dashboard {
     public function indexAction(Application $app){
         return $app->json([
             'dashboard' => $app->getDashboardManager()->getByUserId($app->user()->getId()),
         ]);
+    }
+
+    public function getCollateralAction(Application $app){
+        return $app->json(
+            $app->getDashboardManager()->getCollateralByUserId($app->user()->getId(), AbstractQuery::HYDRATE_ARRAY)
+        );
     }
 } 

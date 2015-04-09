@@ -56,29 +56,13 @@
 
     }]);
 
-    admin.directive('loAdminNavBar', ['$location', function($location){
+    admin.directive('loAdminNavBar', ['$location', 'Tab', function($location, Tab){
         return { restrict: 'EA',
             templateUrl: '/partials/admin.nav.bar',
             link: function(scope, element, attrs, controllers){
-                var tab = function(params){
-                    params = params || {}
-                    this.path;
-                    this.title;
-
-                    this.isActive = function(){
-                        return this.location.path() == this.path;
-                    }
-
-                    for(var i in params){
-                        this[i] = params[i];
-                    }
-                }
-
-                tab.prototype.location = $location;
-
                 scope.tabs = [
-                    new tab({path: '/admin', title: "User Management"}),
-                    new tab({path: '/admin/queue', title: "Request Management"})
+                    new Tab({path: '/admin', title: "User Management"}),
+                    new Tab({path: '/admin/queue', title: "Request Management"})
                 ]
             }
         }

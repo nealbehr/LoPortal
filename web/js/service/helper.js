@@ -274,7 +274,7 @@
     helperService.directive('dashboardCollateral', function () {
         return {
             restrict: 'EA',
-            templateUrl: '/partials/dashboard.collateral',
+            templateUrl: '/partials/dashboard.collateral.row',
             scope: {
                 items: '=loItems'
             },
@@ -285,6 +285,29 @@
             }
         };
     });
+
+    helperService.directive('loDashboardHead', ['Tab', 'redirect', function(Tab, redirect){
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/dashboard.head',
+            link: function (scope, el, attrs, ngModel) {
+                scope.tabs = [
+                    new Tab({path: '/', title: "Requests Queue"}),
+                    new Tab({path: '/dashboard/collateral', title: "Custom Collateral"})
+                ];
+
+                scope.createListingFlyerRequest = function(e){
+                    e.preventDefault();
+                    redirect("/flyer/new");
+                }
+
+                scope.createNewApproval = function(e){
+                    e.preventDefault();
+                    redirect('/request/approval');
+                }
+            }
+        };
+    }]);
 
     helperService.directive('googleAddress', ['getInfoFromGeocoder', '$q', function(getInfoFromGeocoder, $q) {
         return {
@@ -393,6 +416,26 @@
 
             $location.path(path);
         }
+    }]);
+
+    helperService.factory("Tab", ['$location', function($location){
+        var tab = function(params){
+            params = params || {}
+            this.path;
+            this.title;
+
+            this.isActive = function(){
+                return this.location.path() == this.path;
+            }
+
+            for(var i in params){
+                this[i] = params[i];
+            }
+        }
+
+        tab.prototype.location = $location;
+
+        return tab;
     }]);
 
     helperService.factory("loadImages", ["$q", function($q){
@@ -611,6 +654,14 @@
             return input == undefined? input: input.replace(/\b[a-z]/, function(letter) {
                 return letter.toUpperCase();
             });
+        }
+    })
+
+    helperService.filter('fromMysqlDate', function(){
+        return function(input){
+            return "date" in input
+                ? new Date(input.date.replace(/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)(.)*/, '$2/$3/$1 $4:$5:$6'))
+                : input;
         }
     })
 

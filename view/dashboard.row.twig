@@ -16,11 +16,11 @@
             </thead>
             <tbody>
             <tr ng-repeat="(k,v) in items">
-                <td>[[ v.created_at ]]</td>
+                <td>[[ v.created_at|fromMysqlDate| date:"MM/dd/yyyy h:mm a" ]]</td>
                 <td>[[ v.address ]]</td>
                 <td>[[ v.request_type|dashboardType ]]</td>
                 <td>
-                    <a ng-if="items[k].state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" ng-href="[[ v.pdf_link ]]" class="download">Download PDF</a>
+                    <a ng-if="items[k].state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
                     <a ng-if="items[k].state != {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a>
                 </td>
             </tr>
