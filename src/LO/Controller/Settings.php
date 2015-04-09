@@ -24,7 +24,7 @@ class Settings {
         return $app->json([
             Queue::STATE_APPROVED    => "Approved",
             Queue::STATE_DECLINED    => "Declined",
-            Queue::STATE_REQUESTED   => "Pending",
+            Queue::STATE_REQUESTED   => "Requested",
             Queue::STATE_LISTING_FLYER_PENDING => "Pending",
         ]);
     }
