@@ -23,7 +23,7 @@ class Queue {
             throw new Http(sprintf('Queue \'%s\' not found', $id), Response::HTTP_BAD_REQUEST);
         }
 
-        $queue->setState(QueueEntity::STATE_CANCELED);
+        $queue->setState(QueueEntity::STATE_DECLINED);
 
         $app->getEntityManager()->persist($queue);
         $app->getEntityManager()->flush();
