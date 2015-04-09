@@ -10,14 +10,26 @@ namespace LO\Model\Manager;
 
 
 use LO\Model\Entity\Queue;
+use LO\Model\Entity\RequestFlyer;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\Expr;
 
 class DashboardManager extends Base{
     public function getByUserId($userId, $withoutCanceled = true){
-        $result = [
-            Queue::STATE_APPROVED    => [],
-            Queue::STATE_IN_PROGRESS => [],
-            Queue::STATE_REQUESTED   => [],
-        ];
+//        $q = $this->getApp()->getEntityManager()
+//            ->createQueryBuilder()
+//            ->select('q, f.pdf_link, f.photo')
+//            ->from(Queue::class, 'q')
+//            ->join(RequestFlyer::class, 'f', Expr\Join::WITH, 'q.id = f.queue_id')
+//            ->getQuery()
+//            ->getResult(AbstractQuery::HYDRATE_ARRAY);//заюзать свой гидратор
+
+
+
+        $result = [];
+        foreach(Queue::getStates() as $state){
+            $result[$state] = [];
+        }
 
          $q = $this->getApp()->getEntityManager()
             ->getRepository(Queue::class)
@@ -27,7 +39,7 @@ class DashboardManager extends Base{
             ->addOrderBy('q.created_at', 'DESC')
             ->setParameters([
                 'userId' => $userId,
-                'state'  => Queue::STATE_CANCELED,
+                'state'  => Queue::STATE_DECLINED,
             ])
         ;
 

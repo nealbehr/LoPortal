@@ -151,4 +151,13 @@ class Queue extends Base{
             static::TYPE_FLYER,
         ];
     }
+
+    static public function getStates(){
+        return [
+            static::STATE_REQUESTED,
+            static::STATE_APPROVED,
+            static::STATE_DECLINED,
+            static::STATE_LISTING_FLYER_PENDING,
+        ];
+    }
 } 
