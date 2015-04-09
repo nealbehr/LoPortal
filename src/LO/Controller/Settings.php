@@ -23,9 +23,9 @@ class Settings {
     public function getRequestStateAction(Application $app){
         return $app->json([
             Queue::STATE_APPROVED    => "Approved",
-            Queue::STATE_CANCELED    => "Declined",
+            Queue::STATE_DECLINED    => "Declined",
             Queue::STATE_REQUESTED   => "Pending",
-//            Queue::STATE_IN_PROGRESS => "Pending",
+            Queue::STATE_LISTING_FLYER_PENDING => "Pending",
         ]);
     }
 } 

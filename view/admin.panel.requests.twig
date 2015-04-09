@@ -27,7 +27,7 @@
                     <td>[[ request.user_id ]]</td>
                     <td>[[ request.address ]]</td>
                     <td>[[ request.mls_number ]]</td>
-                    <td>[[ request.created_at ]]</td>
+                    <td>[[ request.created_at|fromMysqlDate| date:"MMM d yyyy h:mm a" ]]</td>
                     <td>[[ request.request_type|requestType ]]</td>
                     <td>[[ request.state|requestState ]]</td>
                     <td>

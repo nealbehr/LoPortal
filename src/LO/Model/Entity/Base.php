@@ -40,9 +40,9 @@ class Base {
 
     public function toArray(){
         $result = get_object_vars($this);
-        if($this->created_at){
-            $result['created_at'] = $this->created_at->format('M d Y, h:i A');
-        }
+//        if($this->created_at){
+//            $result['created_at'] = $this->created_at->format('M d Y, h:i A');
+//        }
 
         return $result;
     }

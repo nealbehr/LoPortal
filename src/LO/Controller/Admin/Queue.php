@@ -10,6 +10,7 @@ namespace LO\Controller\Admin;
 
 
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
 use LO\Application;
 use LO\Model\Entity\Queue as EntityQueue;
 use Symfony\Component\HttpFoundation\Request;
@@ -94,7 +95,7 @@ class Queue extends Base{
             ;
         }
 
-        return $q->getQuery();
+        return $q->getQuery()->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
     }
 
     private function getOrderKey($id){

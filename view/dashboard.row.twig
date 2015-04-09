@@ -16,7 +16,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="(k,v) in items">
-                <td>[[ v.created_at|fromMysqlDate| date:"MM/dd/yyyy h:mm a" ]]</td>
+                <td>[[ v.created_at|fromMysqlDate| date:"MMM d yyyy h:mm a" ]]</td>
                 <td>[[ v.address ]]</td>
                 <td>[[ v.request_type|dashboardType ]]</td>
                 <td>
