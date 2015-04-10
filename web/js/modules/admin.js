@@ -205,15 +205,23 @@
 
                 var newLocationParams = {}
 
-                newLocationParams[this.getDirectionKey()] = this.getLocationParams()[this.getSortKey()] == undefined
-                    ? "desc"
-                    : this.getLocationParams()[this.getDirectionKey()] == "asc" ? "desc" : "asc";
+                newLocationParams[this.getDirectionKey()] = this.getDirection();
 
                 newLocationParams[this.getSortKey()] = this.key;
 
                 console.log(newLocationParams)
 
                 this.location.search(newLocationParams);
+            }
+
+            this.getDirection = function(){
+                if(this.getLocationParams()[this.getSortKey()] == undefined && this.key == this.getDefaultSortKey() || (this.getLocationParams()[this.getSortKey()] == this.key && this.getLocationParams()[this.getDirectionKey()] == undefined)){
+                    return "desc"
+                }else if(this.getLocationParams()[this.getSortKey()] != this.key){
+                    return this.getDefaultDirection();
+                }else{
+                    return this.getLocationParams()[this.getDirectionKey()] != undefined && this.getLocationParams()[this.getDirectionKey()] == "asc" ? "desc" : "asc";
+                }
             }
 
             this.isSortedUp = function(){
