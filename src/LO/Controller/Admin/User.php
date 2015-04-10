@@ -173,7 +173,7 @@ class User extends Base{
     }
 
     private function getOrderKey($id){
-        $allowFields = ['id', 'first_name', 'last_name'];
+        $allowFields = ['id', 'first_name', 'last_name', 'email', 'created_at'];
 
         return 'u.'.(in_array($id, $allowFields)? $id: self::DEFAULT_SORT_FIELD_NAME);
     }

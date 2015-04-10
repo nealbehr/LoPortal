@@ -115,12 +115,12 @@
                             new tableHeadCol({key: "id", title: "id"}),
                             new tableHeadCol({key: "first_name", title: "First<br>Name"}),
                             new tableHeadCol({key: "last_name", title: "Last<br>Name"}),
-                            new tableHeadCol({key: "email", title: "Email", isSortable: false}),
+                            new tableHeadCol({key: "email", title: "Email", isSortable: true}),
                             new tableHeadCol({key: "role", title: "Role", isSortable: false}),
                             new tableHeadCol({key: "title", title: "Title", isSortable: false}),
                             new tableHeadCol({key: "phone", title: "Primary<br>Phone", isSortable: false}),
                             new tableHeadCol({key: "mobile", title: "Mobile<br>Phone", isSortable: false}),
-                            new tableHeadCol({key: "created_at", title: "Created", isSortable: false}),
+                            new tableHeadCol({key: "created_at", title: "Created", isSortable: true}),
                             new tableHeadCol({key: "action", title: "Actions", isSortable: false}),
                         ];
                     })
@@ -205,9 +205,9 @@
 
                 var newLocationParams = {}
 
-                if(this.getLocationParams()[this.getSortKey()] == this.key || this.getLocationParams()[this.getSortKey()] == undefined){
-                    newLocationParams[this.getDirectionKey()] = this.getLocationParams()[this.getDirectionKey()] != undefined && this.getLocationParams()[this.getDirectionKey()] == "asc"? "desc": "asc";
-                }
+                newLocationParams[this.getDirectionKey()] = this.getLocationParams()[this.getSortKey()] == undefined
+                    ? "desc"
+                    : this.getLocationParams()[this.getDirectionKey()] == "asc" ? "desc" : "asc";
 
                 newLocationParams[this.getSortKey()] = this.key;
 
