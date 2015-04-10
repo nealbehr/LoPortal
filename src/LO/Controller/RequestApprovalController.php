@@ -28,7 +28,7 @@ class RequestApprovalController extends RequestBaseController{
 
             $queue = (new Queue())
                 ->set1RexId($id)
-                ->setType(Queue::TYPE_FLYER)
+                ->setType(Queue::TYPE_PROPERTY_APPROVAL)
                 ->setUserId($app->user()->getId())
             ;
 

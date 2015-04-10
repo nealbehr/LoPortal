@@ -8,9 +8,11 @@
 
 namespace LO\Provider;
 
+use Aws\Ses\SesClient;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Aws\S3\S3Client;
+use Aws\Common\Credentials\Credentials;
 
 class Amazon implements ServiceProviderInterface{
 
