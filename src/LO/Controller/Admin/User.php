@@ -68,7 +68,7 @@ class User extends Base{
 
     public function addUserAction(Application $app, Request $request){
         try{
-            $user = new User();
+            $user = new EntityUser();
             $user->setSalt($user->generateSalt());
             $user->setPassword($app->encodePassword($user, substr(md5(time()), 0, 10)));
 
