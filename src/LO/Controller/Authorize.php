@@ -3,12 +3,15 @@ namespace LO\Controller;
 
 use Doctrine\ORM\Query;
 use LO\Application;
+use LO\Exception\Http;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use LO\Common\Email;
+use LO\Model\Entity\RecoveryPassword;
 
 class Authorize {
     const MAX_EMAILS = 5;
@@ -40,7 +43,7 @@ class Authorize {
             ->getQuery()
             ->execute(
                 ['email' => '%'.$email.'%'],
-                'ListItems'
+                 'ListItems'
             )
         ;
 
@@ -49,14 +52,83 @@ class Authorize {
 
     public function resetPasswordAction(Application $app, $email){
         try{
+            $app->getEntityManager()->beginTransaction();
             $user = $app->getUserManager()->findByEmail($email);
 
-            if($user == null){
+            if(null === $user){
                 throw new NotFoundHttpException("There is no account with entered email.");
             }
 
+            $dateExpire = (new \DateTime())->modify(sprintf('+%d day', $app->getConfigByName('user', 'recovery.password.expire.days')));
+
+            $recoveryPassword = (new RecoveryPassword())
+                ->setUser($user)
+                ->setDateExpire($dateExpire);
+
+            $app->getEntityManager()->persist($recoveryPassword);
+            $app->getEntityManager()->flush();
+
+            (new Email\RecoveryPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $recoveryPassword))
+                ->setDestinationList($user->getEmail())
+                ->send();
+
+            $app->getEntityManager()->commit();
+
             return $app->json("Please check your email for the new password.");
         }catch(HttpException $e){
+            $app->getEntityManager()->rollback();
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
+    public function confirmPassword(Application $app, Request $request, $id){
+        try{
+            $app->getEntityManager()->beginTransaction();
+            /** @var RecoveryPassword $recoveryPassword */
+            $recoveryPassword = $app->getEntityManager()
+                ->createQueryBuilder()
+                ->select('r, u')
+                ->from(RecoveryPassword::class, 'r')
+                ->leftjoin('r.user', 'u')
+                ->where('r.id = :id')
+                ->andWhere('r.signature = :signature')
+                ->setParameters([
+                    'id'        => $id,
+                    'signature' => $request->request->get('signature'),
+                ])
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if(null === $recoveryPassword){
+                throw new Http("Bad recovery parameters.", Response::HTTP_BAD_REQUEST);
+            }
+
+            if($recoveryPassword->getDateExpire() < (new \DateTime())){
+                $app->getEntityManager()->remove($recoveryPassword);
+                $app->getEntityManager()->flush();
+
+                throw new Http("Data overdue.", Response::HTTP_LOCKED);
+            }
+
+
+            $salt = $recoveryPassword->getUser()->generateSalt();
+            $password = $recoveryPassword->getUser()->generatePassword();
+            $recoveryPassword->getUser()
+                ->setSalt($salt)
+                ->setPassword($app->getEncoderDigest()->encodePassword($password, $salt))
+
+            ;
+
+            $app->getEntityManager()->persist($recoveryPassword);
+            $app->getEntityManager()->remove($recoveryPassword);
+            $app->getEntityManager()->flush();
+
+            $app->getEntityManager()->commit();
+
+            return $app->json(['password' => $password]);
+        }catch(Http $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addWarning($e);
             return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
     }

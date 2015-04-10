@@ -12,6 +12,30 @@
                 access: {
                     isFree: true
                 }
+            })
+            .when('/recover/:id/:signature', {
+                templateUrl: '/partials/recovery',
+                controller:  'recoverCtrl',
+                access: {
+                    isFree: true
+                }
+            })
+        ;
+    }]);
+
+    authorize.controller('recoverCtrl', ['$http', 'waitingScreen', '$routeParams', '$scope', 'renderMessage', function($http, waitingScreen, $routeParams, $scope, renderMessage){
+        waitingScreen.show();
+        $scope.password;
+        $http.put('/authorize/confirm/password/' +  $routeParams.id, {signature: $routeParams.signature})
+            .success(function(data){
+                $scope.password = data.password;
+            })
+            .error(function(data, code){
+                var message = 'message' in data? data.message: "We have some problems.";
+                renderMessage(message, "danger", angular.element('#message'), $scope);
+            })
+            .finally(function(){
+                waitingScreen.hide();
             });
     }]);
 
@@ -72,6 +96,8 @@
         }
 
         $scope.resetPassword = function(form){
+            waitingScreen.show();
+            $('#resetPass').modal('hide');
             $http.post('/authorize/reset/' + this.emailForResetPassword, {})
                 .success(function(data){
                     $scope.renderMessage(data, "success");
@@ -80,7 +106,7 @@
                     $scope.renderMessage(data.message, "danger");
                 })
                 .finally(function(){
-                    $('#resetPass').modal('hide')
+                    waitingScreen.hide();
                     // 1) hide gray screen
                 });
             ;

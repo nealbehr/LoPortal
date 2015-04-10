@@ -85,7 +85,7 @@ class User extends Base implements UserInterface{
     protected $lender;
 
     /**
-     * @Column(type="string", length=10)
+     * @Column(type="string", length=32)
      */
     protected $salt;
 
@@ -373,6 +373,10 @@ class User extends Base implements UserInterface{
 
     public function generateSalt(){
         return md5(time() + mt_rand(10000, 1000000000));
+    }
+
+    public function generatePassword(){
+        return substr(md5(time()), 0, 8);
     }
 
     public function getSalt(){

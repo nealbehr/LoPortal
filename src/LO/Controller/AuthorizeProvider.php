@@ -40,6 +40,10 @@ class AuthorizeProvider implements ControllerProviderInterface {
         $controllers
             ->post("/reset/{email}", "auth.controller:resetPasswordAction");
 
+        $controllers
+            ->put("/confirm/password/{id}", "auth.controller:confirmPassword")
+            ->bind('auth-confirm-password')
+        ;
 
         return $controllers;
     }

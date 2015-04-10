@@ -28,10 +28,19 @@ class Amazon implements ServiceProviderInterface{
     }
 
     public function register(Application $app){
+        $app['amazon.credential'] = $app->share(function() use ($app){
+                return Credentials::factory($app->getConfigByName('amazon', 'securityCredentials'));
+            }
+        );
+
         $app['amazon.s3'] = $app->share(function () use ($app) {
                 return S3Client::factory($app->getConfigByName('amazon', 'securityCredentials'));
             }
         );
+
+        $app['amazon.ses'] = $app->share(function () use ($app) {
+                return SesClient::factory($app->getConfigByName('amazon', 'ses', 'securityCredentials'));
+        });
     }
 
 }

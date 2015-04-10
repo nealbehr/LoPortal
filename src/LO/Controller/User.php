@@ -19,6 +19,7 @@ use LO\Model\Entity\User as UserEntity;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
+
 class User {
     /** @var array  */
     private $errors = [];
@@ -78,4 +79,4 @@ class User {
             return $app->json($this->errors, $e->getStatusCode());
         }
     }
-} 
+}

@@ -1,40 +1,40 @@
-    <div class="container">
-        <div class="row">
-            <div class="ligin-form col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
-                <form ng-submit="formLogin.$valid && signin()" class="css-form" novalidate name="formLogin">
-                    <div class="alert alert-danger fade in" role="alert" ng-show="errorMessage">
-                        [[ errorMessage ]]
-                    </div>
+<div class="container">
+    <div class="row">
+        <div class="ligin-form col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
+            <form ng-submit="formLogin.$valid && signin()" class="css-form" novalidate name="formLogin">
+                <div class="alert alert-danger fade in" role="alert" ng-show="errorMessage">
+                    [[ errorMessage ]]
+                </div>
 
 
-                    <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formLogin)">
-                        <span ng-show="formLogin.email.$error.email">The entered email is invalid.</span>
-                        <span ng-show="formLogin.email.$error.required">Email can't be empty.</span>
-                    </div>
-                    <div class="alert alert-danger fade in" role="alert" ng-show="isValidPassword(formLogin)">
-                        <span ng-show="formLogin.password.$error.required">Password can't be empty.</span>
-                    </div>
+                <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formLogin)">
+                    <span ng-show="formLogin.email.$error.email">The entered email is invalid.</span>
+                    <span ng-show="formLogin.email.$error.required">Email can't be empty.</span>
+                </div>
+                <div class="alert alert-danger fade in" role="alert" ng-show="isValidPassword(formLogin)">
+                    <span ng-show="formLogin.password.$error.required">Password can't be empty.</span>
+                </div>
 
-                    <div class="logo-holder">
-                        <a href="/"><img src="images/logo.png" width="135" height="70" alt="firstREX"></a>
+                <div class="logo-holder">
+                    <a href="/"><img src="images/logo.png" width="135" height="70" alt="firstREX"></a>
+                </div>
+                <div class="inputs-holder">
+                    <div class="input" ng-class="{error: isValidEmail(formLogin)}">
+                        <input class="input-lg" type="email" placeholder="Email" ng-model="user.email" name="email" required="" ng-keyup="complete($event)">
                     </div>
-                    <div class="inputs-holder">
-                        <div class="input" ng-class="{error: isValidEmail(formLogin)}">
-                            <input class="input-lg" type="email" placeholder="Email" ng-model="user.email" name="email" required="" ng-keyup="complete($event)">
-                        </div>
-                        <div class="input" ng-class="{error: isValidPassword(formLogin)}">
-                            <input class="input-lg" type="password" placeholder="Password" ng-model="user.password" required="" name="password">
-                        </div>
+                    <div class="input" ng-class="{error: isValidPassword(formLogin)}">
+                        <input class="input-lg" type="password" placeholder="Password" ng-model="user.password" required="" name="password">
                     </div>
-                    <div class="wrap">
-                        <a href="#"  data-toggle="modal" data-target="#resetPass">Reset password</a>
-                    </div>
-                    <button class="btn btn-default btn-lg">Log in</button>
-                    <p class="note">Do not have an account yet? <a href="mailto:info@1rex.com">Register</a></p>
-                </form>
-            </div>
+                </div>
+                <div class="wrap">
+                    <a href="#"  data-toggle="modal" data-target="#resetPass">Reset password</a>
+                </div>
+                <button class="btn btn-default btn-lg">Log in</button>
+                <p class="note">Do not have an account yet? <a href="mailto:info@1rex.com">Register</a></p>
+            </form>
         </div>
     </div>
+</div>
 
 <div class="modal fade" id="resetPass" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">

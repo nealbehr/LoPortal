@@ -36,7 +36,6 @@ class UserProvider implements ControllerProviderInterface {
         $controllers
             ->put("/{id}", "user.controller:updateAction");
 
-
         return $controllers;
     }
 }

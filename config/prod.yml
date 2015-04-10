@@ -20,6 +20,7 @@ db.options:
     charset:  utf8
 user:
     token.expire: 5 # 5 days
+    recovery.password.expire.days: 1 # 1 day
 firstrex:
   api:
     user: FirstREX
@@ -31,6 +32,13 @@ amazon:
     securityCredentials:
       key:    AKIAJGGPNM46RAXZIFDA
       secret: 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
+      region: us-east-1
+    ses:
+      securityCredentials:
+        key: AKIAIINCG3J7RCRMROOA
+        secret: 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
+        region: us-east-1
+      source: rexinfo12@gmail.com
 
 knp_paginator:
     page_range: 5

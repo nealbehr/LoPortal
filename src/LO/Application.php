@@ -178,7 +178,7 @@ class Application extends \Silex\Application{
                 'pattern' => '^/$',
             ],
             'login' => [
-                'pattern' => '^/(partials|authorize/signin|authorize/autocomplete|authorize/reset)',
+                'pattern' => '^/(partials|authorize/)',
             ],
 
             'api' => [
@@ -216,7 +216,8 @@ class Application extends \Silex\Application{
         $this->match('/', function(){
             $this->getTwig()->addFilter(new \Twig_SimpleFilter('ebase64', 'base64_encode'));
             return $this->getTwig()->render('index.twig');
-        });
+        })
+        ->bind('index');
 
         $this->get('/switch', function(){
             return $this->redirect('/');
@@ -293,5 +294,12 @@ class Application extends \Silex\Application{
      */
     public function getPaginator(){
         return $this['paginator'];
+    }
+
+    /**
+     * @return \Aws\Ses\SesClient
+     */
+    public function getSes(){
+        return $this['amazon.ses'];
     }
 }
