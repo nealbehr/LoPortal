@@ -659,7 +659,7 @@
 
     helperService.filter('fromMysqlDate', function(){
         return function(input){
-            return "date" in input
+            return undefined  != input && "date" in input
                 ? new Date(input.date.replace(/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)(.)*/, '$2/$3/$1 $4:$5:$6'))
                 : input;
         }

@@ -27,7 +27,9 @@
                 <td>[[ user.phone ]]</td>
                 <td>[[ user.mobile ]]</td>
                 <!-- td>Feb 15, 2015</td -->
-                <td>[[ user.created_at ]]</td>
+                <td>
+                    <div>[[ user.created_at|fromMysqlDate| date:"MMM d yyyy" ]]</div>
+                    [[ user.created_at|fromMysqlDate| date:"HH:mm a" ]]
                 <td>
                     <div class="dropdown">
                         <button class="action" type="button" data-toggle="dropdown">action</button>
