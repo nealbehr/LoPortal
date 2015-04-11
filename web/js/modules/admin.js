@@ -56,6 +56,25 @@
 
     }]);
 
+    admin.controller('adminDiscardCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+        $scope.reason;
+//        $scope.ngDialogData;
+        $scope.decline = function(){
+            waitingScreen.show();
+            $http.patch("/admin/queue/decline/" + $scope.ngDialogData.request.id, {reason: this.reason})
+                .success(function(data){
+                    $scope.closeThisDialog({state: "success"});
+                })
+                .error(function(data, code){
+                    $scope.closeThisDialog({state: "danger", message: ("message" in data? data.message: data)});
+                })
+                .finally(function(){
+                    waitingScreen.hide();
+                });
+            ;
+        }
+    }]);
+
     admin.directive('loAdminNavBar', ['$location', 'Tab', function($location, Tab){
         return { restrict: 'EA',
             templateUrl: '/partials/admin.nav.bar',
@@ -169,7 +188,7 @@
         }
     }]);
 
-    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', function($http, tableHeadCol, $location){
+    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", function($http, tableHeadCol, $location, ngDialog, renderMessage){
         return {
             restrict: 'EA',
             templateUrl: '/partials/admin.panel.requests',
@@ -178,6 +197,8 @@
                 scope.searchKey;
                 scope.searchingString;
                 scope.pagination = {};
+                scope.messageContainer = angular.element("#messageContainer")
+                scope.states = settings.queue;
 
                 $http.get('/admin/queue', {
                         params: $location.search()
@@ -204,6 +225,32 @@
                         ];
                     })
                 ;
+
+                scope.decline = function (request) {
+                    var dialog = ngDialog.open({
+                        template: '/partials/admin.request.decline',
+                        showClose: false,
+                        controller: 'adminDiscardCtrl',
+                        data: {
+                            request: request
+                        }
+                    });
+
+                    dialog.closePromise.then(function (data) {
+                        console.log(data);
+                        if(data.value.state == undefined){
+                            return;
+                        }
+
+                        if(data.value.state == "success"){
+                            request.state = settings.queue.stateDeclined;
+                            renderMessage("Declined", data.value.state, scope.messageContainer, scope);
+                            return;
+                        }
+
+                        renderMessage(data.value.message, data.value.state, scope.messageContainer, scope);
+                    });
+                };
             }
         }
     }]);

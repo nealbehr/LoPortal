@@ -95,6 +95,7 @@ module.exports = function(grunt) {
                         'web/css/*.min.css',
                         '<%= cssmin.target.files[0].dest %>/bootstrap.min.css',
                         '<%= cssmin.target.files[0].dest %>/all.min.css',
+                        '<%= cssmin.target.files[0].dest %>/ng-dialog.min.css',
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
                         '<%= cssmin.target.files[0].dest %>/cropper.min.css'
                     ]

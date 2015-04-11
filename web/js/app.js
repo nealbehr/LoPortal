@@ -2,7 +2,7 @@
     "use strict";
     settings = settings || {};
 
-    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'userModule', 'userProfileModule', 'adminModule']);
+    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'userModule', 'userProfileModule', 'adminModule', 'ngDialog']);
 
     app.constant('HTTP_CODES', {FORBIDDEN: 403});
     app.constant('TOKEN_KEY', 'access_token');
@@ -10,6 +10,7 @@
     app.config(['$interpolateProvider', '$httpProvider', '$cookiesProvider', 'HTTP_CODES', 'TOKEN_KEY', function($interpolateProvider, $httpProvider, $cookiesProvider, HTTP_CODES, TOKEN_KEY) {
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
         $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded';
+        $httpProvider.defaults.headers.patch['Content-Type'] = 'application/x-www-form-urlencoded';
         $interpolateProvider.startSymbol('[[')
                             .endSymbol(']]');
 

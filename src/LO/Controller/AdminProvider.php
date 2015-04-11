@@ -45,6 +45,7 @@ class AdminProvider implements ControllerProviderInterface {
             ->delete("/user/{id}", "admin.controller:deleteAction");
 
         $controllers->get('/queue', "admin.queue.controller:getAction");
+        $controllers->patch('/queue/decline/{id}', "admin.queue.controller:declineAction");
 
         return $controllers;
     }

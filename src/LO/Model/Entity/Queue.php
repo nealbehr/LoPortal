@@ -75,6 +75,11 @@ class Queue extends Base{
     protected $user_id;
 
     /**
+     * @Column(type="string")
+     */
+    protected $reason;
+
+    /**
      * @OneToOne(targetEntity="RequestFlyer", mappedBy="queue")
      */
     private $flyer;
@@ -138,6 +143,12 @@ class Queue extends Base{
         return $this;
     }
 
+    public function setReason($param){
+        $this->reason = $param;
+
+        return $this;
+    }
+
     /**
      * @Assert\Callback
      */
@@ -154,6 +165,8 @@ class Queue extends Base{
                 null
             );
         }
+
+        /** @todo Добавить валидацию если не загружен pdf то статус может быть только одного типа */
     }
 
     static public function getTypes(){

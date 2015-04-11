@@ -51,3 +51,7 @@
 .admin-table .isSortable{
     cursor: pointer;
 }
+
+.ngdialog-content{
+    background: none;
+}

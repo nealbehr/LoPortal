@@ -15,6 +15,8 @@ use LO\Application;
 use LO\Model\Entity\Queue as EntityQueue;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Queue extends Base{
     const QUEUE_LIMIT = 20;
@@ -60,6 +62,35 @@ class Queue extends Base{
             'defDirection'  => self::DEFAULT_SORT_DIRECTION,
             'defField'      => self::DEFAULT_SORT_FIELD_NAME,
         ]);
+    }
+
+    public function declineAction(Application $app, Request $request, $id){
+        try {
+            /** @var EntityQueue $queue */
+            $queue = $app->getEntityManager()
+                         ->createQueryBuilder()
+                         ->select('q')
+                         ->from(EntityQueue::class, 'q')
+                         ->where('q.id = :id')
+                         ->setParameter('id', $id)
+                         ->getQuery()
+                         ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
+                         ->getOneOrNullResult();
+
+            if(null === $queue){
+                throw new BadRequestHttpException(sprintf("Request \'%s\' not found.", $id));
+            }
+
+            $queue->setState(EntityQueue::STATE_DECLINED)
+                  ->setReason($request->request->get('reason'));
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+            return $app->json("success");
+        }catch(HttpException $e){
+            $app->getMonolog()->addWarning($e);
+            return $app->json(["message" => $e->getMessage()], $e->getStatusCode());
+        }
     }
 
     private function getDuplicates(Application $app, array $ids){
