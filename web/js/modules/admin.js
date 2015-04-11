@@ -148,6 +148,23 @@
                         })
                     ;
                 }
+
+                scope.resetPassword = function(e, user){
+                    e.preventDefault();
+                    waitingScreen.show();
+
+                    user.resetPassword().then(function(){
+                            renderMessage("Password has been reset.", "success", scope.container, scope);
+                        })
+                        .catch(function(data){
+                            var message = "message" in data? data.message: data;
+                            renderMessage(message, "danger", scope.container, scope);
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        })
+                    ;
+                }
             }
         }
     }]);

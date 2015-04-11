@@ -78,7 +78,22 @@
                 var deferred = $q.defer();
                 $http.post('/admin/user', {user: this.getFields4Save()})
                     .success(function(data){
-                        self.id = data.id;
+                        userBase.id = data.id;
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            }
+
+            userBase.resetPassword = function(){
+                var deferred = $q.defer();
+                $http.patch('/admin/user/' + this.id, {})
+                    .success(function(data){
                         deferred.resolve(data);
                     })
                     .error(function(data){

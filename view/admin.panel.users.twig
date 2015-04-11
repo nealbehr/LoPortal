@@ -35,7 +35,7 @@
                         <button class="action" type="button" data-toggle="dropdown">action</button>
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li><a href="/#/admin/user/[[ user.id ]]/edit" class="change">Edit</a></li>
-                            <li><a href="#" class="reset">Reset Password</a></li>
+                            <li><a href="#" class="reset" ng-click="resetPassword($event, user)">Reset Password</a></li>
                             <li><a href="/switch?_switch_user=[[ user.email ]]" class="impersonate">Impersonate</a></li>
                             <li><a href="#" ng-click="delete($event, key, user)" class="delete">Delete</a></li>
                         </ul>

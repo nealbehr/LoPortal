@@ -39,6 +39,9 @@ class AdminProvider implements ControllerProviderInterface {
             ->put("/user/{id}", "admin.controller:updateUserAction");
 
         $controllers
+            ->patch("/user/{userId}", "admin.controller:resetPasswordAction");
+
+        $controllers
             ->delete("/user/{id}", "admin.controller:deleteAction");
 
         $controllers->get('/queue', "admin.queue.controller:getAction");

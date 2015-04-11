@@ -9,6 +9,8 @@
 namespace LO\Controller\Admin;
 
 use LO\Application;
+use LO\Common\Email\NewPassword;
+use LO\Common\Email\ResetPassword;
 use LO\Form\UserAdminForm;
 use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,9 +70,11 @@ class User extends Base{
 
     public function addUserAction(Application $app, Request $request){
         try{
+            $app->getEntityManager()->beginTransaction();
             $user = new EntityUser();
-            $user->setSalt($user->generateSalt());
-            $user->setPassword($app->encodePassword($user, substr(md5(time()), 0, 10)));
+            $password = $user->generatePassword();
+            $user->setSalt($user->generateSalt())
+                 ->setPassword($app->encodePassword($user, $password));
 
             $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminForm());
 
@@ -79,8 +83,15 @@ class User extends Base{
                 throw new BadRequestHttpException('User info not valid.');
             }
 
+            (new NewPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $password))
+                ->setDestinationList($user->getEmail())
+                ->send();
+
+            $app->getEntityManager()->commit();
+
             return $app->json(['id' => $user->getId()]);
         }catch(HttpException $e){
+            $app->getEntityManager()->rollback();
             $app->getMonolog()->addError($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
@@ -89,18 +100,11 @@ class User extends Base{
 
     public function updateUserAction(Application $app, Request $request, $id){
         try{
-            /** @var User $user */
-            $user = $app->getEntityManager()->getRepository(EntityUser::class)->find($id);
-
-            if(!$user){
-                throw new BadRequestHttpException("User not found.");
-            }
-
-            if($user->getId() == $app->user()->getId()){
-                throw new BadRequestHttpException("You can't edit self.");
-            }
-
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminForm());
+            $errors = (new UserManager($app))->validateAndSaveUser(
+                $request,
+                $this->getUser($app, $id, "You can't edit self."),
+                new UserAdminForm()
+            );
 
             if(count($errors) > 0){
                 $this->setErrorsForm($errors);
@@ -115,20 +119,11 @@ class User extends Base{
         }
     }
 
-    public function deleteAction(Application $app, Request $request, $id){
+    public function deleteAction(Application $app, $id){
         try {
-            /** @var User $user */
-            $user = $app->getEntityManager()->getRepository(EntityUser::class)->find($id);
-
-            if (!$user) {
-                throw new BadRequestHttpException("User not found.");
-            }
-
-            if ($user->getId() == $app->user()->getId()) {
-                throw new BadRequestHttpException("You remove self.");
-            }
-
-            $app->getEntityManager()->remove($user);
+            $app->getEntityManager()->remove(
+                $this->getUser($app, $id, "You can not remove self.")
+            );
             $app->getEntityManager()->flush();
 
             return $app->json('success');
@@ -139,10 +134,51 @@ class User extends Base{
         }
     }
 
+    public function resetPasswordAction(Application $app, $userId){
+        try{
+            $app->getEntityManager()->beginTransaction();
+            $user = $this->getUser($app, $userId, "You can not edit self.");
+
+            $password = $user->generatePassword();
+
+            $user->setSalt($user->generateSalt())
+                 ->setPassword($app->encodePassword($user, $password));
+
+            $app->getEntityManager()->persist($user);
+            $app->getEntityManager()->flush();
+
+            (new ResetPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $password))
+                ->setDestinationList($user->getEmail())
+                ->send();
+
+            $app->getEntityManager()->commit();
+
+            return $app->json("success");
+        }catch(HttpException $e){
+            $app->getEntityManager()->rollback();
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
     private function setErrorsForm(array $errors){
         $this->errors['form_errors'] = $errors;
 
         return $this;
+    }
+
+    private function getUser(Application $app, $userId, $errorMessage){
+        /** @var EntityUser $user */
+        $user = $app->getEntityManager()->getRepository(EntityUser::class)->find($userId);
+
+        if(!$user){
+            throw new BadRequestHttpException("User not found.");
+        }
+
+        if($user->getId() == $app->user()->getId()){
+            throw new BadRequestHttpException($errorMessage);
+        }
+
+        return $user;
     }
 
     private function getUserList(Request $request, Application $app){
