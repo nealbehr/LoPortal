@@ -15,6 +15,7 @@
 
             userBase.save = function(){
                 var deferred = $q.defer();
+                console.log(this.getFields4Save())
                 $http.put('/user/' + this.id, {user: this.getFields4Save()})
                     .success(function(data){
                         deferred.resolve(data);
@@ -130,12 +131,12 @@
 
             this.getFields4Save = function(){
                 var result = {};
-                for(var i in self){
-                    if(typeof self[i] == 'function'){
+                for(var i in this){
+                    if(typeof this[i] == 'function'){
                         continue;
                     }
 
-                    result[i] = self[i];
+                    result[i] = this[i];
                 }
 
                 return result;
@@ -179,15 +180,15 @@
 
             this.fill = function(data){
                 for(var i in data){
-                    self[i] = data[i];
+                    this[i] = data[i];
                 }
 
                 return this;
             }
 
             this.clear = function(){
-                for(var i in self){
-                    if(typeof self[i] == 'function'){
+                for(var i in this){
+                    if(typeof this[i] == 'function'){
                         continue;
                     }
 

@@ -79,6 +79,12 @@ class RequestFlyer extends Base{
         return $this->pdf_link;
     }
 
+    public function setPdfLink($param){
+        $this->pdf_link = $param;
+
+        return $this;
+    }
+
     public function getQueueId(){
         return $this->queue_id;
     }

@@ -62,7 +62,7 @@ class DashboardManager extends Base{
                     ->andWhere('f.pdf_link is not null')
                     ->addOrderBy('q.created_at', 'DESC')
                     ->setParameter('userId' , $userId)
-                    ->setParameter('state', Queue::STATE_LISTING_FLYER_PENDING)
+                    ->setParameter('state', Queue::STATE_APPROVED)
                     ->getQuery()
                     ->getResult($hydrate)
         ;

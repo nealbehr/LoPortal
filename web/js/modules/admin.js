@@ -37,7 +37,7 @@
     }]);
 
     admin.controller('adminQueueCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
-        $('[data-toggle="tooltip"]').tooltip();
+
     }]);
 
     admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
@@ -66,12 +66,61 @@
                     $scope.closeThisDialog({state: "success"});
                 })
                 .error(function(data, code){
-                    $scope.closeThisDialog({state: "danger", message: ("message" in data? data.message: data)});
+                    $scope.closeThisDialog({state: "danger", message: (typeof data == "object" && data !== null && "message" in data? data.message: data)});
                 })
                 .finally(function(){
                     waitingScreen.hide();
                 });
             ;
+        }
+    }]);
+
+    admin.controller('adminApproveFlyerCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+        $scope.reason;
+        $scope.marketingCollateral;
+        $scope.approve = function(){
+            waitingScreen.show();
+            $http.patch("/admin/queue/approve/flyer/" + $scope.ngDialogData.request.id, {file: this.marketingCollateral, reason: this.reason})
+                .success(function(data){
+                    $scope.closeThisDialog({state: "success", requestState: ($scope.marketingCollateral? settings.queue.state.approved: settings.queue.state.listingFlyerPending)});
+                })
+                .error(function(data, code){
+                    $scope.closeThisDialog({state: "danger", message: (typeof data == "object" && data !== null && "message" in data? data.message: data)});
+                })
+                .finally(function(){
+                    waitingScreen.hide();
+                });
+            ;
+        }
+
+        $scope.remove = function(e){
+            e.preventDefault();
+
+            $scope.marketingCollateral = null;
+        }
+    }]);
+
+    admin.controller('adminApproveCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+        $scope.reason;
+        $scope.approve = function(){
+            waitingScreen.show();
+            $http.patch("/admin/queue/approve/" + $scope.ngDialogData.request.id, {reason: this.reason})
+                .success(function(data){
+                    $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
+                })
+                .error(function(data, code){
+                    $scope.closeThisDialog({state: "danger", message: (typeof data == "object" && data !== null && "message" in data? data.message: data)});
+                })
+                .finally(function(){
+                    waitingScreen.hide();
+                });
+            ;
+        }
+
+        $scope.remove = function(e){
+            e.preventDefault();
+
+            $scope.marketingCollateral = null;
         }
     }]);
 
@@ -198,7 +247,7 @@
                 scope.searchingString;
                 scope.pagination = {};
                 scope.messageContainer = angular.element("#messageContainer")
-                scope.states = settings.queue;
+                scope.states = settings.queue.state;
 
                 $http.get('/admin/queue', {
                         params: $location.search()
@@ -226,7 +275,39 @@
                     })
                 ;
 
-                scope.decline = function (request) {
+                scope.getDialogByRequest = function(request){
+                    return ngDialog.open({
+                        template: request.request_type == settings.queue.type.flyer? '/partials/admin.request.approve.flyer': '/partials/admin.request.approve',
+                        showClose: false,
+                        controller: request.request_type == settings.queue.type.flyer? 'adminApproveFlyerCtrl': 'adminApproveCtrl',
+                        data: {
+                            request: request
+                        }
+                    });
+                }
+
+                scope.approve = function(e, request){
+                    e.preventDefault();
+
+                    var dialog = this.getDialogByRequest(request);
+
+                    dialog.closePromise.then(function (data) {
+                        if(data.value == undefined || data.value.state == undefined){
+                            return;
+                        }
+
+                        if(data.value.state == "success"){
+                            request.state = data.value.requestState;
+                            renderMessage("Approved", data.value.state, scope.messageContainer, scope);
+                            return;
+                        }
+
+                        renderMessage(data.value.message, data.value.state, scope.messageContainer, scope);
+                    });
+                }
+
+                scope.decline = function (e, request) {
+                    e.preventDefault();
                     var dialog = ngDialog.open({
                         template: '/partials/admin.request.decline',
                         showClose: false,
@@ -237,13 +318,12 @@
                     });
 
                     dialog.closePromise.then(function (data) {
-                        console.log(data);
-                        if(data.value.state == undefined){
+                        if(data.value == undefined || data.value.state == undefined){
                             return;
                         }
 
                         if(data.value.state == "success"){
-                            request.state = settings.queue.stateDeclined;
+                            request.state = settings.queue.state.declined;
                             renderMessage("Declined", data.value.state, scope.messageContainer, scope);
                             return;
                         }

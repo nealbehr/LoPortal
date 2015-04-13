@@ -46,6 +46,8 @@ class AdminProvider implements ControllerProviderInterface {
 
         $controllers->get('/queue', "admin.queue.controller:getAction");
         $controllers->patch('/queue/decline/{id}', "admin.queue.controller:declineAction");
+        $controllers->patch('/queue/approve/flyer/{id}', "admin.queue.controller:approveRequestFlyerAction");
+        $controllers->patch('/queue/approve/{id}', "admin.queue.controller:approveRequestApprovalAction");
 
         return $controllers;
     }

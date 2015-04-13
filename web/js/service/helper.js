@@ -87,7 +87,6 @@
                 scope.container = angular.element('#userProfileMessage');
 
                 scope.$watch('officer.id', function(newVal, oldVal){
-                    console.log("new wal = " + newVal);
                     if(undefined != newVal && newVal == scope.user.id){
                         scope.title = "Edit Profile";
                         return;
@@ -183,6 +182,10 @@
 
                     scope.officer.save()
                         .then(function(data){
+                            if(scope.user.id == scope.officer.id){
+                                console.log('ssss');
+                                scope.user.fill(scope.officer.getFields4Save());
+                            }
                             sessionMessages.addSuccess("Successfully saved.")
                             history.back();
                         })
@@ -235,19 +238,18 @@
                 items: '=loItems',
                 id:    '@loId',
                 title: '@loTitle',
-                isExpand: '=loIsExpand'
+                isExpand: '=loIsExpand',
+                state: "@loState"
             },
             link: function(scope, element, attrs, controllers){
-                scope.$watch('items', function (newValue) {
-                    scope.items = newValue;
-
-                    if(scope.isExpand){
-                        $('#' + scope.id).collapse('show');
-                    }
-                });
-
                 $timeout(function(){
                     angular.element("#" + scope.id + " > table").tablesorter();
+                });
+
+                scope.$watch("isExpand", function(newValue){
+                    if(newValue){
+                        $('#' + scope.id).collapse('show');
+                    }
                 });
             }
         }
@@ -375,6 +377,54 @@
             templateUrl: '/partials/session.messages',
             link: function(scope, elm, attrs, ctrl) {
                 scope.messages = sessionMessages.get();
+            }
+        };
+    }]);
+
+    helperService.directive('loFilereader', ["$q", function($q) {
+        var slice = Array.prototype.slice;
+
+        return {
+            restrict: 'A',
+            require: '?ngModel',
+            link: function(scope, element, attrs, ngModel) {
+                console.log('ddddd');
+                if (!ngModel){
+                    return;
+                };
+
+                ngModel.$render = function() {};
+
+                element.bind('change', function(e) {
+                    var element = e.target;
+
+                    $q.all(slice.call(element.files, 0).map(readFile))
+                        .then(function(values) {
+                            console.log(values);
+                            if (element.multiple){
+                                ngModel.$setViewValue(values)
+                            }
+                            else {
+                                ngModel.$setViewValue(values.length ? values[0] : null);
+                            }
+                        });
+
+                    function readFile(file) {
+                        var deferred = $q.defer();
+
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            deferred.resolve(e.target.result);
+                        };
+                        reader.onerror = function(e) {
+                            deferred.reject(e);
+                        };
+                        reader.readAsDataURL(file);
+
+                        return deferred.promise;
+                    }
+
+                });
             }
         };
     }]);

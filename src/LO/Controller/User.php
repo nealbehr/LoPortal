@@ -58,9 +58,9 @@ class User {
      */
     public function updateAction(Application $app, Request $request, $id){
         try{
+            $app->getEntityManager()->getConnection()->executeQuery("update users set first_name='dddd' where id = 102")->execute();
             /** @var UserEntity $user */
             $user = $app->getEntityManager()->getRepository(UserEntity::class)->find($id);
-
             if(!$user){
                 throw new BadRequestHttpException("User not found.");
             }
@@ -69,11 +69,15 @@ class User {
 
             if(count($errors) > 0){
                 $this->errors['form_errors'] = $errors;
-                throw new BadRequestHttpException('User info not valid.');
+                throw new BadRequestHttpException('User info is not valid.');
             }
 
             return $app->json('success');
         }catch(HttpException $e){
+            if($app->user()->getId() == $id){
+                $app->getUserProvider()->refreshUser($user);
+            }
+
             $app->getMonolog()->addWarning($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());

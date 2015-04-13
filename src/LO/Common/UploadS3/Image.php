@@ -2,33 +2,31 @@
 /**
  * Created by IntelliJ IDEA.
  * User: samoilenko
- * Date: 3/26/15
- * Time: 11:49 AM
+ * Date: 4/13/15
+ * Time: 3:30 PM
  */
 
-namespace LO\Util;
+namespace LO\Common\UploadS3;
 
-
-use Aws\S3\Enum\CannedAcl;
-use LO\Application;
 use LO\Exception\Http;
 use Symfony\Component\HttpFoundation\Response;
 use Aws\S3\S3Client;
 
-class Image {
-    private $s3;
+class Image extends Base{
     private $img;
     private $ext;
-    private $bucket;
 
     public function __construct(S3Client $s3, $blobImage, $bucket){
+        parent::__construct($s3, $bucket);
         if(empty($blobImage)){
             throw new Http('Image content is empty.', Response::HTTP_BAD_REQUEST);
         }
 
-        $this->s3     = $s3;
-        $this->bucket = $bucket;
         $this->img    = $this->createImage($blobImage);
+    }
+
+    public function downloadPhotoToS3andGetUrl($filename){
+        return parent::downloadPhotoToS3andGetUrl($filename.'.'.$this->ext);
     }
 
     protected function createImage($image){
@@ -48,28 +46,15 @@ class Image {
         }
     }
 
-    public function downloadPhotoToS3andGetUrl($filename){
-        $ext = null;
-
-        /**
-         * @var \Guzzle\Service\Resource\Model $answer
-         */
-        $response = $this->s3->putObject([
-            'Bucket' => $this->bucket,
-            'Key'    => $filename.'.'.$this->ext,
-            'Body'   => $this->img,
-            'ACL'         => CannedAcl::PUBLIC_READ,
-            'ContentType' => $this->getContentType(),
-        ]);
-
-        return $response->get('ObjectURL');
+    protected function getFile(){
+        return $this->img;
     }
 
-    private function getContentType(){
+    protected function getContentType(){
         $contentType = ['jpg' => 'jpeg', 'png' => 'png', 'gif' => 'gif', 'tiff' => 'tiff', 'bmp' => 'bmp'];
 
         return 'image/'.(isset($contentType[$this->ext])? $contentType[$this->ext]: 'jpeg');
     }
 
 
-} 
+}

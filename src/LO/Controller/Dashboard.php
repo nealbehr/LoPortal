@@ -14,7 +14,7 @@ use LO\Application;
 class Dashboard {
     public function indexAction(Application $app){
         return $app->json([
-            'dashboard' => $app->getDashboardManager()->getByUserId($app->user()->getId()),
+            'dashboard' => $app->getDashboardManager()->getByUserId($app->user()->getId(), false),
         ]);
     }
 

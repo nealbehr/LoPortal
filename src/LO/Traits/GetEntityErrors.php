@@ -12,11 +12,11 @@ use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 
 trait GetEntityErrors {
-    protected function getValidationErrors($key, ConstraintViolationListInterface $errors){
-        $data[$key] = [];
+    protected function getValidationErrors(ConstraintViolationListInterface $errors){
+        $data = [];
         /** @var ConstraintViolation $error */
         foreach($errors as $error){
-            $data[$key][] = [$error->getPropertyPath() => $error->getMessage()];
+            $data[] = [$error->getPropertyPath() => $error->getMessage()];
         }
 
         return $data;

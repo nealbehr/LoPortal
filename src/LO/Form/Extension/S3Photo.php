@@ -12,7 +12,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormBuilderInterface;
-use LO\Util\Image;
+use LO\Common\UploadS3\Image;
 use Aws\S3\S3Client;
 
 class S3Photo extends AbstractType{

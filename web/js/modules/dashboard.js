@@ -63,16 +63,22 @@
 
         console.log($scope.dashboard)
         $scope.settingRows  = {}
-        $scope.settingRows[settings.queue.stateListingFlyerPending] = {id: 'stateListingFlyerPending', title: 'Pending', isExpand: false};
-        $scope.settingRows[settings.queue.stateRequested] = {id: 'requested', title: 'Requested', isExpand: false};
-        $scope.settingRows[settings.queue.stateApproved]  = {id: 'approved', title: 'Approved', isExpand: false};
-        $scope.settingRows[settings.queue.stateDeclined]  = {id: 'declined', title: 'Declined', isExpand: false};
+        $scope.settingRows[settings.queue.state.listingFlyerPending] = {id: 'listingFlyerPending', title: 'Pending', isExpand: false};
+        $scope.settingRows[settings.queue.state.requested] = {id: 'requested', title: 'Requested', isExpand: false};
+        $scope.settingRows[settings.queue.state.approved]  = {id: 'approved', title: 'Approved', isExpand: false};
+        $scope.settingRows[settings.queue.state.declined]  = {id: 'declined', title: 'Declined', isExpand: false};
 
-        var isExpand = true;
-        for(var i in $scope.dashboard){
-            $scope.settingRows[i].isExpand = isExpand && $scope.dashboard[i].length > 0;
-            isExpand = !($scope.dashboard[i].length > 0)
+        $scope.recalculateExpanded = function(){
+            var isExpand = true;
+            for(var i in this.dashboard){
+                this.settingRows[i].isExpand = isExpand && this.dashboard[i].length > 0;
+                isExpand = !(this.dashboard[i].length > 0)
+            }
+
+            console.log(this.settingRows);
         }
+
+        $scope.recalculateExpanded();
 
         angular.element('.queue').click(function(e){
             var target = angular.element(e.target);
@@ -82,14 +88,10 @@
 
                 $http.patch('/queue/cancel/' + target.data('id'), [])
                     .success(function(data){
-                        var badge = $('.badge', target.parents('div.panel-default'));
-                        badge.html(badge.html() - 1);
-                        if(badge.html() == 0){
-                            badge.parents('.panel-default').remove();
-                        }else{
-                            target.parents('tr').remove();
-                        }
-
+                        var element = $scope.dashboard[target.data('state')].splice([target.data('index')], 1).shift();
+                        element.state = settings.queue.state.declined;
+                        $scope.dashboard[settings.queue.state.declined].push(element);
+                        $scope.recalculateExpanded();
                     })
                     .error(function(data){
                         console.log(data);

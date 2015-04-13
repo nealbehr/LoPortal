@@ -187,7 +187,7 @@ class Application extends \Silex\Application{
                 'switch_user' => array('parameter' => '_switch_user', 'role' => 'ROLE_ALLOWED_TO_SWITCH'),
                 'apiLogout' => array('logout_path' => '/logout'),
                 'users'   => $this->share(function (){
-                        return new UserProvider($this);
+                        return $this->getUserProvider();
                 }),
             ],
         ];
@@ -301,5 +301,12 @@ class Application extends \Silex\Application{
      */
     public function getSes(){
         return $this['amazon.ses'];
+    }
+
+    /**
+     * @return UserProvider
+     */
+    public function getUserProvider(){
+        return $this['user.provider'];
     }
 }

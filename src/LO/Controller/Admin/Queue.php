@@ -12,13 +12,16 @@ namespace LO\Controller\Admin;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use LO\Application;
+use LO\Common\UploadS3\Pdf;
 use LO\Model\Entity\Queue as EntityQueue;
+use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class Queue extends Base{
+    use GetEntityErrors;
     const QUEUE_LIMIT = 20;
 
     const DEFAULT_SORT_FIELD_NAME = 'created_at';
@@ -67,18 +70,10 @@ class Queue extends Base{
     public function declineAction(Application $app, Request $request, $id){
         try {
             /** @var EntityQueue $queue */
-            $queue = $app->getEntityManager()
-                         ->createQueryBuilder()
-                         ->select('q')
-                         ->from(EntityQueue::class, 'q')
-                         ->where('q.id = :id')
-                         ->setParameter('id', $id)
-                         ->getQuery()
-                         ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
-                         ->getOneOrNullResult();
+            $queue = $this->findQueueById($app, $id);
 
             if(null === $queue){
-                throw new BadRequestHttpException(sprintf("Request \'%s\' not found.", $id));
+                throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
             $queue->setState(EntityQueue::STATE_DECLINED)
@@ -91,6 +86,114 @@ class Queue extends Base{
             $app->getMonolog()->addWarning($e);
             return $app->json(["message" => $e->getMessage()], $e->getStatusCode());
         }
+    }
+
+    public function approveRequestFlyerAction(Application $app, Request $request, $id){
+        try{
+            $data = [];
+            $queue = $this->findQueueWithRequestFlyerById($app, $id);
+            $file = $request->request->get('file');
+
+            if (null === $queue) {
+                throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
+            }
+
+            $queue->setState(empty($file)? EntityQueue::STATE_LISTING_FLYER_PENDING: EntityQueue::STATE_APPROVED)
+                  ->setReason($request->request->get('reason'))
+
+            ;
+
+            if(!empty($file)){
+                $link = (new Pdf($app->getS3(), $file, '1rex.pdf'))
+                    ->downloadFileToS3andGetUrl(time().mt_rand(1, 100000).'.pdf');
+
+                $queue->getFlyer()->setPdfLink($link);
+            }
+
+            $errors = $app->getValidator()->validate($queue);
+
+            if(count($errors) > 0){
+                $data['errors'] = $this->getValidationErrors($errors);
+
+                throw new BadRequestHttpException("Data is not valid.");
+            }
+
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+            return $app->json("success");
+        }catch(HttpException $e){
+            $app->getMonolog()->addWarning($e);
+            return $app->json(["message" => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
+    public function approveRequestApprovalAction(Application $app, Request $request, $id){
+        try{
+            $data = [];
+            $queue = $this->findQueueById($app, $id);
+
+            if (null === $queue) {
+                throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
+            }
+
+            $queue->setState(EntityQueue::STATE_APPROVED)
+                  ->setReason($request->request->get('reason'))
+
+            ;
+
+            $errors = $app->getValidator()->validate($queue);
+
+            if(count($errors) > 0){
+                $data['errors'] = $this->getValidationErrors($errors);
+
+                throw new BadRequestHttpException("Data is not valid.");
+            }
+
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+            return $app->json("success");
+        }catch(HttpException $e){
+            $app->getMonolog()->addWarning($e);
+            $data["message"] = $e->getMessage();
+            return $app->json($data, $e->getStatusCode());
+        }
+    }
+
+    /**
+     * @param Application $app
+     * @param $id
+     * @return EntityQueue
+     */
+    private function findQueueWithRequestFlyerById(Application $app, $id){
+        return $app->getEntityManager()
+            ->createQueryBuilder()
+            ->select('q, f')
+            ->from(EntityQueue::class, 'q')
+            ->join('q.flyer', 'f')
+            ->where('q.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Application $app
+     * @param $id
+     * @return EntityQueue
+     */
+    private function findQueueById(Application $app, $id){
+        return $app->getEntityManager()
+            ->createQueryBuilder()
+            ->select('q')
+            ->from(EntityQueue::class, 'q')
+            ->where('q.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
+            ->getOneOrNullResult();
     }
 
     private function getDuplicates(Application $app, array $ids){

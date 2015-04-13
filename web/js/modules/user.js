@@ -22,7 +22,7 @@
             .get()
             .then(function(user){
                 if(user.id == $routeParams.id){
-                    return $q.when(user);
+                    return $q.when(angular.copy(user));
                 }
 
                 return createProfileUser().get($routeParams.id);

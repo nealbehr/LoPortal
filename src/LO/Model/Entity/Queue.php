@@ -80,6 +80,7 @@ class Queue extends Base{
     protected $reason;
 
     /**
+     * var RequestFlyer
      * @OneToOne(targetEntity="RequestFlyer", mappedBy="queue")
      */
     private $flyer;
@@ -150,6 +151,13 @@ class Queue extends Base{
     }
 
     /**
+     * @return RequestFlyer
+     */
+    public function getFlyer(){
+        return $this->flyer;
+    }
+
+    /**
      * @Assert\Callback
      */
     public function isStateValid(ExecutionContextInterface $context){
@@ -166,7 +174,14 @@ class Queue extends Base{
             );
         }
 
-        /** @todo Добавить валидацию если не загружен pdf то статус может быть только одного типа */
+        if(static::TYPE_FLYER !== $this->request_type && $this->state === static::STATE_LISTING_FLYER_PENDING){
+            $context->addViolationAt(
+                'state',
+                '"APPROVED" state can only be a request flyer with the downloaded pdf file.',
+                array(),
+                null
+            );
+        }
     }
 
     static public function getTypes(){

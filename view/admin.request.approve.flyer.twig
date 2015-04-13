@@ -1,0 +1,32 @@
+<div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Approve the request</h4>
+            </div>
+            <div class="modal-body">
+                <textarea cols="30" rows="3" class="form-control" placeholder="Reason"></textarea>
+                <div class="attach">
+                    <p>Upload final marketing collateral:</p>
+                    <div class="wrap">
+                        <div>
+                            <a href="#" class="upload" ng-if="!marketingCollateral">Attach the document</a>
+                            <a href="#" class="download" ng-if="marketingCollateral">Example Listing Flyer.pdf</a>
+                            <span>PDF format only</span>
+                            <input type="file" accept="application/pdf" lo-filereader ng-model="marketingCollateral">
+                        </div>
+
+                        <div class="pull-right" ng-if="marketingCollateral">
+                            <a href="#" class="change">Change</a> |
+                            <a href="#" class="remove" ng-click="remove($event)">Remove</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg" ng-click="approve()">Approve</button>
+            </div>
+        </div>
+    </div>
+</div>

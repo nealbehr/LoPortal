@@ -34,10 +34,15 @@
                         requestTimeout:   15000, //15 seconds
                         firstRexHash:     '{{ (app.getConfigByName('firstrex', 'api', 'user')~':'~app.getConfigByName('firstrex', 'api', 'pass'))|ebase64 }}',
                         queue: {
-                            stateListingFlyerPending: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_LISTING_FLYER_PENDING') }}',
-                            stateRequested:  '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_REQUESTED') }}',
-                            stateApproved:   '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}',
-                            stateDeclined:   '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_DECLINED') }}'
+                            state: {
+                                listingFlyerPending: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_LISTING_FLYER_PENDING') }}',
+                                requested: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_REQUESTED') }}',
+                                approved: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}',
+                                declined: '{{ constant('\\LO\\Model\\Entity\\Queue::STATE_DECLINED') }}'
+                            },
+                            type: {
+                                flyer: '{{ constant('\\LO\\Model\\Entity\\Queue::TYPE_FLYER') }}'
+                            }
                         }
         }
     </script>

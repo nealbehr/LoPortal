@@ -39,63 +39,13 @@
                             <button class="action" type="button" data-toggle="dropdown">action</button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="#" class="change">Edit</a></li>
-                                <li><a href="#" class="approve" data-toggle="modal" data-target="#approve-request2">Approve</a></li>
-                                <li ng-if="request.state != states.stateDeclined"><a href="#" ng-click="decline(request)" class="delete" data-toggle="modal" >Decline</a></li>
+                                <li ng-if="request.state != states.approved"><a ng-href="#" ng-click="approve($event, request)" class="approve">Approve</a></li>
+                                <li ng-if="request.state != states.declined"><a ng-href="#" ng-click="decline($event, request)" class="delete">Decline</a></li>
                             </ul>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-    </div>
-</div>
-
-<div class="modal fade" id="approve-request1" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
-                <h4 class="modal-title">Approve the request</h4>
-            </div>
-            <div class="modal-body">
-                <textarea cols="30" rows="3" class="form-control">Reason</textarea>
-                <div class="attach">
-                    <p>Upload final marketing collateral:</p>
-                    <div class="wrap">
-                        <a href="#" class="upload">Attach the document</a>
-                        <span>PDF format only</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-lg">Approve</button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="approve-request2" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
-                <h4 class="modal-title">Approve the request</h4>
-            </div>
-            <div class="modal-body">
-                <textarea cols="30" rows="3" class="form-control">Reason</textarea>
-                <div class="attach">
-                    <p>Upload final marketing collateral:</p>
-                    <div class="wrap">
-                        <a href="#" class="download">Example Listing Flyer.pdf</a>
-                        <div class="pull-right">
-                            <a href="#" class="change">Change</a> |
-                            <a href="#" class="remove">Remove</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-lg">Approve</button>
-            </div>
-        </div>
     </div>
 </div>

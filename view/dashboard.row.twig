@@ -23,8 +23,8 @@
                 <td>[[ v.address ]]</td>
                 <td>[[ v.request_type|dashboardType ]]</td>
                 <td>
-                    <a ng-if="items[k].state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
-                    <a ng-if="items[k].state != {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" href="#" class="cancel" data-id="[[ v.id ]]">Cancel</a>
+                    <a ng-if="v.flyer.pdf_link && v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
+                    <a ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_REQUESTED') }}" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a>
                 </td>
             </tr>
             </tbody>

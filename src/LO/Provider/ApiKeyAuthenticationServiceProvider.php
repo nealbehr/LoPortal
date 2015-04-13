@@ -26,6 +26,10 @@ class ApiKeyAuthenticationServiceProvider implements ServiceProviderInterface
 {
     public function register(Application $app)
     {
+        $app['user.provider'] = $app->share(function() use ($app){
+            return new UserProvider($app);
+        });
+
         $app['security.apikey.authenticator'] = $app->protect(function () use ($app) {
             return new ApiKeyAuthenticator(
                 $app['security.user_provider.apikey'](),
