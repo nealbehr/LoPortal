@@ -1,0 +1,149 @@
+.links {
+    display: inline-block;
+    position: relative;
+    text-decoration: none !important;
+    &:before {
+        position: absolute;
+        background: url('../images/sprite.svg') no-repeat;
+        background-size: 159px 70px;
+        content: '';
+        overflow: hidden;
+        top: 50%;
+        left: 0;
+    }
+}
+.cancel {
+    @extend .links;
+    padding-left: 15px;
+    &:before {
+        background-position: -27px -54px;
+        width: 9px;
+        height: 9px;
+        margin-top: -5px;
+    }
+}
+.download {
+    @extend .links;
+    padding-left: 35px;
+    &:before {
+        background-position: -46px 0;
+        width: 22px;
+        height: 26px;
+        margin-top: -14px;
+    }
+}
+.navbar .user-menu .dropdown-menu .logout {
+    @extend .links;
+    padding-left: 33px !important;
+    color: #4c84ea !important;
+    &:before {
+        background-position: -21px 0;
+        width: 24px;
+        height: 21px;
+        margin-top: -11px;
+    }
+}
+.back {
+    @extend .links;
+    padding-left: 30px;
+    margin-top: 20px;
+    &:before {
+        background-position: 0 -62px;
+        width: 16px;
+        height: 9px;
+        margin-top: -4px;
+    }
+}
+.upload {
+    @extend .links;
+    padding: 2px 0 2px 30px;
+    font-size: 15px;
+    &:before {
+        background-position: 0 0;
+        width: 21px;
+        height: 24px;
+        margin-top: -11px;
+    }
+}
+.change {
+    @extend .links;
+    padding-left: 28px;
+    font-size: 15px;
+    &:before {
+        background-position: -69px -19px;
+        width: 20px;
+        height: 18px;
+        margin-top: -10px;
+    }
+}
+.reset {
+    @extend .links;
+    padding-left: 30px;
+    &:before {
+        background-position: -25px -21px;
+        width: 21px;
+        height: 25px;
+        margin-top: -15px;
+    }
+}
+.impersonate {
+    @extend .links;
+    padding-left: 30px;
+    &:before {
+        background-position: 0 -24px;
+        width: 25px;
+        height: 22px;
+        margin-top: -11px;
+    }
+}
+.approve {
+    @extend .links;
+    padding-left: 30px;
+    &:before {
+        background-position: -46px -26px;
+        width: 23px;
+        height: 18px;
+        margin-top: -11px;
+    }
+}
+.delete {
+    @extend .links;
+    padding-left: 30px;
+    color: #ea5a5a !important;
+    &:before {
+        background-position: -70px 0;
+        width: 19px;
+        height: 19px;
+        margin-top: -10px;
+    }
+}
+.action {
+    @extend .links;
+    text-indent: -9999px;
+    border: none;
+    border-radius: 2px;
+    background: none;
+    outline: none;
+    width: 46px;
+    height: 26px;
+    &:before {
+        width: 26px;
+        height: 6px;
+        left: 50%;
+        margin-top: -3px;
+        margin-left: -13px;
+        background-position: -18px -47px;
+    }
+    &:hover, .open & {
+        border: 1px solid #dcdcdc;
+    }
+}
+.remove {
+    background: url('../images/sprite.svg') no-repeat -18px -54px;
+    background-size: 159px 70px;
+    width: 9px;
+    height: 9px;
+    text-indent: -999px;
+    overflow: hidden;
+    display: inline-block;
+}
