@@ -1,0 +1,29 @@
+#footer {
+    margin-top: -90px;
+    padding-top: 26px;
+    height: 90px;
+    background: #282a2b;
+    text-align: center;
+    @media (max-width: 767px)  {
+        padding-top: 36px;
+    }
+    img {
+        display: inline-block;
+        margin: 0 19px;
+    }
+    a {color: #818181;}
+    ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: inline-block;
+        li {
+            display: inline-block;
+            margin: 0 16px;
+            @media (max-width: 767px)  {
+                margin: 0 9px;
+                font-size: 14px;
+            }
+        }
+    }
+}

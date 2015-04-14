@@ -1,0 +1,36 @@
+.ligin-form {
+    margin-top: 140px;
+    form {
+        position: relative;
+    }
+    .logo-holder {
+        text-align: center;
+        margin-bottom: 41px;
+    }
+    .wrap {
+        width: 100%;
+        overflow: hidden;
+        margin-bottom: 29px;
+        a {
+            float: right;
+        }
+        label {
+            font-weight: normal;
+        }
+    }
+    .inputs-holder {
+        margin-bottom: 32px;
+    }
+    .btn {
+        width: 100%;
+        margin-bottom: 32px;
+    }
+    p.note {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .alert {
+        position: absolute;
+        top: -120px;
+    }
+}

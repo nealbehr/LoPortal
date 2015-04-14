@@ -1,0 +1,44 @@
+.thanks-box {
+    padding-top: 100px;
+    padding-bottom: 40px;
+    margin-top: 80px;
+    text-align: center;
+    position: relative;
+    &:before {
+        position: absolute;
+        content:'';
+        top: 0;
+        left: 50%;
+        margin-left: -35px;
+        background: url('../images/sprite.svg') no-repeat -89px 0;
+        background-size: 159px 70px;
+        width: 70px;
+        height: 70px;
+    }
+    h1 {
+        font-size: 52px;
+        letter-spacing: -1px;
+        margin: 0 0 30px;
+    }
+    em {
+        display: block;
+        font: italic 23px "PT serif";
+        word-spacing: -1px;
+    }
+    hr {
+        border-style: dashed;
+        margin: 43px 0 38px;
+    }
+    strong {
+        font-size: 24px;
+        margin-bottom: 28px;
+        display: block;
+    }
+    .btn-holder {
+        float: none;
+        .btn {
+            margin: 0 15px;
+            float: none;
+        }
+    }
+}
