@@ -33,7 +33,8 @@ class Duplicates extends AbstractHydrator{
         }
 
         array_shift($row);
-
-        $result[$id][] = array_combine(['id', 'created_at'], $row);
+        $item = array_combine(['id', 'created_at'], $row);
+        $item['created_at'] = \DateTime::createFromFormat('Y-m-d H:i:s', $item['created_at']);
+        $result[$id][] = $item;
     }
 }

@@ -203,7 +203,7 @@ class Queue extends Base{
         $app->getEntityManager()->getConfiguration()->addCustomHydrationMode('Duplicates', '\LO\Bridge\Doctrine\Hydrator\Duplicates');
         return $app->getEntityManager()->getRepository(EntityQueue::class)->createQueryBuilder('q1')
             ->select('q1.id, q2.id, q2.created_at')
-            ->leftJoin(EntityQueue::class, 'q2', Expr\Join::WITH, "q1.mls_number = q2.mls_number")
+            ->leftJoin(EntityQueue::class, 'q2', Expr\Join::WITH, "q1.address = q2.address")
             ->where('q1.id <> q2.id')
             ->getQuery()
             ->getResult('Duplicates');
