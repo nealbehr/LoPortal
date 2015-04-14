@@ -71,7 +71,7 @@
         function initialize() {
         var markers = [];
             var mapProp = {
-                center:new google.maps.LatLng(38.88943782536077, -77.03526377677917),
+                center:new google.maps.LatLng(37.7749295, -122.41941550000001),
                 zoom:10,
                 disableDefaultUI:true,
                 mapTypeId:google.maps.MapTypeId.ROADMAP
