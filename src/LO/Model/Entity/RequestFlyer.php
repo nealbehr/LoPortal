@@ -43,6 +43,14 @@ class RequestFlyer extends Base{
      */
     protected $pdf_link;
 
+
+    /**
+     * @Column(type="float")
+     * @Assert\NotBlank(message = "Listing price should not be blank.")
+     * @Assert\Type(type="numeric")
+     */
+    protected $listing_price;
+
     /**
      * @Column(type="string")
      * @Assert\NotBlank(message = "Photo id should not be blank.")
@@ -110,6 +118,16 @@ class RequestFlyer extends Base{
 
     public function setQueue(){
         $this->queue = $queue;
+    }
+
+    public function getListingPrice(){
+        return $this->listing_price;
+    }
+
+    public function setListingPrice($param){
+        $this->listing_price = $param;
+
+        return $this;
     }
 
 }

@@ -31,6 +31,7 @@ class RequestFlyerForm extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('pdf_link', 'text')
+            ->add('listing_price', 'text')
             ->add('photo', new S3Photo($this->s3, '1rex.property'));
     }
 

@@ -160,12 +160,14 @@
     }]);
 
     request.controller('requestCtrl', ['$scope', 'redirect', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
+        $('[data-toggle="tooltip"]').tooltip();
         loadGoogleMapsApi();
         $scope.request = {
             property: {
                 first_rex_id: null,
                 address: null,
                 mls_number: null,
+                listing_price: null,
                 photo: null
             },
             realtor: {

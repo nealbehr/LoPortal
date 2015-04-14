@@ -729,6 +729,22 @@
                 ? new Date(input.date.replace(/(\d+)-(\d+)-(\d+) (\d+):(\d+):(\d+)(.)*/, '$2/$3/$1 $4:$5:$6'))
                 : input;
         }
-    })
+    });
+
+    helperService.filter('propertyImage', function(){
+        return function(input){
+            return "" != input
+                ? input
+                : '/images/empty-big.png';
+        }
+    });
+
+    helperService.filter('realtorImage', function(){
+        return function(input){
+            return "" != input
+                ? input
+                : '/images/empty.png';
+        }
+    });
 
 })(settings);

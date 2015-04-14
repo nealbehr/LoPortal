@@ -22,13 +22,16 @@ use LO\Validator\FullName;
 class Realtor extends Base{
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "Bre number should not be blank.")
      */
     protected $bre_number;
 
     /**
      * @Column(type="string", length=255)
      * @Assert\NotBlank(message = "Phone should not be blank.")
+     * @Assert\Regex(
+     *               pattern = "/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/",
+     *               message = "Please input a valid US phone number including 3 digit area code and 7 digit number."
+     * )
      */
     protected $phone;
 
@@ -50,7 +53,6 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "Estate agency should not be blank.")
      * @Assert\Length(
      *              max = 255,
      *              maxMessage = "agency cannot be longer than {{ limit }} characters"
@@ -61,6 +63,10 @@ class Realtor extends Base{
     /**
      * @Column(type="string", length=255)
      * @Assert\NotBlank(message = "First name should not be blank.")
+     * @Assert\Regex(
+     *               pattern = "/^([A-Za-z_\s]+)$/",
+     *               message = "First name is invalid."
+     * )
      * @FullName()
      */
     protected $first_name;
@@ -68,6 +74,10 @@ class Realtor extends Base{
     /**
      * @Column(type="string", length=255)
      * @Assert\NotBlank(message = "Last name should not be blank.")
+     * @Assert\Regex(
+     *               pattern = "/^([A-Za-z_\s]+)$/",
+     *               message = "Last name is invalid."
+     * )
      * @FullName()
      */
     protected $last_name;

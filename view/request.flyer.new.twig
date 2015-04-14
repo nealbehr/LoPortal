@@ -37,94 +37,74 @@
                     <h2>Property Info</h2>
                     <div class="thumbnail">
                         <div class="property-photo">
-                            <img ng-src="[[ propertyImage ]]" height="258" alt="">
+                            <img ng-src="[[ propertyImage|propertyImage ]]" height="258" alt="">
                         </div>
                         <div class="caption">
-                            <div ng-show="newFlyer.$submitted">
-                                <div ng-show="newFlyer.fileimage.$error.required">Required.</div>
-                            </div>
                             <span class="upload">
                                 Upload Property image
                                 <div><input class="upload" id="propertyImage" type="file" valid-file name="fileimage" required="" ng-model="propertyImage"></div>
                             </span>
+                            <span ng-show="newFlyer.$submitted && newFlyer.fileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Property image is required.">!</span>
                         </div>
                     </div>
                     <div class="inputs-holder">
                         <div class="input">
-                            <input class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" ng-model="request.property.address" required="">
-                            <div ng-show="newFlyer.$submitted || newFlyer.address.$touched">
-                                <div ng-show="newFlyer.address.$error.required">Required.</div>
-                            </div>
+                            <input class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" ng-model="request.property.address" required="" google-address ng-model-options="{ updateOn: 'blur' }">
+                            <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.required" data-toggle="tooltip" data-placement="right" title="The Property address is required.">!</span>
+                            <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.googleAddress" data-toggle="tooltip" data-placement="right" title="The Property address is invalid.">!</span>
                         </div>
                         <div class="input">
-                            <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls">
+                            <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
                         </div>
                         <div class="input">
-                            <input class="input-lg" type="text" placeholder="MLS number" ng-model="request.property.mls_number">
+                            <input class="input-lg" type="number" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required="">
+                            <span ng-show="(newFlyer.$submitted || newFlyer.listing_price.$touched) && newFlyer.listing_price.$error.required" data-toggle="tooltip" data-placement="right" title="The Listing price is required.">!</span>
+                            <span ng-show="(newFlyer.$submitted || newFlyer.listing_price.$touched) && newFlyer.listing_price.$error.number" data-toggle="tooltip" data-placement="right" title="The Listing price is invalid.">!</span>
                         </div>
                     </div>
                     <hr>
                     <h2>Realtor Info</h2>
                     <div class="main-info">
                         <div class="user-photo">
-                            <div ng-show="newFlyer.$submitted">
-                                <div ng-show="newFlyer.realtorfileimage.$error.required">Required.</div>
-                            </div>
-
                             <div class="realtor-photo">
-                                <img ng-src="[[ realtorImage ]]" alt="">
+                                <img ng-src="[[ realtorImage|realtorImage ]]" alt="">
                             </div>
                             <span class="upload">
                                 Upload Photo
                                 <div><input id="realtorImage" type="file" valid-file name="realtorfileimage" required="" ng-model="realtorImage"></div>
                             </span>
+                            <span ng-show="(newFlyer.$submitted || newFlyer.realtorfileimage.$touched) && newFlyer.realtorfileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Realtor image is required.">!</span>
                         </div>
                         <div class="inputs-holder">
                             <div class="input">
-                                <div ng-show="newFlyer.$submitted || newFlyer.first_.$touched">
-                                    <div ng-show="newFlyer.first_name.$error.required">Required.</div>
-                                </div>
-
-                                <input class="input-lg" type="text" placeholder="First name" ng-model="request.realtor.first_name" required="" name="first_name">
+                                <input class="input-lg" type="text" placeholder="First name" ng-pattern="/^[A-Za-z\s]+$/" ng-model="request.realtor.first_name" required="" name="first_name">
+                                <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.required" data-toggle="tooltip" data-placement="right" title="The First name is required.">!</span>
+                                <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.pattern" data-toggle="tooltip" data-placement="right" title="The First name is invalid.">!</span>
                             </div>
                             <div class="input">
-                                <div ng-show="newFlyer.$submitted || newFlyer.last_name.$touched">
-                                    <div ng-show="newFlyer.last_name.$error.required">Required.</div>
-                                </div>
-
-                                <input class="input-lg" type="text" placeholder="Last name" ng-model="request.realtor.last_name" required="" name="last_name">
+                                <input class="input-lg" type="text" ng-pattern="/^[A-Za-z\s]+$/" placeholder="Last name" ng-model="request.realtor.last_name" required="" name="last_name">
+                                <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.required" data-toggle="tooltip" data-placement="right" title="The Last name is required.">!</span>
+                                <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.pattern" data-toggle="tooltip" data-placement="right" title="The Last name is required.">!</span>
                             </div>
                         </div>
                     </div>
                     <div class="inputs-holder">
                         <div class="input">
-                            <div ng-show="newFlyer.$submitted || newFlyer.phone.$touched">
-                                <div ng-show="newFlyer.phone.$error.required">Required.</div>
-                            </div>
-
-                            <input class="input-lg" type="text" placeholder="Phone number" ng-model="request.realtor.phone" required="" name="phone">
+                            <input class="input-lg" type="text" placeholder="Phone number" ng-pattern="/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/" ng-model="request.realtor.phone" required="" name="phone">
+                            <span ng-show="(newFlyer.$submitted || newFlyer.phone.$touched) && newFlyer.phone.$error.required" data-toggle="tooltip" data-placement="right" title="The Phone is required.">!</span>
+                            <span ng-show="(newFlyer.$submitted || newFlyer.phone.$touched) && newFlyer.phone.$error.pattern" data-toggle="tooltip" data-placement="right" title="The Phone is invalid.">!</span>
                         </div>
                         <div class="input">
-                            <div ng-show="newFlyer.$submitted || newFlyer.email.$touched">
-                                <div ng-show="newFlyer.email.$error.required">Required.</div>
-                            </div>
-
                             <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">
+                            <span ng-show="(newFlyer.$submitted || newFlyer.email.$touched) && newFlyer.email.$error.required" data-toggle="tooltip" data-placement="right" title="The Email is required.">!</span>
+                            <span ng-show="(newFlyer.$submitted || newFlyer.email.$touched) && newFlyer.email.$error.email" data-toggle="tooltip" data-placement="right" title="The Email is invalid.">!</span>
                         </div>
                     </div>
                     <div class="inputs-holder">
                         <div class="input">
-                            <div ng-show="newFlyer.$submitted || newFlyer.bre.$touched">
-                                <div ng-show="newFlyer.bre.$error.required">Required.</div>
-                            </div>
-
                             <input class="input-lg" type="text" placeholder="BRE number" ng-model="request.realtor.bre_number" name="bre">
                         </div>
                         <div class="input">
-                            <div ng-show="newFlyer.$submitted || newFlyer.agency.$touched">
-                                <div ng-show="newFlyer.agency.$error.required">Required.</div>
-                            </div>
-
                             <input class="input-lg" type="text" placeholder="Real estate agency" ng-model="request.realtor.estate_agency" name="agency">
                         </div>
                     </div>

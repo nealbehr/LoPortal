@@ -24,7 +24,7 @@ class UserForm extends AbstractType {
         $builder->add('first_name', 'text', [
             'constraints' => [
                 new Assert\Regex([
-                    'pattern' => "/^([A-Za-z0-9_\s]+)$/",
+                    'pattern' => "/^([A-Za-z_\s]+)$/",
                     'message' => 'First name is invalid'
                 ]),
                 new Assert\Length([
@@ -37,7 +37,7 @@ class UserForm extends AbstractType {
         $builder->add('last_name', 'text', [
             'constraints' => [
                 new Assert\Regex([
-                    'pattern' => "/^([A-Za-z0-9_\s]+)$/",
+                    'pattern' => "/^([A-Za-z_\s]+)$/",
                     'message' => 'Last name is invalid'
                 ]),
                 new Assert\Length([
