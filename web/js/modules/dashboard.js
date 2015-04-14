@@ -61,7 +61,6 @@
     dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', function($scope, redirect, $http, data){
         $scope.dashboard    = data.dashboard;
 
-        console.log($scope.dashboard)
         $scope.settingRows  = {}
         $scope.settingRows[settings.queue.state.listingFlyerPending] = {id: 'listingFlyerPending', title: 'Pending', isExpand: false};
         $scope.settingRows[settings.queue.state.requested] = {id: 'requested', title: 'Requested', isExpand: false};
@@ -74,8 +73,6 @@
                 this.settingRows[i].isExpand = isExpand && this.dashboard[i].length > 0;
                 isExpand = !(this.dashboard[i].length > 0)
             }
-
-            console.log(this.settingRows);
         }
 
         $scope.recalculateExpanded();

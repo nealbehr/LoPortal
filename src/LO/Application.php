@@ -309,4 +309,11 @@ class Application extends \Silex\Application{
     public function getUserProvider(){
         return $this['user.provider'];
     }
+
+    /**
+     * @return \Symfony\Component\Security\Core\SecurityContext
+     */
+    public function getSecurity(){
+        return $this['security'];
+    }
 }

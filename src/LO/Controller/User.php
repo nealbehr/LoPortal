@@ -19,7 +19,6 @@ use LO\Model\Entity\User as UserEntity;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-
 class User {
     /** @var array  */
     private $errors = [];
@@ -58,7 +57,6 @@ class User {
      */
     public function updateAction(Application $app, Request $request, $id){
         try{
-            $app->getEntityManager()->getConnection()->executeQuery("update users set first_name='dddd' where id = 102")->execute();
             /** @var UserEntity $user */
             $user = $app->getEntityManager()->getRepository(UserEntity::class)->find($id);
             if(!$user){
@@ -81,6 +79,10 @@ class User {
             $app->getMonolog()->addWarning($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
+        }finally{
+            if($app->user()->getId() == $id && $user instanceof UserEntity){
+                $app->getEntityManager()->refresh($user);
+            }
         }
     }
 }
