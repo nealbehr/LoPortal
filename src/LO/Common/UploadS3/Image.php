@@ -26,7 +26,7 @@ class Image extends Base{
     }
 
     public function downloadPhotoToS3andGetUrl($filename){
-        return parent::downloadPhotoToS3andGetUrl($filename.'.'.$this->ext);
+        return parent::downloadFileToS3andGetUrl($filename.'.'.$this->ext);
     }
 
     protected function createImage($image){
