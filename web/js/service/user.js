@@ -15,7 +15,6 @@
 
             userBase.save = function(){
                 var deferred = $q.defer();
-                console.log(this.getFields4Save())
                 $http.put('/user/' + this.id, {user: this.getFields4Save()})
                     .success(function(data){
                         deferred.resolve(data);

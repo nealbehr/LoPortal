@@ -183,7 +183,6 @@
                     scope.officer.save()
                         .then(function(data){
                             if(scope.user.id == scope.officer.id){
-                                console.log('ssss');
                                 scope.user.fill(scope.officer.getFields4Save());
                             }
                             sessionMessages.addSuccess("Successfully saved.")
@@ -311,7 +310,7 @@
         };
     }]);
 
-    helperService.directive('googleAddress', ['getInfoFromGeocoder', '$q', function(getInfoFromGeocoder, $q) {
+    helperService.directive('googleAddress', ['getInfoFromGeocoder', '$q', "parseGoogleAddressComponents", function(getInfoFromGeocoder, $q, parseGoogleAddressComponents) {
         return {
             require: 'ngModel',
             restrict: '',
@@ -321,7 +320,27 @@
                 }
 
                 ctrl.$asyncValidators.googleAddress = function(modelValue) {
-                    return getInfoFromGeocoder({address: modelValue});
+                    var deferred = $q.defer();
+                    getInfoFromGeocoder({address: modelValue})
+                        .then(function(data){
+                            var result = parseGoogleAddressComponents(data[0].address_components);
+                            for(var i in result){
+                                if(result[i] == '' || result[i] == null){
+                                    deferred.reject('Address is bad.');
+                                    break;
+                                }
+
+                                deferred.resolve(data);
+                            }
+
+                            return true;
+                        },
+                        function(status){
+                            deferred.reject(status);
+                        }
+                    );
+
+                    return deferred.promise;
                 };
             }
         };
@@ -388,7 +407,6 @@
             restrict: 'A',
             require: '?ngModel',
             link: function(scope, element, attrs, ngModel) {
-                console.log('ddddd');
                 if (!ngModel){
                     return;
                 };
@@ -400,7 +418,6 @@
 
                     $q.all(slice.call(element.files, 0).map(readFile))
                         .then(function(values) {
-                            console.log(values);
                             if (element.multiple){
                                 ngModel.$setViewValue(values)
                             }
@@ -618,7 +635,6 @@
                     deferred.resolve(data);
                 })
                 .error(function(data){
-                    console.log(data);
                     deferred.reject(data);
                 }
             );

@@ -6,7 +6,7 @@
     </header>
     <div class="alert alert-danger fade in" role="alert" ng-show="message != null || (newApproval.$submitted && (newApproval.searchPlace.$error.required || newApproval.searchPlace.$error.googleAddress))">
         <div ng-show="message != null">[[ message ]]</div>
-        <div ng-show="newApproval.searchPlace.$error.required">Required.</div>
+        <div ng-show="newApproval.searchPlace.$error.required">Property Address is required.</div>
         <div ng-show="newApproval.searchPlace.$error.googleAddress">Property address is incorrect.</div>
     </div>
     <div class="row">

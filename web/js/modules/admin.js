@@ -353,8 +353,6 @@
 
                 newLocationParams[this.getSortKey()] = this.key;
 
-                console.log(newLocationParams)
-
                 this.location.search(newLocationParams);
             }
 
