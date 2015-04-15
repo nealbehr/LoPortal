@@ -55,3 +55,7 @@
 .ngdialog-content{
     background: none;
 }
+
+.ngdialog {
+    z-index: 98;
+}

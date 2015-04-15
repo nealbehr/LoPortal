@@ -29,7 +29,7 @@ class RequestApprovalController extends RequestBaseController{
             $queue = (new Queue())
                 ->set1RexId($id)
                 ->setType(Queue::TYPE_PROPERTY_APPROVAL)
-                ->setUserId($app->user()->getId())
+                ->setUser($app->user())
             ;
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
@@ -44,7 +44,7 @@ class RequestApprovalController extends RequestBaseController{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-            $requestApproval = (new RequestApproval())->setQueueId($queue->getId());
+            $requestApproval = (new RequestApproval())->setQueue($queue);
 
             $app->getEntityManager()->persist($requestApproval);
             $app->getEntityManager()->flush();

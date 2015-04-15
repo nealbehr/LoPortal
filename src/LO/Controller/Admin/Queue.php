@@ -9,11 +9,13 @@
 namespace LO\Controller\Admin;
 
 
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use LO\Application;
+use LO\Common\Email\RequestApprove;
+use LO\Common\Email\RequestDecline;
 use LO\Common\UploadS3\Pdf;
 use LO\Model\Entity\Queue as EntityQueue;
+use LO\Model\Entity\RequestApproval;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
@@ -69,6 +71,7 @@ class Queue extends Base{
 
     public function declineAction(Application $app, Request $request, $id){
         try {
+            $app->getEntityManager()->beginTransaction();
             /** @var EntityQueue $queue */
             $queue = $this->findQueueById($app, $id);
 
@@ -81,8 +84,16 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
+
+            (new RequestDecline($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue))
+                ->setDestinationList($queue->getUser()->getEmail())
+                ->send();
+
+            $app->getEntityManager()->commit();
+
             return $app->json("success");
         }catch(HttpException $e){
+            $app->getEntityManager()->rollback();
             $app->getMonolog()->addWarning($e);
             return $app->json(["message" => $e->getMessage()], $e->getStatusCode());
         }
@@ -90,6 +101,7 @@ class Queue extends Base{
 
     public function approveRequestFlyerAction(Application $app, Request $request, $id){
         try{
+            $app->getEntityManager()->beginTransaction();
             $data = [];
             $queue = $this->findQueueWithRequestFlyerById($app, $id);
             $file = $request->request->get('file');
@@ -121,8 +133,15 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
+            (new RequestApprove($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue))
+                ->setDestinationList($queue->getUser()->getEmail())
+                ->send();
+
+            $app->getEntityManager()->commit();
+
             return $app->json("success");
         }catch(HttpException $e){
+            $app->getEntityManager()->rollback();
             $app->getMonolog()->addWarning($e);
             return $app->json(["message" => $e->getMessage()], $e->getStatusCode());
         }
@@ -130,6 +149,7 @@ class Queue extends Base{
 
     public function approveRequestApprovalAction(Application $app, Request $request, $id){
         try{
+            $app->getEntityManager()->beginTransaction();
             $data = [];
             $queue = $this->findQueueById($app, $id);
 
@@ -153,8 +173,15 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
+            (new RequestApprove($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue))
+                ->setDestinationList($queue->getUser()->getEmail())
+                ->send();
+
+            $app->getEntityManager()->commit();
+
             return $app->json("success");
         }catch(HttpException $e){
+            $app->getEntityManager()->rollback();
             $app->getMonolog()->addWarning($e);
             $data["message"] = $e->getMessage();
             return $app->json($data, $e->getStatusCode());
@@ -169,9 +196,10 @@ class Queue extends Base{
     private function findQueueWithRequestFlyerById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
-            ->select('q, f')
+            ->select('q, f, u')
             ->from(EntityQueue::class, 'q')
             ->join('q.flyer', 'f')
+            ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)
             ->getQuery()
@@ -187,8 +215,9 @@ class Queue extends Base{
     private function findQueueById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
-            ->select('q')
+            ->select('q, u')
             ->from(EntityQueue::class, 'q')
+            ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)
             ->getQuery()

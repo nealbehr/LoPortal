@@ -71,7 +71,7 @@
             var isExpand = true;
             for(var i in this.dashboard){
                 this.settingRows[i].isExpand = isExpand && this.dashboard[i].length > 0;
-                isExpand = !(this.dashboard[i].length > 0)
+                isExpand = isExpand && !(this.dashboard[i].length > 0)
             }
         }
 

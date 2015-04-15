@@ -22,8 +22,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 class RequestApproval extends Base{
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank(message = "Queue id should not be blank.")
-     * @Assert\Type(type="numeric")
      */
     protected $queue_id;
 
@@ -35,6 +33,12 @@ class RequestApproval extends Base{
 
     public function setQueueId($param){
         $this->queue_id = $param;
+
+        return $this;
+    }
+
+    public function setQueue(Queue $queue){
+        $this->queue = $queue;
 
         return $this;
     }

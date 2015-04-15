@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
@@ -69,8 +70,6 @@ class Queue extends Base{
 
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank(message="User id should not be blank.")
-     * @Assert\Type(type="numeric")
      */
     protected $user_id;
 
@@ -78,6 +77,12 @@ class Queue extends Base{
      * @Column(type="string")
      */
     protected $reason;
+
+    /**
+     * @OneToOne(targetEntity="User", fetch="LAZY")
+     * @JoinColumn(name="user_id", referencedColumnName="id")
+     **/
+    private $user;
 
     /**
      * var RequestFlyer
@@ -155,6 +160,22 @@ class Queue extends Base{
      */
     public function getFlyer(){
         return $this->flyer;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser(){
+        return $this->user;
+    }
+
+    /**
+     * @return User
+     */
+    public function setUser(User $user){
+        $this->user = $user;
+
+        return $this;
     }
 
     /**

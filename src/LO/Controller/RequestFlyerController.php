@@ -47,7 +47,7 @@ class RequestFlyerController extends RequestBaseController{
 
             $queue = (new Queue())->set1RexId($id)
                                   ->setType(Queue::TYPE_FLYER)
-                                  ->setUserId($app->user()->getId())
+                                  ->setUser($app->user())
             ;
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
@@ -64,7 +64,7 @@ class RequestFlyerController extends RequestBaseController{
 
             $requestFlyer = (new RequestFlyer())
                 ->setRealtorId($realtor->getId())
-                ->setQueueId($queue->getId())
+                ->setQueue($queue)
             ;
 
             $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer);

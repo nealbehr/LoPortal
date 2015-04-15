@@ -12,9 +12,9 @@
                 <ul class="dropdown-menu" role="menu">
                     <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>
                     <li><a ng-href="/#/user/[[ user.id ]]/edit">Edit profile</a></li>
-                    <li><a href="#">Requests Queue</a></li>
-                    <li><a href="#">Custom Collateral</a></li>
-                    <li><a href="#">Request flyer</a></li>
+                    <li><a href="/#/">Requests Queue</a></li>
+                    <li><a href="/#/dashboard/collateral">Custom Collateral</a></li>
+                    <li><a href="/#/flyer/new">Request flyer</a></li>
                     <li class="divider"></li>
                     <li><a href="#" class="logout" ng-click="logout($event)">Log out</a></li>
                 </ul>

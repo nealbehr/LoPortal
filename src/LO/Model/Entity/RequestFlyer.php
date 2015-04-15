@@ -22,8 +22,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 class RequestFlyer extends Base{
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank(message = "Queue id should not be blank.")
-     * @Assert\Type(type="numeric")
      */
     protected $queue_id;
 
@@ -116,8 +114,10 @@ class RequestFlyer extends Base{
         return $this->queue;
     }
 
-    public function setQueue(){
+    public function setQueue(Queue $queue){
         $this->queue = $queue;
+
+        return $this;
     }
 
     public function getListingPrice(){
