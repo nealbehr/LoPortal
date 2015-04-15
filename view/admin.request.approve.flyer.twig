@@ -13,7 +13,7 @@
                         <div>
                             <a href="#" class="upload" ng-if="!marketingCollateral">Attach the document</a>
                             <a href="#" class="download" ng-if="marketingCollateral">[[ filename ]]</a>
-                            <span>PDF format only</span>
+                            <span ng-if="!marketingCollateral">PDF format only</span>
                             <input type="file" accept="application/pdf" lo-filereader ng-model="marketingCollateral" id="uploadPdf">
                         </div>
 
