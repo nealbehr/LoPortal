@@ -95,7 +95,7 @@ module.exports = function(grunt) {
                         'web/css/jquery-ui.structure.min.css',
                         'web/css/jquery-ui.min.css',
                         'web/css/bootstrap.min.css',
-                        '<%= cssmin.target.files[0].dest %>/all.min.css',
+                        'web/css/all.min.css',
                         '<%= cssmin.target.files[0].dest %>/ng-dialog.min.css',
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
                         '<%= cssmin.target.files[0].dest %>/cropper.min.css'
@@ -106,6 +106,7 @@ module.exports = function(grunt) {
         }
     });
     //'web/css/*.min.css',
+    //'<%= cssmin.target.files[0].dest %>/all.min.css',
                             //src: ['*.css', '!*.min.css'],
     // Загрузка плагинов, установленных с помощью npm install
     grunt.loadNpmTasks('grunt-contrib-concat');
