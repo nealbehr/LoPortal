@@ -43,6 +43,12 @@
         }
         .thumbnail {
             margin-bottom: 40px;
+            .caption {
+                position: relative;
+                .error-badge {
+                    right: 28px;
+                }
+            }
         }
         hr {
             margin: 0 0 32px;
@@ -67,11 +73,15 @@
             width: 123px;
             float: left;
             margin-left: -150px;
+            position: relative;
+            .tooltip.right {
+                margin-left: 13px;
+            }
             @media (max-width: 767px)  {
                 float: none;
                 margin: 0 auto 20px;
             }
-            > div {
+            .realtor-photo {
                 width: 123px;
                 height: 123px;
                 border-radius: 3px;

@@ -44,7 +44,7 @@
                                 Upload Property image
                                 <div><input class="upload" id="propertyImage" type="file" valid-file name="fileimage" required="" ng-model="propertyImage"></div>
                             </span>
-                            <span ng-show="newFlyer.$submitted && newFlyer.fileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Property image is required.">!</span>
+                            <span class="error-badge" ng-show="newFlyer.$submitted && newFlyer.fileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Property image is required.">!</span>
                         </div>
                     </div>
                     <div class="inputs-holder">
@@ -73,7 +73,7 @@
                                 Upload Photo
                                 <div><input id="realtorImage" type="file" valid-file name="realtorfileimage" required="" ng-model="realtorImage"></div>
                             </span>
-                            <span ng-show="(newFlyer.$submitted || newFlyer.realtorfileimage.$touched) && newFlyer.realtorfileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Realtor image is required.">!</span>
+                            <span class="error-badge" ng-show="(newFlyer.$submitted || newFlyer.realtorfileimage.$touched) && newFlyer.realtorfileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Realtor image is required.">!</span>
                         </div>
                         <div class="inputs-holder">
                             <div class="input">

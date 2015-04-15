@@ -129,39 +129,42 @@ h1 {font-style: italic;}
         outline: none;
     }
 }
+.error-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 17px;
+    right: 9px;
+    content: "!";
+    background: #FF776A;
+    text-align: center;
+    color: #fff;
+    font: 18px/28px Arial;
+    cursor: pointer;
+}
 .input {
     position: relative;
     &.error:after, span {
-        width: 28px;
-        height: 28px;
-        border-radius: 100%;
-        overflow: hidden;
-        position: absolute;
-        top: 17px;
-        right: 9px;
-        content: "!";
-        background: #FF776A;
-        text-align: center;
-        color: #fff;
-        font: 18px/28px Arial;
-        cursor: pointer;
+        @extend .error-badge;
     }
-    .tooltip.right {
-        margin-left: 40px;
-        width: 275px;
-        line-height: 56px;
-        top: 0 !important;
-        @media (max-width: 1199px)  {
-            display: none !important;
-        }
-        .tooltip-inner {
-            background: #f99c9c;
-            color: #fff;
-            font-size: 15px;
-        }
-        .tooltip-arrow {
-            border-right-color: #f99c9c;
-        }
+}
+.tooltip.right {
+    margin-left: 40px;
+    width: 275px;
+    line-height: 56px;
+    top: 0 !important;
+    @media (max-width: 1199px)  {
+        display: none !important;
+    }
+    .tooltip-inner {
+        background: #f99c9c;
+        color: #fff;
+        font-size: 15px;
+    }
+    .tooltip-arrow {
+        border-right-color: #f99c9c;
     }
 }
 .close {
@@ -265,6 +268,7 @@ th.header {
     bottom: 0;
     right: 0;
     left: 0;
+    z-index: 100;
     img {
         position: absolute;
         top: 50%;

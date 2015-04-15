@@ -9,3 +9,5 @@ bin/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 config/config.yml
+web/scss/.sass-cache/177f4973f0d16e6dd3c3c83ccb71f70f3d14d99e
+web/scss/.sass-cache/abd8310360154dba8db5069eb081c261b153f55b
