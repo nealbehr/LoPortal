@@ -150,9 +150,8 @@ h1 {font-style: italic;}
         @extend .error-badge;
     }
 }
-.tooltip.right {
+.tooltip {
     margin-left: 40px;
-    width: 275px;
     line-height: 56px;
     top: 0 !important;
     @media (max-width: 1199px)  {
@@ -163,8 +162,16 @@ h1 {font-style: italic;}
         color: #fff;
         font-size: 15px;
     }
-    .tooltip-arrow {
-        border-right-color: #f99c9c;
+    &.right {
+      width: 275px;
+      .tooltip-arrow {
+          border-right-color: #f99c9c;
+      }
+    }
+    &.left {
+      .tooltip-arrow {
+          border-left-color: #f99c9c;
+      }
     }
 }
 .close {
