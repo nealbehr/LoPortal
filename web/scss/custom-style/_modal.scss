@@ -54,8 +54,14 @@
                 color: #b9b9b9;
                 position: relative;
                 overflow: hidden;
-                >a {
+                >div>a {
                     margin-bottom: 10px;
+                }
+                .download {
+                    width: 230px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
                 input[type="file"] {
                     position: absolute;
