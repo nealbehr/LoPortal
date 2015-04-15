@@ -92,7 +92,7 @@ module.exports = function(grunt) {
                 },
                 {
                     'web/<%= grunt.nameCSSMinFile %>': [
-
+                        'web/css/*.min.css',
                         '<%= cssmin.target.files[0].dest %>/all.min.css',
                         '<%= cssmin.target.files[0].dest %>/ng-dialog.min.css',
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
@@ -115,6 +115,5 @@ module.exports = function(grunt) {
     // Задача по умолчанию
     grunt.registerTask('default', ['concat', 'uglify', 'string-replace', 'processhtml', 'imagemin', 'cssmin']);
 };
-//'web/css/*.min.css',
-//'<%= cssmin.target.files[0].dest %>/bootstrap.min.css',
+
 //"grunt-contrib-imagemin": "^0.9.2",
