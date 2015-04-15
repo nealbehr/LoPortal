@@ -181,6 +181,14 @@
             }
         }
 
+        $scope.filePropertyImageClick = function(){
+            angular.element("#propertyImage").click();
+        }
+
+        $scope.fileRealtorImageClick = function(){
+            angular.element("#realtorImage").click();
+        }
+
         $scope.fileSelect = function(evt, variable, imageInfo) {
             var file = evt.currentTarget.files[0];
 

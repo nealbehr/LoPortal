@@ -37,7 +37,7 @@
                     <h2>Property Info</h2>
                     <div class="thumbnail">
                         <div class="property-photo">
-                            <img ng-src="[[ propertyImage|propertyImage ]]" height="258" alt="">
+                            <img ng-src="[[ propertyImage|propertyImage ]]" height="258" alt="" ng-click="filePropertyImageClick()">
                         </div>
                         <div class="caption">
                             <span class="upload">
@@ -57,7 +57,7 @@
                             <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
                         </div>
                         <div class="input">
-                            <input class="input-lg" type="number" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required="">
+                            <input class="input-lg" type="text" ng-number name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required="">
                             <span ng-show="(newFlyer.$submitted || newFlyer.listing_price.$touched) && newFlyer.listing_price.$error.required" data-toggle="tooltip" data-placement="right" title="The Listing price is required.">!</span>
                             <span ng-show="(newFlyer.$submitted || newFlyer.listing_price.$touched) && newFlyer.listing_price.$error.number" data-toggle="tooltip" data-placement="right" title="The Listing price is invalid.">!</span>
                         </div>
@@ -67,7 +67,7 @@
                     <div class="main-info">
                         <div class="user-photo">
                             <div class="realtor-photo">
-                                <img ng-src="[[ realtorImage|realtorImage ]]" alt="">
+                                <img ng-src="[[ realtorImage|realtorImage ]]" alt="" ng-click="fileRealtorImageClick()">
                             </div>
                             <span class="upload">
                                 Upload Photo
