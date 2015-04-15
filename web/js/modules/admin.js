@@ -78,6 +78,7 @@
     admin.controller('adminApproveFlyerCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
         $scope.reason;
         $scope.marketingCollateral;
+        $scope.filename;
         $scope.approve = function(){
             waitingScreen.show();
             $http.patch("/admin/queue/approve/flyer/" + $scope.ngDialogData.request.id, {file: this.marketingCollateral, reason: this.reason})
@@ -91,6 +92,11 @@
                     waitingScreen.hide();
                 });
             ;
+        }
+
+        $scope.change = function(e){
+            e.preventDefault();
+            $("#uploadPdf").click();
         }
 
         $scope.remove = function(e){

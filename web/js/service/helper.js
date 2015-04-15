@@ -431,6 +431,7 @@
 
                         var reader = new FileReader();
                         reader.onload = function(e) {
+                            scope.$parent.filename = file.name;
                             deferred.resolve(e.target.result);
                         };
                         reader.onerror = function(e) {

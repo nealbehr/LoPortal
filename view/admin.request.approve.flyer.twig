@@ -12,13 +12,13 @@
                     <div class="wrap">
                         <div>
                             <a href="#" class="upload" ng-if="!marketingCollateral">Attach the document</a>
-                            <a href="#" class="download" ng-if="marketingCollateral">Example Listing Flyer.pdf</a>
+                            <a href="#" class="download" ng-if="marketingCollateral">[[ filename ]]</a>
                             <span>PDF format only</span>
-                            <input type="file" accept="application/pdf" lo-filereader ng-model="marketingCollateral">
+                            <input type="file" accept="application/pdf" lo-filereader ng-model="marketingCollateral" id="uploadPdf">
                         </div>
 
                         <div class="pull-right" ng-if="marketingCollateral">
-                            <a href="#" class="change">Change</a> |
+                            <a href="#" class="change" ng-click="change($event)">Change</a> |
                             <a href="#" class="remove" ng-click="remove($event)">Remove</a>
                         </div>
                     </div>
