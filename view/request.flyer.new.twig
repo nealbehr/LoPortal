@@ -78,13 +78,13 @@
                         <div class="inputs-holder">
                             <div class="input">
                                 <input class="input-lg" type="text" placeholder="First name" ng-pattern="/^[A-Za-z\s]+$/" ng-model="request.realtor.first_name" required="" name="first_name">
-                                <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.required" data-toggle="tooltip" data-placement="right" title="The First name is required.">!</span>
-                                <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.pattern" data-toggle="tooltip" data-placement="right" title="The First name is invalid.">!</span>
+                                <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.required" data-toggle="tooltip" data-placement="left" title="The First name is required.">!</span>
+                                <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.pattern" data-toggle="tooltip" data-placement="left" title="The First name is invalid.">!</span>
                             </div>
                             <div class="input">
                                 <input class="input-lg" type="text" ng-pattern="/^[A-Za-z\s]+$/" placeholder="Last name" ng-model="request.realtor.last_name" required="" name="last_name">
-                                <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.required" data-toggle="tooltip" data-placement="right" title="The Last name is required.">!</span>
-                                <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.pattern" data-toggle="tooltip" data-placement="right" title="The Last name is required.">!</span>
+                                <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.required" data-toggle="tooltip" data-placement="left" title="The Last name is required.">!</span>
+                                <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.pattern" data-toggle="tooltip" data-placement="left" title="The Last name is required.">!</span>
                             </div>
                         </div>
                     </div>
