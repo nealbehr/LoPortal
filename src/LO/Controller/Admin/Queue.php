@@ -234,6 +234,7 @@ class Queue extends Base{
             ->select('q1.id, q2.id, q2.created_at')
             ->leftJoin(EntityQueue::class, 'q2', Expr\Join::WITH, "q1.address = q2.address")
             ->where('q1.id <> q2.id')
+            ->andWhere('q1.created_at > q2.created_at')
             ->getQuery()
             ->getResult('Duplicates');
         ;

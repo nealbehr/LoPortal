@@ -20,7 +20,7 @@
                     <td>
                         <div class="attention" ng-if="request.duplicates.length > 0">
                             <ul>
-                                <li ng-repeat="duplicate in request.duplicates">There is an existent request with the same address and ID #[[ duplicate.id ]] added on [[ duplicate.created_at|fromMysqlDate| date:"MMM d yyyy HH:mm a" ]]</li>
+                                <li ng-repeat="duplicate in request.duplicates">There is an existent request with the same address and ID #[[ duplicate.id ]] added on [[ duplicate.created_at|fromMysqlDate| date:"MMM d yyyy hh:mm a" ]]</li>
                             </ul>
                         </div>
                         [[ request.id ]]
