@@ -82,6 +82,9 @@ module.exports = function(grunt) {
             }
         },
         cssmin: {
+            options:{
+                aggressiveMerging: false
+            },
             target: {
                 files: [{
                     expand: true,
@@ -94,7 +97,7 @@ module.exports = function(grunt) {
                     'web/<%= grunt.nameCSSMinFile %>': [
                         'web/css/jquery-ui.structure.min.css',
                         'web/css/jquery-ui.min.css',
-
+                        'web/css/bootstrap.min.css',
                         'web/css/all.min.css',
                         '<%= cssmin.target.files[0].dest %>/ng-dialog.min.css',
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
