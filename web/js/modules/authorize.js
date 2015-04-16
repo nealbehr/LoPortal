@@ -73,7 +73,10 @@
                         })
                     ;
                 },
-                minLength: 3
+                minLength: 3,
+                select: function(event, ui){
+                    $scope.user.email = ui.item.value;
+                }
             });
         }
 

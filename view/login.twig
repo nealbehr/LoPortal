@@ -6,7 +6,6 @@
                     [[ errorMessage ]]
                 </div>
 
-
                 <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formLogin)">
                     <span ng-show="formLogin.email.$error.email">The entered email is invalid.</span>
                     <span ng-show="formLogin.email.$error.required">Email can't be empty.</span>
@@ -20,7 +19,7 @@
                 </div>
                 <div class="inputs-holder">
                     <div class="input" ng-class="{error: isValidEmail(formLogin)}">
-                        <input class="input-lg" type="email" placeholder="Email" ng-model-options="{ updateOn: 'blur' }" ng-model="user.email" name="email" required="" ng-keyup="complete($event)">
+                        <input class="input-lg" type="email" placeholder="Email" ng-model="user.email" name="email" required="" ng-keyup="complete($event)">
                     </div>
                     <div class="input" ng-class="{error: isValidPassword(formLogin)}">
                         <input class="input-lg" type="password" placeholder="Password" ng-model="user.password" required="" name="password">
