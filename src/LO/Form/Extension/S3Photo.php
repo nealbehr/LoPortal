@@ -28,12 +28,16 @@ class S3Photo extends AbstractType{
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options){
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event){
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function(FormEvent $event) use ($builder){
             $event->setData($this->prepareData($event->getData()));
         });
     }
 
     private function prepareData($data){
+        if(filter_var($data, FILTER_VALIDATE_URL) !== false){
+            return $data;
+        }
+
         $helper = new Image($this->s3, $data, $this->bucket);
         return $helper->downloadPhotoToS3andGetUrl(time().mt_rand(1, 100000));
     }

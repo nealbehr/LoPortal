@@ -1,6 +1,7 @@
 <?php
 namespace LO;
 
+use LO\Exception\Http;
 use LO\Model\Entity\User;
 use LO\Validator\UniqueValidator;
 use Silex\Application\SecurityTrait;
@@ -183,6 +184,7 @@ class Application extends \Silex\Application{
 
             'api' => [
                 'pattern' => '^.*$',
+//                'form' => ['login_path' => '/#/login'],
                 'apikey' => true,
                 'switch_user' => array('parameter' => '_switch_user', 'role' => 'ROLE_ALLOWED_TO_SWITCH'),
                 'apiLogout' => array('logout_path' => '/logout'),
@@ -218,6 +220,10 @@ class Application extends \Silex\Application{
             return $this->getTwig()->render('index.twig');
         })
         ->bind('index');
+
+        $this->get('/login', function(){
+            throw new Http("Bad credentials", Response::HTTP_FORBIDDEN);
+        });
 
         $this->get('/switch', function(){
             return $this->redirect('/');

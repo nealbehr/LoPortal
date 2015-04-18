@@ -2,7 +2,7 @@
     "use strict";
     settings = settings || {};
 
-    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'userModule', 'userProfileModule', 'adminModule', 'ngDialog']);
+    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'userModule', 'userProfileModule', 'adminModule', 'ngDialog', 'requestFlyerModule']);
 
     app.constant('HTTP_CODES', {FORBIDDEN: 403});
     app.constant('TOKEN_KEY', 'access_token');
@@ -40,6 +40,7 @@
                     console.log(rejection);
                     if (rejection.status === HTTP_CODES.FORBIDDEN) {
                         $cookieStore.remove(TOKEN_KEY);
+                        $cookieStore.remove("PHPSESSID");
                         redirect('/login', $location.url());
                     }
 
@@ -50,12 +51,18 @@
     }])
     .run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location', function($rootScope, TOKEN_KEY, $cookies, redirect, $location){
             $rootScope.debug = settings.debug;
+            $rootScope.previouseUrl = null;
 
             $rootScope.$on('$routeChangeStart', function(e, next, curr){
                 if ('access' in next && !next.access.isFree && $cookies[TOKEN_KEY] == undefined) {
                     redirect('/login', $location.url());
                 }
-            })
+            });
+
+            $rootScope.$on('$locationChangeSuccess',function(evt, absNewUrl, absOldUrl) {
+                $rootScope.previouseUrl = absOldUrl;
+                console.log(absOldUrl)
+            });
         }])
     ;
 

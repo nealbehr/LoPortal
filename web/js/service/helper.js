@@ -323,6 +323,9 @@
                     var deferred = $q.defer();
                     getInfoFromGeocoder({address: modelValue})
                         .then(function(data){
+                            if(undefined == data){
+                                deferred.resolve("");
+                            }
                             var result = parseGoogleAddressComponents(data[0].address_components);
                             for(var i in result){
                                 if(result[i] == '' || result[i] == null){
@@ -447,6 +450,120 @@
         };
     }]);
 
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope){
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/request.flyer.form',
+            scope: {
+                request: "=loRequest",
+                titles: "=loTitles",
+                user: '=loUser'
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.propertyImageObject = angular.element("#propertyImage");
+                scope.realtorImageObject  = angular.element("#realtorImage");
+
+                $('[data-toggle="tooltip"]').tooltip();
+
+
+                scope.cancel = function(e){
+                    e.preventDefault();
+
+                    history.back();
+                }
+
+                scope.filePropertyImageClick = function(){
+                    this.propertyImageObject.click();
+                }
+
+                scope.fileRealtorImageClick = function(){
+                    this.realtorImageObject.click();
+                }
+
+                scope.prepareImage = function(image, heightMax, heightMin, widthMax, widthMin){
+                    var info = image.cropper("getCropBoxData");
+                    if(!("width" in info)){
+                        return null;
+                    }
+
+                    return image.cropper("getCroppedCanvas",
+                        { "width": this.getBetween(info.width, widthMax, widthMin),
+                            "height": this.getBetween(info.height, heightMax, heightMin)
+                        })
+                        .toDataURL();
+                }
+
+                scope.save = function(){
+                    waitingScreen.show();
+                    getInfoFromGeocoder({address:this.request.property.address})
+                        .then(function(data){
+                            scope.request.address = parseGoogleAddressComponents(data[0].address_components);
+                            scope.request.property.address = data[0].formatted_address;
+
+                            var tmp = scope.prepareImage(scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
+                            if(tmp !== null){
+                                scope.request.property.photo = tmp;
+                            }
+
+                            var tmp = scope.prepareImage(scope.cropperRealtorImage.container, 600, 300, 800, 400);
+                            if(tmp !== null){
+                                scope.request.realtor.photo = tmp;
+                            }
+
+                            return scope.request.save();
+                        })
+                        .then(function(data){//success save on backend
+                            $rootScope.$broadcast('requestFlyerSaved');
+                        })
+                        .catch(function(e){
+                            alert("We have some problems. Please try later.");
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        })
+                    ;
+                }
+
+                scope.cropperPropertyImage = {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}};
+                scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 4 / 3, minContainerWidth: 100}};
+
+                scope.propertyImageObject.on('change',function(e){
+                    loadFile(e)
+                        .then(function(base64){
+                            scope.request.property.photo = base64;
+                            scope.cropperInit(scope.cropperPropertyImage);
+                        })
+                    ;
+                });
+
+                scope.realtorImageObject.on('change',function(e){
+                    loadFile(e)
+                        .then(function(base64){
+                            scope.request.realtor.photo = base64;
+                            scope.cropperInit(scope.cropperRealtorImage);
+                        })
+                    ;
+                });
+
+                scope.cropperInit = function(imageInfo){
+                    $timeout(function(){
+                        imageInfo.container.cropper('destroy');
+                        imageInfo.container.cropper(imageInfo.options);
+                    });
+                }
+
+                scope.getBetween = function(number, max, min){
+                    if(number > max){
+                        return max;
+                    }
+
+                    return number < min? min: number;
+                }
+
+            }
+        }
+    }]);
+
     helperService.filter('avatar', function(){
         return function(input){
             return input == null ? "images/ava.jpg": input;
@@ -541,14 +658,15 @@
         };
     }]);
 
-    helperService.factory("loadGoogleMapsApi", [function(){
-        return function(initialize){
-            initialize = initialize || function(){};
+    helperService.factory("loadGoogleMapsApi", ["$q", function($q){
+        return function(){
+            var deferred = $q.defer();
+            var initialize = function(){
+                deferred.resolve();
+            };
 
             if('google' in window){
-                initialize();
-
-                return;
+                return $q.when();
             }
 
             window.initialize = initialize;
@@ -557,6 +675,8 @@
             script.type = 'text/javascript';
             script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places&callback=initialize';
             document.body.appendChild(script);
+
+            return deferred.promise;
         }
     }]);
 
@@ -644,21 +764,23 @@
         }
     }]);
 
-    helperService.factory("getInfoFromGeocoder", ['$q', function($q){
+    helperService.factory("getInfoFromGeocoder", ['$q', "loadGoogleMapsApi", function($q, loadGoogleMapsApi){
         return function(request){
-            if(!('google' in window)) {
-                return $q.when();
-            }
             var deferred = $q.defer();
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode( request, function(results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    deferred.resolve(results);
-                } else {
-                    console.log("Geocode was not successful for the following reason: " + status);
-                    deferred.reject(status);
-                }
-            });
+
+            loadGoogleMapsApi()
+                .then(function(){
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( request, function(results, status) {
+                        console.log(results);
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            deferred.resolve(results);
+                        } else {
+                            console.log("Geocode was not successful for the following reason: " + status);
+                            deferred.reject(status);
+                        }
+                    });
+                })
 
             return deferred.promise;
         }
@@ -673,6 +795,46 @@
                 });
 
             container.html($compile(angularDomEl)(scope));
+        }
+    }]);
+
+    helperService.factory("loadFile", ['$q', function($q){
+        return function(evt){
+            var deferred = $q.defer();
+            var file = evt.currentTarget.files[0];
+
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                deferred.resolve(evt.target.result);
+            };
+
+            reader.onerror = function (evt) {
+                deferred.reject(evt);
+            };
+
+            reader.readAsDataURL(file);
+
+            return deferred.promise;
+        }
+    }]);
+
+    helperService.factory("loadImage", ['$q', function($q){
+        return function(url){
+            var deferred = $q.defer();
+
+            var bgImg = new Image();
+
+            bgImg.onload = function(){
+                deferred.resolve(bgImg);
+            }
+
+            bgImg.onerror = function(evt){
+                deferred.reject(evt);
+            }
+
+            bgImg.src = url;
+
+            return deferred.promise;
         }
     }]);
 
@@ -734,7 +896,7 @@
 
     helperService.filter('propertyImage', function(){
         return function(input){
-            return "" != input
+            return "" != input && null != input
                 ? input
                 : '/images/empty-big.png';
         }
@@ -742,7 +904,7 @@
 
     helperService.filter('realtorImage', function(){
         return function(input){
-            return "" != input
+            return "" != input && null !== input
                 ? input
                 : '/images/empty.png';
         }

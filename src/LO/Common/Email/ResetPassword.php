@@ -27,7 +27,7 @@ class ResetPassword extends Base{
     }
 
     protected function getBody(){
-        return $this->app->getTwig()->render("reset.password.body.twig", [
+        return $this->app->getTwig()->render("password.reset.body.twig", [
             'password' => $this->password,
         ]);
     }

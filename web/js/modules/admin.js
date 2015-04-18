@@ -33,7 +33,36 @@
                 access: {
                     isFree: false
                 }
-            });
+            })
+            .when('/admin/flyer/:id/edit', {
+                templateUrl: '/partials/admin.request.flyer.edit',
+                controller:  'requestFlyerEditCtrl',
+                access: {
+                    isFree: false
+                }
+            })
+        ;
+    }]);
+
+    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", "$rootScope", "$location", "redirect", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, $rootScope, $location, redirect){
+        $scope.request = {};
+        $scope.realtor = {};
+        $scope.titles = {
+            button: "Save",
+            header: "Edit Listing Flyer Request"
+        }
+
+        $scope.$on('requestFlyerSaved', function () {
+            redirect($rootScope.previouseUrl != null? $rootScope.previouseUrl: '/admin/queue');
+        });
+
+        createAdminRequestFlyer
+            .get($routeParams.id)
+            .then(function(flyer){
+                $scope.request = flyer;
+                $scope.realtor = createProfileUser().fill(flyer.user);
+            })
+        ;
     }]);
 
     admin.controller('adminQueueCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){

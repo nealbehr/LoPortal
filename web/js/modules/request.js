@@ -156,112 +156,30 @@
             searchBox.setBounds(bounds);
         });
         }
-        loadGoogleMapsApi(initialize);
+        loadGoogleMapsApi()
+            .then(initialize);
     }]);
 
-    request.controller('requestCtrl', ['$scope', 'redirect', '$http', '$q', '$timeout', 'loadGoogleMapsApi', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', function($scope, redirect, $http, $q, $timeout, loadGoogleMapsApi, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents){
-        $('[data-toggle="tooltip"]').tooltip();
-        loadGoogleMapsApi();
-        $scope.request = {
-            property: {
-                first_rex_id: null,
-                address: null,
-                mls_number: null,
-                listing_price: null,
-                photo: null
-            },
-            realtor: {
-                first_name: null,
-                last_name: null,
-                bre_number: null,
-                estate_agency: null,
-                phone: null,
-                email: null,
-                photo: null
-            }
+    request.controller('requestCtrl', ['$scope', 'redirect', '$http', '$q', '$timeout', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', "userService", "createRequestFlyer", function($scope, redirect, $http, $q, $timeout, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents, userService, createRequestFlyer){
+        $scope.titles = {
+            button: "Submit",
+            header: "Listing Flyer Request Form"
         }
 
-        $scope.filePropertyImageClick = function(){
-            angular.element("#propertyImage").click();
-        }
+        $scope.realtor = {};
 
-        $scope.fileRealtorImageClick = function(){
-            angular.element("#realtorImage").click();
-        }
-
-        $scope.fileSelect = function(evt, variable, imageInfo) {
-            var file = evt.currentTarget.files[0];
-
-            var reader = new FileReader();
-            reader.onload = function (evt) {
-                $scope.$apply(function(){
-                    $scope[variable] = evt.target.result;
-                });
-
-                imageInfo.container.cropper('destroy');
-                imageInfo.container.cropper(imageInfo.options);
-            };
-
-            reader.readAsDataURL(file);
-        };
-
-        $scope.propertyImage = '';
-        $scope.realtorImage  = '';
-
-        $scope.cropperPropertyImage = {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}};
-        $scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 4 / 3, minContainerWidth: 100}};
-
-        angular.element(document.querySelector('#propertyImage')).on('change',function(e){
-            $scope.fileSelect(e, 'propertyImage', $scope.cropperPropertyImage);
+        $scope.$on('requestFlyerSaved', function () {
+            redirect('/request/success/flyer');
         });
 
-        angular.element(document.querySelector('#realtorImage')).on('change',function(e){
-            $scope.fileSelect(e, 'realtorImage', $scope.cropperRealtorImage);
-        });
+        userService
+            .get()
+            .then(function(user){
+                $scope.realtor = user;
+            })
+        ;
 
-        $scope.prepareImage = function(image, heightMax, heightMin, widthMax, widthMin){
-            var info = image.cropper("getCropBoxData");
-
-            return image.cropper("getCroppedCanvas",
-                                 { "width": this.getBetween(info.width, widthMax, widthMin),
-                                   "height": this.getBetween(info.height, heightMax, heightMin)
-                                 })
-                        .toDataURL();
-        }
-
-        $scope.getBetween = function(number, max, min){
-            if(number > max){
-                return max;
-            }
-
-            return number < min? min: number;
-        }
-
-        $scope.save = function(){
-            waitingScreen.show();
-            getInfoFromGeocoder({address:this.request.property.address})
-                .then(function(data){
-                    $scope.request.address = parseGoogleAddressComponents(data[0].address_components);
-                    $scope.request.property.address = data[0].formatted_address;
-                    $scope.request.property.photo = $scope.prepareImage($scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
-                    $scope.request.realtor.photo  = $scope.prepareImage($scope.cropperRealtorImage.container, 600, 300, 800, 400);
-
-//                    $scope.propertyImage = $scope.request.property.image;
-
-                    return $http.post('/request/', $scope.request);
-                })
-                .then(function(data){
-                    //success save on backend
-                    redirect('/request/success/flyer');
-                })
-                .catch(function(e){
-                    alert("We have some problems. Please try later.");
-                })
-                .finally(function(){
-                    waitingScreen.hide();
-                })
-            ;
-        }
+        $scope.request = createRequestFlyer()
     }]);
 
     request.controller('requestSuccessCtrl', ['redirect', '$scope', '$routeParams', function(redirect, $scope, $routeParams){

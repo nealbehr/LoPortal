@@ -59,6 +59,12 @@ class RequestFlyer extends Base{
      */
     protected $photo;
 
+    /**
+     * @OneToOne(targetEntity="Queue", fetch="LAZY")
+     * @JoinColumn(name="queue_id", referencedColumnName="id")
+     **/
+    private $queue;
+
     public function setQueueId($param){
         $this->queue_id = $param;
 
@@ -104,12 +110,6 @@ class RequestFlyer extends Base{
         ];
     }
 
-    /**
-     * @OneToOne(targetEntity="Queue", fetch="LAZY")
-     * @JoinColumn(name="queue_id", referencedColumnName="id")
-     **/
-    protected $queue;
-
     public function getQueue(){
         return $this->queue;
     }
@@ -128,6 +128,10 @@ class RequestFlyer extends Base{
         $this->listing_price = $param;
 
         return $this;
+    }
+
+    public function getRealtorId(){
+        return $this->realtor_id;
     }
 
 }
