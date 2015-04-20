@@ -185,7 +185,7 @@
                             if(scope.user.id == scope.officer.id){
                                 scope.user.fill(scope.officer.getFields4Save());
                             }
-                            sessionMessages.addSuccess("Successfully saved.")
+                            sessionMessages.addSuccess("Successfully saved.");
                             history.back();
                         })
                         .catch(function(data){
@@ -772,7 +772,6 @@
                 .then(function(){
                     var geocoder = new google.maps.Geocoder();
                     geocoder.geocode( request, function(results, status) {
-                        console.log(results);
                         if (status == google.maps.GeocoderStatus.OK) {
                             deferred.resolve(results);
                         } else {

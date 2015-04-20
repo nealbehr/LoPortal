@@ -11,6 +11,7 @@
 
     userService.service("createProfileUser", ["$q", "$http", "createUserBase", function($q, $http, createUserBase){
         return function(){
+            console.log('profile User');
             var userBase = new createUserBase();
 
             userBase.save = function(){

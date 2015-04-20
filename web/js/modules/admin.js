@@ -44,7 +44,7 @@
         ;
     }]);
 
-    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", "$rootScope", "$location", "redirect", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, $rootScope, $location, redirect){
+    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
@@ -53,10 +53,10 @@
         }
 
         $scope.$on('requestFlyerSaved', function () {
-            redirect($rootScope.previouseUrl != null? $rootScope.previouseUrl: '/admin/queue');
+            history.back();
         });
 
-        createAdminRequestFlyer
+        createAdminRequestFlyer()
             .get($routeParams.id)
             .then(function(flyer){
                 $scope.request = flyer;

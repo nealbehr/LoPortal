@@ -27,53 +27,56 @@
     }]);
 
     flyerService.service("createAdminRequestFlyer", ["$q", "$http", "createRequestFlyerBase", function($q, $http, createRequestFlyerBase){
-        var flyer = new createRequestFlyerBase();
+        console.log("createAdminRequestFlyer");
+        return function(){
+            var flyer = new createRequestFlyerBase();
 
-        flyer.get = function(id){
-            if(this.id !== null){
-                return $q.when(this);
+            flyer.get = function(id){
+                if(this.id !== null){
+                    return $q.when(this);
+                }
+
+                var deferred = $q.defer();
+                $http.get('/admin/flyer/' + id)
+                    .success(function(data){
+                        flyer.id = id;
+                        flyer.fill(data);
+
+                        deferred.resolve(flyer)
+                    })
+                    .error(function(data){
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
             }
 
-            var deferred = $q.defer();
-            $http.get('/admin/flyer/' + id)
-                .success(function(data){
-                    flyer.id = id;
-                    flyer.fill(data);
+            flyer.save = function(){
+                return this.id? this.update(): this.add();
+            }
 
-                    deferred.resolve(flyer)
-                })
-                .error(function(data){
-                    deferred.reject(data);
-                })
-            ;
+            flyer.update = function(){
+                var deferred = $q.defer();
+                $http.put('/admin/flyer/' + this.id, this.getFields4Save())
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
 
-            return deferred.promise;
+                return deferred.promise;
+            }
+
+            flyer.add = function(){
+                throw new Error("ID not found");
+            }
+
+            return flyer;
         }
-
-        flyer.save = function(){
-            return this.id? this.update(): this.add();
-        }
-
-        flyer.update = function(){
-            var deferred = $q.defer();
-            $http.put('/admin/flyer/' + this.id, this.getFields4Save())
-                .success(function(data){
-                    deferred.resolve(data);
-                })
-                .error(function(data){
-                    console.log(data);
-                    deferred.reject(data);
-                })
-            ;
-
-            return deferred.promise;
-        }
-
-        flyer.add = function(){
-            throw new Error("ID not found");
-        }
-
-        return flyer;
     }]);
 
     flyerService.service("createRequestFlyerBase", ["$q", "$http", function($q, $http){

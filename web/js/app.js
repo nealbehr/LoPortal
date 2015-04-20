@@ -51,17 +51,11 @@
     }])
     .run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location', function($rootScope, TOKEN_KEY, $cookies, redirect, $location){
             $rootScope.debug = settings.debug;
-            $rootScope.previouseUrl = null;
 
             $rootScope.$on('$routeChangeStart', function(e, next, curr){
                 if ('access' in next && !next.access.isFree && $cookies[TOKEN_KEY] == undefined) {
                     redirect('/login', $location.url());
                 }
-            });
-
-            $rootScope.$on('$locationChangeSuccess',function(evt, absNewUrl, absOldUrl) {
-                $rootScope.previouseUrl = absOldUrl;
-                console.log(absOldUrl)
             });
         }])
     ;
