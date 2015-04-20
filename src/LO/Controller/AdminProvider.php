@@ -27,6 +27,10 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\RequestFlyerAdmin();
         });
 
+        $app['admin.property.approval.controller'] = $app->share(function() use ($app) {
+            return new Admin\PropertyApproval();
+        });
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
@@ -57,6 +61,11 @@ class AdminProvider implements ControllerProviderInterface {
             ->get("/flyer/{id}", "admin.request.flyer.controller:getAction");
         $controllers
             ->put("/flyer/{id}", "admin.request.flyer.controller:updateAction");
+
+        $controllers
+            ->get("/approval/{id}", "admin.property.approval.controller:getAction");
+        $controllers
+            ->put("/approval/{id}", "admin.property.approval.controller:updateAction");
 
 
         return $controllers;

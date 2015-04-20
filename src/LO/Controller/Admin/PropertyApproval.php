@@ -1,0 +1,77 @@
+<?php
+/**
+ * Created by IntelliJ IDEA.
+ * User: samoilenko
+ * Date: 4/20/15
+ * Time: 5:30 PM
+ */
+
+namespace LO\Controller\Admin;
+
+use LO\Application;
+use LO\Exception\Http;
+use LO\Form\QueueForm;
+use LO\Model\Entity\Queue;
+use LO\Model\Manager\QueueManager;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use LO\Traits\GetFormErrors;
+use LO\Controller\RequestBaseController;
+
+class PropertyApproval extends RequestBaseController{
+    use GetFormErrors;
+
+    public function getAction(Application $app, $id){
+        /** @var Queue $queue */
+        $queue = (new QueueManager($app))->getById($id);
+
+        if(!$queue){
+            throw new Http(sprintf('Request \'%s\' not found.', $id), Response::HTTP_BAD_REQUEST);
+        }
+
+        $queueForm = $app->getFormFactory()->create(new QueueForm());
+
+        return $app->json([
+            'property' => $this->removeExtraFields($queue->toArray(), $queueForm),
+        ]);
+    }
+
+    public function updateAction(Application $app, Request $request, $id){
+        try{
+            $data = [];
+            $app->getEntityManager()->beginTransaction();
+
+            /** @var Queue $queue */
+            $queue = (new QueueManager($app))->getByIdWithUser($id);
+
+            if(!$queue){
+                throw new Http(sprintf('Request \'%s\' not found.', $id), Response::HTTP_BAD_REQUEST);
+            }
+
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$queue->getUser());
+
+            $queue->set1RexId($id);
+
+            $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, ["method" => "PUT"]);
+            $queueForm->handleRequest($request);
+
+            if(!$queueForm->isValid()){
+                $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);
+
+                throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $data['message'] = $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.';
+            return $app->json($data, $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+} 

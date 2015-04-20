@@ -79,7 +79,7 @@
         }
     }]);
 
-    flyerService.service("createRequestFlyerBase", ["$q", "$http", function($q, $http){
+    flyerService.service("createRequestFlyerBase", [function(){
         return function(){
             this.id = null;
 

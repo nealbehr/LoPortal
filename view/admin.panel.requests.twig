@@ -38,7 +38,7 @@
                         <div class="dropdown">
                             <button class="action" type="button" data-toggle="dropdown">action</button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                <li><a ng-href="/#/admin/flyer/[[ request.id ]]/edit" class="change">Edit</a></li>
+                                <li><a ng-href="/#/admin/[[ (request.request_type == settings.queue.type.flyer? 'flyer': 'approval') ]]/[[ request.id ]]/edit" class="change">Edit</a></li>
                                 <li ng-if="request.state != states.approved"><a ng-href="#" ng-click="approve($event, request)" class="approve">Approve</a></li>
                                 <li ng-if="request.state != states.declined"><a ng-href="#" ng-click="decline($event, request)" class="delete">Decline</a></li>
                             </ul>

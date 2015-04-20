@@ -24,4 +24,29 @@ class QueueManager extends Base{
                     ->getQuery()
                     ->getOneOrNullResult();
     }
-} 
+
+    public function getById($id){
+        return $this->getApp()
+                    ->getEntityManager()
+                    ->createQueryBuilder()
+                    ->select('q')
+                    ->from(Queue::class, 'q')
+                    ->where('q.id = :id')
+                    ->setParameter('id', $id)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+
+    public function getByIdWithUser($id){
+        return $this->getApp()
+                    ->getEntityManager()
+                    ->createQueryBuilder()
+                    ->select('q, u')
+                    ->from(Queue::class, 'q')
+                    ->join('q.user', 'u')
+                    ->where('q.id = :id')
+                    ->setParameter('id', $id)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+    }
+}

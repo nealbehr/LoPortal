@@ -450,7 +450,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -513,6 +513,7 @@
                             return scope.request.save();
                         })
                         .then(function(data){//success save on backend
+                            sessionMessages.addSuccess("Successfully saved.");
                             $rootScope.$broadcast('requestFlyerSaved');
                         })
                         .catch(function(e){

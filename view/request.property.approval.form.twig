@@ -1,0 +1,23 @@
+<section class="container">
+    <header class="page-title">
+        <h1>[[ titles.header ]]</h1>
+    </header>
+    <div class="alert alert-danger fade in" role="alert" ng-show="message != null || (newApproval.$submitted && (newApproval.searchPlace.$error.required || newApproval.searchPlace.$error.googleAddress))">
+        <div ng-show="message != null">[[ message ]]</div>
+        <div ng-show="newApproval.searchPlace.$error.required">Property Address is required.</div>
+        <div ng-show="newApproval.searchPlace.$error.googleAddress">Property address is incorrect.</div>
+    </div>
+    <div class="row">
+        <form ng-submit="newApproval.$valid && save()" novalidate name="newApproval" class="approval-form">
+            <div class="col-sm-4" >
+                <input ng-focus="message = null" ng-model-options="{ updateOn: 'blur' }" ng-model="request.property.address" google-address class="form-control input-lg" name="searchPlace" id="searchPlace" type="text" placeholder="Property Address" required="">
+            </div>
+            <div class="col-sm-2"><button class="btn btn-default btn-lg">[[ titles.button ]]</button></div>
+        </form>
+        <div class="col-sm-3 col-sm-offset-3 text-right">
+            <a ng-if="!request.id" href="/#/" class="back">Back to dashboard</a>
+            <a ng-if="request.id" ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
+        </div>
+    </div>
+    <div id="location"></div>
+</section>

@@ -41,6 +41,13 @@
                     isFree: false
                 }
             })
+            .when('/admin/approval/:id/edit', {
+                templateUrl: '/partials/admin.request.property.approval',
+                controller:  'propertyApprovalEditCtrl',
+                access: {
+                    isFree: false
+                }
+            })
         ;
     }]);
 
@@ -65,8 +72,43 @@
         ;
     }]);
 
-    admin.controller('adminQueueCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
+    admin.controller('propertyApprovalEditCtrl', ['$scope', 'createAdminPropertyApproval', '$routeParams', 'getInfoFromGeocoder', function($scope, createAdminPropertyApproval, $routeParams, getInfoFromGeocoder){
+        $scope.request = {};
+        $scope.lat;
+        $scope.lng;
+        $scope.titles = {
+            button: "Save",
+            header: "Edit Property Approval Request Form"
+        }
 
+        $scope.approval;
+
+        $scope.$on('propertyApprovalSaved', function () {
+            history.back();
+        });
+
+        createAdminPropertyApproval()
+            .get($routeParams.id)
+            .then(function(approval){
+                $scope.approval = approval;
+                return getInfoFromGeocoder({address: $scope.approval.property.address});
+            })
+            .then(function(data){
+                var googleInfo = data.shift();
+                $scope.lat = googleInfo.geometry.location.lat();
+                $scope.lng = googleInfo.geometry.location.lng();
+
+                $scope.request = $scope.approval;
+            })
+            .catch(function(error){
+                console.log(error);
+                alert(error);
+            })
+        ;
+    }]);
+
+    admin.controller('adminQueueCtrl', ['$scope', function($scope){
+        $scope.settings = settings;
     }]);
 
     admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
