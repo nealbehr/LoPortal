@@ -133,10 +133,16 @@ class User extends Base implements UserInterface{
      * @Column(type="string", length=20)
      */
     protected $territory;
+
     /**
      * @Column(type="string", length=255)
      */
     protected $sales_director;
+
+    /**
+     * @Column(type="string", length=255)
+     */
+    protected $sales_director_email;
 
     /**
      * Init entity
@@ -507,6 +513,16 @@ class User extends Base implements UserInterface{
         return $this;
     }
 
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setSalesDirectorEmail($param){
+        $this->sales_director_email = $param;
+
+        return $this;
+    }
+
     public function getPublicInfo(){
         $result = $this->toArray();
         unset($result['password'], $result['salt'], $result['state']);
@@ -520,6 +536,10 @@ class User extends Base implements UserInterface{
 
     public function getSalesDirector(){
         return $this->sales_director;
+    }
+
+    public function getSalesDirectorEmail(){
+        return $this->sales_director_email;
     }
 
     public function getPhone(){

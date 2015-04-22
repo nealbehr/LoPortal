@@ -101,6 +101,11 @@ class UserForm extends AbstractType {
                 ]),
             ]
         ]);
+        $builder->add('sales_director_email', 'text', [
+            'constraints' => [
+                new Assert\Email(),
+            ]
+        ]);
 
         $builder->add('nmls', 'text', [
             'constraints' => [

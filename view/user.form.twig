@@ -22,6 +22,10 @@
                 NMLS # should be of number.
             </div>
 
+            <div class="alert alert-danger fade in" role="alert" ng-show="formUser.$submitted && formUser.sales_director_email.$error.email">
+                Please input a valid email in Sales Manager Email field.
+            </div>
+
 
             <h2>[[ title ]]</h2>
             <select class="form-control input-lg"
@@ -41,6 +45,9 @@
                 </div>
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Sales Director" ng-model="officer.sales_director">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="email" name="sales_director_email" placeholder="Sales Manager Email" ng-model="officer.sales_director_email">
                 </div>
             </div>
             <textarea class="form-control" cols="30" rows="2" placeholder="Lender" ng-model="officer.lender"></textarea>

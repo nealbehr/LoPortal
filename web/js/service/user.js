@@ -119,6 +119,7 @@
             this.last_name;
             this.title;
             this.sales_director;
+            this.sales_director_email;
             this.phone;
             this.mobile;
             this.email;
