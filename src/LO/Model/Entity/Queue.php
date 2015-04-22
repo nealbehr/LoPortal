@@ -170,7 +170,8 @@ class Queue extends Base{
     }
 
     /**
-     * @return User
+     * @param User $user
+     * @return $this
      */
     public function setUser(User $user){
         $this->user = $user;

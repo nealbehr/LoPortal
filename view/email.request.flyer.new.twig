@@ -1,0 +1,41 @@
+<h2>Loan Officer Info</h2>
+<dl>
+    <dt>First Name</dt>
+    <dd>{{ queue.getUser().getFirstName() }}</dd>
+    <dt>Last name</dt>
+    <dd>{{ queue.getUser().getLastName() }}</dd>
+    <dt>Title</dt>
+    <dd>{{ queue.getUser().getTitle() }}</dd>
+    <dt>Sales Director</dt>
+    <dd>{{ queue.getUser().getSalesDirector() }}</dd>
+    <dt>Lender</dt>
+    <dd>{{ queue.getUser().getLender() }}</dd>
+    <dt>Primary Phone</dt>
+    <dd>{{ queue.getUser().getPhone() }}</dd>
+    <dt>Email Address</dt>
+    <dd>{{ queue.getUser().getEmail() }}</dd>
+    <dt>NMLS #</dt>
+    <dd>{{ queue.getUser().getNmls() }}</dd>
+</dl>
+
+
+
+<h2>Property address:</h2>
+<dl>
+    <dt>MLS Number</dt>
+    <dd>{{ queue.getMlsNumber() }}</dd>
+    <dt>Listing Price:</dt>
+    <dd>{{ requestFlyer.getListingPrice() }}</dd>
+</dl>
+
+<h2>Realtor: {{ realtor.getFirstName() }} {{ realtor.getLastName() }}</h2>
+<dl>
+    <dt>Phone:</dt>
+    <dd>{{ realtor.getPhone() }}</dd>
+    <dt>Email:</dt>
+    <dd>{{ realtor.getEmail() }}</dd>
+    <dt>BRE Number:</dt>
+    <dd>{{ realtor.getBreNumber() }}</dd>
+    <dt>Real Estate Agency:</dt>
+    <dd>{{ realtor.getEstateAgency() }}</dd>
+</dl>

@@ -10,6 +10,7 @@ namespace LO\Controller;
 
 
 use LO\Application;
+use LO\Common\Email\RequestFlyerNew;
 use LO\Exception\Http;
 use LO\Form\QueueForm;
 use LO\Form\RealtorForm;
@@ -78,6 +79,15 @@ class RequestFlyerController extends RequestBaseController{
 
             $app->getEntityManager()->persist($requestFlyer);
             $app->getEntityManager()->flush();
+
+            $destinationList = [$queue->getUser()->getEmail()];
+            if($queue->getUser()->getSalesDirectorEmail()){
+                $destinationList[] = $queue->getUser()->getSalesDirectorEmail();
+            }
+
+            (new RequestFlyerNew($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue, $realtor, $requestFlyer))
+                ->setDestinationList(array_merge($destinationList, $app->getConfigByName('firstrex', 'additional.emails')))
+                ->send();
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){

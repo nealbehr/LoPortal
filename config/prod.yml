@@ -26,6 +26,8 @@ firstrex:
     user: FirstREX
     pass: Admin007
     url: http://tools.1rex.com/inquiries.json
+  additional.emails:
+    - joanna.umali@1rex.com
 google:
   apiKey: NotPresent
 amazon:
