@@ -63,3 +63,7 @@
 .ngdialog {
     z-index: 98;
 }
+
+.user-menu > span::after{
+    border: none;
+}
