@@ -261,6 +261,7 @@
                             new tableHeadCol({key: "first_name", title: "First<br>Name"}),
                             new tableHeadCol({key: "last_name", title: "Last<br>Name"}),
                             new tableHeadCol({key: "email", title: "Email", isSortable: true}),
+                            new tableHeadCol({key: "password", title: "Password", isSortable: false}),
                             new tableHeadCol({key: "role", title: "Role", isSortable: false}),
                             new tableHeadCol({key: "title", title: "Title", isSortable: false}),
                             new tableHeadCol({key: "phone", title: "Primary<br>Phone", isSortable: false}),

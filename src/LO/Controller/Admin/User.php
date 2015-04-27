@@ -49,7 +49,9 @@ class User extends Base{
         $items = [];
         /** @var EntityUser $item */
         foreach($pagination->getItems() as $item){
-            $items[] = $item->getPublicInfo();
+            $tmp = $item->getPublicInfo();
+            $tmp['password'] = $item->getPassword();
+            $items[] = $tmp;
         }
 
         return $app->json([
