@@ -1,41 +1,81 @@
 <h2>Loan Officer Info</h2>
-<dl>
-    <dt>First Name</dt>
-    <dd>{{ queue.getUser().getFirstName() }}</dd>
-    <dt>Last name</dt>
-    <dd>{{ queue.getUser().getLastName() }}</dd>
-    <dt>Title</dt>
-    <dd>{{ queue.getUser().getTitle() }}</dd>
-    <dt>Sales Director</dt>
-    <dd>{{ queue.getUser().getSalesDirector() }}</dd>
-    <dt>Lender</dt>
-    <dd>{{ queue.getUser().getLender() }}</dd>
-    <dt>Primary Phone</dt>
-    <dd>{{ queue.getUser().getPhone() }}</dd>
-    <dt>Email Address</dt>
-    <dd>{{ queue.getUser().getEmail() }}</dd>
-    <dt>NMLS #</dt>
-    <dd>{{ queue.getUser().getNmls() }}</dd>
-</dl>
+<table border="0">
+    <tr>
+        <td>First Name:</td>
+        <td>{{ queue.getUser().getFirstName() }}</td>
+    </tr>
+    <tr>
+        <td>Last name:</td>
+        <td>{{ queue.getUser().getLastName() }}</td>
+    </tr>
+    <tr>
+        <td>Title:</td>
+        <td>{{ queue.getUser().getTitle() }}</td>
+    </tr>
+    <tr>
+        <td>Sales Director:</td>
+        <td>{{ queue.getUser().getSalesDirector() }}</td>
+    </tr>
+    <tr>
+        <td>Sales Director Email:</td>
+        <td>{{ queue.getUser().getSalesDirectorEmail() }}</td>
+    </tr>
+    <tr>
+        <td>Lender:</td>
+        <td>{{ queue.getUser().getLender() }}</td>
+    </tr>
+    <tr>
+        <td>Primary Phone:</td>
+        <td>{{ queue.getUser().getPhone() }}</td>
+    </tr>
+    <tr>
+        <td>Email Address:</td>
+        <td>{{ queue.getUser().getEmail() }}</td>
+    </tr>
+    <tr>
+        <td>NMLS #:</td>
+        <td>{{ queue.getUser().getNmls() }}</td>
+    </tr>
+</table>
 
 
 
-<h2>Property address:</h2>
-<dl>
-    <dt>MLS Number</dt>
-    <dd>{{ queue.getMlsNumber() }}</dd>
-    <dt>Listing Price:</dt>
-    <dd>{{ requestFlyer.getListingPrice() }}</dd>
-</dl>
+<h2>Property address</h2>
+<table border="0">
+    <tr>
+        <td>Property address:</td>
+        <td>{{ queue.getAddress() }}</td>
+    </tr>
+    <tr>
+        <td>MLS Number:</td>
+        <td>{{ queue.getMlsNumber() }}</td>
+    </tr>
+    <tr>
+        <td>Listing Price:</td>
+        <td>{{ requestFlyer.getListingPrice() }}</td>
+    </tr>
+</table>
 
-<h2>Realtor: {{ realtor.getFirstName() }} {{ realtor.getLastName() }}</h2>
-<dl>
-    <dt>Phone:</dt>
-    <dd>{{ realtor.getPhone() }}</dd>
-    <dt>Email:</dt>
-    <dd>{{ realtor.getEmail() }}</dd>
-    <dt>BRE Number:</dt>
-    <dd>{{ realtor.getBreNumber() }}</dd>
-    <dt>Real Estate Agency:</dt>
-    <dd>{{ realtor.getEstateAgency() }}</dd>
-</dl>
+<h2>Realtor info</h2>
+<table border="0">
+    <tr>
+        <td>Realtor:</td>
+        <td>{{ realtor.getFirstName() }} {{ realtor.getLastName() }}</td>
+    </tr>
+    <tr>
+        <td>Phone:</td>
+        <td>{{ realtor.getPhone() }}</td>
+    </tr>
+    <tr>
+        <td>Email:</td>
+        <td>{{ realtor.getEmail() }}</td>
+    </tr>
+    <tr>
+        <td>BRE Number:</td>
+        <td>{{ realtor.getBreNumber() }}</td>
+    </tr>
+    <tr>
+        <td>Real Estate Agency:</td>
+        <td>{{ realtor.getEstateAgency() }}</td>
+    </tr>
+</table>
