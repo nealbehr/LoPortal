@@ -332,9 +332,8 @@
                                     deferred.reject('Address is bad.');
                                     break;
                                 }
-
-                                deferred.resolve(data);
                             }
+                            deferred.resolve(data);
 
                             return true;
                         },
@@ -777,7 +776,7 @@
                             deferred.resolve(results);
                         } else {
                             console.log("Geocode was not successful for the following reason: " + status);
-                            deferred.reject(status);
+                            deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
                         }
                     });
                 })

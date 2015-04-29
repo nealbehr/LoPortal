@@ -125,6 +125,29 @@
             },
             link: function(scope, element, attrs, controllers) {
                 scope.message = null;
+                scope.isValid = !!scope.request.property.address
+
+                scope.getCharCode = function(event) {
+                    if (event.keyCode) { // IE
+                        if (event.keyCode < 32 && event.keyCode != 13) return null; // спец. символ
+                        return event.keyCode
+                    }
+
+                    if (event.which < 32 && event.which != 13) return null; // спец. символ
+                    return event.which; // остальные
+
+                    return null; // спец. символ
+                }
+
+                scope.changeSearchField = function(e){
+                    var code = this.getCharCode(e);
+                    if(code == 13 || code == 37 || code == 39){
+                        return;
+                    }
+
+                    scope.isValid = false;
+                }
+
                 scope.cancel = function(e){
                     e.preventDefault();
 
@@ -133,23 +156,45 @@
 
                 var input = document.getElementById('searchPlace');
 
-                scope.save = function(){
-                    scope.message = null;
-                    waitingScreen.show();
+                scope.checkAddress = function(){
                     getInfoFromGeocoder({address: this.request.property.address})
                         .then(function(data){
                             scope.request.address = parseGoogleAddressComponents(data[0].address_components);
-                            scope.request.property.address = data[0].formatted_address;
+                            for(var i in scope.request.address){
+                                if(scope.request.address[i] == '' || scope.request.address[i] == null){
+                                    throw new Error('Address is invalid.');
+                                    break;
+                                }
+                            }
 
-                            return scope.request.save();
+                            scope.request.property.address = data[0].formatted_address;
+                            scope.isValid = true;
                         })
+                        .catch(function(e){
+                            scope.message = typeof e == 'string'? e: e.message;
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        })
+                    ;
+                }
+
+                scope.save = function(){
+                    scope.message = null;
+                    waitingScreen.show();
+                    if(this.isValid == false){
+                        this.checkAddress();
+                        return;
+                    }
+
+                    scope.request.save()
                         .then(function(data){//success save on backend
                             sessionMessages.addSuccess("Successfully saved.");
                             $rootScope.$broadcast('propertyApprovalSaved');
                         }, function(error){
-                            if('message' in error.data){
-                                throw error.data.message;
-                            }
+                                throw typeof error == "object" && 'message' in error
+                                                ? error.message
+                                                : error;
                         })
                         .catch(function(e){
                             scope.message = typeof e == 'string'? e: e.message;
@@ -200,6 +245,7 @@
                         getInfoFromGeocoder({location: event.latLng})
                             .then(function(address){
                                 if(address.length > 0){
+                                    scope.request.address = parseGoogleAddressComponents(address[0].address_components);
                                     scope.request.property.address = address[0].formatted_address;
                                 }
                             })
@@ -225,7 +271,12 @@
                         // For each place, get the icon, place name, and location.
                         markers = [];
                         var bounds = new google.maps.LatLngBounds();
+
                         for (var i = 0, place; place = places[i]; i++) {
+                            scope.$apply(function(){
+                                scope.request.address = parseGoogleAddressComponents(place.address_components);
+                                scope.isValid = true;
+                            });
                             var image = {
                                 url: place.icon,
                                 size: new google.maps.Size(71, 71),
