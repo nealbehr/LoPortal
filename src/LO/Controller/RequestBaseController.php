@@ -10,17 +10,19 @@ namespace LO\Controller;
 
 use Curl\Curl;
 use LO\Application;
+use LO\Model\Entity\User;
 
 class RequestBaseController {
-    protected function sendRequestTo1Rex(Application $app, array $address, $userName){
+    protected function sendRequestTo1Rex(Application $app, array $address, User $user){
         try{
             $data = array_merge(
                 $address,
                 [
                     'inquiry_type' => 'Seller of home',
                     'product_type' => 'HB',
-                    'inquirer' => 'mcoudsi',
-                    'agent_name' => $userName
+                    'inquirer'     => $user->getSalesDirector(),
+//                    'agent_name'   => (string)$user,
+                    'agent'        => (string)$user,
                 ]
             );
 

@@ -24,7 +24,7 @@ class RequestApprovalController extends RequestBaseController{
         try{
             $app->getEntityManager()->beginTransaction();
             $data = [];
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$app->user());
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $app->user());
 
             $queue = (new Queue())
                 ->set1RexId($id)

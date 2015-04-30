@@ -30,7 +30,7 @@ class RequestFlyerController extends RequestBaseController{
             $data = [];
             $app->getEntityManager()->beginTransaction();
 
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$app->user());
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $app->user());
             $realtor = new Realtor();
 
             $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor);
