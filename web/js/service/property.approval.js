@@ -127,24 +127,8 @@
                 scope.message = null;
                 scope.isValid = !!scope.request.property.address
 
-                scope.getCharCode = function(event) {
-                    if (event.keyCode) { // IE
-                        if (event.keyCode < 32 && event.keyCode != 13) return null; // спец. символ
-                        return event.keyCode
-                    }
 
-                    if (event.which < 32 && event.which != 13) return null; // спец. символ
-                    return event.which; // остальные
-
-                    return null; // спец. символ
-                }
-
-                scope.changeSearchField = function(e){
-                    var code = this.getCharCode(e);
-                    if(code == 13 || code == 37 || code == 39){
-                        return;
-                    }
-
+                scope.changeSearchField = function(o){
                     scope.isValid = false;
                 }
 
@@ -156,19 +140,25 @@
 
                 var input = document.getElementById('searchPlace');
 
+                scope.$watch('request.address', function(newVal){
+                    for(var i in scope.request.address){
+                        if(scope.request.address[i] == '' || scope.request.address[i] == null){
+                            scope.isValid = false;
+                            scope.message = 'Address is invalid.';
+//                            throw new Error('Address is invalid.');
+                            break;
+                        }
+                    }
+
+                    scope.isValid = true;
+                });
+
                 scope.checkAddress = function(){
                     getInfoFromGeocoder({address: this.request.property.address})
                         .then(function(data){
                             scope.request.address = parseGoogleAddressComponents(data[0].address_components);
-                            for(var i in scope.request.address){
-                                if(scope.request.address[i] == '' || scope.request.address[i] == null){
-                                    throw new Error('Address is invalid.');
-                                    break;
-                                }
-                            }
 
                             scope.request.property.address = data[0].formatted_address;
-                            scope.isValid = true;
                         })
                         .catch(function(e){
                             scope.message = typeof e == 'string'? e: e.message;
@@ -249,6 +239,10 @@
                                     scope.request.property.address = address[0].formatted_address;
                                 }
                             })
+                            .catch(function(e){
+                                scope.request.property.address = '';
+                                scope.message = typeof e == 'string'? e: e.message;
+                            })
                             .finally(function(){
                                 waitingScreen.hide();
                             })
@@ -275,7 +269,6 @@
                         for (var i = 0, place; place = places[i]; i++) {
                             scope.$apply(function(){
                                 scope.request.address = parseGoogleAddressComponents(place.address_components);
-                                scope.isValid = true;
                             });
                             var image = {
                                 url: place.icon,

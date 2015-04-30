@@ -10,9 +10,9 @@
     <div class="row">
         <form ng-submit="newApproval.$valid && save()" novalidate name="newApproval" class="approval-form">
             <div class="col-sm-4" >
-                <input ng-keypress="changeSearchField($event)" ng-model="request.property.address" class="form-control input-lg" name="searchPlace" id="searchPlace" type="text" placeholder="Property Address" required="">
+                <input ng-change="changeSearchField()" ng-model="request.property.address" class="form-control input-lg" name="searchPlace" id="searchPlace" type="text" placeholder="Property Address" required="">
             </div>
-            <div class="col-sm-2"><button type="submit" class="btn btn-default btn-lg">[[ isValid? titles.button: "Check" ]]</button></div>
+            <div class="col-sm-2"><button type="submit" class="btn btn-default btn-lg">[[ isValid && newApproval.$valid? titles.button: "Check" ]]</button></div>
         </form>
         <div class="col-sm-3 col-sm-offset-3 text-right">
             <a ng-if="!request.id" href="/#/" class="back">Back to dashboard</a>
