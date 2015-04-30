@@ -150,6 +150,7 @@
                         }
                     }
 
+                    scope.message = null;
                     scope.isValid = true;
                 });
 
@@ -161,6 +162,7 @@
                             scope.request.property.address = data[0].formatted_address;
                         })
                         .catch(function(e){
+                            scope.isValid = false;
                             scope.message = typeof e == 'string'? e: e.message;
                         })
                         .finally(function(){
@@ -241,6 +243,7 @@
                             })
                             .catch(function(e){
                                 scope.request.property.address = '';
+                                scope.isValid = false;
                                 scope.message = typeof e == 'string'? e: e.message;
                             })
                             .finally(function(){
