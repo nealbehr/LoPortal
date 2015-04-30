@@ -16,3 +16,6 @@ amazon:
     securityCredentials:
       key:    AKIAJGGPNM46RAXZIFDA
       secret: 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
+firstrex:
+  api:
+    url:  http://tools.1rex.com:3000/inquiries.json
