@@ -51,7 +51,7 @@
         ;
     }]);
 
-    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser){
+    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
@@ -60,6 +60,7 @@
         }
 
         $scope.$on('requestFlyerSaved', function () {
+            sessionMessages.addSuccess("Successfully saved.");
             history.back();
         });
 
@@ -72,7 +73,7 @@
         ;
     }]);
 
-    admin.controller('propertyApprovalEditCtrl', ['$scope', 'createAdminPropertyApproval', '$routeParams', 'getInfoFromGeocoder', function($scope, createAdminPropertyApproval, $routeParams, getInfoFromGeocoder){
+    admin.controller('propertyApprovalEditCtrl', ['$scope', 'createAdminPropertyApproval', '$routeParams', 'getInfoFromGeocoder', 'sessionMessages', function($scope, createAdminPropertyApproval, $routeParams, getInfoFromGeocoder, sessionMessages){
         $scope.request = {};
         $scope.lat;
         $scope.lng;
@@ -84,6 +85,7 @@
         $scope.approval;
 
         $scope.$on('propertyApprovalSaved', function () {
+            sessionMessages.addSuccess("Successfully saved.");
             history.back();
         });
 

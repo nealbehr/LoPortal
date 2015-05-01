@@ -392,11 +392,16 @@
         };
     }]);
 
-    helperService.directive('loMessageContainer', ['sessionMessages', function(sessionMessages){
+    helperService.directive('loMessageContainer', ['sessionMessages', '$compile', function(sessionMessages){
         return {
             restrict: 'EA',
             templateUrl: '/partials/session.messages',
             link: function(scope, elm, attrs, ctrl) {
+                scope.$on('showSessionMessage', function () {
+                    console.log('showSessionMessage');
+                    scope.messages = sessionMessages.get();
+                });
+
                 scope.messages = sessionMessages.get();
             }
         };
@@ -512,7 +517,6 @@
                             return scope.request.save();
                         })
                         .then(function(data){//success save on backend
-                            sessionMessages.addSuccess("Successfully saved.");
                             $rootScope.$broadcast('requestFlyerSaved');
                         })
                         .catch(function(e){

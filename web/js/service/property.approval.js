@@ -124,9 +124,13 @@
                 lng:     "=loLng"
             },
             link: function(scope, element, attrs, controllers) {
-                scope.message = null;
-                scope.isValid = !!scope.request.property.address
+                scope.isValid = false;
 
+                scope.$watch('request.property.address', function(newVal, oldVal){
+                    if(newVal != oldVal){
+                        scope.isValid = !!scope.request.property.address;
+                    }
+                });
 
                 scope.changeSearchField = function(o){
                     scope.isValid = false;
@@ -140,12 +144,29 @@
 
                 var input = document.getElementById('searchPlace');
 
+                function Message(sessionMessages){
+                    this.addDanger = function(message){
+                        sessionMessages.addDanger(message);
+
+                        return this;
+                    }
+
+                    this.show = function(){
+                        this.rootScope.$broadcast('showSessionMessage');
+                    }
+                }
+
+                Message.prototype.rootScope = $rootScope;
+
+                var message = new Message(sessionMessages);
+
                 scope.$watch('request.address', function(newVal){
                     for(var i in scope.request.address){
                         if(scope.request.address[i] == '' || scope.request.address[i] == null){
                             scope.isValid = false;
-                            scope.message = 'Address is invalid.';
-//                            throw new Error('Address is invalid.');
+                            message.addDanger('Address is invalid.')
+                                .show()
+                            ;
                             break;
                         }
                     }
@@ -163,7 +184,9 @@
                         })
                         .catch(function(e){
                             scope.isValid = false;
-                            scope.message = typeof e == 'string'? e: e.message;
+                            message.addDanger(typeof e == 'string'? e: e.message)
+                                .show()
+                            ;
                         })
                         .finally(function(){
                             waitingScreen.hide();
@@ -181,7 +204,6 @@
 
                     scope.request.save()
                         .then(function(data){//success save on backend
-                            sessionMessages.addSuccess("Successfully saved.");
                             $rootScope.$broadcast('propertyApprovalSaved');
                         }, function(error){
                                 throw typeof error == "object" && 'message' in error
@@ -244,7 +266,9 @@
                             .catch(function(e){
                                 scope.request.property.address = '';
                                 scope.isValid = false;
-                                scope.message = typeof e == 'string'? e: e.message;
+                                message.addDanger(typeof e == 'string'? e: e.message)
+                                    .show()
+                                ;
                             })
                             .finally(function(){
                                 waitingScreen.hide();
