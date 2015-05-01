@@ -2,7 +2,7 @@
     'use strict';
     settings = settings || {};
 
-    var helperService = angular.module('helperService', []);
+    var helperService = angular.module('helperService', ['headColumnModule']);
 
     helperService.run(['$templateCache', function($templateCache){
         $templateCache.put('message.html', "<div class=\"alert fade in\" style=\"z-index: 5;\" role=\"alert\" ng-class=\"{'alert-danger': isDanger(), 'alert-success': !isDanger()}\">" +
@@ -230,7 +230,7 @@
         }
     }]);
 
-    helperService.directive('loDashboardRow', ['$timeout', function($timeout){
+    helperService.directive('loDashboardRow', ['$timeout', 'tableHeadColSample', function($timeout, tableHeadColSample){
         return { restrict: 'EA',
             templateUrl: '/partials/dashboard.row',
             scope: {
@@ -241,8 +241,28 @@
                 state: "@loState"
             },
             link: function(scope, element, attrs, controllers){
+                function params (key, title){
+                    this.key = key;
+                    this.title = title;
+                }
+                params.prototype.directionKey     = 'reverse';
+                params.prototype.scope     = scope;
+                params.prototype.sortKey          = 'predicate';
+                params.prototype.defaultDirection = true;
+                params.prototype.defaultSortKey   = 'created_at';
+
+
+                scope.headParams = [
+                    new tableHeadColSample(new params("created_at.date", "Created")),
+                    new tableHeadColSample(new params("address", "Property Address")),
+                    new tableHeadColSample(new params("request_type", "Type"))
+                ];
+
+                scope.predicate = scope.headParams[0].key;
+                scope.reverse = true;
+
                 $timeout(function(){
-                    angular.element("#" + scope.id + " > table").tablesorter();
+//                    angular.element("#" + scope.id + " > table").tablesorter();
                 });
 
                 scope.$watch("isExpand", function(newValue){

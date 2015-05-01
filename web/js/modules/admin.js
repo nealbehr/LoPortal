@@ -2,7 +2,7 @@
     "use strict";
     settings = settings || {};
 
-    var admin = angular.module('adminModule', []);
+    var admin = angular.module('adminModule', ['headColumnModule']);
 
     admin.config(['$routeProvider', function($routeProvider) {
         $routeProvider.
@@ -253,23 +253,28 @@
                         scope.searchingString = $location.search()[data.keySearch];
                         scope.searchKey = data.keySearch;
 
-                        tableHeadCol.prototype.directionKey     = data.keyDirection;
-                        tableHeadCol.prototype.sortKey          = data.keySort;
-                        tableHeadCol.prototype.defaultDirection = data.defDirection;
-                        tableHeadCol.prototype.defaultSortKey   = data.defField;
+                        function params(settings){
+                            this.key   = settings.key;
+                            this.title = settings.title;
+                        }
+
+                        params.prototype.directionKey     = data.keyDirection;
+                        params.prototype.sortKey          = data.keySort;
+                        params.prototype.defaultDirection = data.defDirection;
+                        params.prototype.defaultSortKey   = data.defField;
 
                         scope.headParams = [
-                            new tableHeadCol({key: "id", title: "id"}),
-                            new tableHeadCol({key: "first_name", title: "First<br>Name"}),
-                            new tableHeadCol({key: "last_name", title: "Last<br>Name"}),
-                            new tableHeadCol({key: "email", title: "Email", isSortable: true}),
-                            new tableHeadCol({key: "password", title: "Password", isSortable: false}),
-                            new tableHeadCol({key: "role", title: "Role", isSortable: false}),
-                            new tableHeadCol({key: "title", title: "Title", isSortable: false}),
-                            new tableHeadCol({key: "phone", title: "Primary<br>Phone", isSortable: false}),
-                            new tableHeadCol({key: "mobile", title: "Mobile<br>Phone", isSortable: false}),
-                            new tableHeadCol({key: "created_at", title: "Created", isSortable: true}),
-                            new tableHeadCol({key: "action", title: "Actions", isSortable: false}),
+                            new tableHeadCol(new params({key: "id", title: "id"})),
+                            new tableHeadCol(new params({key: "first_name", title: "First<br>Name"})),
+                            new tableHeadCol(new params({key: "last_name", title: "Last<br>Name"})),
+                            new tableHeadCol(new params({key: "email", title: "Email", isSortable: true})),
+                            new tableHeadCol(new params({key: "password", title: "Password", isSortable: false})),
+                            new tableHeadCol(new params({key: "role", title: "Role", isSortable: false})),
+                            new tableHeadCol(new params({key: "title", title: "Title", isSortable: false})),
+                            new tableHeadCol(new params({key: "phone", title: "Primary<br>Phone", isSortable: false})),
+                            new tableHeadCol(new params({key: "mobile", title: "Mobile<br>Phone", isSortable: false})),
+                            new tableHeadCol(new params({key: "created_at", title: "Created", isSortable: true})),
+                            new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
                         ];
                     })
                     .finally(function(){
@@ -337,20 +342,26 @@
                         scope.searchKey = data.keySearch;
                         scope.pagination = data.pagination;
                         scope.searchingString = $location.search()[data.keySearch];
-                        tableHeadCol.prototype.directionKey     = data.keyDirection;
-                        tableHeadCol.prototype.sortKey          = data.keySort;
-                        tableHeadCol.prototype.defaultDirection = data.defDirection;
-                        tableHeadCol.prototype.defaultSortKey   = data.defField;
+
+                        function params(settings){
+                            this.key   = settings.key;
+                            this.title = settings.title;
+                        }
+
+                        params.prototype.directionKey     = data.keyDirection;
+                        params.prototype.sortKey          = data.keySort;
+                        params.prototype.defaultDirection = data.defDirection;
+                        params.prototype.defaultSortKey   = data.defField;
 
                         scope.headParams = [
-                            new tableHeadCol({key: "id", title: "Request ID"}),
-                            new tableHeadCol({key: "user_id", title: "User ID"}),
-                            new tableHeadCol({key: "address", title: "Property Address"}),
-                            new tableHeadCol({key: "mls_number", title: "MLS<br>Number"}),
-                            new tableHeadCol({key: "created_at", title: "Created", isSortable: true}),
-                            new tableHeadCol({key: "request_type", title: "Type"}),
-                            new tableHeadCol({key: "state", title: "Status"}),
-                            new tableHeadCol({key: "action", title: "Actions", isSortable: false}),
+                            new tableHeadCol(new params({key: "id", title: "Request ID"})),
+                            new tableHeadCol(new params({key: "user_id", title: "User ID"})),
+                            new tableHeadCol(new params({key: "address", title: "Property Address"})),
+                            new tableHeadCol(new params({key: "mls_number", title: "MLS<br>Number"})),
+                            new tableHeadCol(new params({key: "created_at", title: "Created", isSortable: true})),
+                            new tableHeadCol(new params({key: "request_type", title: "Type"})),
+                            new tableHeadCol(new params({key: "state", title: "Status"})),
+                            new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
                         ];
                     })
                 ;
@@ -413,107 +424,6 @@
                 };
             }
         }
-    }]);
-
-    admin.factory('tableHeadCol', ['$sce', '$location', function($sce, $location){
-        function headCol(params){
-            params = params || {}
-            this.key;
-            this.title;
-            this.isSortable = true;
-
-            this.sort = function(){
-                if(!this.isSortable){
-                    return false;
-                }
-
-                var newLocationParams = {}
-
-                newLocationParams[this.getDirectionKey()] = this.getDirection();
-
-                newLocationParams[this.getSortKey()] = this.key;
-
-                this.location.search(newLocationParams);
-            }
-
-            this.getDirection = function(){
-                if(this.getLocationParams()[this.getSortKey()] == undefined && this.key == this.getDefaultSortKey() || (this.getLocationParams()[this.getSortKey()] == this.key && this.getLocationParams()[this.getDirectionKey()] == undefined)){
-                    return "desc"
-                }else if(this.getLocationParams()[this.getSortKey()] != this.key){
-                    return this.getDefaultDirection();
-                }else{
-                    return this.getLocationParams()[this.getDirectionKey()] != undefined && this.getLocationParams()[this.getDirectionKey()] == "asc" ? "desc" : "asc";
-                }
-            }
-
-            this.isSortedUp = function(){
-                return this.isSortedDirection('desc');
-            }
-
-            this.isSortedDown = function(){
-                return this.isSortedDirection('asc');
-            }
-
-            this.isSortedDirection = function(direction){
-                if(!this.isCurrentlySorted()){
-                    return false;
-                }
-
-                return (this.getLocationParams()[this.getDirectionKey()] || this.getDefaultDirection()).toLowerCase() == direction;
-            }
-
-            this.isCurrentlySorted = function(){
-                return (this.getLocationParams()[this.getSortKey()] || this.getDefaultSortKey()) == this.key;
-            }
-
-            this.getLocationParams = function(){
-                return this.location.search();
-            }
-
-            this.getDefaultDirection = function(){
-                if(!("defaultDirection" in this)){
-                    throw new Error('Property defaultDirection have not set.');
-                }
-
-                return this.defaultDirection;
-            }
-
-            this.getDefaultSortKey = function(){
-                if(!("defaultSortKey" in this)){
-                    throw new Error('Property defaultSortKey have not set.');
-                }
-
-                return this.defaultSortKey;
-            }
-
-            this.getDirectionKey = function(){
-                if(!("directionKey" in this)){
-                    throw new Error('Property directionKey have not set.');
-                }
-
-                return this.directionKey;
-            }
-
-            this.getSortKey = function(){
-                if(!("sortKey" in this)){
-                    throw new Error('Property sortKey have not set.');
-                }
-
-                return this.sortKey;
-            }
-
-            //Init
-            for(var i in params){
-                this[i] = params[i];
-            }
-
-            this.title = this.sce.trustAsHtml(this.title);
-        }
-
-        headCol.prototype.location = $location;
-        headCol.prototype.sce      = $sce;
-
-        return headCol;
     }]);
 
     admin.directive('loAdminPanelSearch', ["$location", function($location){

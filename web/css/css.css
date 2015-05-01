@@ -52,7 +52,7 @@
     display: none;
 }
 
-.admin-table .isSortable{
+.admin-table .isSortable, .table-striped .isSortable{
     cursor: pointer;
 }
 

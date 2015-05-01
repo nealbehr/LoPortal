@@ -5,17 +5,15 @@
         </strong>
     </div>
     <div id="[[ id ]]" class="panel-collapse collapse">
-        <table class="tablesorter table table-striped">
+        <table class="table table-striped">
             <thead>
             <tr>
-                <th><span>Created</span></th>
-                <th><span>Property Address</span></th>
-                <th><span>Type</span></th>
+                <th class="header" ng-click="param.sort()" ng-repeat="param in headParams" ng-class="{headerSortUp: param.isSortedUp(), headerSortDown: param.isSortedDown(), isSortable: true}"><span ng-bind-html="param.title"></span></th>
                 <th><span>Actions</span></th>
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="(k,v) in items">
+            <tr ng-repeat="(k,v) in items| orderBy:predicate:reverse">
                 <td>
                     <div>[[ v.created_at|fromMysqlDate| date:"MMM d yyyy" ]]</div>
                     [[ v.created_at|fromMysqlDate| date:"hh:mm a" ]]
