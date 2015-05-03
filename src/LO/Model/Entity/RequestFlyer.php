@@ -43,9 +43,8 @@ class RequestFlyer extends Base{
 
 
     /**
-     * @Column(type="float")
+     * @Column(type="string")
      * @Assert\NotBlank(message = "Listing price should not be blank.")
-     * @Assert\Type(type="numeric")
      */
     protected $listing_price;
 
