@@ -56,17 +56,6 @@ class UserForm extends AbstractType {
             ]
         ]);
 
-        $builder->add('sales_director', 'text', [
-            'constraints' => [
-                new Assert\Length([
-                    'max' => 255,
-                    'maxMessage' => 'Sales director must be shorter than {{ limit }} chars.',
-                ])
-            ]
-        ]);
-
-        $builder->add('lender', 'text');
-
         $builder->add('phone', 'text', [
             'constraints' => [
                 new Assert\Length([
@@ -99,11 +88,6 @@ class UserForm extends AbstractType {
                     'entity' => 'LO\\Model\\Entity\\User',
                     'notUniqueMessage' => 'Email address is already registered.'
                 ]),
-            ]
-        ]);
-        $builder->add('sales_director_email', 'text', [
-            'constraints' => [
-                new Assert\Email(),
             ]
         ]);
 

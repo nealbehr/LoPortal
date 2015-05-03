@@ -21,6 +21,21 @@ class UserAdminForm extends UserForm{
             'constraints' => [
                 new Assert\Choice(['choices' => User::getAllowedRoles(), 'multiple' => true]),
             ]
-        ]);
+        ])
+        ->add('sales_director', 'text', [
+              'constraints' => [
+                new Assert\Length([
+                    'max' => 255,
+                    'maxMessage' => 'Sales director must be shorter than {{ limit }} chars.',
+                ])
+            ]
+        ])
+        ->add('sales_director_email', 'text', [
+              'constraints' => [
+                new Assert\Email(),
+              ]
+        ])
+        ->add('lender', 'text')
+        ;
     }
 } 
