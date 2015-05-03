@@ -529,7 +529,7 @@
                                 scope.request.property.photo = tmp;
                             }
 
-                            var tmp = scope.prepareImage(scope.cropperRealtorImage.container, 600, 300, 800, 400);
+                            var tmp = scope.prepareImage(scope.cropperRealtorImage.container, 800, 400, 600, 300);
                             if(tmp !== null){
                                 scope.request.realtor.photo = tmp;
                             }
@@ -549,7 +549,7 @@
                 }
 
                 scope.cropperPropertyImage = {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}};
-                scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 4 / 3, minContainerWidth: 100}};
+                scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}};
 
                 scope.propertyImageObject.on('change',function(e){
                     loadFile(e)
