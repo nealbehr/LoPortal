@@ -121,6 +121,10 @@ class Queue extends Base{
         return $this;
     }
 
+    public function getType(){
+        return $this->request_type;
+    }
+
     public function setUserId($param){
         $this->user_id = $param;
 

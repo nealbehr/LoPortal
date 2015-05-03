@@ -11,16 +11,24 @@ namespace LO\Controller\Admin;
 
 use Doctrine\ORM\Query;
 use LO\Application;
+use LO\Common\Email\Request\PropertyApprovalAccept;
+use LO\Common\Email\Request\PropertyApprovalDenial;
+use LO\Common\Email\Request\RequestChangeStatus;
+use LO\Common\Email\Request\RequestFlyerApproval;
+use LO\Common\Email\Request\RequestFlyerDenial;
 use LO\Common\Email\RequestApprove;
 use LO\Common\Email\RequestDecline;
 use LO\Common\UploadS3\Pdf;
 use LO\Model\Entity\Queue as EntityQueue;
-use LO\Model\Entity\RequestApproval;
+use LO\Model\Entity\Realtor;
+use LO\Model\Entity\RequestFlyer;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use LO\Common\Email\Request\RequestInterface;
 
 class Queue extends Base{
     use GetEntityErrors;
@@ -84,8 +92,12 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-
-            (new RequestDecline($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue))
+            (new RequestChangeStatus(
+                        $app,
+                        $app->getConfigByName('amazon', 'ses', 'source'),
+                        $queue,
+                        $this->getEmailObject($app, $queue)
+            ))
                 ->setDestinationList($queue->getUser()->getEmail())
                 ->send();
 
@@ -133,9 +145,17 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-            (new RequestApprove($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue))
+            /** @var Realtor $realtor */
+            $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($queue->getFlyer()->getRealtorId());
+
+            if(!$realtor){
+                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found.", $queue->getFlyer()->getRealtorId()));
+            }
+
+            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new RequestFlyerApproval($realtor, $queue->getFlyer(), $request->getSchemeAndHttpHost())))
                 ->setDestinationList($queue->getUser()->getEmail())
                 ->send();
+
 
             $app->getEntityManager()->commit();
 
@@ -173,7 +193,7 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-            (new RequestApprove($app, $app->getConfigByName('amazon', 'ses', 'source'), $queue))
+            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new PropertyApprovalAccept($request->getSchemeAndHttpHost())))
                 ->setDestinationList($queue->getUser()->getEmail())
                 ->send();
 
@@ -186,6 +206,25 @@ class Queue extends Base{
             $data["message"] = $e->getMessage();
             return $app->json($data, $e->getStatusCode());
         }
+    }
+
+    /**
+     * @param Application $app
+     * @param EntityQueue $queue
+     * @return RequestInterface
+     */
+    private function getEmailObject(Application $app, EntityQueue $queue){
+        $email = $app->getConfigByName('firstrex', 'email', 'teplate', 'denial');
+        if($queue->getType() == EntityQueue::TYPE_PROPERTY_APPROVAL){
+            return new PropertyApprovalDenial($email);
+        }
+
+        /** @var RequestFlyer $requestFlyer */
+        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::class)->findOneBy(['queue_id' => $queue->getId()]);
+        /** @var Realtor $realtor */
+        $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($requestFlyer->getRealtorId());
+
+        return new RequestFlyerDenial($realtor, $requestFlyer, $email);
     }
 
     /**

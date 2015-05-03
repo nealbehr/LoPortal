@@ -1,0 +1,9 @@
+{% include 'email.loan.officer.twig' with {user: queue.getUser()} %}
+
+<h2>Property info</h2>
+<table border="0">
+    <tr>
+        <td>Property address:</td>
+        <td>{{ queue.getAddress() }}</td>
+    </tr>
+</table>

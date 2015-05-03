@@ -1,44 +1,4 @@
-<h2>Loan Officer Info</h2>
-<table border="0">
-    <tr>
-        <td>First Name:</td>
-        <td>{{ queue.getUser().getFirstName() }}</td>
-    </tr>
-    <tr>
-        <td>Last name:</td>
-        <td>{{ queue.getUser().getLastName() }}</td>
-    </tr>
-    <tr>
-        <td>Title:</td>
-        <td>{{ queue.getUser().getTitle() }}</td>
-    </tr>
-    <tr>
-        <td>Sales Director:</td>
-        <td>{{ queue.getUser().getSalesDirector() }}</td>
-    </tr>
-    <tr>
-        <td>Sales Director Email:</td>
-        <td>{{ queue.getUser().getSalesDirectorEmail() }}</td>
-    </tr>
-    <tr>
-        <td>Lender:</td>
-        <td>{{ queue.getUser().getLender() }}</td>
-    </tr>
-    <tr>
-        <td>Primary Phone:</td>
-        <td>{{ queue.getUser().getPhone() }}</td>
-    </tr>
-    <tr>
-        <td>Email Address:</td>
-        <td>{{ queue.getUser().getEmail() }}</td>
-    </tr>
-    <tr>
-        <td>NMLS #:</td>
-        <td>{{ queue.getUser().getNmls() }}</td>
-    </tr>
-</table>
-
-
+{% include 'email.loan.officer.twig' with {user: queue.getUser()} %}
 
 <h2>Property Info</h2>
 <table border="0">

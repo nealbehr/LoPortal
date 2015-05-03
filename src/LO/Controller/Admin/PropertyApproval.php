@@ -48,7 +48,7 @@ class PropertyApproval extends RequestBaseController{
                 throw new Http(sprintf('Request \'%s\' not found.', $id), Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$queue->getUser());
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $queue->getUser());
 
             $queue->set1RexId($id);
 

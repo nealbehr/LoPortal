@@ -66,7 +66,7 @@ class RequestFlyerAdmin extends RequestBaseController{
                 ->getRepository(Realtor::class)
                 ->find($queue->getFlyer()->getRealtorId());
 
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), (string)$queue->getUser());
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $queue->getUser());
 
             $queue->set1RexId($id);
 

@@ -9,6 +9,8 @@
 namespace LO\Controller;
 
 use LO\Application;
+use LO\Common\Email\Request\PropertyApprovalSubmission;
+use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Exception\Http;
 use LO\Form\QueueForm;
 use LO\Model\Entity\RequestApproval;
@@ -48,6 +50,10 @@ class RequestApprovalController extends RequestBaseController{
 
             $app->getEntityManager()->persist($requestApproval);
             $app->getEntityManager()->flush();
+
+            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new PropertyApprovalSubmission()))
+                ->setDestinationList($queue->getUser()->getEmail())
+                ->send();
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
