@@ -36,16 +36,6 @@ class UserManager extends Base{
         ;
     }
 
-    public function findByEmailPassword($email, $password){
-        $user = $this->findByEmail($email);
-
-        if(!$user || !$this->getApp()['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $password, $user->getSalt())){
-            return false;
-        }
-
-        return $user;
-    }
-
     /**
      * @param $email
      * @return null|EntityUser

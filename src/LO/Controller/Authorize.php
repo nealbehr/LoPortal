@@ -16,10 +16,14 @@ use LO\Model\Entity\RecoveryPassword;
 class Authorize {
     const MAX_EMAILS = 5;
     public function signinAction(Application $app, Request $request){
-        $user = $app->getUserManager()->findByEmailPassword($request->get('email'), $request->get('password'));
+        $user = $app->getUserManager()->findByEmail($request->get('email'));
 
         if(!$user){
-            return $app->json(['message' => 'Entered credentials are not valid'], Response::HTTP_BAD_REQUEST);
+            return $app->json(['message' => 'Your email address is not recognized'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if(!$app['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $request->get('password'), $user->getSalt())){
+            return $app->json(['message' => 'Entered password is incorrect'], Response::HTTP_BAD_REQUEST);
         }
 
         $token = (new Token())->setUserId($user->getId())
