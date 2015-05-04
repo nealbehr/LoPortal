@@ -70,7 +70,7 @@
 
             self.getDirection = function(){
                 if(this.getLocationParams()[this.getSortKey()] == undefined && this.key == this.getDefaultSortKey() || (this.getLocationParams()[this.getSortKey()] == this.key && this.getLocationParams()[this.getDirectionKey()] == undefined)){
-                    return "asc"
+                    return this.getDefaultDirection() == "asc" ? "desc" : "asc";
                 }else if(this.getLocationParams()[this.getSortKey()] != this.key){
                     return this.getDefaultDirection();
                 }else{
