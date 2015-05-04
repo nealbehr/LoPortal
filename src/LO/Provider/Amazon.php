@@ -34,7 +34,9 @@ class Amazon implements ServiceProviderInterface{
         );
 
         $app['amazon.s3'] = $app->share(function () use ($app) {
-                return S3Client::factory($app->getConfigByName('amazon', 'securityCredentials'));
+                $s3 = S3Client::factory($app->getConfigByName('amazon', 'securityCredentials'));
+
+                return $s3;
             }
         );
 

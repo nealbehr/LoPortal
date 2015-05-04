@@ -3,7 +3,9 @@ name: Loan Officers portal
 monolog.config:
     monolog.name:    loportal
     monolog.logfile: logs/prod.log
-    monolog.level:   DEBUG
+    monolog.level:   WARNING
+    isSaveLocal:     false
+    s3.logs: s3://1rex.app/prod.log
 orm.em.options:
     mappings:
       0:

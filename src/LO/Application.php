@@ -99,7 +99,11 @@ class Application extends \Silex\Application{
     }
 
     public function bootstrap(){
-        $this->register(new Provider\MonologServiceProvider(), $this->getConfigByName('monolog.config'))
+        $this->register($this->getConfigByName('monolog.config', 'isSaveLocal')
+                                        ? new Provider\MonologServiceProvider()
+                                        : new LOProvider\MonologS3ServiceProvider(),
+                        $this->getConfigByName('monolog.config')
+        )
             ->register(new Provider\DoctrineServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
             ->register(new LOProvider\UniqueValidatorServiceProvider())
