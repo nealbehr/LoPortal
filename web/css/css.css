@@ -63,3 +63,7 @@
 .ngdialog {
     z-index: 98;
 }
+
+.action-none{
+    color: #BABABA;
+}

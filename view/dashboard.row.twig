@@ -23,7 +23,7 @@
                 <td>
                     <a ng-if="v.flyer.pdf_link && v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
                     <a ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_REQUESTED') }}" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a>
-                    <span ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_DECLINED') }} || v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_LISTING_FLYER_PENDING') }} || (!v.flyer.pdf_link && v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }})">None</span>
+                    <span class="action-none" ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_DECLINED') }} || v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_LISTING_FLYER_PENDING') }} || (!v.flyer.pdf_link && v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }})">None</span>
                 </td>
             </tr>
             </tbody>
