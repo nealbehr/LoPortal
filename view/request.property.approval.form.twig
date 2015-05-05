@@ -10,7 +10,7 @@
         <div class="col-sm-4">
             <input ng-change="changeSearchField()" ng-model="request.property.address" class="form-control input-lg" name="searchPlace" id="searchPlace" type="text" placeholder="Property Address" required="">
         </div>
-        <div class="col-sm-2"><button type="button" class="btn btn-default btn-lg">[[ isValid? titles.button: "Check" ]]</button></div>
+        <div class="col-sm-2"><button type="button" ng-click="save()" class="btn btn-default btn-lg">[[ isValid? titles.button: "Check" ]]</button></div>
         <div class="col-sm-3 col-sm-offset-3 text-right">
             <a ng-if="!request.id" href="/#/" class="back">Back to dashboard</a>
             <a ng-if="request.id" ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>

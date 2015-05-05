@@ -160,14 +160,18 @@
 
                 var message = new Message(sessionMessages);
 
-                scope.$watch('request.address', function(newVal){
+                scope.$watch('request.address', function(newVal, oldVal){
+                    if(newVal == oldVal){
+                        return;
+                    }
+
                     for(var i in scope.request.address){
                         if(scope.request.address[i] == '' || scope.request.address[i] == null){
                             scope.isValid = false;
                             message.addDanger('Address is invalid.')
                                 .show()
                             ;
-                            break;
+                            return;
                         }
                     }
 
