@@ -6,7 +6,7 @@
         <div ng-show="newApproval.searchPlace.$error.required">Property Address is required.</div>
         <div ng-show="newApproval.searchPlace.$error.googleAddress">Property address is incorrect.</div>
     </div>
-    <div class="row">
+    <div class="row approval-form">
         <div class="col-sm-4">
             <input ng-change="changeSearchField()" ng-model="request.property.address" class="form-control input-lg" name="searchPlace" id="searchPlace" type="text" placeholder="Property Address" required="">
         </div>
