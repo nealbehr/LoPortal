@@ -297,13 +297,17 @@
                             scope.$apply(function(){
                                 scope.request.address = parseGoogleAddressComponents(place.address_components);
                             });
-                            var image = {
-                                url: place.icon,
-                                size: new google.maps.Size(71, 71),
-                                origin: new google.maps.Point(0, 0),
-                                anchor: new google.maps.Point(17, 34),
-                                scaledSize: new google.maps.Size(25, 25)
-                            };
+
+                            var image = place.icon
+                                ? {
+                                    url: place.icon,
+                                    size: new google.maps.Size(71, 71),
+                                    origin: new google.maps.Point(0, 0),
+                                    anchor: new google.maps.Point(17, 34),
+                                    scaledSize: new google.maps.Size(25, 25)
+                                 }
+                                : null
+                            ;
 
                             // Create a marker for each place.
                             var marker = new google.maps.Marker({
