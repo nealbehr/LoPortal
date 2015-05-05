@@ -33,13 +33,23 @@
                     ng-model="$parent.selected"
                     ng-options="role.title|ucFirst for role in roles|orderBy:'-title' track by role.key"
             ></select>
+            <div class="main-info">
+               <div class="user-photo">
+                   <div class="realtor-photo">
+                       <img src="images/empty.png" alt="user">
+                   </div>
+                   <a href="#" class="upload">Upload Photo</a>
+               </div>
+                <div class="inputs-holder">
+                    <div class="input">
+                        <input class="input-lg" type="text" placeholder="First Name" ng-model="officer.first_name" name="first_name" lo-name-validator ng-model-options="{ updateOn: 'blur' }">
+                    </div>
+                    <div class="input">
+                        <input class="input-lg" type="text" placeholder="Last Name" ng-model="officer.last_name" name="last_name" lo-name-validator ng-model-options="{ updateOn: 'blur' }">
+                    </div>
+                </div>
+            </div>
             <div class="inputs-holder">
-                <div class="input">
-                    <input class="input-lg" type="text" placeholder="First Name" ng-model="officer.first_name" name="first_name" lo-name-validator ng-model-options="{ updateOn: 'blur' }">
-                </div>
-                <div class="input">
-                    <input class="input-lg" type="text" placeholder="Last Name" ng-model="officer.last_name" name="last_name" lo-name-validator ng-model-options="{ updateOn: 'blur' }">
-                </div>
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Title" ng-model="officer.title">
                 </div>
