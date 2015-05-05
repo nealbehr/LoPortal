@@ -126,11 +126,11 @@
             link: function(scope, element, attrs, controllers) {
                 scope.isValid = false;
 
-                scope.$watch('request.property.address', function(newVal, oldVal){
-                    if(newVal != oldVal){
-                        scope.isValid = !!scope.request.property.address;
-                    }
-                });
+//                scope.$watch('request.property.address', function(newVal, oldVal){
+//                    if(newVal != oldVal){
+//                        scope.isValid = !!scope.request.property.address;
+//                    }
+//                });
 
                 scope.changeSearchField = function(o){
                     scope.isValid = false;
@@ -171,7 +171,6 @@
                         }
                     }
 
-                    scope.message = null;
                     scope.isValid = true;
                 });
 
@@ -195,7 +194,6 @@
                 }
 
                 scope.save = function(){
-                    scope.message = null;
                     waitingScreen.show();
                     if(this.isValid == false){
                         this.checkAddress();
@@ -211,7 +209,9 @@
                                                 : error;
                         })
                         .catch(function(e){
-                            scope.message = typeof e == 'string'? e: e.message;
+                            message.addDanger(typeof e == 'string'? e: e.message)
+                                .show()
+                            ;
                         })
                         .finally(function(){
                             waitingScreen.hide();
