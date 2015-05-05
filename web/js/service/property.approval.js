@@ -83,7 +83,7 @@
             this.id = null;
 
             this.property = {
-                    address: ''
+                 address: ''
             };
 
             this.address = null
@@ -118,19 +118,23 @@
             restrict: 'EA',
             templateUrl: '/partials/request.property.approval.form',
             scope: {
-                request: "=loRequest",
+                requestIn: "=loRequest",
                 titles:  "=loTitles",
                 lat:     "=loLat",
                 lng:     "=loLng"
             },
             link: function(scope, element, attrs, controllers) {
                 scope.isValid = false;
+                scope.request = {}
 
-//                scope.$watch('request.property.address', function(newVal, oldVal){
+                scope.$watch('requestIn', function(newVal, oldVal){
 //                    if(newVal != oldVal){
-//                        scope.isValid = !!scope.request.property.address;
+                        scope.request = scope.requestIn;
+                        if(scope.request.property && scope.request.property.address){
+                            scope.isValid = true;
+                        }
 //                    }
-//                });
+                });
 
                 scope.changeSearchField = function(o){
                     scope.isValid = false;
@@ -234,13 +238,17 @@
                     };
                     var map=new google.maps.Map(document.getElementById("location"), mapProp);
 
-                    var marker = new google.maps.Marker({
-                        position: centerLatLng
-                    });
+                    function setDefaultMarker(){
+                        var marker = new google.maps.Marker({
+                            position: centerLatLng
+                        });
 
-                    markers.push(marker);
+                        markers.push(marker);
 
-                    marker.setMap(map);
+                        marker.setMap(map);
+                    }
+
+                    setDefaultMarker();
 
                     google.maps.event.addListener(map, 'click', function(event) {
                         waitingScreen.show();
@@ -280,10 +288,15 @@
                         ;
                     });
 
-                    var searchBox = new google.maps.places.SearchBox(input);
+//                    var searchBox = new google.maps.places.SearchBox(input);
+                    var searchBox = new google.maps.places.Autocomplete(input, { types: ['geocode'] });
 
-                    google.maps.event.addListener(searchBox, 'places_changed', function() {
-                        var places = searchBox.getPlaces();
+                    google.maps.event.addListener(searchBox, 'place_changed', function() {
+                        scope.$apply(function(){
+                            scope.isValid = false;
+                        });
+//                        var places = searchBox.getPlaces();
+                        var places = [searchBox.getPlace()];
 
                         if (places.length == 0) {
                             return;
@@ -299,8 +312,12 @@
 
                         for (var i = 0, place; place = places[i]; i++) {
                             scope.$apply(function(){
-                                scope.request.address = parseGoogleAddressComponents(place.address_components);
+                                scope.request.address          = parseGoogleAddressComponents(place.address_components);
                             });
+
+                            if(!place.address_components){
+                                continue;
+                            }
 
                             var image = place.icon
                                 ? {
@@ -326,7 +343,13 @@
                             bounds.extend(place.geometry.location);
                         }
 
-                        map.fitBounds(bounds);
+                        if(markers.length < 1){
+                            setDefaultMarker();
+                            map.setCenter(centerLatLng);
+                            map.setZoom(10);
+                        }else{
+                            map.fitBounds(bounds);
+                        }
                     });
 
                     google.maps.event.addListener(map, 'bounds_changed', function() {

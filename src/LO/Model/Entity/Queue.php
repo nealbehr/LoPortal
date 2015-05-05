@@ -79,6 +79,11 @@ class Queue extends Base{
     protected $reason;
 
     /**
+     * @Column(type="array")
+     */
+    protected $additional_info;
+
+    /**
      * @OneToOne(targetEntity="User", fetch="LAZY")
      * @JoinColumn(name="user_id", referencedColumnName="id")
      **/
@@ -107,6 +112,16 @@ class Queue extends Base{
 
     public function getMlsNumber(){
         return $this->mls_number;
+    }
+
+    public function setAdditionalInfo($param){
+        $this->additional_info = $param;
+
+        return $this;
+    }
+
+    public function getAdditionalInfo(){
+        return $this->additional_info;
     }
 
     public function set1RexId($param){

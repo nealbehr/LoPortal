@@ -12,6 +12,7 @@ use LO\Application;
 use LO\Common\Email\Request\PropertyApprovalSubmission;
 use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Exception\Http;
+use LO\Form\FirstRexAddress;
 use LO\Form\QueueForm;
 use LO\Model\Entity\RequestApproval;
 use LO\Model\Entity\Queue;
@@ -26,12 +27,22 @@ class RequestApprovalController extends RequestBaseController{
         try{
             $app->getEntityManager()->beginTransaction();
             $data = [];
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $app->user());
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
+            $firstRexForm->handleRequest($request);
+
+            if(!$firstRexForm->isValid()){
+                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
+
+                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
 
             $queue = (new Queue())
                 ->set1RexId($id)
                 ->setType(Queue::TYPE_PROPERTY_APPROVAL)
                 ->setUser($app->user())
+                ->setAdditionalInfo($firstRexForm->getData())
             ;
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);

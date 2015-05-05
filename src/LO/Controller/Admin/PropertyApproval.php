@@ -10,6 +10,7 @@ namespace LO\Controller\Admin;
 
 use LO\Application;
 use LO\Exception\Http;
+use LO\Form\FirstRexAddress;
 use LO\Form\QueueForm;
 use LO\Model\Entity\Queue;
 use LO\Model\Manager\QueueManager;
@@ -33,6 +34,7 @@ class PropertyApproval extends RequestBaseController{
 
         return $app->json([
             'property' => $this->removeExtraFields($queue->toArray(), $queueForm),
+            'address'  => $queue->getAdditionalInfo(),
         ]);
     }
 
@@ -47,8 +49,17 @@ class PropertyApproval extends RequestBaseController{
             if(!$queue){
                 throw new Http(sprintf('Request \'%s\' not found.', $id), Response::HTTP_BAD_REQUEST);
             }
+$a = $request->get('address');
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ["method" => "PUT"]);
+            $firstRexForm->handleRequest($request);
 
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $queue->getUser());
+            if(!$firstRexForm->isValid()){
+                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
+
+                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $queue->getUser());
 
             $queue->set1RexId($id);
 
