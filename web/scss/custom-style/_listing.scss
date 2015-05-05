@@ -58,36 +58,36 @@
             width: 100%;
         }
     }
-    .main-info {
-        width: 100%;
-        padding-left: 150px;
-        overflow: hidden;
-        margin-bottom: 35px;
+}
+.main-info {
+    width: 100%;
+    padding-left: 150px;
+    overflow: hidden;
+    margin-bottom: 35px;
+    @media (max-width: 767px)  {
+        padding-left: 0;
+    }
+    .inputs-holder {
+        margin-bottom: 0;
+    }
+    .user-photo {
+        width: 123px;
+        float: left;
+        margin-left: -150px;
+        position: relative;
+        .tooltip.right {
+            margin-left: 13px;
+        }
         @media (max-width: 767px)  {
-            padding-left: 0;
+            float: none;
+            margin: 0 auto 20px;
         }
-        .inputs-holder {
-            margin-bottom: 0;
-        }
-        .user-photo {
+        .realtor-photo {
             width: 123px;
-            float: left;
-            margin-left: -150px;
-            position: relative;
-            .tooltip.right {
-                margin-left: 13px;
-            }
-            @media (max-width: 767px)  {
-                float: none;
-                margin: 0 auto 20px;
-            }
-            .realtor-photo {
-                width: 123px;
-                height: 123px;
-                border-radius: 3px;
-                overflow: hidden;
-                margin-bottom: 11px;
-            }
+            height: 123px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 11px;
         }
     }
 }
