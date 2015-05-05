@@ -78,7 +78,7 @@ class User extends Base{
             $user->setSalt($user->generateSalt())
                  ->setPassword($app->encodePassword($user, $password));
 
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminForm());
+            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminForm($app->getS3()));
 
             if(count($errors) > 0){
                 $this->setErrorsForm($errors);
@@ -105,7 +105,7 @@ class User extends Base{
             $errors = (new UserManager($app))->validateAndSaveUser(
                 $request,
                 $this->getUser($app, $id, "You can't edit self."),
-                new UserAdminForm()
+                new UserAdminForm($app->getS3())
             );
 
             if(count($errors) > 0){

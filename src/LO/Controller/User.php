@@ -63,7 +63,7 @@ class User {
                 throw new BadRequestHttpException("User not found.");
             }
 
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserForm());
+            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserForm($app->getS3()));
 
             if(count($errors) > 0){
                 $this->errors['form_errors'] = $errors;

@@ -36,9 +36,12 @@
             <div class="main-info">
                <div class="user-photo">
                    <div class="realtor-photo">
-                       <img src="images/empty.png" alt="user">
+                       <img ng-src="[[ officer.picture|realtorImage ]]" alt="user" ng-click="choosePhoto()">
                    </div>
-                   <a href="#" class="upload">Upload Photo</a>
+                   <span class="upload">
+                        Upload Photo
+                        <div><input class="upload" id="userPhoto" type="file" valid-file name="fileimage" ng-model="officer.picture"></div>
+                    </span>
                </div>
                 <div class="inputs-holder">
                     <div class="input">

@@ -8,14 +8,22 @@
 
 namespace LO\Form;
 
+use LO\Form\Extension\S3Photo;
 use LO\Model\Entity\User;
 use LO\Validator\Unique;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Aws\S3\S3Client;
 
 class UserForm extends AbstractType {
+    private $s3;
+
+    public function __construct(S3Client $s3){
+        $this->s3 = $s3;
+    }
+
     public function getName() {
         return 'user';
     }
@@ -68,6 +76,8 @@ class UserForm extends AbstractType {
                 ])
             ]
         ]);
+
+        $builder->add('picture', new S3Photo($this->s3, '1rex.users.avatar'));
 
         $builder->add('mobile', 'text', [
             'constraints' => [

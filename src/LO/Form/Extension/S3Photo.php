@@ -34,6 +34,10 @@ class S3Photo extends AbstractType{
     }
 
     private function prepareData($data){
+        if(empty($data)){
+            return null;
+        }
+
         if(filter_var($data, FILTER_VALIDATE_URL) !== false){
             return $data;
         }

@@ -74,7 +74,7 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -85,6 +85,49 @@
                 scope.selected = {};
                 scope.user = {}
                 scope.container = angular.element('#userProfileMessage');
+                scope.userPhotoINput = angular.element('#userPhoto');
+                scope.cropperUserImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}};
+
+                scope.choosePhoto = function(){
+                    scope.userPhotoINput.click();
+                }
+
+                scope.userPhotoINput.on('change',function(e){
+                    loadFile(e)
+                        .then(function(base64){
+                            scope.officer.picture = base64;
+                            scope.cropperInit(scope.cropperUserImage);
+                        })
+                    ;
+                });
+
+                scope.getBetween = function(number, max, min){
+                    if(number > max){
+                        return max;
+                    }
+
+                    return number < min? min: number;
+                }
+
+                scope.cropperInit = function(imageInfo){
+                    $timeout(function(){
+                        imageInfo.container.cropper('destroy');
+                        imageInfo.container.cropper(imageInfo.options);
+                    });
+                }
+
+                scope.prepareImage = function(image, heightMax, heightMin, widthMax, widthMin){
+                    var info = image.cropper("getCropBoxData");
+                    if(!("width" in info)){
+                        return null;
+                    }
+
+                    return image.cropper("getCroppedCanvas",
+                        { "width": this.getBetween(info.width, widthMax, widthMin),
+                            "height": this.getBetween(info.height, heightMax, heightMin)
+                        })
+                        .toDataURL();
+                }
 
                 scope.$watch('officer.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.user.id){
@@ -179,6 +222,13 @@
                 scope.save = function(){
                     waitingScreen.show();
                     scope.officer.roles = [scope.selected.key];
+
+                    if(scope.officer.picture){
+                        var tmp = scope.prepareImage(scope.cropperUserImage.container, 800, 400, 600, 300);
+                        if(tmp !== null){
+                            scope.officer.picture = tmp;
+                        }
+                    }
 
                     scope.officer.save()
                         .then(function(data){
@@ -927,7 +977,7 @@
 
     helperService.filter('realtorImage', function(){
         return function(input){
-            return "" != input && null !== input
+            return "" != input && null !== input && input !== undefined
                 ? input
                 : '/images/empty.png';
         }

@@ -9,7 +9,6 @@
 namespace LO\Form;
 
 use LO\Form\Extension\S3Photo;
-use LO\Model\Entity\Realtor;
 use LO\Model\Entity\RequestFlyer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
