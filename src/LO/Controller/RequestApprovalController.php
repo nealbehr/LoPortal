@@ -62,8 +62,7 @@ class RequestApprovalController extends RequestBaseController{
             $app->getEntityManager()->persist($requestApproval);
             $app->getEntityManager()->flush();
 
-            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new PropertyApprovalSubmission()))
-                ->setDestinationList($queue->getUser()->getEmail())
+            (new RequestChangeStatus($app, $queue, new PropertyApprovalSubmission()))
                 ->send();
 
             $app->getEntityManager()->commit();

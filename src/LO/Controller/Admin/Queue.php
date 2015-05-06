@@ -94,11 +94,9 @@ class Queue extends Base{
 
             (new RequestChangeStatus(
                         $app,
-                        $app->getConfigByName('amazon', 'ses', 'source'),
                         $queue,
                         $this->getEmailObject($app, $queue)
             ))
-                ->setDestinationList($queue->getUser()->getEmail())
                 ->send();
 
             $app->getEntityManager()->commit();
@@ -152,8 +150,7 @@ class Queue extends Base{
                 throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found.", $queue->getFlyer()->getRealtorId()));
             }
 
-            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new RequestFlyerApproval($realtor, $queue->getFlyer(), $request->getSchemeAndHttpHost())))
-                ->setDestinationList($queue->getUser()->getEmail())
+            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue->getFlyer(), $request->getSchemeAndHttpHost())))
                 ->send();
 
 
@@ -193,8 +190,7 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new PropertyApprovalAccept($request->getSchemeAndHttpHost())))
-                ->setDestinationList($queue->getUser()->getEmail())
+            (new RequestChangeStatus($app, $queue, new PropertyApprovalAccept($request->getSchemeAndHttpHost())))
                 ->send();
 
             $app->getEntityManager()->commit();

@@ -18,12 +18,19 @@ class RequestChangeStatus extends Base{
     private $queue;
     private $request;
 
-    public function __construct(Application $app, $source, Queue $queue, RequestInterface $request){
-        parent::__construct($app->getSes(), $source);
+    public function __construct(Application $app, Queue $queue, RequestInterface $request){
+        parent::__construct($app->getSes(), $app->getConfigByName('amazon', 'ses', 'source'));
 
         $this->app   = $app;
         $this->queue = $queue;
         $this->request = $request;
+
+        $destinationList = [$queue->getUser()->getEmail()];
+        if($queue->getUser()->getSalesDirectorEmail()){
+            $destinationList[] = $queue->getUser()->getSalesDirectorEmail();
+        }
+
+        $this->setDestinationList(array_merge($destinationList, $app->getConfigByName('firstrex', 'additional.emails')));
     }
 
     protected function getSubject(){

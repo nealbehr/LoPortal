@@ -49,7 +49,7 @@ class PropertyApproval extends RequestBaseController{
             if(!$queue){
                 throw new Http(sprintf('Request \'%s\' not found.', $id), Response::HTTP_BAD_REQUEST);
             }
-$a = $request->get('address');
+
             $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ["method" => "PUT"]);
             $firstRexForm->handleRequest($request);
 

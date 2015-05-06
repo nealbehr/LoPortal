@@ -81,13 +81,7 @@ class RequestFlyerController extends RequestBaseController{
             $app->getEntityManager()->persist($requestFlyer);
             $app->getEntityManager()->flush();
 
-            $destinationList = [$queue->getUser()->getEmail()];
-            if($queue->getUser()->getSalesDirectorEmail()){
-                $destinationList[] = $queue->getUser()->getSalesDirectorEmail();
-            }
-
-            (new RequestChangeStatus($app,  $app->getConfigByName('amazon', 'ses', 'source'), $queue, new RequestFlyerSubmission($realtor, $requestFlyer)))
-                ->setDestinationList(array_merge($destinationList, $app->getConfigByName('firstrex', 'additional.emails')))
+            (new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $requestFlyer)))
                 ->send();
 
             $app->getEntityManager()->commit();
