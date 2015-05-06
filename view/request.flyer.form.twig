@@ -36,7 +36,7 @@
                 <h2>Property Info</h2>
                 <div class="thumbnail">
                     <div class="property-photo" style="text-align: center;">
-                        <img ng-src="[[ request.property.photo|propertyImage ]]" height="258" alt="" ng-click="filePropertyImageClick()">
+                        <img ng-src="[[ request.property.photo|propertyImage ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
                     </div>
                     <div class="caption">
                         <span class="upload">
@@ -65,7 +65,7 @@
                 <div class="main-info">
                     <div class="user-photo">
                         <div class="realtor-photo">
-                            <img ng-src="[[ request.realtor.photo|realtorImage ]]" alt="" ng-click="fileRealtorImageClick()">
+                            <img ng-src="[[ request.realtor.photo|realtorImage ]]" alt="" ng-click="realtorPicture.choosePhoto()">
                         </div>
                         <span class="upload">
                             Upload Photo

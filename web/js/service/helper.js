@@ -98,11 +98,8 @@
 
                 scope.$watch('officer', function(newVal, oldVal){
                     if(newVal == undefined || !("id" in newVal)){
-                        console.log(1)
                         return;
                     }
-
-                    console.log(2)
 
                     scope.userPicture = new pictureObject(
                         angular.element('#userPhoto'),
@@ -110,10 +107,6 @@
                         scope.officer
                     );
                 });
-
-//                scope.choosePhoto = function(){
-//                    this.userPicture.choosePhoto();
-//                }
 
                 scope.cancel = function(e){
                     e.preventDefault();
@@ -498,7 +491,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -508,37 +501,33 @@
                 user: '=loUser'
             },
             link: function(scope, element, attrs, controllers){
-                scope.propertyImageObject = angular.element("#propertyImage");
-                scope.realtorImageObject  = angular.element("#realtorImage");
+                scope.realtorPicture;
+                scope.propertyPicture;
+
+                scope.$watch('request', function(newVal){
+                    if(undefined == newVal || !("id" in newVal)){
+                        return;
+                    }
+
+                    scope.realtorPicture = new pictureObject(
+                        angular.element("#realtorImage"),
+                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
+                        scope.request.realtor
+                    );
+
+                    scope.propertyPicture = new pictureObject(
+                        angular.element("#propertyImage"),
+                        {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}},
+                        scope.request.property
+                    );
+                });
 
                 $('[data-toggle="tooltip"]').tooltip();
-
 
                 scope.cancel = function(e){
                     e.preventDefault();
 
                     history.back();
-                }
-
-                scope.filePropertyImageClick = function(){
-                    this.propertyImageObject.click();
-                }
-
-                scope.fileRealtorImageClick = function(){
-                    this.realtorImageObject.click();
-                }
-
-                scope.prepareImage = function(image, heightMax, heightMin, widthMax, widthMin){
-                    var info = image.cropper("getCropBoxData");
-                    if(!("width" in info)){
-                        return null;
-                    }
-
-                    return image.cropper("getCroppedCanvas",
-                        { "width": this.getBetween(info.width, widthMax, widthMin),
-                            "height": this.getBetween(info.height, heightMax, heightMin)
-                        })
-                        .toDataURL();
                 }
 
                 scope.save = function(){
@@ -548,15 +537,8 @@
                             scope.request.address = parseGoogleAddressComponents(data[0].address_components);
                             scope.request.property.address = data[0].formatted_address;
 
-                            var tmp = scope.prepareImage(scope.cropperPropertyImage.container, 2000, 649, 3000, 974);
-                            if(tmp !== null){
-                                scope.request.property.photo = tmp;
-                            }
-
-                            var tmp = scope.prepareImage(scope.cropperRealtorImage.container, 800, 400, 600, 300);
-                            if(tmp !== null){
-                                scope.request.realtor.photo = tmp;
-                            }
+                            scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
+                            scope.realtorPicture.prepareImage(800, 400, 600, 300);
 
                             return scope.request.save();
                         })
@@ -571,43 +553,6 @@
                         })
                     ;
                 }
-
-                scope.cropperPropertyImage = {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}};
-                scope.cropperRealtorImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}};
-
-                scope.propertyImageObject.on('change',function(e){
-                    loadFile(e)
-                        .then(function(base64){
-                            scope.request.property.photo = base64;
-                            scope.cropperInit(scope.cropperPropertyImage);
-                        })
-                    ;
-                });
-
-                scope.realtorImageObject.on('change',function(e){
-                    loadFile(e)
-                        .then(function(base64){
-                            scope.request.realtor.photo = base64;
-                            scope.cropperInit(scope.cropperRealtorImage);
-                        })
-                    ;
-                });
-
-                scope.cropperInit = function(imageInfo){
-                    $timeout(function(){
-                        imageInfo.container.cropper('destroy');
-                        imageInfo.container.cropper(imageInfo.options);
-                    });
-                }
-
-                scope.getBetween = function(number, max, min){
-                    if(number > max){
-                        return max;
-                    }
-
-                    return number < min? min: number;
-                }
-
             }
         }
     }]);

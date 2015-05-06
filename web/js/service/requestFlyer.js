@@ -118,22 +118,38 @@
             }
 
             this.fill = function(data){
-                for(var i in data){
-                    this[i] = data[i];
-                }
+                this.fillObject(data);
 
                 return this;
+            }
+
+            this.fillObject = function(data, object){
+                object = object || this;
+                var result = {};
+                for(var i in data){
+                    if(!(i in object)){
+                        continue;
+                    }
+
+                    if(typeof data[i] == "object" && data[i] !== null){
+                        this.fillObject(data[i], object[i]);
+                    }else{
+                        object[i] = data[i];
+                    }
+                }
             }
 
             this.getFields4Save = function(object){
                 object = object || this;
                 var result = {};
                 for(var i in object){
-                    if(object[i] == undefined){
-                        result[i] = null;
-                    }else if(typeof object[i] === "object" && object[i] !== null){
-                        result[i] = this.getFields(object[i]);
+                    if (typeof object[i] === "function"){
+                        continue;
                     }
+
+                    result[i] = (typeof object[i] === "object" && object[i] !== null)
+                                        ? this.getFields4Save(object[i])
+                                        : object[i];
                 }
 
                 return result;
