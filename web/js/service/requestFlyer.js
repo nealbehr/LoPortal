@@ -88,7 +88,15 @@
                 address: null,
                 mls_number: null,
                 listing_price: null,
-                photo: null
+                photo: null,
+                getPicture: function(){
+                    return this.photo;
+                },
+                setPicture: function(param){
+                    this.photo = param;
+
+                    return this;
+                }
             };
 
             this.realtor = {
@@ -98,7 +106,15 @@
                 estate_agency: null,
                 phone: null,
                 email: null,
-                photo: null
+                photo: null,
+                getPicture: function(){
+                    return this.photo;
+                },
+                setPicture: function(param){
+                    this.photo = param;
+
+                    return this;
+                }
             }
 
             this.fill = function(data){
@@ -109,11 +125,14 @@
                 return this;
             }
 
-            this.getFields4Save = function(){
+            this.getFields4Save = function(object){
+                object = object || this;
                 var result = {};
-                for(var i in this){
-                    if(typeof this[i] === "object" && this[i] !== null){
-                        result[i] = this[i];
+                for(var i in object){
+                    if(object[i] == undefined){
+                        result[i] = null;
+                    }else if(typeof object[i] === "object" && object[i] !== null){
+                        result[i] = this.getFields(object[i]);
                     }
                 }
 

@@ -2,7 +2,7 @@
     'use strict';
     settings = settings || {};
 
-    var helperService = angular.module('helperService', ['headColumnModule']);
+    var helperService = angular.module('helperService', ['headColumnModule', 'pictureModule']);
 
     helperService.run(['$templateCache', function($templateCache){
         $templateCache.put('message.html', "<div class=\"alert fade in\" style=\"z-index: 5;\" role=\"alert\" ng-class=\"{'alert-danger': isDanger(), 'alert-success': !isDanger()}\">" +
@@ -74,7 +74,7 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -85,49 +85,7 @@
                 scope.selected = {};
                 scope.user = {}
                 scope.container = angular.element('#userProfileMessage');
-                scope.userPhotoINput = angular.element('#userPhoto');
-                scope.cropperUserImage  = {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}};
-
-                scope.choosePhoto = function(){
-                    scope.userPhotoINput.click();
-                }
-
-                scope.userPhotoINput.on('change',function(e){
-                    loadFile(e)
-                        .then(function(base64){
-                            scope.officer.picture = base64;
-                            scope.cropperInit(scope.cropperUserImage);
-                        })
-                    ;
-                });
-
-                scope.getBetween = function(number, max, min){
-                    if(number > max){
-                        return max;
-                    }
-
-                    return number < min? min: number;
-                }
-
-                scope.cropperInit = function(imageInfo){
-                    $timeout(function(){
-                        imageInfo.container.cropper('destroy');
-                        imageInfo.container.cropper(imageInfo.options);
-                    });
-                }
-
-                scope.prepareImage = function(image, heightMax, heightMin, widthMax, widthMin){
-                    var info = image.cropper("getCropBoxData");
-                    if(!("width" in info)){
-                        return null;
-                    }
-
-                    return image.cropper("getCroppedCanvas",
-                        { "width": this.getBetween(info.width, widthMax, widthMin),
-                            "height": this.getBetween(info.height, heightMax, heightMin)
-                        })
-                        .toDataURL();
-                }
+                scope.userPicture;
 
                 scope.$watch('officer.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.user.id){
@@ -137,6 +95,25 @@
 
                     scope.title = newVal? 'Edit User': 'Add User';
                 });
+
+                scope.$watch('officer', function(newVal, oldVal){
+                    if(newVal == undefined || !("id" in newVal)){
+                        console.log(1)
+                        return;
+                    }
+
+                    console.log(2)
+
+                    scope.userPicture = new pictureObject(
+                        angular.element('#userPhoto'),
+                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
+                        scope.officer
+                    );
+                });
+
+//                scope.choosePhoto = function(){
+//                    this.userPicture.choosePhoto();
+//                }
 
                 scope.cancel = function(e){
                     e.preventDefault();
@@ -224,10 +201,7 @@
                     scope.officer.roles = [scope.selected.key];
 
                     if(scope.officer.picture){
-                        var tmp = scope.prepareImage(scope.cropperUserImage.container, 800, 400, 600, 300);
-                        if(tmp !== null){
-                            scope.officer.picture = tmp;
-                        }
+                        scope.userPicture.prepareImage(800, 400, 600, 300);
                     }
 
                     scope.officer.save()

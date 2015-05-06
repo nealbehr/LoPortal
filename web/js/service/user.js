@@ -125,10 +125,20 @@
             this.email;
             this.nmls;
             this.lender;
+            this.picture;
             this.roles = {};
             this.switched = false;
 
             var self = this;
+
+            this.getPicture = function(){
+                return this.picture;
+            }
+            this.setPicture = function(param){
+                this.picture = param;
+
+                return this;
+            }
 
             this.getFields4Save = function(){
                 var result = {};
