@@ -183,6 +183,7 @@
                 });
 
                 scope.checkAddress = function(){
+                    console.log(this.request.property.address);
                     getInfoFromGeocoder({address: this.request.property.address})
                         .then(function(data){
                             scope.request.address = parseGoogleAddressComponents(data[0].address_components);
@@ -295,7 +296,7 @@
                         scope.$apply(function(){
                             scope.isValid = false;
                         });
-//                        var places = searchBox.getPlaces();
+
                         var places = [searchBox.getPlace()];
 
                         if (places.length == 0) {
@@ -312,7 +313,8 @@
 
                         for (var i = 0, place; place = places[i]; i++) {
                             scope.$apply(function(){
-                                scope.request.address          = parseGoogleAddressComponents(place.address_components);
+                                scope.request.address = parseGoogleAddressComponents(place.address_components);
+                                scope.request.property.address = place.formatted_address;
                             });
 
                             if(!place.address_components){
