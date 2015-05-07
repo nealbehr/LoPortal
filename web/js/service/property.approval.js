@@ -314,7 +314,9 @@
                         for (var i = 0, place; place = places[i]; i++) {
                             scope.$apply(function(){
                                 scope.request.address = parseGoogleAddressComponents(place.address_components);
-                                scope.request.property.address = place.formatted_address;
+                                if("formatted_address" in place){
+                                    scope.request.property.address = place.formatted_address;
+                                }
                             });
 
                             if(!place.address_components){
