@@ -50,7 +50,7 @@
                     { "width": this.getBetween(info.width, widthMax, widthMin),
                         "height": this.getBetween(info.height, heightMax, heightMin)
                     })
-                    .toDataURL();
+                    .toDataURL("image/jpeg");
 
                 if(result !== null){
                     objectForImage.setPicture(result);
