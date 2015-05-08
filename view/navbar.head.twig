@@ -7,7 +7,7 @@
                     <span ng-if="user.isSwitched()">You are logged in as </span>
                     <span ng-show="isUserLoaded" class="hidden-xs">[[ user|fullName ]] </span>
                     <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
-                    {#<img ng-show="isUserLoaded" ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava">#}&nbsp; <span class="arrow-down"></span>
+                    <img ng-show="isUserLoaded" ng-src="[[ user.picture|avatar ]]" width="44" height="44" alt="ava">&nbsp; <span class="arrow-down"></span>
                 </span>
                 <ul class="dropdown-menu" role="menu">
                     <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>

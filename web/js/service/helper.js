@@ -559,7 +559,7 @@
 
     helperService.filter('avatar', function(){
         return function(input){
-            return input == null ? "images/ava.jpg": input;
+            return input == null ? "images/empty.png": input;
         }
     });
 
