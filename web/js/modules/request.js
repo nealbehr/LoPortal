@@ -27,6 +27,35 @@
                     isFree: false
                 }
             })
+            .when('/flyer/:id/edit', {
+                templateUrl: '/partials/request.flyer.edit',
+                controller:  'requestFlyerEditCtrl',
+                access: {
+                    isFree: false
+                }
+            })
+        ;
+    }]);
+
+    request.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages){
+        $scope.request = {};
+        $scope.realtor = {};
+        $scope.titles = {
+            button: "Submit",
+            header: "Edit Listing Flyer Request"
+        }
+
+        $scope.$on('requestFlyerSaved', function () {
+            sessionMessages.addSuccess("Successfully saved.");
+            history.back();
+        });
+
+        createAdminRequestFlyer()
+            .get($routeParams.id)
+            .then(function(flyer){
+                $scope.request = flyer;
+                $scope.realtor = createProfileUser().fill(flyer.user);
+            })
         ;
     }]);
 

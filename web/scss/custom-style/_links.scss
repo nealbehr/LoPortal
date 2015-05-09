@@ -32,6 +32,21 @@
         margin-top: -14px;
     }
 }
+.complete {
+  @extend .links;
+  background: none;
+  display: block;
+  padding-left: 16px;
+  font-size: 14pxs;
+  &:before{
+    background-position: -48px -13px;
+    height: 13px;
+    margin-top: -8px;
+    width: 14px;
+    background-size:  112px auto;
+  }
+}
+
 .navbar .user-menu .dropdown-menu .logout {
     @extend .links;
     padding-left: 33px !important;

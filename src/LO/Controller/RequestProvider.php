@@ -26,10 +26,23 @@ class RequestProvider implements ControllerProviderInterface{
         $controllers = $app["controllers_factory"];
 
         $controllers
+            ->get("/{id}", "request.flyer.controller:getAction");
+
+        $controllers
             ->post("/", "request.flyer.controller:addAction");
 
         $controllers
+            ->put("/{id}", "request.flyer.controller:updateAction");
+
+        $controllers
             ->post("/approval", "request.approval.controller:AddAction");
+
+        $controllers
+            ->post("/draft", "request.flyer.controller:draftAddAction");
+
+        $controllers
+            ->put("/draft/{id}", "request.flyer.controller:draftUpdateAction");
+
 
         return $controllers;
     }

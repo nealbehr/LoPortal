@@ -501,6 +501,7 @@
                 user: '=loUser'
             },
             link: function(scope, element, attrs, controllers){
+                scope.stateDraft = settings.queue.state.draft;
                 scope.realtorPicture;
                 scope.propertyPicture;
 
@@ -528,6 +529,25 @@
                     e.preventDefault();
 
                     history.back();
+                }
+
+                scope.saveDraft = function(e){
+                    e.preventDefault();
+                    waitingScreen.show();
+
+                    scope.request
+                        .draftSave()
+                        .then(function(){
+                            sessionMessages.addSuccess("Successfully saved.");
+                            history.back();
+                        })
+                        .catch(function(e){
+                            alert("message" in e.data? e.data.message: "We have some problems. Please try later.");
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        })
+                    ;
                 }
 
                 scope.save = function(){

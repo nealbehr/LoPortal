@@ -27,7 +27,7 @@ class RequestFlyer extends Base{
 
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank(message = "Realtor id should not be blank.")
+     * @Assert\NotBlank(message = "Realtor id should not be blank.", groups = {"main"})
      * @Assert\Type(type="numeric")
      */
     protected $realtor_id;
@@ -44,13 +44,13 @@ class RequestFlyer extends Base{
 
     /**
      * @Column(type="string")
-     * @Assert\NotBlank(message = "Listing price should not be blank.")
+     * @Assert\NotBlank(message = "Listing price should not be blank.", groups = {"main"})
      */
     protected $listing_price;
 
     /**
      * @Column(type="string")
-     * @Assert\NotBlank(message = "Photo id should not be blank.")
+     * @Assert\NotBlank(message = "Photo id should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 65536,
      *              maxMessage = "Photo url cannot be longer than {{ limit }} characters"

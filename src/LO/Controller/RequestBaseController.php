@@ -10,9 +10,20 @@ namespace LO\Controller;
 
 use Curl\Curl;
 use LO\Application;
+use LO\Common\Message;
 use LO\Model\Entity\User;
 
 class RequestBaseController {
+    private $message;
+
+    public function __construct(){
+        $this->message = new Message();
+    }
+
+    protected function getMessage(){
+        return $this->message;
+    }
+
     protected function sendRequestTo1Rex(Application $app, array $address, User $user){
         try{
             $data = array_merge(
@@ -46,5 +57,4 @@ class RequestBaseController {
             $curl->close();
         }
     }
-
-} 
+}

@@ -55,7 +55,7 @@
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
-            button: "Save",
+            button: "Submit",
             header: "Edit Listing Flyer Request"
         }
 

@@ -19,6 +19,8 @@ use LO\Form\RequestFlyerForm;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;
 use LO\Model\Entity\RequestFlyer;
+use LO\Model\Entity\User;
+use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
@@ -26,72 +28,226 @@ use LO\Traits\GetFormErrors;
 class RequestFlyerController extends RequestBaseController{
     use GetFormErrors;
 
+    public function getAction(Application $app, $id){
+        $queue = $this->getQueueById($app, $id);
+
+        $queueForm = $app->getFormFactory()->create(new QueueForm());
+
+        $requestFlyer = $queue->getFlyer();
+
+        $formFlyerForm = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()));
+
+        $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($requestFlyer->getRealtorId());
+        $realtorForm = $app->getFormFactory()->create(new RealtorForm($app->getS3()));
+
+        return $app->json([
+            'property' => array_merge($this->removeExtraFields($queue->toArray(), $queueForm), $this->removeExtraFields($requestFlyer->toArray(), $formFlyerForm)),
+            'realtor'  => $this->removeExtraFields($realtor->toArray(), $realtorForm),
+            'user'     => $queue->getUser()->getPublicInfo(),
+        ]);
+    }
+
     public function addAction(Application $app, Request $request){
         try {
-            $data = [];
+            $formOptions = ['validation_groups' => ["Default", "main"]];
             $app->getEntityManager()->beginTransaction();
 
             $id = $this->sendRequestTo1Rex($app, $request->get('address'), $app->user());
-            $realtor = new Realtor();
+            $realtor      = new Realtor();
+            $requestFlyer = new RequestFlyer();
+            $queue        = (new Queue())->set1RexId($id);
 
-            $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor);
-            $form->handleRequest($request);
-            if(!$form->isValid()){
-                $data = array_merge($data, ['realtor' => $this->getFormErrors($form)]);
+            $this->saveFlyer(
+                $app,
+                $request,
+                $realtor,
+                $queue,
+                $requestFlyer,
+                $formOptions
+            );
 
-                throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
-            }
-
-            $app->getEntityManager()->persist($realtor);
-            $app->getEntityManager()->flush();
-
-
-
-            $queue = (new Queue())->set1RexId($id)
-                                  ->setType(Queue::TYPE_FLYER)
-                                  ->setUser($app->user())
-            ;
-
-            $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
-            $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
-
-            if(!$queueForm->isValid()){
-                $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);
-
-                throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
-            }
-
-            $app->getEntityManager()->persist($queue);
-            $app->getEntityManager()->flush();
-
-            $requestFlyer = (new RequestFlyer())
-                ->setRealtorId($realtor->getId())
-                ->setQueue($queue)
-            ;
-
-            $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer);
-            $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));
-
-            if(!$formRequestFlyer->isValid()){
-                $data = array_merge($data, ['property' => $this->getFormErrors($form)]);
-
-                throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
-            }
-
-            $app->getEntityManager()->persist($requestFlyer);
-            $app->getEntityManager()->flush();
-
-            (new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $requestFlyer)))
-                ->send();
+            (new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $requestFlyer)))->send();
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
             $app->getEntityManager()->rollback();
             $app->getMonolog()->addError($e);
-            $data['message'] = $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.';
-            return $app->json($data, $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return $app->json("success");
     }
+
+    public function updateAction(Application $app, Request $request, $id){
+        try {
+            $app->getEntityManager()->beginTransaction();
+            $formOptions = [
+                'validation_groups' => ["Default", "main"],
+                'method' => 'PUT'
+            ];
+
+            $queue = $this->getQueueById($app, $id);
+
+            $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
+
+            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $queue->getUser());
+
+            $queue->set1RexId($id);
+
+            $this->saveFlyer(
+                $app,
+                $request,
+                $realtor,
+                $queue,
+                $queue->getFlyer(),
+                $formOptions
+            );
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
+    public function draftAddAction(Application $app, Request $request){
+        try {
+            $app->getEntityManager()->beginTransaction();
+
+            $this->saveFlyer(
+                $app,
+                $request,
+                new Realtor(),
+                (new Queue())->setState(Queue::STATE_DRAFT),
+                new RequestFlyer(),
+                ['validation_groups' => ["Default", "draft"]]
+            );
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
+    public function draftUpdateAction(Application $app, Request $request, $id){
+        try {
+            $app->getEntityManager()->beginTransaction();
+            $queue = $this->getQueueById($app, $id);
+
+            if($queue->getState() !== Queue::STATE_DRAFT){
+                throw new Http("We can re-save only draft.");
+            }
+
+            $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
+
+            $this->saveFlyer(
+                $app,
+                $request,
+                $realtor,
+                $queue,
+                $queue->getFlyer(),
+                ['method' => 'PUT', 'validation_groups' => ["Default", "draft"]]
+            );
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
+    /**
+     * @param Application $app
+     * @param $id
+     * @return Queue
+     * @throws \LO\Exception\Http
+     */
+    private function getQueueById(Application $app, $id){
+        /** @var Queue $queue */
+        $queue = (new QueueManager($app))->getByIdWithRequestFlyeAndrUser($id);
+
+        if(!$queue){
+            throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)) {
+            throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
+        }
+
+        return $queue;
+    }
+
+    /**
+     * @param Application $app
+     * @param $id
+     * @return null|Realtor
+     */
+    private function getRealtorById(Application $app, $id){
+        return $app->getEntityManager()
+            ->getRepository(Realtor::class)
+            ->find($id);
+    }
+
+    private function saveFlyer(Application $app, Request $request, Realtor $realtor, Queue $queue, RequestFlyer $requestFlyer, array $formOptions = []){
+        $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptions);
+        $form->handleRequest($request);
+        if(!$form->isValid()){
+            $this->getMessage()->replace('realtor', $this->getFormErrors($form));
+
+            throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
+        }
+
+        $app->getEntityManager()->persist($realtor);
+        $app->getEntityManager()->flush();
+
+        $queue
+            ->setType(Queue::TYPE_FLYER)
+            ->setUser($app->user())
+        ;
+
+        $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, $formOptions);
+        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
+
+        if(!$queueForm->isValid()){
+            $this->getMessage()->replace('property', $this->getFormErrors($queueForm));
+
+            throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
+        }
+
+        $app->getEntityManager()->persist($queue);
+        $app->getEntityManager()->flush();
+
+        $requestFlyer
+            ->setRealtorId($realtor->getId())
+            ->setQueue($queue)
+        ;
+
+        $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer, $formOptions);
+        $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));
+
+        if(!$formRequestFlyer->isValid()){
+            $this->getMessage()->replace('property', $this->getFormErrors($form));
+
+            throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
+        }
+
+        $app->getEntityManager()->persist($requestFlyer);
+        $app->getEntityManager()->flush();
+    }
+
+
 }

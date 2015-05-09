@@ -204,6 +204,7 @@ class Application extends \Silex\Application{
 
         $this['security.access_rules'] = [
             ['^/admin'  , User::ROLE_ADMIN],
+            ['^/request/'  , User::ROLE_ADMIN, 'method' => 'PUT'],
         ];
 
         return $this;

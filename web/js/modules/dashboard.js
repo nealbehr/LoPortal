@@ -66,6 +66,7 @@
         $scope.settingRows[settings.queue.state.requested] = {id: 'requested', title: 'Requested', isExpand: false};
         $scope.settingRows[settings.queue.state.approved]  = {id: 'approved', title: 'Approved', isExpand: false};
         $scope.settingRows[settings.queue.state.declined]  = {id: 'declined', title: 'Declined', isExpand: false};
+        $scope.settingRows[settings.queue.state.draft]     = {id: 'draft', title: 'Incomplete', isExpand: false};
 
         $scope.recalculateExpanded = function(){
             /* expand first not empty */
@@ -77,7 +78,7 @@
 
             /* expand all except declined */
             for(var i in this.dashboard){
-                this.settingRows[i].isExpand = i != settings.queue.state.declined && this.dashboard[i].length > 0;
+                this.settingRows[i].isExpand = (i != settings.queue.state.declined && i != settings.queue.state.draft) && this.dashboard[i].length > 0;
             }
         }
 

@@ -25,13 +25,14 @@ class Queue extends Base{
     const STATE_REQUESTED   = 2;
     const STATE_APPROVED    = 3;
     const STATE_DECLINED    = 4;
+    const STATE_DRAFT       = 5;
 
     const TYPE_FLYER             = 1;
     const TYPE_PROPERTY_APPROVAL = 2;
 
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank(message="Firstrex id should not be blank.")
+     * @Assert\NotBlank(message="Firstrex id should not be blank.", groups = {"main"})
      * @Assert\Type(type="numeric")
      */
     protected $firstrex_id;
@@ -60,7 +61,7 @@ class Queue extends Base{
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message="Address should not be blank.")
+     * @Assert\NotBlank(message="Address should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 65536,
      *              maxMessage = "photo url cannot be longer than {{ limit }} characters"
@@ -199,7 +200,7 @@ class Queue extends Base{
     }
 
     /**
-     * @Assert\Callback
+     * @Assert\Callback(groups = {"main"})
      */
     public function isStateValid(ExecutionContextInterface $context){
         $allowedStates = static::TYPE_FLYER == $this->request_type
@@ -225,6 +226,20 @@ class Queue extends Base{
         }
     }
 
+    /**
+     * @Assert\Callback(groups = {"draft"})
+     */
+    public function isStateValidDraft(ExecutionContextInterface $context){
+        if ($this->getState() != static::STATE_DRAFT) {
+            $context->addViolationAt(
+                'state',
+                sprintf('Field "State" have not contained allowed state. Allowed state for draft is "%s"', static::STATE_DRAFT),
+                array(),
+                null
+            );
+        }
+    }
+
     static public function getTypes(){
         return [
             static::TYPE_PROPERTY_APPROVAL,
@@ -233,11 +248,19 @@ class Queue extends Base{
     }
 
     static public function getStates(){
-        return [
-            static::STATE_REQUESTED,
-            static::STATE_APPROVED,
-            static::STATE_DECLINED,
-            static::STATE_LISTING_FLYER_PENDING,
-        ];
+        static $states = [];
+
+        if(!count($states)){
+            $oClass = new \ReflectionClass(__CLASS__);
+            foreach($oClass->getConstants() as $k => $v){
+                if(strpos($k, "STATE_") !== 0){
+                    continue;
+                }
+
+                $states[] = $v;
+            }
+        }
+
+        return $states;
     }
 } 

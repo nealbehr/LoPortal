@@ -265,20 +265,25 @@ class Queue extends Base{
             return [];
         }
         $app->getEntityManager()->getConfiguration()->addCustomHydrationMode('Duplicates', '\LO\Bridge\Doctrine\Hydrator\Duplicates');
+        $expr = $app->getEntityManager()->createQueryBuilder()->expr();
         return $app->getEntityManager()->getRepository(EntityQueue::class)->createQueryBuilder('q1')
             ->select('q1.id, q2.id, q2.created_at')
             ->leftJoin(EntityQueue::class, 'q2', Expr\Join::WITH, "q1.address = q2.address")
             ->where('q1.id <> q2.id')
             ->andWhere('q1.created_at > q2.created_at')
+            ->andWhere($expr->notIn('q1.state', [EntityQueue::STATE_DRAFT]))
+            ->andWhere($expr->notIn('q2.state', [EntityQueue::STATE_DRAFT]))
             ->getQuery()
             ->getResult('Duplicates');
         ;
     }
 
     private function getQueueList(Request $request, Application $app){
+        $expr = $app->getEntityManager()->createQueryBuilder()->expr();
         $q = $app->getEntityManager()->createQueryBuilder()
             ->select('q1')
             ->from(EntityQueue::class, 'q1')
+            ->where($expr->notIn('q1.state', [EntityQueue::STATE_DRAFT]))
             ->setMaxResults(static::QUEUE_LIMIT)
             ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION))
         ;

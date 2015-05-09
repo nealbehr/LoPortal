@@ -27,10 +27,11 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "Phone should not be blank.")
+     * @Assert\NotBlank(message = "Phone should not be blank.", groups = {"main"})
      * @Assert\Regex(
      *               pattern = "/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/",
-     *               message = "Please input a valid US phone number including 3 digit area code and 7 digit number."
+     *               message = "Please input a valid US phone number including 3 digit area code and 7 digit number.",
+     *               groups = {"main"}
      * )
      */
     protected $phone;
@@ -43,7 +44,7 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=65536)
-     * @Assert\NotBlank(message = "Photo should not be blank.")
+     * @Assert\NotBlank(message = "Photo should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 65536,
      *              maxMessage = "photo url cannot be longer than {{ limit }} characters"
@@ -62,23 +63,25 @@ class Realtor extends Base{
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "First name should not be blank.")
+     * @Assert\NotBlank(message = "First name should not be blank.", groups = {"main"})
      * @Assert\Regex(
      *               pattern = "/^([A-Za-z_\s]+)$/",
-     *               message = "First name is invalid."
+     *               message = "First name is invalid.",
+     *               groups = {"main"}
      * )
-     * @FullName()
+     * @FullName(groups = {"main"})
      */
     protected $first_name;
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "Last name should not be blank.")
+     * @Assert\NotBlank(message = "Last name should not be blank.", groups = {"main"})
      * @Assert\Regex(
      *               pattern = "/^([A-Za-z_\s]+)$/",
-     *               message = "Last name is invalid."
+     *               message = "Last name is invalid.",
+     *               groups = {"main"}
      * )
-     * @FullName()
+     * @FullName(groups = {"main"})
      */
     protected $last_name;
 

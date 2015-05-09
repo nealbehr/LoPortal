@@ -37,7 +37,7 @@
                 }
 
                 var deferred = $q.defer();
-                $http.get('/admin/flyer/' + id)
+                $http.get('/request/' + id)
                     .success(function(data){
                         flyer.id = id;
                         flyer.fill(data);
@@ -58,7 +58,10 @@
 
             flyer.update = function(){
                 var deferred = $q.defer();
-                $http.put('/admin/flyer/' + this.id, this.getFields4Save())
+                if(this.property.state == settings.queue.state.draft){
+                    this.property.state = settings.queue.state.requested;
+                }
+                $http.put('/request/' + this.id, this.getFields4Save())
                     .success(function(data){
                         deferred.resolve(data);
                     })
@@ -79,14 +82,14 @@
         }
     }]);
 
-    flyerService.service("createRequestFlyerBase", [function(){
+    flyerService.service("createRequestFlyerBase", ["$http", function($http){
         return function(){
             this.id = null;
 
             this.property = {
-                first_rex_id: null,
                 address: null,
                 mls_number: null,
+                state: null,
                 listing_price: null,
                 photo: null,
                 getPicture: function(){
@@ -157,6 +160,19 @@
 
             this.save = function(){
                 throw new Error("Request save must be override");
+            }
+
+            this.draftSave = function(){
+                return this.id? this.draftUpdate(): this.draftAdd();
+            }
+
+            this.draftUpdate = function(){
+                return $http.put('/request/draft/' + this.id, this.getFields4Save());
+            }
+
+            this.draftAdd = function(){
+                this.property.state = settings.queue.state.draft;
+                return $http.post('/request/draft', this.getFields4Save());
             }
         }
     }]);

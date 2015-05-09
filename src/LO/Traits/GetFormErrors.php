@@ -12,14 +12,18 @@ use Symfony\Component\Form\FormInterface;
 
 trait GetFormErrors {
     public function getFormErrors(FormInterface $form){
-        $errors = [];
+        $errors = [$this->prepareMessage((string)$form->getErrors())];
         foreach($form as $child){
             if($child->getErrors()->count() > 0){
-                $errors[] = str_replace("ERROR: ", "", (string)$child->getErrors());
+                $errors[] = $this->prepareMessage((string)$child->getErrors());
             }
         }
 
         return $errors;
+    }
+
+    private function prepareMessage($message){
+        return str_replace("ERROR: ", "", $message);
     }
 
     protected function removeExtraFields($requestData, $form){
