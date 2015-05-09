@@ -124,15 +124,6 @@
                 lng:     "=loLng"
             },
             link: function(scope, element, attrs, controllers) {
-                scope.$on('$locationChangeStart', function (event, next, current) {
-//                    if (check(next+current)) {
-                    if (true) {
-                        var answer = confirm("Are you sure you want to navigate away from this page");
-                        if (!answer) {
-                            event.preventDefault();
-                        }
-                    }
-                });
                 scope.isValid = false;
                 scope.request = {}
 

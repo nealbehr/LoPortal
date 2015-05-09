@@ -504,6 +504,16 @@
                 scope.stateDraft = settings.queue.state.draft;
                 scope.realtorPicture;
                 scope.propertyPicture;
+                scope.oldRequest;
+
+                scope.$on('$locationChangeStart', function (event, next, current) {
+                    if (!angular.equals(scope.oldRequest, scope.request)) {
+                        var answer = confirm("Are you sure you want to leave without saving changes?");
+                        if (!answer) {
+                            event.preventDefault();
+                        }
+                    }
+                });
 
                 scope.$watch('request', function(newVal){
                     if(undefined == newVal || !("id" in newVal)){
@@ -521,6 +531,8 @@
                         {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}},
                         scope.request.property
                     );
+
+                    scope.oldRequest = angular.copy(scope.request);
                 });
 
                 $('[data-toggle="tooltip"]').tooltip();
