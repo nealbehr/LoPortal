@@ -16,13 +16,12 @@ use LO\Form\FirstRexAddress;
 use LO\Form\QueueForm;
 use LO\Model\Entity\RequestApproval;
 use LO\Model\Entity\Queue;
+use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
 
-class RequestApprovalController extends RequestBaseController{
-    use GetFormErrors;
-
+class RequestApprovalController extends RequestApprovalBase{
     public function AddAction(Application $app, Request $request){
         try{
             $app->getEntityManager()->beginTransaction();
@@ -48,6 +47,8 @@ class RequestApprovalController extends RequestBaseController{
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
             $queueForm->handleRequest($request);
 
+            $queue->setState(Queue::STATE_REQUESTED);
+
             if(!$queueForm->isValid()){
                 $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);
 
@@ -55,11 +56,6 @@ class RequestApprovalController extends RequestBaseController{
             }
 
             $app->getEntityManager()->persist($queue);
-            $app->getEntityManager()->flush();
-
-            $requestApproval = (new RequestApproval())->setQueue($queue);
-
-            $app->getEntityManager()->persist($requestApproval);
             $app->getEntityManager()->flush();
 
             (new RequestChangeStatus($app, $queue, new PropertyApprovalSubmission()))
@@ -74,5 +70,15 @@ class RequestApprovalController extends RequestBaseController{
         }
 
         return $app->json("success");
+    }
+
+    public function getAction(Application $app, $id){
+        $queue = $this->getQueueById($app, $id);
+
+        if ($app->user()->getId() != $queue->getUser()->getId()) {
+            throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
+        }
+
+        return $this->getResponse($app, $queue);
     }
 }

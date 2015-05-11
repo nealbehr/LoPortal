@@ -17,25 +17,13 @@ use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
-use LO\Controller\RequestBaseController;
+use LO\Controller\RequestApprovalBase;
 
-class PropertyApproval extends RequestBaseController{
+class PropertyApproval extends RequestApprovalBase{
     use GetFormErrors;
 
     public function getAction(Application $app, $id){
-        /** @var Queue $queue */
-        $queue = (new QueueManager($app))->getById($id);
-
-        if(!$queue){
-            throw new Http(sprintf('Request \'%s\' not found.', $id), Response::HTTP_BAD_REQUEST);
-        }
-
-        $queueForm = $app->getFormFactory()->create(new QueueForm());
-
-        return $app->json([
-            'property' => $this->removeExtraFields($queue->toArray(), $queueForm),
-            'address'  => $queue->getAdditionalInfo(),
-        ]);
+        return $this->getResponse($app, $this->getQueueById($app, $id));
     }
 
     public function updateAction(Application $app, Request $request, $id){

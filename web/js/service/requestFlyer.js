@@ -4,22 +4,39 @@
 
     var flyerService = angular.module('requestFlyerModule', []);
 
-    flyerService.service("createRequestFlyer", ["$q", "$http", "createRequestFlyerBase", function($q, $http, createRequestFlyerBase){
+    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", "$q", function($http, createRequestFlyerBase, $q){
+        function extend(Child, Parent) {
+            var F = function() { }
+            F.prototype = Parent.prototype
+            Child.prototype = new F()
+            Child.prototype.constructor = Child
+            Child.superclass = Parent.prototype
+        }
+
+        function fromPropertyApproval(id){
+            fromPropertyApproval.superclass.constructor.call(this);
+            if(id){
+                this.id = id;
+            }
+            var flyer = this;
+
+            this.save = function(){
+                this.property.state = settings.queue.state.listingFlyerPending;
+                return $http.put('/request/from/approval/' + this.id, this.getFields4Save());
+            }
+        }
+
+        extend(fromPropertyApproval, createRequestFlyerBase);
+
+        return fromPropertyApproval;
+    }]);
+
+    flyerService.service("createRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
         return function(){
             var flyer = new createRequestFlyerBase();
 
             flyer.save = function(){
-                var deferred = $q.defer();
-                $http.post('/request/', this.getFields4Save())
-                    .success(function(data){
-                        deferred.resolve(data);
-                    })
-                    .error(function(data){
-                        deferred.reject(data);
-                    })
-                ;
-
-                return deferred.promise;
+                return $http.post('/request/', this.getFields4Save());
             }
 
             return flyer;
@@ -28,28 +45,11 @@
 
     flyerService.service("createAdminRequestFlyer", ["$q", "$http", "createRequestFlyerBase", function($q, $http, createRequestFlyerBase){
         console.log("createAdminRequestFlyer");
-        return function(){
+        return function(id){
             var flyer = new createRequestFlyerBase();
 
-            flyer.get = function(id){
-                if(this.id !== null){
-                    return $q.when(this);
-                }
-
-                var deferred = $q.defer();
-                $http.get('/request/' + id)
-                    .success(function(data){
-                        flyer.id = id;
-                        flyer.fill(data);
-
-                        deferred.resolve(flyer)
-                    })
-                    .error(function(data){
-                        deferred.reject(data);
-                    })
-                ;
-
-                return deferred.promise;
+            if(id){
+                flyer.id = id;
             }
 
             flyer.save = function(){
@@ -83,13 +83,13 @@
     }]);
 
     flyerService.service("createRequestFlyerBase", ["$http", function($http){
-        return function(){
+        return function flyerBase(){
             this.id = null;
 
             this.property = {
                 address: null,
                 mls_number: null,
-                state: null,
+                state: settings.queue.state.requested,
                 listing_price: null,
                 photo: null,
                 getPicture: function(){

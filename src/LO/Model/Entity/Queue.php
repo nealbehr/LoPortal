@@ -96,11 +96,6 @@ class Queue extends Base{
      */
     private $flyer;
 
-    /**
-     * @OneToOne(targetEntity="RequestApproval", mappedBy="queue")
-     */
-    private $approval;
-
     public function __construct(){
         parent::__construct();
 
@@ -234,6 +229,20 @@ class Queue extends Base{
             $context->addViolationAt(
                 'state',
                 sprintf('Field "State" have not contained allowed state. Allowed state for draft is "%s"', static::STATE_DRAFT),
+                array(),
+                null
+            );
+        }
+    }
+
+    /**
+     * @Assert\Callback(groups = {"fromPropertyApproval"})
+     */
+    public function isStateValidFromPropertyApproval(ExecutionContextInterface $context){
+        if ($this->getState() != static::STATE_LISTING_FLYER_PENDING) {
+            $context->addViolationAt(
+                'state',
+                sprintf('Field "State" have not contained allowed state. Allowed state for draft is "%s"', static::STATE_LISTING_FLYER_PENDING),
                 array(),
                 null
             );

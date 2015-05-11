@@ -21,10 +21,11 @@
                 <td>[[ v.address ]]</td>
                 <td>[[ v.request_type|dashboardType ]]</td>
                 <td>
-                    <a ng-if="v.flyer.pdf_link && v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }}" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
-                    <a ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_REQUESTED') }} || v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_DRAFT') }}" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a>
-                    <a ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_DRAFT') }}" href="/#/flyer/[[ v.id ]]/edit" class="complete">Complete</a>
-                    <span class="action-none" ng-if="v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_DECLINED') }} || v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_LISTING_FLYER_PENDING') }} || (!v.flyer.pdf_link && v.state == {{ constant('\\LO\\Model\\Entity\\Queue::STATE_APPROVED') }})">None</span>
+                    <a ng-if="isApprovedProperty(v)" ng-href="/#/flyer/from/approval/[[ v.id ]]/edit" class="flyer-from-approval">Add Request Listing Flyer</a>
+                    <a ng-if="hasPdf(v)" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
+                    <a ng-if="canCancel(v)" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a>
+                    <a ng-if="isComplete(v)" href="/#/flyer/[[ v.id ]]/edit" class="complete">Complete</a>
+                    <span class="action-none" ng-if="isNone(v)">None</span>
                 </td>
             </tr>
             </tbody>

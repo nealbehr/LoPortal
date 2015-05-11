@@ -51,7 +51,7 @@
         ;
     }]);
 
-    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages){
+    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
@@ -64,11 +64,10 @@
             history.back();
         });
 
-        createAdminRequestFlyer()
-            .get($routeParams.id)
-            .then(function(flyer){
-                $scope.request = flyer;
-                $scope.realtor = createProfileUser().fill(flyer.user);
+        $http.get('/request/' + $routeParams.id)
+            .success(function(info){
+                $scope.request = (new createAdminRequestFlyer($routeParams.id)).fill(info);
+                $scope.realtor = createProfileUser().fill(info.user);
             })
         ;
     }]);

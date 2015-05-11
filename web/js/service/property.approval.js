@@ -9,17 +9,8 @@
             var approval = new createPropertyApprovalBase();
 
             approval.save = function(){
-                var deferred = $q.defer();
-                $http.post('/request/approval', this.getFields4Save())
-                    .success(function(data){
-                        deferred.resolve(data);
-                    })
-                    .error(function(data){
-                        deferred.reject(data);
-                    })
-                ;
-
-                return deferred.promise;
+                this.property.state = settings.queue.state.requested;
+                return $http.post('/request/approval', this.getFields4Save());
             }
 
             return approval;
@@ -56,18 +47,7 @@
             }
 
             approval.update = function(){
-                var deferred = $q.defer();
-                $http.put('/admin/approval/' + this.id, this.getFields4Save())
-                    .success(function(data){
-                        deferred.resolve(data);
-                    })
-                    .error(function(data){
-                        console.log(data);
-                        deferred.reject(data);
-                    })
-                ;
-
-                return deferred.promise;
+                return $http.put('/admin/approval/' + this.id, this.getFields4Save())
             }
 
             approval.add = function(){
@@ -83,7 +63,8 @@
             this.id = null;
 
             this.property = {
-                 address: ''
+                 address: '',
+                state: null
             };
 
             this.address = null
@@ -183,7 +164,6 @@
                 });
 
                 scope.checkAddress = function(){
-                    console.log(this.request.property.address);
                     getInfoFromGeocoder({address: this.request.property.address})
                         .then(function(data){
                             scope.request.address = parseGoogleAddressComponents(data[0].address_components);
@@ -210,15 +190,11 @@
                     }
 
                     scope.request.save()
-                        .then(function(data){//success save on backend
+                        .success(function(data){//success save on backend
                             $rootScope.$broadcast('propertyApprovalSaved');
-                        }, function(error){
-                                throw typeof error == "object" && 'message' in error
-                                                ? error.message
-                                                : error;
                         })
-                        .catch(function(e){
-                            message.addDanger(typeof e == 'string'? e: e.message)
+                        .error(function(e){
+                            message.addDanger(typeof e == "object" && 'message' in e ? e.message: e)
                                 .show()
                             ;
                         })

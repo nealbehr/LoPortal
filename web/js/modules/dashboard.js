@@ -100,9 +100,6 @@
                     .error(function(data){
                         console.log(data);
                     })
-                    .finally(function(){
-
-                    })
                 ;
             }
         });

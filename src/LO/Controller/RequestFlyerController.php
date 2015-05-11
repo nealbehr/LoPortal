@@ -11,6 +11,7 @@ namespace LO\Controller;
 
 use LO\Application;
 use LO\Common\Email\Request\RequestChangeStatus;
+use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerSubmission;
 use LO\Exception\Http;
 use LO\Form\QueueForm;
@@ -170,6 +171,49 @@ class RequestFlyerController extends RequestBaseController{
         return $app->json("success");
     }
 
+    public function createFromApprovalRequestAction(Application $app, Request $request, $id){
+        try {
+            $app->getEntityManager()->beginTransaction();
+
+            /** @var Queue $queue */
+            $queue = (new QueueManager($app))->getByIdWithUser($id);
+
+            if(!$queue){
+                throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)){
+                throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
+            }
+
+            $queue->setType(Queue::TYPE_FLYER);
+
+            $realtor = new Realtor();
+            $flyer = new RequestFlyer();
+
+            $this->saveFlyer(
+                $app,
+                $request,
+                $realtor,
+                $queue,
+                $flyer,
+                ['method' => 'PUT', 'validation_groups' => ["Default", "fromPropertyApproval"]]
+            );
+
+            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $flyer, $request->getSchemeAndHttpHost())))
+                ->send();
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
     /**
      * @param Application $app
      * @param $id
@@ -248,6 +292,4 @@ class RequestFlyerController extends RequestBaseController{
         $app->getEntityManager()->persist($requestFlyer);
         $app->getEntityManager()->flush();
     }
-
-
 }

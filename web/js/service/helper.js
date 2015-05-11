@@ -258,6 +258,7 @@
                 state: "@loState"
             },
             link: function(scope, element, attrs, controllers){
+                scope.requestType = settings.queue.type;
                 function params (key, title){
                     this.key = key;
                     this.title = title;
@@ -287,6 +288,24 @@
                         $('#' + scope.id).collapse('show');
                     }
                 });
+
+
+                scope.isApprovedProperty = function(item){
+                    return item.request_type == this.requestType.propertyApproval && item.state == settings.queue.state.approved;
+                }
+
+                scope.hasPdf = function(item){
+                    return item.request_type == this.requestType.flyer && item.flyer != null && item.flyer.pdf_link && item.state == settings.queue.state.approved
+                }
+                scope.canCancel = function(item){
+                    return item.state == settings.queue.state.requested || item.state == settings.queue.state.draft;
+                }
+                scope.isComplete = function(item){
+                    return item.state == settings.queue.state.draft;
+                }
+                scope.isNone = function(item){
+                    return !(this.isApprovedProperty(item) || this.hasPdf(item) || this.canCancel(item) || this.isComplete(item));
+                }
             }
         }
     }]);
@@ -491,7 +510,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -508,7 +527,7 @@
 
                 scope.$on('$locationChangeStart', function (event, next, current) {
                     if (!angular.equals(scope.oldRequest, scope.request)) {
-                        var answer = confirm("Are you sure you want to leave without saving changes?");
+                        var answer = confirm("Are you sure you want to leave without saving changes?1");
                         if (!answer) {
                             event.preventDefault();
                         }
@@ -562,19 +581,36 @@
                     ;
                 }
 
-                scope.save = function(){
-                    waitingScreen.show();
+                scope.preSave = function(){
+                    var deferred = $q.defer();
+
+                    if(this.isAddressReadOnly()){
+                        return $q.when();
+                    }
+
                     getInfoFromGeocoder({address:this.request.property.address})
                         .then(function(data){
                             scope.request.address = parseGoogleAddressComponents(data[0].address_components);
                             scope.request.property.address = data[0].formatted_address;
 
+                            deferred.resolve();
+                        })
+                    ;
+
+                    return deferred.promise;
+                }
+
+                scope.save = function(){
+                    waitingScreen.show();
+                    this.preSave()
+                        .then(function(){
                             scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
                             scope.realtorPicture.prepareImage(800, 400, 600, 300);
 
                             return scope.request.save();
                         })
                         .then(function(data){//success save on backend
+                            scope.oldRequest = angular.copy(scope.request);
                             $rootScope.$broadcast('requestFlyerSaved');
                         })
                         .catch(function(e){
@@ -584,6 +620,10 @@
                             waitingScreen.hide();
                         })
                     ;
+                }
+
+                scope.isAddressReadOnly = function(){
+                    return this.request instanceof createFromPropertyApproval;
                 }
             }
         }
@@ -654,8 +694,6 @@
            var image = images.shift()
            if(image == undefined){
                deferred.resolve();
-
-               return;
            }
 
            var bgImg = new Image();

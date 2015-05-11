@@ -34,10 +34,38 @@
                     isFree: false
                 }
             })
+            .when('/flyer/from/approval/:id/edit', {
+                templateUrl: '/partials/request.flyer.edit',
+                controller:  'requestFromApprovalCtrl',
+                access: {
+                    isFree: false
+                }
+            })
         ;
     }]);
 
-    request.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages){
+    request.controller('requestFromApprovalCtrl', ['$scope', 'createFromPropertyApproval', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createFromPropertyApproval, $routeParams, createProfileUser, sessionMessages, $http){
+        $scope.request = {};
+        $scope.realtor = {};
+        $scope.titles = {
+            button: "Submit",
+            header: "Create Listing Flyer Request from property approval"
+        }
+
+        $scope.$on('requestFlyerSaved', function () {
+            sessionMessages.addSuccess("Successfully saved.");
+            history.back();
+        });
+
+        $http.get('/request/approval/' + $routeParams.id)
+            .success(function(info){
+                $scope.request = (new createFromPropertyApproval($routeParams.id)).fill(info);
+                $scope.realtor = createProfileUser().fill(info.user);
+            })
+        ;
+    }]);
+
+    request.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
@@ -50,11 +78,10 @@
             history.back();
         });
 
-        createAdminRequestFlyer()
-            .get($routeParams.id)
-            .then(function(flyer){
-                $scope.request = flyer;
-                $scope.realtor = createProfileUser().fill(flyer.user);
+        $http.get('/request/' + $routeParams.id)
+            .success(function(info){
+                $scope.request = (new createAdminRequestFlyer($routeParams.id)).fill(info);
+                $scope.realtor = createProfileUser().fill(info.user);
             })
         ;
     }]);
