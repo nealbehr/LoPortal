@@ -404,6 +404,33 @@
         };
     }]);
 
+    helperService.directive('validateGoogleAddress', ["parseGoogleAddressComponents", function(parseGoogleAddressComponents) {
+        return {
+            require: 'ngModel',
+            restrict: '',
+            link: function(scope, elm, attrs, ctrl) {
+                if (!ctrl) {
+                    return;
+                }
+
+                ctrl.$validators.address_components = function(){
+                    if (ctrl.$isEmpty(modelValue)) {
+                        // consider empty models to be valid
+                        return true;
+                    }
+
+                    for(var i in scope.request.address){
+                        if(scope.request.address[i] == '' || scope.request.address[i] == null){
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+            }
+        };
+    }]);
+
     helperService.directive('usaPhone', [function(){
         var phoneFormat = /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/;
         return {
@@ -510,7 +537,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -527,7 +554,7 @@
 
                 scope.$on('$locationChangeStart', function (event, next, current) {
                     if (!angular.equals(scope.oldRequest, scope.request)) {
-                        var answer = confirm("Are you sure you want to leave without saving changes?1");
+                        var answer = confirm("Are you sure you want to leave without saving changes?");
                         if (!answer) {
                             event.preventDefault();
                         }
@@ -624,6 +651,50 @@
 
                 scope.isAddressReadOnly = function(){
                     return this.request instanceof createFromPropertyApproval;
+                }
+
+                loadGoogleMapsApi()
+                    .then(function(){
+                        initialize();
+                    })
+                ;
+
+                var placeSearch, autocomplete;
+                function initialize() {
+                    // Create the autocomplete object, restricting the search
+                    // to geographical location types.
+                    autocomplete = new google.maps.places.Autocomplete(
+                        /** @type {HTMLInputElement} */(document.getElementById('pac-input')),
+                        { types: ['geocode'] });
+                    // When the user selects an address from the dropdown,
+                    // populate the address fields in the form.
+                    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                        fillInAddress();
+                    });
+                }
+
+                function fillInAddress() {
+                    // Get the place details from the autocomplete object.
+                    var place = autocomplete.getPlace();
+
+                    console.log(place)
+                    throw new Error("sdsd");
+                    return false;
+
+                    for (var component in componentForm) {
+                        document.getElementById(component).value = '';
+                        document.getElementById(component).disabled = false;
+                    }
+
+                    // Get each component of the address from the place details
+                    // and fill the corresponding field on the form.
+                    for (var i = 0; i < place.address_components.length; i++) {
+                        var addressType = place.address_components[i].types[0];
+                        if (componentForm[addressType]) {
+                            var val = place.address_components[i][componentForm[addressType]];
+                            document.getElementById(addressType).value = val;
+                        }
+                    }
                 }
             }
         }
