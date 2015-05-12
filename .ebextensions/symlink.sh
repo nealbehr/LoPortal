@@ -1,7 +1,9 @@
 #!/bin/sh
-sudo yum install -y nodejs npm --enablerepo=epel
+curl -sL https://rpm.nodesource.com/setup | bash -
 
-sudo npm install -y -g npm
+yum install -y nodejs
+
+npm install -y -g npm
 
 mkdir -p /home/ec2-user/node_modules
 ln -s /home/ec2-user/node_modules/ node_modules
