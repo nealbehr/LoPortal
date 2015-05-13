@@ -110,7 +110,7 @@
                     <div class="col-sm-4 pull-right">
                         <button class="btn btn-default btn-lg">[[ titles.button ]]</button>
                     </div>
-                    <div class="col-sm-4 pull-right" ng-if="request.property.state == states.requested || request.property.state == states.draft">
+                    <div class="col-sm-4 pull-right" ng-if="!request.property.state || request.property.state == states.draft">
                         <button class="btn btn-default btn-lg" ng-click="saveDraft($event)">Save</button>
                     </div>
                     <div class="col-sm-4">

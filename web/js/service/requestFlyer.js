@@ -18,9 +18,8 @@
             if(id){
                 this.id = id;
             }
-            var flyer = this;
 
-            this.save = function(){
+            this.update = function(){
                 this.property.state = settings.queue.state.listingFlyerPending;
                 return $http.put('/request/from/approval/' + this.id, this.getFields4Save());
             }
@@ -31,11 +30,28 @@
         return fromPropertyApproval;
     }]);
 
+    flyerService.service("createDraftRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
+        return function(){
+            var flyer = new createRequestFlyerBase();
+
+            flyer.update = function(){
+                return $http.put('/request/draft/' + this.id, this.getFields4Save());
+            }
+
+            flyer.add = function(){
+                this.property.state = settings.queue.state.draft;
+                return $http.post('/request/draft', this.getFields4Save());
+            }
+            return flyer;
+        }
+    }]);
+
     flyerService.service("createRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
         return function(){
             var flyer = new createRequestFlyerBase();
 
-            flyer.save = function(){
+            flyer.add = function(){
+                this.property.state = settings.queue.state.requested;
                 return $http.post('/request/', this.getFields4Save());
             }
 
@@ -52,26 +68,13 @@
                 flyer.id = id;
             }
 
-            flyer.save = function(){
-                return this.id? this.update(): this.add();
-            }
-
             flyer.update = function(){
                 var deferred = $q.defer();
                 if(this.property.state == settings.queue.state.draft){
                     this.property.state = settings.queue.state.requested;
                 }
-                $http.put('/request/' + this.id, this.getFields4Save())
-                    .success(function(data){
-                        deferred.resolve(data);
-                    })
-                    .error(function(data){
-                        console.log(data);
-                        deferred.reject(data);
-                    })
-                ;
 
-                return deferred.promise;
+                return $http.put('/request/' + this.id, this.getFields4Save());
             }
 
             flyer.add = function(){
@@ -82,14 +85,16 @@
         }
     }]);
 
-    flyerService.service("createRequestFlyerBase", ["$http", function($http){
+    flyerService.service("createRequestFlyerBase", ["$http","$q", function($http, $q){
         return function flyerBase(){
+            var self = this;
+
             this.id = null;
 
             this.property = {
                 address: null,
                 mls_number: null,
-                state: settings.queue.state.requested,
+                state: null,
                 listing_price: null,
                 photo: null,
                 getPicture: function(){
@@ -150,13 +155,14 @@
                 object = object || this;
                 var result = {};
                 for(var i in data){
-                    if(!(i in object)){
+                    if(!(i in object) || data[i] == null){
                         continue;
                     }
 
-                    if(typeof data[i] == "object" && data[i] !== null){
+                    if(typeof data[i] == "object"){
                         this.fillObject(data[i], object[i]);
-                    }else{
+                    }
+                    else{
                         object[i] = data[i];
                     }
                 }
@@ -179,20 +185,39 @@
             }
 
             this.save = function(){
-                throw new Error("Request save must be override");
+                var deferred = $q.defer();
+                (function(){ return self.id? self.update(): self.add();})()
+                    .success(function(data){
+                        self.afterSave();
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
             }
 
-            this.draftSave = function(){
-                return this.id? this.draftUpdate(): this.draftAdd();
+            this.add = function(){
+                throw new Error("Request add must be override");
             }
 
-            this.draftUpdate = function(){
-                return $http.put('/request/draft/' + this.id, this.getFields4Save());
+            this.update = function(){
+                throw new Error("Request update must be override");
             }
 
-            this.draftAdd = function(){
-                this.property.state = settings.queue.state.draft;
-                return $http.post('/request/draft', this.getFields4Save());
+            var afterSaveCallback;
+            this.afterSave = function(callback){
+                if(callback){
+                    afterSaveCallback = callback;
+
+                    return;
+                }
+
+                if(typeof afterSaveCallback == 'function'){
+                    afterSaveCallback();
+                }
             }
         }
     }]);

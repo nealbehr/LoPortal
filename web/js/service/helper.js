@@ -537,7 +537,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -562,9 +562,11 @@
                 });
 
                 scope.$watch('request', function(newVal){
-                    if(undefined == newVal || !("id" in newVal)){
+                    if(undefined == newVal || !("id" in newVal) || scope.realtorPicture){
                         return;
                     }
+
+                    console.log(1);
 
                     scope.realtorPicture = new pictureObject(
                         angular.element("#realtorImage"),
@@ -586,39 +588,46 @@
                 scope.cancel = function(e){
                     e.preventDefault();
 
-                    history.back();
+                    if(scope.request.property.state != settings.queue.state.draft){
+                        history.back();
+                        return;
+                    }
+
+                    scope.request.remove()
                 }
 
                 scope.saveDraft = function(e){
                     e.preventDefault();
-                    waitingScreen.show();
 
-                    scope.request
-                        .draftSave()
-                        .then(function(){
-                            sessionMessages.addSuccess("Successfully saved.");
-                            scope.oldRequest = angular.copy(scope.request);
-                            history.back();
-                        })
-                        .catch(function(e){
-                            alert("message" in e.data? e.data.message: "We have some problems. Please try later.");
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        })
-                    ;
+                    scope.request.property.state = settings.queue.state.draft;
+
+                    scope.request = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
+                    scope.request.property.ggg = 1111;
+
+                    scope.request.afterSave(function(){
+                        sessionMessages.addSuccess("Successfully saved.");
+                        scope.oldRequest = angular.copy(scope.request);
+                        history.back();
+                    });
+
+                    this.saveRequest();
                 }
 
                 scope.save = function(){
+                    scope.request.afterSave(function(){
+                        scope.oldRequest = angular.copy(scope.request);
+                        $rootScope.$broadcast('requestFlyerSaved');
+                    });
+
+                    this.saveRequest();
+                }
+
+                scope.saveRequest = function(){
                     waitingScreen.show();
                     scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
                     scope.realtorPicture.prepareImage(800, 400, 600, 300);
 
                     scope.request.save()
-                        .then(function(data){//success save on backend
-                            scope.oldRequest = angular.copy(scope.request);
-                            $rootScope.$broadcast('requestFlyerSaved');
-                        })
                         .catch(function(e){
                             alert("We have some problems. Please try later.");
                         })
@@ -656,7 +665,7 @@
                             scope.request.address.set(parseGoogleAddressComponents(place.address_components));
                             scope.request.property.address = place.formatted_address;
                         }else{
-                            scope.request.address = {}
+                            scope.request.address.clear();
                         }
                     });
                 }
