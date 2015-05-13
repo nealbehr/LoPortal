@@ -14,6 +14,7 @@ use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerSubmission;
 use LO\Exception\Http;
+use LO\Form\FirstRexAddress;
 use LO\Form\QueueForm;
 use LO\Form\RealtorForm;
 use LO\Form\RequestFlyerForm;
@@ -44,6 +45,7 @@ class RequestFlyerController extends RequestBaseController{
         return $app->json([
             'property' => array_merge($this->removeExtraFields($queue->toArray(), $queueForm), $this->removeExtraFields($requestFlyer->toArray(), $formFlyerForm)),
             'realtor'  => $this->removeExtraFields($realtor->toArray(), $realtorForm),
+            'address'  => $queue->getAdditionalInfo(),
             'user'     => $queue->getUser()->getPublicInfo(),
         ]);
     }
@@ -53,10 +55,20 @@ class RequestFlyerController extends RequestBaseController{
             $formOptions = ['validation_groups' => ["Default", "main"]];
             $app->getEntityManager()->beginTransaction();
 
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $app->user());
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
+            $firstRexForm->handleRequest($request);
+
+            if(!$firstRexForm->isValid()){
+//                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
+
+                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
+
             $realtor      = new Realtor();
             $requestFlyer = new RequestFlyer();
-            $queue        = (new Queue())->set1RexId($id);
+            $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
 
             $this->saveFlyer(
                 $app,
@@ -96,9 +108,18 @@ class RequestFlyerController extends RequestBaseController{
 
             $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
 
-            $id = $this->sendRequestTo1Rex($app, $request->get('address'), $queue->getUser());
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ['method' => 'PUT']);
+            $firstRexForm->handleRequest($request);
 
-            $queue->set1RexId($id);
+            if(!$firstRexForm->isValid()){
+//                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
+
+                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
+
+            $queue->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
 
             $this->saveFlyer(
                 $app,

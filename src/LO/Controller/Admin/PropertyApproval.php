@@ -49,7 +49,8 @@ class PropertyApproval extends RequestApprovalBase{
 
             $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $queue->getUser());
 
-            $queue->set1RexId($id);
+            $queue->set1RexId($id)
+                  ->setAdditionalInfo($firstRexForm->getData());
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, ["method" => "PUT"]);
             $queueForm->handleRequest($request);
