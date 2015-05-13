@@ -48,9 +48,9 @@
                 </div>
                 <div class="inputs-holder">
                     <div class="input">
-                        <input ng-readonly="isAddressReadOnly()" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" ng-model="request.property.address" required="" ng-model-options="{ updateOn: 'blur' }">
+                        <input ng-readonly="isAddressReadOnly()" ng-keydown="request.address.clear();" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
                         <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.required" data-toggle="tooltip" data-placement="right" title="The Property address is required.">!</span>
-                        <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.googleAddress" data-toggle="tooltip" data-placement="right" title="The Property address is invalid.">!</span>
+                        <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.address_components" data-toggle="tooltip" data-placement="right" title="The Property address is invalid.">!</span>
                     </div>
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
@@ -110,7 +110,7 @@
                     <div class="col-sm-4 pull-right">
                         <button class="btn btn-default btn-lg">[[ titles.button ]]</button>
                     </div>
-                    <div class="col-sm-4 pull-right" ng-if="!request.property.state || request.property.state == stateDraft">
+                    <div class="col-sm-4 pull-right" ng-if="request.property.state == states.requested || request.property.state == states.draft">
                         <button class="btn btn-default btn-lg" ng-click="saveDraft($event)">Save</button>
                     </div>
                     <div class="col-sm-4">

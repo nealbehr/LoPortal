@@ -10,6 +10,7 @@ namespace LO\Controller;
 
 use Silex\Application;
 use Silex\ControllerProviderInterface;
+use Silex\ControllerCollection;
 
 class RequestProvider implements ControllerProviderInterface{
     public function connect(Application $app) {
@@ -32,7 +33,8 @@ class RequestProvider implements ControllerProviderInterface{
             ->post("/", "request.flyer.controller:addAction");
 
         $controllers
-            ->put("/{id}", "request.flyer.controller:updateAction");
+            ->put("/{id}", "request.flyer.controller:updateAction")
+        ;
 
         $controllers
             ->put("/from/approval/{id}", "request.flyer.controller:createFromApprovalRequestAction");

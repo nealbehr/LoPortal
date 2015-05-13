@@ -120,6 +120,26 @@
                 }
             }
 
+            this.address = {
+                address: '',
+                city:    null,
+                state:   null,
+                zip:     null,
+                clear: function(){
+                    this.address = '';
+                    this.city    = null;
+                    this.state   = null;
+                    this.zip     = null;
+                },
+                set: function(data){
+                    for(var i in data){
+                        if(i in data){
+                            this[i] = data[i];
+                        }
+                    }
+                }
+            }
+
             this.fill = function(data){
                 this.fillObject(data);
 

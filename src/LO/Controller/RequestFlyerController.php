@@ -82,6 +82,10 @@ class RequestFlyerController extends RequestBaseController{
 
     public function updateAction(Application $app, Request $request, $id){
         try {
+            if (!$app['security']->isGranted(User::ROLE_ADMIN)){
+                throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
+            }
+
             $app->getEntityManager()->beginTransaction();
             $formOptions = [
                 'validation_groups' => ["Default", "main"],

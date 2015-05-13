@@ -413,7 +413,7 @@
                     return;
                 }
 
-                ctrl.$validators.address_components = function(){
+                ctrl.$validators.address_components = function(modelValue){
                     if (ctrl.$isEmpty(modelValue)) {
                         // consider empty models to be valid
                         return true;
@@ -547,7 +547,7 @@
                 user: '=loUser'
             },
             link: function(scope, element, attrs, controllers){
-                scope.stateDraft = settings.queue.state.draft;
+                scope.states = settings.queue.state;
                 scope.realtorPicture;
                 scope.propertyPicture;
                 scope.oldRequest;
@@ -597,6 +597,7 @@
                         .draftSave()
                         .then(function(){
                             sessionMessages.addSuccess("Successfully saved.");
+                            scope.oldRequest = angular.copy(scope.request);
                             history.back();
                         })
                         .catch(function(e){
@@ -608,34 +609,12 @@
                     ;
                 }
 
-                scope.preSave = function(){
-                    var deferred = $q.defer();
-
-                    if(this.isAddressReadOnly()){
-                        return $q.when();
-                    }
-
-                    getInfoFromGeocoder({address:this.request.property.address})
-                        .then(function(data){
-                            scope.request.address = parseGoogleAddressComponents(data[0].address_components);
-                            scope.request.property.address = data[0].formatted_address;
-
-                            deferred.resolve();
-                        })
-                    ;
-
-                    return deferred.promise;
-                }
-
                 scope.save = function(){
                     waitingScreen.show();
-                    this.preSave()
-                        .then(function(){
-                            scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
-                            scope.realtorPicture.prepareImage(800, 400, 600, 300);
+                    scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
+                    scope.realtorPicture.prepareImage(800, 400, 600, 300);
 
-                            return scope.request.save();
-                        })
+                    scope.request.save()
                         .then(function(data){//success save on backend
                             scope.oldRequest = angular.copy(scope.request);
                             $rootScope.$broadcast('requestFlyerSaved');
@@ -661,40 +640,25 @@
 
                 var placeSearch, autocomplete;
                 function initialize() {
-                    // Create the autocomplete object, restricting the search
-                    // to geographical location types.
                     autocomplete = new google.maps.places.Autocomplete(
-                        /** @type {HTMLInputElement} */(document.getElementById('pac-input')),
-                        { types: ['geocode'] });
-                    // When the user selects an address from the dropdown,
-                    // populate the address fields in the form.
+                        (document.getElementById('pac-input')),
+                        { types: ['geocode'] }
+                    );
                     google.maps.event.addListener(autocomplete, 'place_changed', function() {
                         fillInAddress();
                     });
                 }
 
                 function fillInAddress() {
-                    // Get the place details from the autocomplete object.
                     var place = autocomplete.getPlace();
-
-                    console.log(place)
-                    throw new Error("sdsd");
-                    return false;
-
-                    for (var component in componentForm) {
-                        document.getElementById(component).value = '';
-                        document.getElementById(component).disabled = false;
-                    }
-
-                    // Get each component of the address from the place details
-                    // and fill the corresponding field on the form.
-                    for (var i = 0; i < place.address_components.length; i++) {
-                        var addressType = place.address_components[i].types[0];
-                        if (componentForm[addressType]) {
-                            var val = place.address_components[i][componentForm[addressType]];
-                            document.getElementById(addressType).value = val;
+                    scope.$apply(function(){
+                        if("address_components" in place){
+                            scope.request.address.set(parseGoogleAddressComponents(place.address_components));
+                            scope.request.property.address = place.formatted_address;
+                        }else{
+                            scope.request.address = {}
                         }
-                    }
+                    });
                 }
             }
         }
