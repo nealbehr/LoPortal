@@ -285,6 +285,20 @@ th.header {
         margin: -16px 0 0 -16px;
     }
 }
+.lenders-table {
+    th {
+        padding: 16px 20px !important;
+        &:nth-child(2) {
+            width: 12%;
+        }
+        &:nth-child(3) {
+            width: 15%;
+        }
+    }
+    td {
+        padding: 16px 20px !important;
+    }
+}
 
 @import "custom-style/links";
 @import "custom-style/navbar";

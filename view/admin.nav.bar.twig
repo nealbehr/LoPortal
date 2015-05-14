@@ -2,6 +2,7 @@
     <h1>Admin Panel</h1>
     <ul class="tabset">
         <li ng-repeat="tab in tabs" ng-class="{active: tab.isActive()}"><a href="/#[[ tab.path ]]">[[ tab.title ]]</a></li>
+        <li><a href="/#/admin/lenders">Lender</a></li>
     </ul>
     <div class="btn-holder">
         <a href="/#/admin/user/new" class="btn btn-default">Add User</a>
