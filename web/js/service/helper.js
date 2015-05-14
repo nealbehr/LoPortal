@@ -552,15 +552,6 @@
                 scope.propertyPicture;
                 scope.oldRequest;
 
-                scope.$on('$locationChangeStart', function (event, next, current) {
-                    if (!angular.equals(scope.oldRequest, scope.request)) {
-                        var answer = confirm("Are you sure you want to leave without saving changes?");
-                        if (!answer) {
-                            event.preventDefault();
-                        }
-                    }
-                });
-
                 scope.$watch('request', function(newVal){
                     if(undefined == newVal || !("id" in newVal)){
                         return;
@@ -579,6 +570,15 @@
                     );
 
                     scope.oldRequest = angular.copy(scope.request);
+
+                    scope.$on('$locationChangeStart', function (event, next, current) {
+                        if (!angular.equals(scope.oldRequest, scope.request)) {
+                            var answer = confirm("Are you sure you want to leave without saving changes?");
+                            if (!answer) {
+                                event.preventDefault();
+                            }
+                        }
+                    });
                 });
 
                 $('[data-toggle="tooltip"]').tooltip();
@@ -592,7 +592,6 @@
                     }
 
                     scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
-                    delete scope.request;
 
                     waitingScreen.show();
                     scope.requestDraft.remove()
@@ -615,8 +614,6 @@
                     scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
                     scope.realtorPicture.setObjectImage(scope.requestDraft.realtor);
                     scope.propertyPicture.setObjectImage(scope.requestDraft.property);
-
-                    delete scope.request;
 
                     scope.requestDraft.afterSave(function(){
                         sessionMessages.addSuccess("Successfully saved.");
@@ -643,6 +640,8 @@
 
                     request.save()
                         .catch(function(e){
+                            scope.realtorPicture.setObjectImage(scope.request.realtor);
+                            scope.propertyPicture.setObjectImage(scope.request.property);
                             alert("We have some problems. Please try later.");
                         })
                         .finally(function(){
