@@ -37,6 +37,7 @@ class RequestFlyerBase extends RequestBaseController{
         }
 
         $app->getEntityManager()->persist($realtor);
+        $app->getEntityManager()->flush();
 
         $queue
             ->setType(Queue::TYPE_FLYER)
@@ -53,6 +54,7 @@ class RequestFlyerBase extends RequestBaseController{
         }
 
         $app->getEntityManager()->persist($queue);
+        $app->getEntityManager()->flush();
 
         $requestFlyer
             ->setRealtorId($realtor->getId())
