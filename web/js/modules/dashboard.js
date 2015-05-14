@@ -78,7 +78,7 @@
 
             /* expand all except declined */
             for(var i in this.dashboard){
-                this.settingRows[i].isExpand = (i != settings.queue.state.declined && i != settings.queue.state.draft) && this.dashboard[i].length > 0;
+                this.settingRows[i].isExpand = i != settings.queue.state.declined && this.dashboard[i].length > 0;
             }
         }
 
