@@ -69,7 +69,6 @@
             }
 
             flyer.update = function(){
-                var deferred = $q.defer();
                 if(this.property.state == settings.queue.state.draft){
                     this.property.state = settings.queue.state.requested;
                 }

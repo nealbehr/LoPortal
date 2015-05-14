@@ -562,11 +562,9 @@
                 });
 
                 scope.$watch('request', function(newVal){
-                    if(undefined == newVal || !("id" in newVal) || scope.realtorPicture){
+                    if(undefined == newVal || !("id" in newVal)){
                         return;
                     }
-
-                    console.log(1);
 
                     scope.realtorPicture = new pictureObject(
                         angular.element("#realtorImage"),
@@ -601,16 +599,19 @@
 
                     scope.request.property.state = settings.queue.state.draft;
 
-                    scope.request = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
-                    scope.request.property.ggg = 1111;
+                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
+                    scope.realtorPicture.setObjectImage(scope.requestDraft.realtor);
+                    scope.propertyPicture.setObjectImage(scope.requestDraft.property);
 
-                    scope.request.afterSave(function(){
+                    delete scope.request;
+
+                    scope.requestDraft.afterSave(function(){
                         sessionMessages.addSuccess("Successfully saved.");
                         scope.oldRequest = angular.copy(scope.request);
                         history.back();
                     });
 
-                    this.saveRequest();
+                    this.saveRequest(scope.requestDraft);
                 }
 
                 scope.save = function(){
@@ -619,15 +620,15 @@
                         $rootScope.$broadcast('requestFlyerSaved');
                     });
 
-                    this.saveRequest();
+                    this.saveRequest(scope.request);
                 }
 
-                scope.saveRequest = function(){
+                scope.saveRequest = function(request){
                     waitingScreen.show();
                     scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
                     scope.realtorPicture.prepareImage(800, 400, 600, 300);
 
-                    scope.request.save()
+                    request.save()
                         .catch(function(e){
                             alert("We have some problems. Please try later.");
                         })

@@ -5,12 +5,18 @@
     var pictureService = angular.module('pictureModule', []);
 
     pictureService.factory("pictureObject", ["loadFile", "$timeout", function(loadFile, $timeout){
-        return function(inputFile, imageSettings, objectForImage){
-            if(!("setPicture" in objectForImage)){
+        return function(inputFile, imageSettings, inObjectForImage){
+            if(!("setPicture" in inObjectForImage)){
                 throw new Error("setPicture not found.");
             }
 
+            var objectForImage = inObjectForImage;
+
             var self = this;
+
+            this.setObjectImage = function(newImageObject){
+                objectForImage = newImageObject;
+            }
 
             this.choosePhoto = function(){
                 inputFile.click();
