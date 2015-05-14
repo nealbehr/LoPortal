@@ -48,8 +48,31 @@
                     isFree: false
                 }
             })
+            .when('/admin/lenders', {
+                templateUrl: '/partials/admin.lenders',
+                controller:  'lendersCtrl',
+                access: {
+                    isFree: false
+                }
+            })
+            .when('/admin/lender/:id/edit', {
+                templateUrl: '/partials/admin.lender.edit',
+                controller:  'lenderEditCtrl',
+                access: {
+                    isFree: false
+                }
+            })
         ;
     }]);
+
+    admin.controller('lendersCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
+    }]);
+
+    admin.controller('lenderEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
+    }]);
+
 
     admin.controller('adminRequestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
