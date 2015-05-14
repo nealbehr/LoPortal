@@ -4,15 +4,15 @@
 
     var flyerService = angular.module('requestFlyerModule', []);
 
-    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", "$q", function($http, createRequestFlyerBase, $q){
-        function extend(Child, Parent) {
-            var F = function() { }
-            F.prototype = Parent.prototype
-            Child.prototype = new F()
-            Child.prototype.constructor = Child
-            Child.superclass = Parent.prototype
-        }
+    function extend(Child, Parent) {
+        var F = function() { }
+        F.prototype = Parent.prototype
+        Child.prototype = new F()
+        Child.prototype.constructor = Child
+        Child.superclass = Parent.prototype
+    }
 
+    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", "$q", function($http, createRequestFlyerBase, $q){
         function fromPropertyApproval(id){
             fromPropertyApproval.superclass.constructor.call(this);
             if(id){
@@ -20,7 +20,6 @@
             }
 
             this.update = function(){
-                this.property.state = settings.queue.state.listingFlyerPending;
                 return $http.put('/request/from/approval/' + this.id, this.getFields4Save());
             }
         }
@@ -39,9 +38,13 @@
             }
 
             flyer.add = function(){
-                this.property.state = settings.queue.state.draft;
                 return $http.post('/request/draft', this.getFields4Save());
             }
+
+            flyer.remove = function(){
+                return $http.delete('/request/draft/' + this.id);
+            }
+
             return flyer;
         }
     }]);
@@ -51,7 +54,6 @@
             var flyer = new createRequestFlyerBase();
 
             flyer.add = function(){
-                this.property.state = settings.queue.state.requested;
                 return $http.post('/request/', this.getFields4Save());
             }
 
@@ -69,10 +71,6 @@
             }
 
             flyer.update = function(){
-                if(this.property.state == settings.queue.state.draft){
-                    this.property.state = settings.queue.state.requested;
-                }
-
                 return $http.put('/request/' + this.id, this.getFields4Save());
             }
 

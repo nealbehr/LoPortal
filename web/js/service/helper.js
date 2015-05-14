@@ -591,7 +591,20 @@
                         return;
                     }
 
-                    scope.request.remove()
+                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
+                    delete scope.request;
+
+                    waitingScreen.show();
+                    scope.requestDraft.remove()
+                        .success(function(){
+                            scope.oldRequest = angular.copy(scope.request);
+                            history.back();
+                        })
+                        .finally(function(){
+                            waitingScreen.hide();
+                        })
+
+                    ;
                 }
 
                 scope.saveDraft = function(e){

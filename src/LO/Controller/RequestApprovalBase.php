@@ -45,7 +45,7 @@ class RequestApprovalBase extends RequestBaseController{
         $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
 
         return $app->json([
-            'property' => $this->removeExtraFields($queue->toArray(), $queueForm),
+            'property' => $this->getFormFieldsAsArray($queueForm),
             'address'  => $queue->getAdditionalInfo(),
             'user'     => $queue->getUser()->getPublicInfo(),
         ]);

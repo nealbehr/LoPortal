@@ -22,7 +22,7 @@ class QueueForm extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('address', 'text')
-            ->add('state', 'text')
+//            ->add('state', 'text')//, ['mapped'=>false]
             ->add('mls_number', 'text');
     }
 

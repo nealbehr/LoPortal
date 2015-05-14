@@ -9,6 +9,7 @@
 namespace LO\Traits;
 
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Form;
 
 trait GetFormErrors {
     public function getFormErrors(FormInterface $form){
@@ -28,5 +29,15 @@ trait GetFormErrors {
 
     protected function removeExtraFields($requestData, $form){
         return array_intersect_key($requestData, $form->all());
+    }
+
+    protected function getFormFieldsAsArray(FormInterface $form){
+        $result = [];
+        /** @var Form $child */
+        foreach($form->all() as $k => $child){
+            $result[$k] = $child->getData();
+        }
+
+        return $result;
     }
 } 

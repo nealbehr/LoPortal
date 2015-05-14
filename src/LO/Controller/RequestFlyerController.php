@@ -33,18 +33,18 @@ class RequestFlyerController extends RequestBaseController{
     public function getAction(Application $app, $id){
         $queue = $this->getQueueById($app, $id);
 
-        $queueForm = $app->getFormFactory()->create(new QueueForm());
+        $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
 
         $requestFlyer = $queue->getFlyer();
 
-        $formFlyerForm = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()));
+        $formFlyerForm = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer);
 
         $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($requestFlyer->getRealtorId());
-        $realtorForm = $app->getFormFactory()->create(new RealtorForm($app->getS3()));
+        $realtorForm = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor);
 
         return $app->json([
-            'property' => array_merge($this->removeExtraFields($queue->toArray(), $queueForm), $this->removeExtraFields($requestFlyer->toArray(), $formFlyerForm)),
-            'realtor'  => $this->removeExtraFields($realtor->toArray(), $realtorForm),
+            'property' => array_merge($this->getFormFieldsAsArray($queueForm), $this->getFormFieldsAsArray($formFlyerForm), ['state' => $queue->getState()]),
+            'realtor'  => $this->getFormFieldsAsArray($realtorForm),
             'address'  => $queue->getAdditionalInfo(),
             'user'     => $queue->getUser()->getPublicInfo(),
         ]);
@@ -184,6 +184,33 @@ class RequestFlyerController extends RequestBaseController{
                 $queue->getFlyer(),
                 ['method' => 'PUT', 'validation_groups' => ["Default", "draft"]]
             );
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
+    public function deleteDraftAction(Application $app, $id){
+        try {
+            $app->getEntityManager()->beginTransaction();
+            $queue = $this->getQueueById($app, $id);
+
+            if($queue->getState() !== Queue::STATE_DRAFT){
+                throw new Http("We can remove only draft.");
+            }
+
+            $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
+
+            $app->getEntityManager()->remove($queue->getFlyer());
+            $app->getEntityManager()->remove($realtor);
+            $app->getEntityManager()->remove($queue);
+            $app->getEntityManager()->flush();
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
