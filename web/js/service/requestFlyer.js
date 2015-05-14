@@ -50,11 +50,19 @@
     }]);
 
     flyerService.service("createRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
-        return function(){
+        return function(id){
             var flyer = new createRequestFlyerBase();
+
+            if(id){
+                flyer.id = id;
+            }
 
             flyer.add = function(){
                 return $http.post('/request/', this.getFields4Save());
+            }
+
+            flyer.update = function(){
+                return $http.put('/request/' + this.id, this.getFields4Save());
             }
 
             return flyer;
@@ -71,13 +79,8 @@
             }
 
             flyer.update = function(){
-                return $http.put('/request/' + this.id, this.getFields4Save());
+                return $http.put('/admin/flyer/' + this.id, this.getFields4Save());
             }
-
-            flyer.add = function(){
-                throw new Error("ID not found");
-            }
-
             return flyer;
         }
     }]);

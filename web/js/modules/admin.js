@@ -36,7 +36,7 @@
             })
             .when('/admin/flyer/:id/edit', {
                 templateUrl: '/partials/admin.request.flyer.edit',
-                controller:  'requestFlyerEditCtrl',
+                controller:  'adminRequestFlyerEditCtrl',
                 access: {
                     isFree: false
                 }
@@ -51,7 +51,7 @@
         ;
     }]);
 
-    admin.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+    admin.controller('adminRequestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {

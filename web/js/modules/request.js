@@ -65,7 +65,7 @@
         ;
     }]);
 
-    request.controller('requestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+    request.controller('requestFlyerEditCtrl', ['$scope', 'createRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
@@ -80,7 +80,7 @@
 
         $http.get('/request/' + $routeParams.id)
             .success(function(info){
-                $scope.request = (new createAdminRequestFlyer($routeParams.id)).fill(info);
+                $scope.request = (new createRequestFlyer($routeParams.id)).fill(info);
                 $scope.realtor = createProfileUser().fill(info.user);
             })
         ;

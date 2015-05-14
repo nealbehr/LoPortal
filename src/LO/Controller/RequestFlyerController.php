@@ -8,7 +8,6 @@
 
 namespace LO\Controller;
 
-
 use LO\Application;
 use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Common\Email\Request\RequestFlyerApproval;
@@ -25,11 +24,9 @@ use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use LO\Traits\GetFormErrors;
 
-class RequestFlyerController extends RequestBaseController{
-    use GetFormErrors;
 
+class RequestFlyerController extends RequestFlyerBase{
     public function getAction(Application $app, $id){
         $queue = $this->getQueueById($app, $id);
 
@@ -94,41 +91,17 @@ class RequestFlyerController extends RequestBaseController{
 
     public function updateAction(Application $app, Request $request, $id){
         try {
-            if (!$app['security']->isGranted(User::ROLE_ADMIN)){
-                throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
-            }
-
             $app->getEntityManager()->beginTransaction();
-            $formOptions = [
-                'validation_groups' => ["Default", "main"],
-                'method' => 'PUT'
-            ];
 
             $queue = $this->getQueueById($app, $id);
 
-            $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
-
-            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ['method' => 'PUT']);
-            $firstRexForm->handleRequest($request);
-
-            if(!$firstRexForm->isValid()){
-//                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
-
-                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            if($queue->getState() !== Queue::STATE_DRAFT){
+                throw new Http("You can't edit this flyer.", Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
+            $queue->setState(Queue::STATE_REQUESTED);
 
-            $queue->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
-
-            $this->saveFlyer(
-                $app,
-                $request,
-                $realtor,
-                $queue,
-                $queue->getFlyer(),
-                $formOptions
-            );
+            $this->update($app, $request, $queue);
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
@@ -238,7 +211,7 @@ class RequestFlyerController extends RequestBaseController{
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
-            $queue->setType(Queue::TYPE_FLYER);
+            $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_LISTING_FLYER_PENDING);
 
             $realtor = new Realtor();
             $flyer = new RequestFlyer();
@@ -264,84 +237,5 @@ class RequestFlyerController extends RequestBaseController{
         }
 
         return $app->json("success");
-    }
-
-    /**
-     * @param Application $app
-     * @param $id
-     * @return Queue
-     * @throws \LO\Exception\Http
-     */
-    private function getQueueById(Application $app, $id){
-        /** @var Queue $queue */
-        $queue = (new QueueManager($app))->getByIdWithRequestFlyeAndrUser($id);
-
-        if(!$queue){
-            throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
-        }
-
-        if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)) {
-            throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
-        }
-
-        return $queue;
-    }
-
-    /**
-     * @param Application $app
-     * @param $id
-     * @return null|Realtor
-     */
-    private function getRealtorById(Application $app, $id){
-        return $app->getEntityManager()
-            ->getRepository(Realtor::class)
-            ->find($id);
-    }
-
-    private function saveFlyer(Application $app, Request $request, Realtor $realtor, Queue $queue, RequestFlyer $requestFlyer, array $formOptions = []){
-        $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptions);
-        $form->handleRequest($request);
-        if(!$form->isValid()){
-            $this->getMessage()->replace('realtor', $this->getFormErrors($form));
-
-            throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
-        }
-
-        $app->getEntityManager()->persist($realtor);
-        $app->getEntityManager()->flush();
-
-        $queue
-            ->setType(Queue::TYPE_FLYER)
-            ->setUser($app->user())
-        ;
-
-        $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, $formOptions);
-        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
-
-        if(!$queueForm->isValid()){
-            $this->getMessage()->replace('property', $this->getFormErrors($queueForm));
-
-            throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
-        }
-
-        $app->getEntityManager()->persist($queue);
-        $app->getEntityManager()->flush();
-
-        $requestFlyer
-            ->setRealtorId($realtor->getId())
-            ->setQueue($queue)
-        ;
-
-        $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer, $formOptions);
-        $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));
-
-        if(!$formRequestFlyer->isValid()){
-            $this->getMessage()->replace('property', $this->getFormErrors($form));
-
-            throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
-        }
-
-        $app->getEntityManager()->persist($requestFlyer);
-        $app->getEntityManager()->flush();
     }
 }
