@@ -1,0 +1,38 @@
+<div id="messageContainer"></div>
+<div class="row top-bar">
+    <div class="col-sm-4 col-lg-3">
+        <lo-admin-panel-search lo-search-key="searchKey" lo-searching-string="searchingString"></lo-admin-panel-search>
+    </div>
+    <div class="paging col-sm-4 col-sm-offset-4 col-lg-offset-5">
+        <lo-admin-panel-pagination lo-pagination="pagination"></lo-admin-panel-pagination>
+    </div>
+</div>
+<div class="admin-table lenders-table">
+    <div class="table-holder">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th class="header" ng-click="param.sort()" ng-repeat="param in headParams" ng-class="{headerSortUp: param.isSortedUp(), headerSortDown: param.isSortedDown(), isSortable: param.isSortable}"><span ng-bind-html="param.title"></span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(key, lender) in lenders">
+                <td>[[ lender.id ]]</td>
+                <td>[[ lender.name ]]</td>
+                <td>[[ lender.address ]]</td>
+                <td>[[ lender.disclosure ]]</td>
+                <td><img src="[[ lender.picture ]]" alt="[[ lender.name ]]"></td>
+                <td>
+                    <div class="dropdown">
+                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="/#/admin/lender/[[ lender.id ]]/edit" class="change">Edit</a></li>
+                            <li><a href="#" ng-click="delete($event, key, lender)" class="delete">Delete</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
