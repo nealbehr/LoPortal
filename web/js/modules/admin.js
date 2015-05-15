@@ -462,7 +462,7 @@
         }
     }]);
 
-    admin.directive('loAdminLenders', ['$http', 'tableHeadCol', '$location', "ngDialog", "createLender", "renderMessage", function($http, tableHeadCol, $location, ngDialog, createLender, renderMessage){
+    admin.directive('loAdminLenders', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", function($http, tableHeadCol, $location, ngDialog, renderMessage){
         return {
             restrict: 'EA',
             templateUrl: '/partials/admin.panel.lenders',
