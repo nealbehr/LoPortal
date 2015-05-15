@@ -62,6 +62,20 @@
                     isFree: false
                 }
             })
+            .when('/admin/realtors', {
+                templateUrl: '/partials/admin.realtors',
+                controller:  'realtorsCtrl',
+                access: {
+                    isFree: false
+                }
+            })
+            .when('/admin/realtor/:id/edit', {
+                templateUrl: '/partials/admin.realtor.edit',
+                controller:  'realtorEditCtrl',
+                access: {
+                    isFree: false
+                }
+            })
         ;
     }]);
 
@@ -70,6 +84,14 @@
     }]);
 
     admin.controller('lenderEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
+    }]);
+    
+    admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
+    }]);
+
+    admin.controller('realtorEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
 
     }]);
 
