@@ -69,6 +69,20 @@
                     isFree: false
                 }
             })
+            .when('/admin/realtors', {
+                templateUrl: '/partials/admin.realtors',
+                controller:  'realtorsCtrl',
+                access: {
+                    isFree: false
+                }
+            })
+            .when('/admin/realtor/:id/edit', {
+                templateUrl: '/partials/admin.realtor.edit',
+                controller:  'realtorEditCtrl',
+                access: {
+                    isFree: false
+                }
+            })
         ;
     }]);
 
@@ -78,6 +92,14 @@
 
     admin.controller('adminLenderNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', function($scope, $http, redirect, $compile, waitingScreen, createLender){
         $scope.lender = createLender();
+    }]);
+    
+    admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
+    }]);
+
+    admin.controller('realtorEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
     }]);
 
     admin.controller('adminLenderEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
