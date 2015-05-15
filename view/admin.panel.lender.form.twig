@@ -1,22 +1,18 @@
-<lo-navbar-head></lo-navbar-head>
-
-<section class="container">
-    <lo-admin-nav-bar></lo-admin-nav-bar>
-    <form class="css-form" novalidate>
+<form ng-submit="submit(formLender)" class="css-form" novalidate name="formLender">
     <div class="row edit-user">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
 
             <h2>Edit Lender</h2>
             <div class="main-info">
-               <div class="user-photo">
-                   <div class="realtor-photo">
-                       <img src="images/img01.png">
-                   </div>
+                <div class="user-photo">
+                    <div class="realtor-photo">
+                        <img src="images/img01.png">
+                    </div>
                    <span class="upload">
                         Upload Photo
                         <div><input class="upload" id="userPhoto" type="file"></div>
                     </span>
-               </div>
+                </div>
                 <div class="inputs-holder">
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="Lender name">
@@ -31,10 +27,9 @@
             <textarea class="form-control" cols="30" rows="2" placeholder="Lender disclosure"></textarea>
             <button class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
-                <a href="#" class="delete pull-right">Delete lender</a>
-                <a href="#" class="back">Cancel</a>
+                <a ng-if="lender.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete lender</a>
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>
     </div>
-    </form>
-</section>
+</form>

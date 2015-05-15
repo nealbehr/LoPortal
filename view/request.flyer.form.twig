@@ -86,6 +86,24 @@
                         </div>
                     </div>
                 </div>
+                <div class="main-info">
+                    <div class="user-photo">
+                        <div class="realtor-photo">
+                            <img src="images/realtors/realtor.png" alt="" ng-click="realtorPicture.choosePhoto()">
+                        </div>
+                        <span class="upload">
+                            Upload Photo
+                            <div><input id="realtorImage" type="file" valid-file name="realtorfileimage" required="" ng-model="request.realtor.photo"></div>
+                        </span>
+                        <span class="error-badge" ng-show="(newFlyer.$submitted || newFlyer.realtorfileimage.$touched) && newFlyer.realtorfileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Realtor image is required.">!</span>
+                    </div>
+                    <div class="inputs-holder">
+                        <div class="input">
+                            <input class="input-lg" type="text" placeholder="Realtor company" ng-pattern="/^[A-Za-z\s]+$/">
+                        </div>
+                    </div>
+                    <a href="#" data-toggle="modal" data-target="#choiceLogo">Link</a>
+                </div>
                 <div class="inputs-holder">
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="Phone number" ng-pattern="/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/" ng-model="request.realtor.phone" required="" name="phone">
@@ -122,3 +140,39 @@
         </form>
     </div>
 </section>
+
+    <div class="modal fade" id="choiceLogo" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Select company logo</h4>
+                <p>Upload a new logo</p>
+                <div class="upload-holder">
+                    <button type="button" class="btn btn-default">Choose File</button>
+                    <input type="file">
+                </div>
+                
+              </div>
+              <div class="modal-body">
+                  <div class="logo-box">
+                     
+                    <div class="paging pull-right">
+                        1/6
+                        <a href="#" class="prev">prev</a>
+                        <a href="#" class="next inactive">next</a>
+                    </div>
+                      Choose an existing logo:
+                      <ul>
+                          <li><a href="#"><img src="images/realtors/rich-z.png" alt=""></a></li>
+                          <li><a href="#"><img src="images/realtors/realtor.png" alt=""></a></li>
+                          <li><a href="#"><img src="images/realtors/bradBeacham.png" alt=""></a></li>
+                          <li><a href="#"><img src="images/realtors/christian.png" alt=""></a></li>
+                          <li><a href="#"><img src="images/realtors/structure.png" alt=""></a></li>
+                          <li><a href="#"><img src="images/realtors/realtor.png" alt=""></a></li>
+                      </ul>
+                  </div>
+              </div>
+            </div>
+        </div>
+    </div>
