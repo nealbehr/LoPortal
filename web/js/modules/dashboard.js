@@ -65,8 +65,8 @@
         $scope.settingRows[settings.queue.state.listingFlyerPending] = {id: 'listingFlyerPending', title: 'Pending', isExpand: false};
         $scope.settingRows[settings.queue.state.requested] = {id: 'requested', title: 'Requested', isExpand: false};
         $scope.settingRows[settings.queue.state.approved]  = {id: 'approved', title: 'Approved', isExpand: false};
-        $scope.settingRows[settings.queue.state.declined]  = {id: 'declined', title: 'Declined', isExpand: false};
         $scope.settingRows[settings.queue.state.draft]     = {id: 'draft', title: 'Incomplete', isExpand: false};
+        $scope.settingRows[settings.queue.state.declined]  = {id: 'declined', title: 'Declined', isExpand: false};
 
         $scope.recalculateExpanded = function(){
             /* expand first not empty */
