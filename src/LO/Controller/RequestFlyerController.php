@@ -118,11 +118,14 @@ class RequestFlyerController extends RequestFlyerBase{
         try {
             $app->getEntityManager()->beginTransaction();
 
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
+            $firstRexForm->handleRequest($request);
+
             $this->saveFlyer(
                 $app,
                 $request,
                 new Realtor(),
-                (new Queue())->setState(Queue::STATE_DRAFT),
+                (new Queue())->setState(Queue::STATE_DRAFT)->setAdditionalInfo($firstRexForm->getData()),
                 new RequestFlyer(),
                 ['validation_groups' => ["Default", "draft"]]
             );
