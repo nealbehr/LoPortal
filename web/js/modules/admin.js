@@ -64,7 +64,7 @@
             })
             .when('/admin/lender/:id/edit', {
                 templateUrl: '/partials/admin.panel.lender',
-                controller:  'lenderEditCtrl',
+                controller:  'adminLenderEditCtrl',
                 access: {
                     isFree: false
                 }
@@ -549,6 +549,52 @@
 
                     return $.param(params);
                 }
+            }
+        }
+    }]);
+
+    admin.directive('loAdminLenderInfo', ["redirect", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
+        return { restrict: 'EA',
+            templateUrl: '/partials/admin.panel.lender.form',
+            scope: {
+                lender:   "=loLender"
+            },
+            link: function(scope, element, attrs, controllers){
+                scope.container = angular.element('#userProfileMessage');
+
+                scope.$watch('lender.id', function(newVal, oldVal){
+                    scope.title = newVal? 'Edit Lender': 'Add Lender';
+                });
+
+                scope.$watch('lender', function(newVal, oldVal){
+                    if(newVal == undefined || !("id" in newVal)){
+                        return;
+                    }
+
+                    scope.picture = new pictureObject(
+                        angular.element('#userPhoto'),
+                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
+                        scope.officer
+                    );
+                });
+
+                scope.cancel = function(e){
+                    e.preventDefault();
+                    history.back();
+                };
+
+                scope.gotoErrorMessage = function(){
+                    $anchorScroll(scope.container.attr("id"));
+                };
+
+                scope.submit = function(formLender){
+                    if(!formLender.$valid){
+                        this.gotoErrorMessage();
+                        return false;
+                    }
+                    this.save();
+                };
+
             }
         }
     }]);

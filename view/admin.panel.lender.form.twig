@@ -27,8 +27,8 @@
             <textarea class="form-control" cols="30" rows="2" placeholder="Lender disclosure"></textarea>
             <button class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
-                <a href="#" class="delete pull-right">Delete lender</a>
-                <a href="#" class="back">Cancel</a>
+                <a ng-if="lender.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete lender</a>
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>
     </div>
