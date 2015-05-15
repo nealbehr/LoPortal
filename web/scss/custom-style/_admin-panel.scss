@@ -40,79 +40,81 @@
         }
     }
     .paging {
-        color: #a8a8a8;
-        text-align: right;
         line-height: 42px;
-        @media (max-width: 767px)  {
-            text-align: left;
+    }
+}
+.paging {
+    color: #a8a8a8;
+    text-align: right;
+    @media (max-width: 767px)  {
+        text-align: left;
+    }
+    a {
+        position: relative;
+        display: inline-block;
+        width: 21px;
+        height: 21px;
+        font-size: 0;
+        line-height: 0;
+        border: 1px solid #c5c5c5;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-top: -5px;
+        &.prev {
+            margin-left: 10px;
+            &:after, &:before {
+                right: 8px;
+                top: 50%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+            }
+
+            &:after {
+                border-color: rgba(255, 255, 255, 0);
+                border-right-color: #ffffff;
+                border-width: 4px;
+                margin-top: -4px;
+            }
+            &:before {
+                border-color: rgba(176, 176, 176, 0);
+                border-right-color: #b0b0b0;
+                border-width: 5px;
+                margin-top: -5px;
+            }
         }
-        a {
-            position: relative;
-            display: inline-block;
-            width: 21px;
-            height: 21px;
-            font-size: 0;
-            line-height: 0;
-            border: 1px solid #c5c5c5;
-            border-radius: 4px;
-            vertical-align: middle;
-            margin-top: -5px;
-            &.prev {
-                margin-left: 10px;
-                &:after, &:before {
-                    right: 8px;
-                    top: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                }
+        &.next {
+            margin-left: 1px;
+            &:after, &:before {
+                left: 8px;
+                top: 50%;
+                border: solid transparent;
+                content: " ";
+                height: 0;
+                width: 0;
+                position: absolute;
+                pointer-events: none;
+            }
 
-                &:after {
-                    border-color: rgba(255, 255, 255, 0);
-                    border-right-color: #ffffff;
-                    border-width: 4px;
-                    margin-top: -4px;
-                }
-                &:before {
-                    border-color: rgba(176, 176, 176, 0);
-                    border-right-color: #b0b0b0;
-                    border-width: 5px;
-                    margin-top: -5px;
-                }
+            &:after {
+                border-color: rgba(255, 255, 255, 0);
+                border-left-color: #ffffff;
+                border-width: 4px;
+                margin-top: -4px;
             }
-            &.next {
-                margin-left: 1px;
-                &:after, &:before {
-                    left: 8px;
-                    top: 50%;
-                    border: solid transparent;
-                    content: " ";
-                    height: 0;
-                    width: 0;
-                    position: absolute;
-                    pointer-events: none;
-                }
-
-                &:after {
-                    border-color: rgba(255, 255, 255, 0);
-                    border-left-color: #ffffff;
-                    border-width: 4px;
-                    margin-top: -4px;
-                }
-                &:before {
-                    border-color: rgba(176, 176, 176, 0);
-                    border-left-color: #b0b0b0;
-                    border-width: 5px;
-                    margin-top: -5px;
-                }
+            &:before {
+                border-color: rgba(176, 176, 176, 0);
+                border-left-color: #b0b0b0;
+                border-width: 5px;
+                margin-top: -5px;
             }
-            &.inactive {
-                opacity: 0.5;
-                cursor: default;
-            }
+        }
+        &.inactive {
+            opacity: 0.5;
+            cursor: default;
         }
     }
 }
