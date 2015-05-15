@@ -48,15 +48,22 @@
                     isFree: false
                 }
             })
-            .when('/admin/lenders', {
-                templateUrl: '/partials/admin.lenders',
+            .when('/admin/lender', {
+                templateUrl: '/partials/admin.lender',
                 controller:  'adminLendersCtrl',
                 access: {
                     isFree: false
                 }
             })
+            .when('/admin/lender/new', {
+                templateUrl: '/partials/admin.panel.lender',
+                controller:  'adminLenderNewCtrl',
+                access: {
+                    isFree: false
+                }
+            })
             .when('/admin/lender/:id/edit', {
-                templateUrl: '/partials/admin.lender.edit',
+                templateUrl: '/partials/admin.panel.lender',
                 controller:  'lenderEditCtrl',
                 access: {
                     isFree: false
@@ -69,10 +76,16 @@
         $scope.settings = settings;
     }]);
 
-    admin.controller('lenderEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
-
+    admin.controller('adminLenderNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', function($scope, $http, redirect, $compile, waitingScreen, createLender){
+        $scope.lender = createLender();
     }]);
 
+    admin.controller('adminLenderEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
+        createLender().get($routeParams.id)
+            .then(function(lender){
+                $scope.lender = lender;
+            });
+    }]);
 
     admin.controller('adminRequestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
@@ -80,7 +93,7 @@
         $scope.titles = {
             button: "Submit",
             header: "Edit Listing Flyer Request"
-        }
+        };
 
         $scope.$on('requestFlyerSaved', function () {
             sessionMessages.addSuccess("Successfully saved.");
@@ -230,9 +243,9 @@
             templateUrl: '/partials/admin.nav.bar',
             link: function(scope, element, attrs, controllers){
                 scope.tabs = [
-                    new Tab({path: '/admin', title: "User Management"}),
+                    new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
                     new Tab({path: '/admin/queue', title: "Request Management"}),
-                    new Tab({path: '/admin/lenders', title: "Lender"})
+                    new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"})
                 ]
             }
         }
@@ -389,38 +402,6 @@
                     })
                 ;
 
-                $http.get('/admin/lenders', {
-                    params: $location.search()
-                })
-                    .success(function(data){
-                        scope.queue     = data.queue;
-                        scope.searchKey = data.keySearch;
-                        scope.pagination = data.pagination;
-                        scope.searchingString = $location.search()[data.keySearch];
-
-                        function params(settings){
-                            this.key   = settings.key;
-                            this.title = settings.title;
-                        }
-
-                        params.prototype.directionKey     = data.keyDirection;
-                        params.prototype.sortKey          = data.keySort;
-                        params.prototype.defaultDirection = data.defDirection;
-                        params.prototype.defaultSortKey   = data.defField;
-
-                        scope.headParams = [
-                            new tableHeadCol(new params({key: "id", title: "Request ID"})),
-                            new tableHeadCol(new params({key: "user_id", title: "User ID"})),
-                            new tableHeadCol(new params({key: "address", title: "Property Address"})),
-                            new tableHeadCol(new params({key: "mls_number", title: "MLS<br>Number"})),
-                            new tableHeadCol(new params({key: "created_at", title: "Created", isSortable: true})),
-                            new tableHeadCol(new params({key: "request_type", title: "Type"})),
-                            new tableHeadCol(new params({key: "state", title: "Status"})),
-                            new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
-                        ];
-                    })
-                ;
-
                 scope.getDialogByRequest = function(request){
                     return ngDialog.open({
                         template: request.request_type == settings.queue.type.flyer? '/partials/admin.request.approve.flyer': '/partials/admin.request.approve',
@@ -477,6 +458,50 @@
                         renderMessage(data.value.message, data.value.state, scope.messageContainer, scope);
                     });
                 };
+            }
+        }
+    }]);
+
+    admin.directive('loAdminLenders', ['$http', 'tableHeadCol', '$location', "ngDialog", "createLender", "renderMessage", function($http, tableHeadCol, $location, ngDialog, createLender, renderMessage){
+        return {
+            restrict: 'EA',
+            templateUrl: '/partials/admin.panel.lenders',
+            link: function(scope, element, attrs, controllers){
+                scope.lenders = [];
+                scope.pagination = {};
+                scope.messageContainer = angular.element("#messageContainer");
+
+                $http.get('/admin/lender', {
+                    params: $location.search()
+                })
+                    .success(function(data){
+
+                        scope.lenders     = data.lenders;
+                        scope.searchKey = data.keySearch;
+                        scope.pagination = data.pagination;
+                        scope.searchingString = $location.search()[data.keySearch];
+
+                        function params(settings){
+                            this.key   = settings.key;
+                            this.title = settings.title;
+                        }
+
+                        params.prototype.directionKey     = data.keyDirection;
+                        params.prototype.sortKey          = data.keySort;
+                        params.prototype.defaultDirection = data.defDirection;
+                        params.prototype.defaultSortKey   = data.defField;
+
+                        scope.headParams = [
+                            new tableHeadCol(new params({key: "id", title: "id"})),
+                            new tableHeadCol(new params({key: "name", title: "Lender<br>name"})),
+                            new tableHeadCol(new params({key: "address", title: "Lender<br>address", isSortable: false})),
+                            new tableHeadCol(new params({key: "disclosure", title: "Lender<br>disclosure", isSortable: false})),
+                            new tableHeadCol(new params({key: "picture", title: "Lender<br>logo", isSortable: false})),
+                            new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
+                        ];
+                    })
+                ;
+
             }
         }
     }]);

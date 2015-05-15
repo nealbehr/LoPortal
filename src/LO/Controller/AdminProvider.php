@@ -24,7 +24,7 @@ class AdminProvider implements ControllerProviderInterface {
         });
 
         $app['admin.lender.controller'] = $app->share(function() use ($app) {
-            return new Admin\Lender();
+            return new Admin\LenderController();
         });
 
         $app['admin.property.approval.controller'] = $app->share(function() use ($app) {
@@ -60,6 +60,8 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->patch('/queue/decline/{id}', "admin.queue.controller:declineAction");
         $controllers->patch('/queue/approve/flyer/{id}', "admin.queue.controller:approveRequestFlyerAction");
         $controllers->patch('/queue/approve/{id}', "admin.queue.controller:approveRequestApprovalAction");
+
+        $controllers->get('/lender', "admin.lender.controller:getAction");
 
         $controllers
             ->get("/approval/{id}", "admin.property.approval.controller:getAction");

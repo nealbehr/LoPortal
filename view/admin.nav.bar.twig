@@ -4,6 +4,6 @@
         <li ng-repeat="tab in tabs" ng-class="{active: tab.isActive()}"><a href="/#[[ tab.path ]]">[[ tab.title ]]</a></li>
     </ul>
     <div class="btn-holder">
-        <a href="/#/admin/user/new" class="btn btn-default">Add User</a>
+        <a ng-repeat="tab in tabs" ng-show="tab.isActive() && (tab.button_href !== undefined)" href="/#[[ tab.button_href ]]" class="btn btn-default">[[ tab.button_text ]]</a>
     </div>
 </header>
