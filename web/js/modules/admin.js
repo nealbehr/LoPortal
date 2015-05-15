@@ -50,7 +50,7 @@
             })
             .when('/admin/lenders', {
                 templateUrl: '/partials/admin.lenders',
-                controller:  'lendersCtrl',
+                controller:  'adminLendersCtrl',
                 access: {
                     isFree: false
                 }
@@ -65,8 +65,8 @@
         ;
     }]);
 
-    admin.controller('lendersCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
-
+    admin.controller('adminLendersCtrl', ['$scope', function($scope){
+        $scope.settings = settings;
     }]);
 
     admin.controller('lenderEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
@@ -231,7 +231,8 @@
             link: function(scope, element, attrs, controllers){
                 scope.tabs = [
                     new Tab({path: '/admin', title: "User Management"}),
-                    new Tab({path: '/admin/queue', title: "Request Management"})
+                    new Tab({path: '/admin/queue', title: "Request Management"}),
+                    new Tab({path: '/admin/lenders', title: "Lender"})
                 ]
             }
         }
@@ -349,7 +350,7 @@
             restrict: 'EA',
             templateUrl: '/partials/admin.panel.requests',
             link: function(scope, element, attrs, controllers){
-                scope.queue = []
+                scope.queue = [];
                 scope.searchKey;
                 scope.searchingString;
                 scope.pagination = {};
@@ -388,6 +389,38 @@
                     })
                 ;
 
+                $http.get('/admin/lenders', {
+                    params: $location.search()
+                })
+                    .success(function(data){
+                        scope.queue     = data.queue;
+                        scope.searchKey = data.keySearch;
+                        scope.pagination = data.pagination;
+                        scope.searchingString = $location.search()[data.keySearch];
+
+                        function params(settings){
+                            this.key   = settings.key;
+                            this.title = settings.title;
+                        }
+
+                        params.prototype.directionKey     = data.keyDirection;
+                        params.prototype.sortKey          = data.keySort;
+                        params.prototype.defaultDirection = data.defDirection;
+                        params.prototype.defaultSortKey   = data.defField;
+
+                        scope.headParams = [
+                            new tableHeadCol(new params({key: "id", title: "Request ID"})),
+                            new tableHeadCol(new params({key: "user_id", title: "User ID"})),
+                            new tableHeadCol(new params({key: "address", title: "Property Address"})),
+                            new tableHeadCol(new params({key: "mls_number", title: "MLS<br>Number"})),
+                            new tableHeadCol(new params({key: "created_at", title: "Created", isSortable: true})),
+                            new tableHeadCol(new params({key: "request_type", title: "Type"})),
+                            new tableHeadCol(new params({key: "state", title: "Status"})),
+                            new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
+                        ];
+                    })
+                ;
+
                 scope.getDialogByRequest = function(request){
                     return ngDialog.open({
                         template: request.request_type == settings.queue.type.flyer? '/partials/admin.request.approve.flyer': '/partials/admin.request.approve',
@@ -397,7 +430,7 @@
                             request: request
                         }
                     });
-                }
+                };
 
                 scope.approve = function(e, request){
                     e.preventDefault();
@@ -417,7 +450,7 @@
 
                         renderMessage(data.value.message, data.value.state, scope.messageContainer, scope);
                     });
-                }
+                };
 
                 scope.decline = function (e, request) {
                     e.preventDefault();

@@ -23,6 +23,10 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\Queue();
         });
 
+        $app['admin.lender.controller'] = $app->share(function() use ($app) {
+            return new Admin\Lender();
+        });
+
         $app['admin.property.approval.controller'] = $app->share(function() use ($app) {
             return new Admin\PropertyApproval();
         });
