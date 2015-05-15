@@ -299,6 +299,17 @@ th.header {
         padding: 16px 20px !important;
     }
 }
+.input-price {
+    &:before {
+        content: "$";
+        position: absolute;
+        top: 19px;
+        left: 11px;
+    }
+    input {
+        padding-left: 25px;
+    }
+}
 
 @import "custom-style/links";
 @import "custom-style/navbar";
