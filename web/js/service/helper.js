@@ -654,6 +654,12 @@
                     return this.request instanceof createFromPropertyApproval;
                 }
 
+                scope.clearAddress = function(e){
+                    if(e.keyCode != 13){
+                        this.request.address.clear();
+                    }
+                }
+
                 loadGoogleMapsApi()
                     .then(function(){
                         initialize();

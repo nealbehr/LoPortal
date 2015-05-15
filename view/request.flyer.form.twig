@@ -48,7 +48,7 @@
                 </div>
                 <div class="inputs-holder">
                     <div class="input">
-                        <input ng-readonly="isAddressReadOnly()" ng-keydown="request.address.clear();" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
+                        <input ng-readonly="isAddressReadOnly()" ng-keypress="clearAddress($event)" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
                         <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.required" data-toggle="tooltip" data-placement="right" title="The Property address is required.">!</span>
                         <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.address_components" data-toggle="tooltip" data-placement="right" title="The Property address is invalid.">!</span>
                     </div>

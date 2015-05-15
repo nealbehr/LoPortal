@@ -23,6 +23,7 @@ use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class RequestFlyerBase extends RequestBaseController{
     use GetFormErrors;
@@ -120,7 +121,7 @@ class RequestFlyerBase extends RequestBaseController{
         if(!$firstRexForm->isValid()){
 //                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
 
-            throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            throw new BadRequestHttpException('Additional info is not valid');
         }
 
         $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
