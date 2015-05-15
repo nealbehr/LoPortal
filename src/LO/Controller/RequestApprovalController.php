@@ -45,7 +45,7 @@ class RequestApprovalController extends RequestApprovalBase{
             ;
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
-            $queueForm->handleRequest($request);
+            $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
 
             $queue->setState(Queue::STATE_REQUESTED);
 
