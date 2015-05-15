@@ -18,57 +18,57 @@ node default {
   create_resources(::php::module, hiera('php::module',{}))
   create_resources(::php::module::ini, hiera('php::module::ini',{}))
 
-  include ::git
+#  include ::git
   include ::imagemagick
 
   include ::iptables
-  include ::nodejs
+#  include ::nodejs
 
-  package {"libpng":
-    provider => yum,
-    ensure => installed
-  }
+#  package {"libpng":
+#    provider => yum,
+#    ensure => installed
+#  }
 
-  package { 'grunt-cli':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
+#  package { 'grunt-cli':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
 
-  package { 'grunt':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
-
-  package { 'grunt-contrib-concat':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
-  package { 'grunt-contrib-uglify':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
-  package { 'grunt-processhtml':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
-  package { 'grunt-string-replace':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
-  package { 'grunt-contrib-imagemin':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
-  package { 'grunt-contrib-cssmin':
-    ensure   => present,
-    provider => 'npm',
-    require => Package['npm'],
-  }
+#  package { 'grunt':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
+#
+#  package { 'grunt-contrib-concat':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
+#  package { 'grunt-contrib-uglify':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
+#  package { 'grunt-processhtml':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
+#  package { 'grunt-string-replace':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
+#  package { 'grunt-contrib-imagemin':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
+#  package { 'grunt-contrib-cssmin':
+#    ensure   => present,
+#    provider => 'npm',
+#    require => Package['npm'],
+#  }
 }
