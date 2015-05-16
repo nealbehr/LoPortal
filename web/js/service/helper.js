@@ -537,7 +537,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -551,6 +551,8 @@
                 scope.realtorPicture;
                 scope.propertyPicture;
                 scope.oldRequest;
+                scope.hideErrors = true;
+                scope.container = angular.element("#errors");
 
                 scope.$watch('request', function(newVal){
                     if(undefined == newVal || !("id" in newVal)){
@@ -624,7 +626,24 @@
                     this.saveRequest(scope.requestDraft);
                 }
 
-                scope.save = function(){
+                scope.showErrors = function(e){
+                    e.preventDefault();
+
+                    this.hideErrors=true;
+                }
+
+                scope.gotoErrorMessage = function(){
+                    $anchorScroll(scope.container.attr("id"));
+                }
+
+                scope.save = function(form){
+                    if(!form.$valid){
+                        this.hideErrors = false;
+                        this.gotoErrorMessage();
+                        return false;
+                    }
+
+
                     scope.request.afterSave(function(){
                         scope.oldRequest = angular.copy(scope.request);
                         $rootScope.$broadcast('requestFlyerSaved');
@@ -640,9 +659,29 @@
 
                     request.save()
                         .catch(function(e){
+                            var messages = [];
+                            if('message' in e){
+                                messages.push(e.message);
+                            }
+
+                            for(var i in e){
+                                if(e[i].constructor === Array){
+                                    for(var j in e[i]){
+                                        if(e[i][j] != ""){
+                                            messages.push(e[i][j]);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(messages.length > 0){
+                                renderMessage(messages.join(" "), "danger", scope.container, scope);
+                                scope.gotoErrorMessage();
+                            }
+
                             scope.realtorPicture.setObjectImage(scope.request.realtor);
                             scope.propertyPicture.setObjectImage(scope.request.property);
-                            alert("We have some problems. Please try later.");
+//                            alert("We have some problems. Please try later.");
                         })
                         .finally(function(){
                             waitingScreen.hide();
