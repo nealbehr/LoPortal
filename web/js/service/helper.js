@@ -86,6 +86,7 @@
                 scope.user = {}
                 scope.container = angular.element('#userProfileMessage');
                 scope.userPicture;
+                scope.hideErrors = true;
 
                 scope.$watch('officer.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.user.id){
@@ -152,12 +153,19 @@
                     return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
                 }
 
+                scope.showErrors = function(e){
+                    e.preventDefault();
+
+                    this.hideErrors = true;
+                }
+
                 scope.gotoErrorMessage = function(){
                     $anchorScroll(scope.container.attr("id"));
                 }
 
                 scope.submit = function(formUser){
                     if(!formUser.$valid){
+                        this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
                     }
@@ -629,7 +637,7 @@
                 scope.showErrors = function(e){
                     e.preventDefault();
 
-                    this.hideErrors=true;
+                    this.hideErrors = true;
                 }
 
                 scope.gotoErrorMessage = function(){
@@ -660,9 +668,7 @@
                     request.save()
                         .catch(function(e){
                             var messages = [];
-                            if('message' in e){
-                                messages.push(e.message);
-                            }
+                            messages.push('message' in e? e.message: "We have some problems. Please try later.")
 
                             for(var i in e){
                                 if(e[i].constructor === Array){
@@ -681,7 +687,6 @@
 
                             scope.realtorPicture.setObjectImage(scope.request.realtor);
                             scope.propertyPicture.setObjectImage(scope.request.property);
-//                            alert("We have some problems. Please try later.");
                         })
                         .finally(function(){
                             waitingScreen.hide();
