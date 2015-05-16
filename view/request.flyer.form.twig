@@ -86,7 +86,7 @@
                 <h2>Realtor Info</h2>
                 <div class="main-info">
                     <div class="user-photo">
-                        <div class="realtor-photo">
+                        <div class="realtor realtor-photo">
                             <img ng-src="[[ request.realtor.photo|realtorImage ]]" alt="" ng-click="realtorPicture.choosePhoto()">
                         </div>
                         <span class="upload">
@@ -105,14 +105,13 @@
                 </div>
                 <div class="main-info">
                     <div class="user-photo">
-                        <div class="realtor-photo">
-                            <img src="images/realtors/realtor.png" alt="" ng-click="realtorPicture.choosePhoto()">
+                        <div class="company realtor-photo">
+                            <img src="images/realtors/realtor.png" alt="">
                         </div>
                         <span class="upload">
                             Upload Photo
-                            <div><input id="realtorImage" type="file" valid-file name="realtorfileimage" required="" ng-model="request.realtor.photo"></div>
+                            <div><input type="file" required=""></div>
                         </span>
-                        <span class="error-badge" ng-show="(newFlyer.$submitted || newFlyer.realtorfileimage.$touched) && newFlyer.realtorfileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Realtor image is required.">!</span>
                     </div>
                     <div class="inputs-holder">
                         <div class="input">

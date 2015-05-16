@@ -569,7 +569,7 @@
 
                     scope.realtorPicture = new pictureObject(
                         angular.element("#realtorImage"),
-                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
+                        {container: $(".realtor.realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
                         scope.request.realtor
                     );
 
