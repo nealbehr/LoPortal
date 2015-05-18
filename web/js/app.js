@@ -2,7 +2,7 @@
     "use strict";
     settings = settings || {};
 
-    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'userModule', 'userProfileModule', 'adminModule', 'ngDialog', 'requestFlyerModule', 'approvalModule']);
+    var app = angular.module('loApp', ['ngRoute', 'helperService', 'dashboardModule', 'authModule', 'ngCookies', 'requestModule', 'userModule', 'userProfileModule', 'adminModule', 'lenderModule', 'ngDialog', 'requestFlyerModule', 'approvalModule']);
 
     app.constant('HTTP_CODES', {FORBIDDEN: 403});
     app.constant('TOKEN_KEY', 'access_token');

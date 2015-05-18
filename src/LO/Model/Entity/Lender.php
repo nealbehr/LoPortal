@@ -1,13 +1,17 @@
 <?php
 /**
  * Created by IntelliJ IDEA.
- * User: mac
+ * User: Dmitry K.
  * Date: 5/15/15
  * Time: 12:55
  */
 
 namespace LO\Model\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Column;
 
 /**
  * @Entity
@@ -15,12 +19,14 @@ namespace LO\Model\Entity;
  */
 class Lender extends Base {
 
+    const CLASS_NAME = 'LO\Model\Entity\Lender';
+
     /**
      * @Column(type="string", length=50)
      * @Assert\NotBlank(message="Lender name should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 50,
-     *              maxMessage = "Lender name cannot be longer than {{ limit }} characters"
+     *              maxMessage = "Lender name cannot be longer than {{ limit }} characters" )
      *
      */
     protected $name;
@@ -30,8 +36,7 @@ class Lender extends Base {
      * @Assert\NotBlank(message="Address should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 255,
-     *              maxMessage = "Address cannot be longer than {{ limit }} characters"
-     * )
+     *              maxMessage = "Address cannot be longer than {{ limit }} characters" )
      */
     protected $address;
 
@@ -40,8 +45,7 @@ class Lender extends Base {
      * @Assert\NotBlank(message="Disclosure should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 65536,
-     *              maxMessage = "Disclosure cannot be longer than {{ limit }} characters"
-     * )
+     *              maxMessage = "Disclosure cannot be longer than {{ limit }} characters" )
      */
     protected $disclosure;
 

@@ -22,6 +22,9 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
 class User extends Base implements UserInterface{
+
+    const CLASS_NAME = 'LO\Model\Entity\User';
+
     /**
      * Roles list
      */

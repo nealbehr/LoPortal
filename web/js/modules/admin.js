@@ -48,27 +48,6 @@
                     isFree: false
                 }
             })
-            .when('/admin/lender', {
-                templateUrl: '/partials/admin.lender',
-                controller:  'adminLendersCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/lender/new', {
-                templateUrl: '/partials/admin.panel.lender',
-                controller:  'adminLenderNewCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/lender/:id/edit', {
-                templateUrl: '/partials/admin.panel.lender',
-                controller:  'adminLenderEditCtrl',
-                access: {
-                    isFree: false
-                }
-            })
             .when('/admin/realtors', {
                 templateUrl: '/partials/admin.realtors',
                 controller:  'realtorsCtrl',
@@ -86,27 +65,12 @@
         ;
     }]);
 
-    admin.controller('adminLendersCtrl', ['$scope', function($scope){
-        $scope.settings = settings;
-    }]);
-
-    admin.controller('adminLenderNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', function($scope, $http, redirect, $compile, waitingScreen, createLender){
-        $scope.lender = createLender();
-    }]);
-    
     admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
 
     }]);
 
     admin.controller('realtorEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
 
-    }]);
-
-    admin.controller('adminLenderEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
-        createLender().get($routeParams.id)
-            .then(function(lender){
-                $scope.lender = lender;
-            });
     }]);
 
     admin.controller('adminRequestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
@@ -484,50 +448,6 @@
         }
     }]);
 
-    admin.directive('loAdminLenders', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", function($http, tableHeadCol, $location, ngDialog, renderMessage){
-        return {
-            restrict: 'EA',
-            templateUrl: '/partials/admin.panel.lenders',
-            link: function(scope, element, attrs, controllers){
-                scope.lenders = [];
-                scope.pagination = {};
-                scope.messageContainer = angular.element("#messageContainer");
-
-                $http.get('/admin/lender', {
-                    params: $location.search()
-                })
-                    .success(function(data){
-
-                        scope.lenders     = data.lenders;
-                        scope.searchKey = data.keySearch;
-                        scope.pagination = data.pagination;
-                        scope.searchingString = $location.search()[data.keySearch];
-
-                        function params(settings){
-                            this.key   = settings.key;
-                            this.title = settings.title;
-                        }
-
-                        params.prototype.directionKey     = data.keyDirection;
-                        params.prototype.sortKey          = data.keySort;
-                        params.prototype.defaultDirection = data.defDirection;
-                        params.prototype.defaultSortKey   = data.defField;
-
-                        scope.headParams = [
-                            new tableHeadCol(new params({key: "id", title: "id"})),
-                            new tableHeadCol(new params({key: "name", title: "Lender<br>name"})),
-                            new tableHeadCol(new params({key: "address", title: "Lender<br>address", isSortable: false})),
-                            new tableHeadCol(new params({key: "disclosure", title: "Lender<br>disclosure", isSortable: false})),
-                            new tableHeadCol(new params({key: "picture", title: "Lender<br>logo", isSortable: false})),
-                            new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
-                        ];
-                    })
-                ;
-
-            }
-        }
-    }]);
-
     admin.directive('loAdminPanelSearch', ["$location", function($location){
         return {
             restrict: 'EA',
@@ -571,52 +491,6 @@
 
                     return $.param(params);
                 }
-            }
-        }
-    }]);
-
-    admin.directive('loAdminLenderInfo', ["redirect", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
-        return { restrict: 'EA',
-            templateUrl: '/partials/admin.panel.lender.form',
-            scope: {
-                lender:   "=loLender"
-            },
-            link: function(scope, element, attrs, controllers){
-                scope.container = angular.element('#userProfileMessage');
-
-                scope.$watch('lender.id', function(newVal, oldVal){
-                    scope.title = newVal? 'Edit Lender': 'Add Lender';
-                });
-
-                scope.$watch('lender', function(newVal, oldVal){
-                    if(newVal == undefined || !("id" in newVal)){
-                        return;
-                    }
-
-                    scope.picture = new pictureObject(
-                        angular.element('#userPhoto'),
-                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
-                        scope.officer
-                    );
-                });
-
-                scope.cancel = function(e){
-                    e.preventDefault();
-                    history.back();
-                };
-
-                scope.gotoErrorMessage = function(){
-                    $anchorScroll(scope.container.attr("id"));
-                };
-
-                scope.submit = function(formLender){
-                    if(!formLender.$valid){
-                        this.gotoErrorMessage();
-                        return false;
-                    }
-                    this.save();
-                };
-
             }
         }
     }]);

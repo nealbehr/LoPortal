@@ -21,7 +21,9 @@
                 <td>[[ lender.name ]]</td>
                 <td>[[ lender.address ]]</td>
                 <td>[[ lender.disclosure ]]</td>
-                <td><img src="[[ lender.picture ]]" alt="[[ lender.name ]]"></td>
+                <td>
+                    <img ng-src="[[ lender.picture|lenderImage ]]" alt="lender">
+                </td>
                 <td>
                     <div class="dropdown">
                         <button class="action" type="button" data-toggle="dropdown">action</button>

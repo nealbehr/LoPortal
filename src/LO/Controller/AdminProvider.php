@@ -61,7 +61,11 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->patch('/queue/approve/flyer/{id}', "admin.queue.controller:approveRequestFlyerAction");
         $controllers->patch('/queue/approve/{id}', "admin.queue.controller:approveRequestApprovalAction");
 
-        $controllers->get('/lender', "admin.lender.controller:getAction");
+        $controllers->get('/lender', "admin.lender.controller:getAllAction");
+        $controllers->post('/lender', "admin.lender.controller:addLenderAction");
+        $controllers->get('/lender/{id}', "admin.lender.controller:getByIdAction");
+        $controllers->put('/lender/{id}', "admin.lender.controller:updateLenderAction");
+        $controllers->delete('/lender/{id}', "admin.lender.controller:deleteAction");
 
         $controllers
             ->get("/approval/{id}", "admin.property.approval.controller:getAction");
