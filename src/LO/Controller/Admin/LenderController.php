@@ -138,6 +138,7 @@ class LenderController extends Base
         $em = $app->getEntityManager();
         try {
             $lender = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->find($id);
+            /* @var Lender $lender */
             $requestLender = $request->request->get('lender');
             $lenderType = new LenderType($app->getS3());
             $formOptions = [
@@ -164,18 +165,37 @@ class LenderController extends Base
     public function deleteAction(Application $app, $id)
     {
         try {
-            $lender = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->find($id);
+            $em = $app->getEntityManager();
+            $lender = $em->getRepository(Lender::CLASS_NAME)->find($id);
             if ($lender) {
-                $app->getEntityManager()->remove($lender);
-                $app->getEntityManager()->flush();
-                return $app->json('success');
+                $qb = $em->createQueryBuilder();
+                $qb ->select('u')
+                    ->from(User::CLASS_NAME, 'u')
+                    ->leftJoin('u.lender', 'l')
+                    ->andWhere($qb->expr()->eq('l.id', $id));
+
+                $users = $qb->getQuery()->execute();
+                if($users && count($users > 0)) {
+                    $message = 'Unable to delete. Lender is used by user with ' . $users[0]->getEmail() . ' email';
+                    return $app->json(
+                        array(
+                            'status' => 'error',
+                            'message' => $message
+                        )
+                    );
+
+                } else {
+                    $app->getEntityManager()->remove($lender);
+                    $app->getEntityManager()->flush();
+                    return $app->json(['status' => 'success']);
+                }
             }
             return $app->json('failure');
 
-        } catch (HttpException $e) {
+        } catch (\Exception $e) {
             $app->getMonolog()->addWarning($e);
             $this->errors['message'] = $e->getMessage();
-            return $app->json($this->errors, $e->getStatusCode());
+            return $app->json($this->errors, 500);
         }
     }
 

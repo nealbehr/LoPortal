@@ -40,8 +40,12 @@
                 }
                 var deferred = $q.defer();
                 $http.delete('/admin/lender/' + this.id, {})
-                    .success(function(data){
-                        deferred.resolve(data);
+                    .success(function(data) {
+                        if(data.status == 'error') {
+                            deferred.reject(data);
+                        } else {
+                            deferred.resolve(data);
+                        }
                     })
                     .error(function(data){
                         console.log(data);
@@ -202,11 +206,19 @@
 
                     waitingScreen.show();
 
-                    lender.delete().then(function(){
+                    lender.delete()
+                    .then(function(data) {
                         renderMessage("Lender was deleted.", "success", scope.messageContainer, scope);
                         scope.lenders.splice(key, 1);
                     })
-                        .finally(function(){
+                        .catch(function(data) {
+                            if('message' in data){
+                                renderMessage(data.message, "danger", scope.messageContainer, scope);
+                                scope.gotoErrorMessage();
+                            }
+                        })
+
+                    .finally(function(){
                             waitingScreen.hide();
                         })
                     ;
@@ -256,8 +268,10 @@
             scope: {
                 lender:   "=loLender"
             },
-            link: function(scope, element, attrs, controllers){
+            link: function(scope, element, attrs, controllers) {
+
                 scope.container = angular.element('#lenderMessage');
+                scope.lenderPicture;
 
                 scope.$watch('lender.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.lender.id){
