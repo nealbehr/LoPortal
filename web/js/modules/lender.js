@@ -275,7 +275,13 @@
 
                     scope.lenderPicture = new pictureObject(
                         angular.element('#lenderPhoto'),
-                        {container: $(".lender-photo > img"), options: {minContainerHeight: 100, minContainerWidth: 100}},
+                        {container: $(".realtor-photo > img"), options: {
+                            minContainerWidth: 300,
+                            minContainerHeight: 100,
+                            minCropBoxWidth: 300,
+                            minCropBoxHeight: 100,
+                            aspectRatio: 3
+                        }},
                         scope.lender
                     );
                 });
@@ -360,7 +366,7 @@
         return function(input){
             return "" != input && null !== input && input !== undefined
                 ? input
-                : '/images/empty.png';
+                : '/images/empty-lender.png';
         }
     });
 
