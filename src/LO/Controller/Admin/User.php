@@ -12,6 +12,7 @@ use LO\Application;
 use LO\Common\Email\NewPassword;
 use LO\Common\Email\ResetPassword;
 use LO\Form\UserAdminForm;
+use LO\Model\Entity\Lender;
 use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -78,6 +79,7 @@ class User extends Base{
             $user->setSalt($user->generateSalt())
                  ->setPassword($app->encodePassword($user, $password));
 
+            $this->getRequestLender($app, $request, $user);
             $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminForm($app->getS3()));
 
             if(count($errors) > 0){
@@ -102,9 +104,11 @@ class User extends Base{
 
     public function updateUserAction(Application $app, Request $request, $id){
         try{
+            $user = $this->getUser($app, $id, "You can't edit self.");
+            $this->getRequestLender($app, $request, $user);
             $errors = (new UserManager($app))->validateAndSaveUser(
                 $request,
-                $this->getUser($app, $id, "You can't edit self."),
+                $user,
                 new UserAdminForm($app->getS3())
             );
 
@@ -214,5 +218,25 @@ class User extends Base{
         $allowFields = ['id', 'first_name', 'last_name', 'email', 'created_at'];
 
         return 'u.'.(in_array($id, $allowFields)? $id: self::DEFAULT_SORT_FIELD_NAME);
+    }
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param $user
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     */
+    private function getRequestLender(Application $app, Request $request, $user)
+    {
+        $requestUser = $request->request->get('user');
+        $requestLender = $requestUser['lender'];
+        if ($requestLender) {
+            $lender = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->find($requestLender['id']);
+            if ($lender) {
+                $user->setLender($lender);
+            } else {
+                throw new BadRequestHttpException('Lender info not valid.');
+            }
+        }
     }
 } 

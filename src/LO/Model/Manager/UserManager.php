@@ -57,10 +57,10 @@ class UserManager extends Base{
     public function validateAndSaveUser(Request $request, User $user, UserForm $userForm){
         $requestUser = $request->request->get('user');
         $formOptions = [
-            'validation_groups' => ['Default'],
+            'validation_groups' => ['Default']
         ];
 
-        if(!$user || (isset($requestUser['email']) && $user->getEmail() != $requestUser['email'])){//remove uniq constrain
+        if(!$user || (isset($requestUser['email']) && $user->getEmail() != $requestUser['email'])){//remove unique constrain
             $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ["New"]);
         }
 

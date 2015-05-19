@@ -34,8 +34,6 @@ class UserAdminForm extends UserForm{
               'constraints' => [
                 new Assert\Email(),
               ]
-        ])
-        ->add('lender', 'text')
-        ;
+        ]);
     }
 } 

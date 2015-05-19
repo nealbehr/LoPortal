@@ -76,7 +76,7 @@ class LenderType extends AbstractType {
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
         $resolver->setDefaults([
-            'data_class'         => Lender::CLASS_NAME,
+            'data_class' => Lender::CLASS_NAME,
             'csrf_protection' => false,
             'validation_groups' => ['Default'],
         ]);

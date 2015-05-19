@@ -75,6 +75,16 @@ class LenderController extends Base
         ]);
     }
 
+    public function getAllJson(Application $app) {
+        $lenders = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->findAll();
+        $lendersArray = [];
+        foreach($lenders as $lender) {
+            /* @var Lender $lender*/
+            $lendersArray[] = $lender->toArray();
+        }
+        return $app->json($lendersArray);
+    }
+
     public function getByIdAction(Application $app, $id)
     {
         try {

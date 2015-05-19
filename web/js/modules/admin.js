@@ -237,13 +237,14 @@
         }
     }]);
 
-    admin.directive('loAdminUsers', ['$http', "getRoles", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", "$q", function($http, getRoles, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q){
+    admin.directive('loAdminUsers', ['$http', "getRoles", "getLenders", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", "$q", function($http, getRoles, getLenders, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q){
         return { restrict: 'EA',
             templateUrl: '/partials/admin.panel.users',
             link: function(scope, element, attrs, controllers){
                 scope.pagination = {};
                 scope.users = [];
                 scope.roles = {};
+                scope.lenders = [];
                 scope.searchingString;
                 scope.isLoaded = false;
                 scope.searchKey;
@@ -254,14 +255,17 @@
                         params: $location.search()
                     }).success(function(data){
                         return deferred.resolve(data);
-                    })
+                    });
 
                     return deferred.promise;
-                }
+                };
 
                 getRoles()
                     .then(function(data){
                         scope.roles = data;
+                    })
+                    .then(function(){
+                        scope.lenders = getLenders();
                     })
                     .then(function(){
                         return scope.getUsers();

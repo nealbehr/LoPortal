@@ -5,7 +5,6 @@
     var userService = angular.module('userModule', []);
 
     userService.factory("userService", ["createProfileUser", function(createProfileUser){
-        console.log('called new User');
         return createProfileUser();
     }]);
 
@@ -124,9 +123,9 @@
             this.mobile;
             this.email;
             this.nmls;
-            this.lender;
             this.picture;
             this.roles = {};
+            this.lender;
             this.switched = false;
 
             var self = this;
@@ -187,7 +186,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             this.fill = function(data){
                 for(var i in data){
@@ -195,7 +194,7 @@
                 }
 
                 return this;
-            }
+            };
 
             this.clear = function(){
                 for(var i in this){

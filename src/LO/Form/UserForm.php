@@ -9,10 +9,13 @@
 namespace LO\Form;
 
 use LO\Form\Extension\S3Photo;
+use LO\Model\Entity\Lender;
 use LO\Model\Entity\User;
 use LO\Validator\Unique;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Aws\S3\S3Client;
@@ -110,10 +113,9 @@ class UserForm extends AbstractType {
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
         $resolver->setDefaults([
-//            'required'           => false,
-            'data_class'         => User::class,
+            'data_class' => User::CLASS_NAME,
             'csrf_protection' => false,
-            'validation_groups' => ['Default'],
+            'validation_groups' => ['Default']
         ]);
     }
 }

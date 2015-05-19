@@ -62,6 +62,7 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->patch('/queue/approve/{id}', "admin.queue.controller:approveRequestApprovalAction");
 
         $controllers->get('/lender', "admin.lender.controller:getAllAction");
+        $controllers->get('/json/lenders', "admin.lender.controller:getAllJson");
         $controllers->post('/lender', "admin.lender.controller:addLenderAction");
         $controllers->get('/lender/{id}', "admin.lender.controller:getByIdAction");
         $controllers->put('/lender/{id}', "admin.lender.controller:updateLenderAction");

@@ -74,7 +74,7 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "getLenders", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, getLenders, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -82,8 +82,10 @@
             },
             link: function(scope, element, attrs, controllers){
                 scope.roles = [];
+                scope.lenders = [];
                 scope.selected = {};
-                scope.user = {}
+                scope.selectedLender = {};
+                scope.user = {};
                 scope.container = angular.element('#userProfileMessage');
                 scope.userPicture;
                 scope.hideErrors = true;
@@ -111,9 +113,8 @@
 
                 scope.cancel = function(e){
                     e.preventDefault();
-
                     history.back();
-                }
+                };
 
                 userService.get()
                     .then(function(user){
@@ -134,6 +135,17 @@
 
                         if(!scope.selected.key){
                             scope.selected =  scope.roles[0];
+                        }
+                    })
+                    .then(function(){
+                        if(scope.user.isAdmin() && scope.lenders.length == 0) {
+                            getLenders().then(function(data){
+                                scope.lenders = data;
+                                if(scope.officer && !scope.officer.lender) {
+                                    scope.officer.lender =  scope.lenders[0];
+                                }
+                            })
+
                         }
                     })
                 ;
@@ -903,8 +915,31 @@
         }
     }]);
 
+    helperService.factory("getLenders", ['$q', '$http', function($q, $http){
+        var lenders = [];
+
+        return function(needReload){
+            var deferred = $q.defer();
+            var counter = lenders.length;
+            if(counter != 0 && !needReload){
+                return $q.when(lenders);
+            }
+            $http.get('/admin/json/lenders')
+                .success(function(data) {
+                    lenders = data;
+                    deferred.resolve(data);
+                })
+                .error(function(data){
+                    deferred.reject(data);
+                }
+            );
+
+            return deferred.promise;
+        }
+    }]);
+
     helperService.factory("getRoles", ['$q', '$http', function($q, $http){
-        var roles = {}
+        var roles = {};
 
         return function(needReload){
             needReload = needReload || false;
@@ -949,7 +984,7 @@
                             deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
                         }
                     });
-                })
+                });
 
             return deferred.promise;
         }

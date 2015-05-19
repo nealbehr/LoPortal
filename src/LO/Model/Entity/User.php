@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -83,8 +85,9 @@ class User extends Base implements UserInterface{
     protected $state;
 
     /**
-     * @Column(type="string")
-     */
+     * @ManyToOne(targetEntity="Lender")
+     * @JoinColumn(name="lender_id", referencedColumnName="id")
+     **/
     protected $lender;
 
     /**
@@ -182,6 +185,9 @@ class User extends Base implements UserInterface{
         return $this;
     }
 
+    /**
+     * @return Lender
+     */
     public function getLender(){
         return $this->lender;
     }
@@ -528,7 +534,8 @@ class User extends Base implements UserInterface{
 
     public function getPublicInfo(){
         $result = $this->toArray();
-        unset($result['password'], $result['salt'], $result['state']);
+        unset($result['password'], $result['salt'], $result['state'], $result['lender']);
+        $result['lender'] = $this->getLender()->toArray();
 
         return $result;
     }

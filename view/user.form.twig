@@ -53,7 +53,13 @@
                     <input class="input-lg" type="email" name="sales_director_email" placeholder="Sales Manager Email" ng-model="officer.sales_director_email">
                 </div>
             </div>
-            <textarea ng-if="user.id != officer.id && user.isAdmin()" class="form-control" cols="30" rows="2" placeholder="Lender" ng-model="officer.lender"></textarea>
+
+            <select class="form-control input-lg"
+                    ng-if="user.isAdmin()"
+                    ng-model="officer.lender"
+                    ng-options="lender.name|ucFirst for lender in lenders|orderBy:'-name' track by lender.id"
+                    ></select>
+
             <div class="inputs-holder">
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Primary Phone" ng-model="officer.phone" name="phone" usa-phone ng-model-options="{ updateOn: 'blur' }">
