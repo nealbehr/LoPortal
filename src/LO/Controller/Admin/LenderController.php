@@ -57,7 +57,7 @@ class LenderController extends Base
 
             /** @var Lender $item */
             foreach ($pagination->getItems() as $item) {
-                $items[] = $item->toArray();
+                $items[] = $item->toFullArray();
             }
 
         } catch (\Exception $ex) {
@@ -99,7 +99,7 @@ class LenderController extends Base
                 throw new BadRequestHttpException("Lender not found.");
             }
 
-            return $app->json($lender->toArray());
+            return $app->json($lender->toFullArray());
         } catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);
             return $app->json(['message' => $e->getMessage()], $e->getStatusCode());

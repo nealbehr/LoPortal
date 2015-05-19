@@ -124,4 +124,15 @@ class Lender extends Base {
             'name' => $this->name,
         );
     }
+
+    public function toFullArray() {
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'address' => $this->address,
+            'disclosure' => $this->disclosure,
+            'picture' => $this->picture
+        );
+
+    }
 }

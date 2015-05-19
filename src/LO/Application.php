@@ -155,7 +155,7 @@ class Application extends \Silex\Application{
             $this->getMonolog()->addError($code);
             switch ($e->getCode() || $code) {
                 case Response::HTTP_NOT_FOUND:
-                    //$message      = 'The requested page could not be found.';
+//                    $message      = 'The requested page could not be found.';
                     $message      = $e->getMessage();
                     $responseCode = $code;
                     break;

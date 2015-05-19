@@ -163,17 +163,17 @@
                     }
 
                     return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
-                }
+                };
 
                 scope.showErrors = function(e){
                     e.preventDefault();
 
                     this.hideErrors = true;
-                }
+                };
 
                 scope.gotoErrorMessage = function(){
                     $anchorScroll(scope.container.attr("id"));
-                }
+                };
 
                 scope.submit = function(formUser){
                     if(!formUser.$valid){
@@ -182,7 +182,7 @@
                         return false;
                     }
                     this.save();
-                }
+                };
 
                 scope.delete = function(e){
                     e.preventDefault();
