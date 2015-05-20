@@ -168,7 +168,6 @@ class Queue extends Base{
                   ->setReason($request->request->get('reason'))
 
             ;
-
             $errors = $app->getValidator()->validate($queue);
 
             if(count($errors) > 0){
@@ -180,8 +179,9 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-            (new RequestChangeStatus($app, $queue, new PropertyApprovalAccept($request->getSchemeAndHttpHost())))
-                ->send();
+            $request = new PropertyApprovalAccept($request->getSchemeAndHttpHost());
+            $changeStatusRequest = new RequestChangeStatus($app, $queue, $request);
+            $changeStatusRequest->send();
 
             $app->getEntityManager()->commit();
 
