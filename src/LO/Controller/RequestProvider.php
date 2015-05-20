@@ -43,6 +43,11 @@ class RequestProvider implements ControllerProviderInterface{
             ->get("/flyer/{id}/download", "request.flyer.controller:download");
 
         $controllers
+            ->get("/flyer/{id}/html", "request.flyer.controller:contentForPDF")
+            ->bind('contentForPDF')
+        ;
+
+        $controllers
             ->get("/approval/{id}", "request.approval.controller:getAction");
 
         $controllers

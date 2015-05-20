@@ -25,6 +25,7 @@ use LO\Model\Manager\QueueManager;
 use LO\Model\Manager\RequestFlyerManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Knp\Snappy\Pdf;
 
 
 class RequestFlyerController extends RequestFlyerBase {
@@ -59,9 +60,83 @@ class RequestFlyerController extends RequestFlyerBase {
         $manager = new RequestFlyerManager($app);
         $flyer = $manager->getById($id);
         if($flyer) {
-            return $app->json("TODO: generate and return PDF");
+
+            try {
+                $pdf = new Pdf();
+                $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
+                $pdf->setTemporaryFolder('/tmp');
+                $pdf->setOption('dpi', 300);
+                $pdf->setOption('page-width', '8.5in');
+                $pdf->setOption('page-height', '11in');
+                $pdf->setOption('margin-left', 0);
+                $pdf->setOption('margin-right', 0);
+                $pdf->setOption('margin-top', 0);
+                $pdf->setOption('margin-bottom', 0);
+
+                $time = time();
+                $pdfFile = 'flayer-' . $id . '-'. $time . '.pdf';
+                $htmlFile = '/tmp/' . 'flayer-' . $id . '-'. $time . '.html';
+                $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData());
+                file_put_contents($htmlFile, $html, FILE_APPEND | LOCK_EX);
+
+                header('Content-Type: application/pdf');
+                header('Content-Disposition: attachment; filename="' . $pdfFile . '"');
+                echo $pdf->getOutput($htmlFile, array(), true);
+
+                if(file_exists($htmlFile)) {
+                    unlink($htmlFile);
+                }
+
+            } catch (\Exception $ex) {
+                header_remove('Content-Type');
+                header_remove('Content-Disposition');
+                return $app->json(['error' => '', 'message' => $ex->getMessage()]);
+            }
         }
         return $app->json("Error. Flyer not found");
+    }
+
+    public function contentForPDF(Application $app, $id) {
+
+        return $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData());
+
+    }
+
+    private function getPDFData() {
+        $data = array(
+            'noteFont' => 'inherit', // oswaldlight or inherit
+
+            'homeAddress' =>  '123 Easy Street <br> Pleasantville, CA 94110',
+            'homeImage' => 'http://i.imgur.com/O68xKOh.png',
+            'discuontPart' => '10',
+            'discuont' => '100,000',
+            'listingPrice' => '1,000,000',
+            'availableLoan' => '800,000',
+            'requiredDownPayment' => '200,000',
+            'ourDownPayment' => '100,000',
+            'yourDownPayment' => '100,000',
+
+            'photoCard1' => 'http://i.imgur.com/Wyd2mtJ.png',
+            'nameCard1' => 'Moe House',
+            'infoCard1' => 'Sr. Loan Officer<br />
+                Ph: 415.555.1212<br />
+                mohouse@abclending.com<br />
+                ABC Lending<br />
+                555 Commercial Way<br />
+                Anytown, CA 94939<br />
+                NMLS #555555<br />
+                CA BRE #01555555',
+            'agencyCard1' => 'http://i58.tinypic.com/tag2ty.png',
+
+            'photoCard2' => 'http://i.imgur.com/7W9wwAw.png',
+            'nameCard2' => 'Shirly Jurgiokin',
+            'infoCard2' => 'Realtor<sup>®</sup><br />
+                415-555-1515<br />
+                ShirlyJ@acmerealty.com<br />
+                CA BRE #5555555',
+            'agencyCard2' => 'http://i58.tinypic.com/1zyfoee.png'
+        );
+        return $data;
     }
 
     public function addAction(Application $app, Request $request){

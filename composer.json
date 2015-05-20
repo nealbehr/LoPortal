@@ -14,7 +14,8 @@
         "knplabs/knp-paginator-bundle": "~2.4",
         "dflydev/doctrine-orm-service-provider": "v1.0.6",
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~2.0",
-        "php-curl-class/php-curl-class": ">=2.1.0"
+        "php-curl-class/php-curl-class": ">=2.1.0",
+        "knplabs/knp-snappy": "^0.4.0"
     },
     "autoload": {
         "psr-0": {
