@@ -114,23 +114,13 @@ class Queue extends Base{
             $app->getEntityManager()->beginTransaction();
             $data = [];
             $queue = $this->findQueueWithRequestFlyerById($app, $id);
-            $file = $request->request->get('file');
 
             if (null === $queue) {
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(empty($file)? EntityQueue::STATE_LISTING_FLYER_PENDING: EntityQueue::STATE_APPROVED)
-                  ->setReason($request->request->get('reason'))
-
-            ;
-
-            if(!empty($file)){
-                $link = (new Pdf($app->getS3(), $file, '1rex.pdf'))
-                    ->downloadFileToS3andGetUrl(time().mt_rand(1, 100000).'.pdf');
-
-                $queue->getFlyer()->setPdfLink($link);
-            }
+            $queue->setState(EntityQueue::STATE_APPROVED);
+            $queue->setReason($request->request->get('reason'));
 
             $errors = $app->getValidator()->validate($queue);
 
@@ -144,7 +134,7 @@ class Queue extends Base{
             $app->getEntityManager()->flush();
 
             /** @var Realtor $realtor */
-            $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($queue->getFlyer()->getRealtorId());
+            $realtor = $app->getEntityManager()->getRepository(Realtor::CLASS_NAME)->find($queue->getFlyer()->getRealtorId());
 
             if(!$realtor){
                 throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found.", $queue->getFlyer()->getRealtorId()));
@@ -216,9 +206,9 @@ class Queue extends Base{
         }
 
         /** @var RequestFlyer $requestFlyer */
-        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::class)->findOneBy(['queue_id' => $queue->getId()]);
+        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::CLASS_NAME)->findOneBy(['queue_id' => $queue->getId()]);
         /** @var Realtor $realtor */
-        $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($requestFlyer->getRealtorId());
+        $realtor = $app->getEntityManager()->getRepository(Realtor::CLASS_NAME)->find($requestFlyer->getRealtorId());
 
         return new RequestFlyerDenial($realtor, $requestFlyer, $email);
     }
@@ -232,7 +222,7 @@ class Queue extends Base{
         return $app->getEntityManager()
             ->createQueryBuilder()
             ->select('q, f, u')
-            ->from(EntityQueue::class, 'q')
+            ->from(EntityQueue::CLASS_NAME, 'q')
             ->join('q.flyer', 'f')
             ->join('q.user', 'u')
             ->where('q.id = :id')
@@ -251,7 +241,7 @@ class Queue extends Base{
         return $app->getEntityManager()
             ->createQueryBuilder()
             ->select('q, u')
-            ->from(EntityQueue::class, 'q')
+            ->from(EntityQueue::CLASS_NAME, 'q')
             ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)
@@ -266,23 +256,22 @@ class Queue extends Base{
         }
         $app->getEntityManager()->getConfiguration()->addCustomHydrationMode('Duplicates', '\LO\Bridge\Doctrine\Hydrator\Duplicates');
         $expr = $app->getEntityManager()->createQueryBuilder()->expr();
-        return $app->getEntityManager()->getRepository(EntityQueue::class)->createQueryBuilder('q1')
+        return $app->getEntityManager()->getRepository(EntityQueue::CLASS_NAME)->createQueryBuilder('q1')
             ->select('q1.id, q2.id, q2.created_at')
-            ->leftJoin(EntityQueue::class, 'q2', Expr\Join::WITH, "q1.address = q2.address")
+            ->leftJoin(EntityQueue::CLASS_NAME, 'q2', Expr\Join::WITH, "q1.address = q2.address")
             ->where('q1.id <> q2.id')
             ->andWhere('q1.created_at > q2.created_at')
             ->andWhere($expr->notIn('q1.state', [EntityQueue::STATE_DRAFT]))
             ->andWhere($expr->notIn('q2.state', [EntityQueue::STATE_DRAFT]))
             ->getQuery()
             ->getResult('Duplicates');
-        ;
     }
 
     private function getQueueList(Request $request, Application $app){
         $expr = $app->getEntityManager()->createQueryBuilder()->expr();
         $q = $app->getEntityManager()->createQueryBuilder()
             ->select('q1')
-            ->from(EntityQueue::class, 'q1')
+            ->from(EntityQueue::CLASS_NAME, 'q1')
             ->where($expr->notIn('q1.state', [EntityQueue::STATE_DRAFT]))
             ->setMaxResults(static::QUEUE_LIMIT)
             ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION))

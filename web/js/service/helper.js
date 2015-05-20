@@ -309,23 +309,18 @@
                     }
                 });
 
-
                 scope.isApprovedProperty = function(item){
                     return item.request_type == this.requestType.propertyApproval && item.state == settings.queue.state.approved;
-                }
-
-                scope.hasPdf = function(item){
-                    return item.request_type == this.requestType.flyer && item.flyer != null && item.flyer.pdf_link && item.state == settings.queue.state.approved
-                }
+                };
+                scope.isApprovedFlyer= function(item){
+                    return item.request_type == this.requestType.flyer && item.flyer != null && item.state == settings.queue.state.approved
+                };
                 scope.canCancel = function(item){
                     return item.state == settings.queue.state.requested || item.state == settings.queue.state.draft;
-                }
+                };
                 scope.isComplete = function(item){
                     return item.state == settings.queue.state.draft;
-                }
-                scope.isNone = function(item){
-                    return !(this.isApprovedProperty(item) || this.hasPdf(item) || this.canCancel(item) || this.isComplete(item));
-                }
+                };
             }
         }
     }]);

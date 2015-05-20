@@ -11,11 +11,22 @@ namespace LO\Model\Manager;
 
 use LO\Model\Entity\RequestFlyer;
 
-class RequestFlyerManager extends Base{
-    public function getById($id){
-        $this->getApp()
+/**
+ * Class RequestFlyerManager
+ * @package LO\Model\Manager
+ */
+class RequestFlyerManager extends Base {
+
+    /**
+     * Get Request flyer by id
+     *
+     * @param $flyerID
+     * @return null|RequestFlyer
+     */
+    public function getById($flyerID){
+        return $this->getApp()
             ->getEntityManager()
-            ->getRepository(RequestFlyer::class)
-            ->find($id);
+            ->getRepository(RequestFlyer::CLASS_NAME)
+            ->find($flyerID);
     }
 } 

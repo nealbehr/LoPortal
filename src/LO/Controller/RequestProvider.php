@@ -40,6 +40,9 @@ class RequestProvider implements ControllerProviderInterface{
             ->put("/from/approval/{id}", "request.flyer.controller:createFromApprovalRequestAction");
 
         $controllers
+            ->get("/flyer/{id}/download", "request.flyer.controller:download");
+
+        $controllers
             ->get("/approval/{id}", "request.approval.controller:getAction");
 
         $controllers

@@ -29,14 +29,13 @@ class RequestFlyerForm extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('pdf_link', 'text')
             ->add('listing_price', 'text')
             ->add('photo', new S3Photo($this->s3, '1rex.property'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
         $resolver->setDefaults([
-            'data_class'        => RequestFlyer::class,
+            'data_class'        => RequestFlyer::CLASS_NAME,
             'csrf_protection'   => false,
             'validation_groups' => ['Default'],
         ]);

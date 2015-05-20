@@ -19,7 +19,10 @@ use Doctrine\ORM\Mapping\JoinColumn;
  * @Entity
  * @Table(name="request_flyer")
  */
-class RequestFlyer extends Base{
+class RequestFlyer extends Base {
+
+    const CLASS_NAME = 'LO\Model\Entity\RequestFlyer';
+
     /**
      * @Column(type="integer")
      */
@@ -31,16 +34,6 @@ class RequestFlyer extends Base{
      * @Assert\Type(type="numeric")
      */
     protected $realtor_id;
-
-    /**
-     * @Column(type="string")
-     * @Assert\Length(
-     *              max = 65536,
-     *              maxMessage = "photo url cannot be longer than {{ limit }} characters"
-     * )
-     */
-    protected $pdf_link;
-
 
     /**
      * @Column(type="string")
@@ -84,16 +77,6 @@ class RequestFlyer extends Base{
 
     public function getPhoto(){
         return $this->photo;
-    }
-
-    public function getPdfLink(){
-        return $this->pdf_link;
-    }
-
-    public function setPdfLink($param){
-        $this->pdf_link = $param;
-
-        return $this;
     }
 
     public function getQueueId(){

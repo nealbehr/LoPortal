@@ -22,11 +22,13 @@ use LO\Model\Entity\Realtor;
 use LO\Model\Entity\RequestFlyer;
 use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
+use LO\Model\Manager\RequestFlyerManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class RequestFlyerController extends RequestFlyerBase{
+class RequestFlyerController extends RequestFlyerBase {
+
     public function getAction(Application $app, $id){
         $queue = $this->getQueueById($app, $id);
 
@@ -36,7 +38,7 @@ class RequestFlyerController extends RequestFlyerBase{
 
         $formFlyerForm = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer);
 
-        $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($requestFlyer->getRealtorId());
+        $realtor = $app->getEntityManager()->getRepository(Realtor::CLASS_NAME)->find($requestFlyer->getRealtorId());
         $realtorForm = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor);
 
         return $app->json([
@@ -45,6 +47,21 @@ class RequestFlyerController extends RequestFlyerBase{
             'address'  => $queue->getAdditionalInfo(),
             'user'     => $queue->getUser()->getPublicInfo(),
         ]);
+    }
+
+    /**
+     * Download request flyer in PDF
+     * @param Application $app
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function download(Application $app, $id) {
+        $manager = new RequestFlyerManager($app);
+        $flyer = $manager->getById($id);
+        if($flyer) {
+            return $app->json("TODO: generate and return PDF");
+        }
+        return $app->json("Error. Flyer not found");
     }
 
     public function addAction(Application $app, Request $request){
