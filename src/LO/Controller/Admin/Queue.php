@@ -165,9 +165,7 @@ class Queue extends Base{
             }
 
             $queue->setState(EntityQueue::STATE_APPROVED)
-                  ->setReason($request->request->get('reason'))
-
-            ;
+                  ->setReason($request->request->get('reason'));
             $errors = $app->getValidator()->validate($queue);
 
             if(count($errors) > 0){

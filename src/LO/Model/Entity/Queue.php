@@ -181,6 +181,14 @@ class Queue extends Base{
     }
 
     /**
+     * @param mixed $flyer
+     */
+    public function setFlyer($flyer)
+    {
+        $this->flyer = $flyer;
+    }
+
+    /**
      * @return User
      */
     public function getUser(){

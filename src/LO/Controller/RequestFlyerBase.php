@@ -84,7 +84,6 @@ class RequestFlyerBase extends RequestBaseController{
     protected function getQueueById(Application $app, $id){
         /** @var Queue $queue */
         $queue = (new QueueManager($app))->getByIdWithRequestFlyeAndrUser($id);
-
         if(!$queue){
             throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
         }

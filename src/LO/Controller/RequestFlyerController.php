@@ -64,7 +64,6 @@ class RequestFlyerController extends RequestFlyerBase {
             try {
                 $pdf = new Pdf();
                 $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
-                $pdf->setTemporaryFolder('/tmp');
                 $pdf->setOption('dpi', 300);
                 $pdf->setOption('page-width', '8.5in');
                 $pdf->setOption('page-height', '11in');
@@ -75,17 +74,11 @@ class RequestFlyerController extends RequestFlyerBase {
 
                 $time = time();
                 $pdfFile = 'flayer-' . $id . '-'. $time . '.pdf';
-                $htmlFile = '/tmp/' . 'flayer-' . $id . '-'. $time . '.html';
                 $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData());
-                file_put_contents($htmlFile, $html, FILE_APPEND | LOCK_EX);
 
                 header('Content-Type: application/pdf');
                 header('Content-Disposition: attachment; filename="' . $pdfFile . '"');
-                echo $pdf->getOutput($htmlFile, array(), true);
-
-                if(file_exists($htmlFile)) {
-                    unlink($htmlFile);
-                }
+                echo $pdf->getOutputFromHtml($html, array(), true);
 
             } catch (\Exception $ex) {
                 header_remove('Content-Type');
