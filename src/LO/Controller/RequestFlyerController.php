@@ -74,7 +74,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
                 $time = time();
                 $pdfFile = 'flayer-' . $id . '-'. $time . '.pdf';
-                $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData());
+                $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData($flyer));
 
                 header('Content-Type: application/pdf');
                 header('Content-Disposition: attachment; filename="' . $pdfFile . '"');
@@ -91,42 +91,53 @@ class RequestFlyerController extends RequestFlyerBase {
 
     public function contentForPDF(Application $app, $id) {
 
-        return $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData());
-
+        $manager = new RequestFlyerManager($app);
+        $flyer = $manager->getById($id);
+        if($flyer) {
+            return $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData($flyer));
+        }
+        return $app->json("Error. Flyer not found");
     }
 
-    private function getPDFData() {
+    private function getPDFData(RequestFlyer $flyer) {
+
+        setlocale(LC_MONETARY, 'en_US');
+
+        $queue = $flyer->getQueue();
+        $realtor = $flyer->getRealtor();
+        $loanOfficer = $queue->getUser();
+        $lender = $loanOfficer->getLender();
+
         $data = array(
-            'noteFont' => 'inherit', // oswaldlight or inherit
 
-            'homeAddress' =>  '123 Easy Street <br> Pleasantville, CA 94110',
-            'homeImage' => 'http://i.imgur.com/O68xKOh.png',
+            'homeAddress' =>  preg_replace('/,/', '<br>', $queue->getAddress(), 1),
+            'homeImage' => $flyer->getPhoto(),
             'discuontPart' => '10',
-            'discuont' => '100,000',
-            'listingPrice' => '1,000,000',
-            'availableLoan' => '800,000',
-            'requiredDownPayment' => '200,000',
-            'ourDownPayment' => '100,000',
-            'yourDownPayment' => '100,000',
+            'discuont' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
+            'listingPrice' => number_format($flyer->getListingPrice(), 0, '.', ','),
+            'availableLoan' => number_format($flyer->getListingPrice() * 0.8, 0, '.', ','),
+            'requiredDownPayment' => number_format($flyer->getListingPrice() * 0.2, 0, '.', ','),
+            'ourDownPayment' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
+            'yourDownPayment' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
 
-            'photoCard1' => 'http://i.imgur.com/Wyd2mtJ.png',
-            'nameCard1' => 'Moe House',
-            'infoCard1' => 'Sr. Loan Officer<br />
-                Ph: 415.555.1212<br />
-                mohouse@abclending.com<br />
-                ABC Lending<br />
-                555 Commercial Way<br />
-                Anytown, CA 94939<br />
-                NMLS #555555<br />
-                CA BRE #01555555',
-            'agencyCard1' => 'http://i58.tinypic.com/tag2ty.png',
+            'photoCard1' => $loanOfficer->getPicture(),
+            'nameCard1' => $loanOfficer->getFirstName() . ' '. $loanOfficer->getLastName(),
+            'infoCard1' => $loanOfficer->getTitle() . '<br />
+                Ph: ' . $loanOfficer->getPhone() . '<br />
+                ' . $loanOfficer->getEmail() . '<br />
+                ' . $lender->getName() . '<br />
+                ' . preg_replace('/,/', '<br>', $lender->getAddress(), 1) . '<br />
+                NMLS #' . $loanOfficer->getNmls() . '<br />
+                CA BRE #XXXXXX',
+            'agencyCard1' => $lender->getPicture(),
+            'lenderDisclosure' => $lender->getDisclosure(),
 
-            'photoCard2' => 'http://i.imgur.com/7W9wwAw.png',
-            'nameCard2' => 'Shirly Jurgiokin',
+            'photoCard2' => $realtor->getPhoto(),
+            'nameCard2' => $realtor->getFirstName() . ' ' . $realtor->getLastName(),
             'infoCard2' => 'Realtor<sup>®</sup><br />
-                415-555-1515<br />
-                ShirlyJ@acmerealty.com<br />
-                CA BRE #5555555',
+                ' . $realtor->getPhone()  .'<br />
+                ' . $realtor->getEmail() .'<br />
+                CA BRE #' . $realtor->getBreNumber(),
             'agencyCard2' => 'http://i58.tinypic.com/1zyfoee.png'
         );
         return $data;
