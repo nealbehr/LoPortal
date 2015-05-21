@@ -290,11 +290,9 @@
                     scope.lenderPicture = new pictureObject(
                         angular.element('#lenderPhoto'),
                         {container: $(".realtor-photo > img"), options: {
-                            minContainerWidth: 300,
-                            minContainerHeight: 100,
                             minCropBoxWidth: 300,
-                            minCropBoxHeight: 100,
-                            aspectRatio: 3
+                            minCropBoxHeight: 300,
+                            aspectRatio: 3.5 / 1
                         }},
                         scope.lender
                     );
@@ -321,7 +319,7 @@
                     waitingScreen.show();
 
                     if(scope.lender.picture) {
-                        scope.lenderPicture.prepareImage(100, 100, 300, 100);
+                        scope.lenderPicture.prepareImage(300, 300, 1050, 300);
                     }
 
                     scope.lender.save()

@@ -1,6 +1,6 @@
 <form ng-submit="submit(formLender)" class="css-form" novalidate name="formLender">
     <div class="row edit-user">
-        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-4">
             <div id="lenderMessage"></div>
 
             <div class="alert alert-danger fade in" ng-show="!hideErrors && formLender.$submitted && !formLender.$valid">
@@ -9,13 +9,13 @@
             </div>
 
             <h2>[[ title ]]</h2>
-            <div class="main-info">
-                <div class="user-photo">
-                    <div class="realtor-photo" style="width: 300px; height: 100px;">
-                        <img ng-src="[[ lender.picture|lenderImage ]]" alt="lender" ng-click="lenderPicture.choosePhoto()">
-                    </div>
+            <div class="thumbnail">
+                <div class="realtor-photo"  style="text-align: center; height: 150px;">
+                    <img ng-src="[[ lender.picture|lenderImage ]]" alt="lender" ng-click="lenderPicture.choosePhoto()">
+                </div>
+                <div class="caption">
                    <span class="upload">
-                        Upload Photo
+                        Upload Lender Logo
                         <div><input class="upload" id="lenderPhoto" type="file" valid-file name="fileimage" ng-model="lender.picture"></div>
                     </span>
                 </div>
