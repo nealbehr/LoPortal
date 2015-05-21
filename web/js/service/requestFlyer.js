@@ -35,15 +35,15 @@
 
             flyer.update = function(){
                 return $http.put('/request/draft/' + this.id, this.getFields4Save());
-            }
+            };
 
             flyer.add = function(){
                 return $http.post('/request/draft', this.getFields4Save());
-            }
+            };
 
             flyer.remove = function(){
                 return $http.delete('/request/draft/' + this.id);
-            }
+            };
 
             return flyer;
         }
@@ -59,11 +59,11 @@
 
             flyer.add = function(){
                 return $http.post('/request/', this.getFields4Save());
-            }
+            };
 
             flyer.update = function(){
                 return $http.put('/request/' + this.id, this.getFields4Save());
-            }
+            };
 
             return flyer;
         }
