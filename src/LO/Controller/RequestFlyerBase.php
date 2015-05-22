@@ -39,7 +39,6 @@ class RequestFlyerBase extends RequestBaseController{
 
         $app->getEntityManager()->persist($realtor);
         $app->getEntityManager()->flush();
-
         $queue
             ->setType(Queue::TYPE_FLYER)
             ->setUser($app->user())
@@ -57,10 +56,8 @@ class RequestFlyerBase extends RequestBaseController{
         $app->getEntityManager()->persist($queue);
         $app->getEntityManager()->flush();
 
-        $requestFlyer
-            ->setRealtorId($realtor->getId())
-            ->setQueue($queue)
-        ;
+        $requestFlyer->setRealtor($realtor);
+        $requestFlyer->setQueue($queue);
 
         $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer, $formOptions);
         $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));

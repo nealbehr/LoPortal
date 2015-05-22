@@ -69,12 +69,6 @@ class RequestFlyer extends Base {
         return $this;
     }
 
-    public function setRealtorId($param){
-        $this->realtor_id = $param;
-
-        return $this;
-    }
-
     public function setPhoto($param){
         $this->photo = $param;
 
@@ -120,7 +114,7 @@ class RequestFlyer extends Base {
     }
 
     /**
-     * @param mixed $realtor
+     * @param Realtor $realtor
      */
     public function setRealtor($realtor)
     {
