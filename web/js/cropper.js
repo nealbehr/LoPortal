@@ -632,17 +632,23 @@
                 cropBox = this.cropBox,
                 aspectRatio = options.aspectRatio,
                 minCropBoxWidth,
-                minCropBoxHeight;
+                minCropBoxHeight,
+                maxCropBoxWidth,
+                maxCropBoxHeight;
+
 
             if (size) {
                 minCropBoxWidth = num(options.minCropBoxWidth) || 0;
                 minCropBoxHeight = num(options.minCropBoxHeight) || 0;
 
+                maxCropBoxWidth = num(options.maxCropBoxWidth) || containerWidth;
+                maxCropBoxHeight = num(options.maxCropBoxHeight) || containerHeight;
+
                 // min/maxCropBoxWidth/Height must less than conatiner width/height
                 cropBox.minWidth = min(containerWidth, minCropBoxWidth);
                 cropBox.minHeight = min(containerHeight, minCropBoxHeight);
-                cropBox.maxWidth = min(containerWidth, strict ? canvas.width : containerWidth);
-                cropBox.maxHeight = min(containerHeight, strict ? canvas.height : containerHeight);
+                cropBox.maxWidth = min(containerWidth, strict ? maxCropBoxWidth : containerWidth);
+                cropBox.maxHeight = min(containerHeight, strict ? maxCropBoxHeight : containerHeight);
 
                 if (aspectRatio) {
                     // compare crop box size with container first
@@ -1946,6 +1952,8 @@
         minCanvasHeight: 0,
         minCropBoxWidth: 0,
         minCropBoxHeight: 0,
+        maxCropBoxWidth: 0,
+        maxCropBoxHeight: 0,
         minContainerWidth: 200,
         minContainerHeight: 100,
 

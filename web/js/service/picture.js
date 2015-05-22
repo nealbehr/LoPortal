@@ -46,6 +46,28 @@
                 });
             };
 
+            this.validateNaturalSize = function(widthMin, heightMin) {
+
+                var imageData = imageSettings.container.cropper("getImageData");
+                return (imageData.naturalWidth >= widthMin && imageData.naturalHeight >= heightMin);
+            };
+
+            this.prepareFixedHeightImage = function(height){
+                var info = imageSettings.container.cropper("getCropBoxData");
+                if(!("width" in info)){
+                    return null;
+                }
+
+                var result = imageSettings.container.cropper("getCroppedCanvas",
+                    {
+                        "height": height
+                    })
+                    .toDataURL("image/jpeg");
+                if(result !== null){
+                    objectForImage.setPicture(result);
+                }
+            };
+
             this.prepareImage = function(heightMax, heightMin, widthMax, widthMin){
                 var info = imageSettings.container.cropper("getCropBoxData");
                 if(!("width" in info)){

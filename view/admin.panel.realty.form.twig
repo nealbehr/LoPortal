@@ -1,0 +1,35 @@
+<form ng-submit="submit(formRealty)" class="css-form" novalidate name="formRealty">
+    <div class="row edit-user">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-4">
+            <div id="companyMessage"></div>
+
+            <div class="alert alert-danger fade in" ng-show="!hideErrors && formRealty.$submitted && !formRealty.$valid">
+                <a ng-href="#" class="close" ng-click="showErrors($event)">close</a>
+                <!-- phone -->
+            </div>
+
+            <h2>[[ title ]]</h2>
+            <div class="thumbnail">
+                <div class="realtor-photo"  style="text-align: center; height: 150px;overflow: hidden;">
+                    <img id="realtyLogoImage" style="max-width: 100%;max-height: 100%;" ng-src="[[ company.logo|realtyLogo ]]" alt="realty company" ng-click="realtyLogo.choosePhoto()">
+                </div>
+                <div class="caption">
+                   <span class="upload">
+                        Upload Company Logo<br>
+                        <div><input class="upload" id="realtyLogo" type="file" valid-file name="fileimage" ng-model="company.logo"></div>
+                    </span>
+                </div>
+            </div>
+            <div class="inputs-holder">
+                <div class="input">
+                    <input maxlength="50" class="input-lg" type="text" placeholder="Company name" ng-model="company.name" name="name" ng-model-options="{ updateOn: 'blur' }">
+                </div>
+            </div>
+            <button class="btn btn-default btn-lg">Save</button>
+            <div class="bottom-nav">
+                <a ng-if="company.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete company</a>
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

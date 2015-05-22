@@ -22,12 +22,12 @@
             </div>
             <div class="inputs-holder">
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="Lender name" ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
+                    <input maxlength="50" class="input-lg" type="text" placeholder="Lender name" ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
             <div class="inputs-holder">
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="Lender Address" ng-model="lender.address" name="address" ng-model-options="{ updateOn: 'blur' }">
+                    <input maxlength="255" class="input-lg" type="text" placeholder="Lender Address" ng-model="lender.address" name="address" ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
             <textarea class="form-control" cols="30" rows="2" placeholder="Lender disclosure" ng-model="lender.disclosure" name="disclosure"></textarea>

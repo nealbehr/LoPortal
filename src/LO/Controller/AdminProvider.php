@@ -27,6 +27,10 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\LenderController();
         });
 
+        $app['admin.realty.controller'] = $app->share(function() use ($app) {
+            return new Admin\RealtyCompanyController();
+        });
+
         $app['admin.property.approval.controller'] = $app->share(function() use ($app) {
             return new Admin\PropertyApproval();
         });
@@ -67,6 +71,12 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->get('/lender/{id}', "admin.lender.controller:getByIdAction");
         $controllers->put('/lender/{id}', "admin.lender.controller:updateLenderAction");
         $controllers->delete('/lender/{id}', "admin.lender.controller:deleteAction");
+
+        $controllers->get('/realty', "admin.realty.controller:getAllAction");
+        $controllers->post('/realty', "admin.realty.controller:addCompanyAction");
+        $controllers->get('/realty/{id}', "admin.realty.controller:getByIdAction");
+        $controllers->put('/realty/{id}', "admin.realty.controller:updateCompanyAction");
+        $controllers->delete('/realty/{id}', "admin.realty.controller:deleteAction");
 
         $controllers
             ->get("/approval/{id}", "admin.property.approval.controller:getAction");
