@@ -29,13 +29,6 @@ class RequestFlyer extends Base {
     protected $queue_id;
 
     /**
-     * @Column(type="integer")
-     * @Assert\NotBlank(message = "Realtor id should not be blank.", groups = {"main"})
-     * @Assert\Type(type="numeric")
-     */
-    protected $realtor_id;
-
-    /**
      * @Column(type="string")
      * @Assert\NotBlank(message = "Listing price should not be blank.", groups = {"main"})
      */
@@ -129,10 +122,6 @@ class RequestFlyer extends Base {
         $this->listing_price = $param;
 
         return $this;
-    }
-
-    public function getRealtorId(){
-        return $this->realtor_id;
     }
 
 }
