@@ -39,7 +39,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
         $formFlyerForm = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer);
 
-        $realtor = $app->getEntityManager()->getRepository(Realtor::CLASS_NAME)->find($requestFlyer->getRealtorId());
+        $realtor = $requestFlyer->getRealtor();
         $realtorForm = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor);
 
         return $app->json([
@@ -128,7 +128,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 ' . $lender->getName() . '<br />
                 ' . preg_replace('/,/', '<br>', $lender->getAddress(), 1) . '<br />
                 NMLS #' . $loanOfficer->getNmls() . '<br />
-                CA BRE #XXXXXX',
+                CA BRE #',
             'agencyCard1' => $lender->getPicture(),
             'lenderDisclosure' => $lender->getDisclosure(),
 
@@ -138,7 +138,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 ' . $realtor->getPhone()  .'<br />
                 ' . $realtor->getEmail() .'<br />
                 CA BRE #' . $realtor->getBreNumber(),
-            'agencyCard2' => 'http://i58.tinypic.com/1zyfoee.png'
+            'agencyCard2' => $realtor->getRealtyLogo()
         );
         return $data;
     }
@@ -246,7 +246,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http("We can re-save only draft.");
             }
 
-            $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
+            $realtor = $queue->getFlyer()->getRealtor();
 
             $this->saveFlyer(
                 $app,
@@ -277,7 +277,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http("We can remove only draft.");
             }
 
-            $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
+            $realtor = $queue->getFlyer()->getRealtor();
 
             $app->getEntityManager()->remove($queue->getFlyer());
             $app->getEntityManager()->remove($realtor);

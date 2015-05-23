@@ -172,7 +172,57 @@
         }
     }]);
 
-    realtyCompanyModule.controller('AdminCompaniesController', ['$scope', function($scope){
+    realtyCompanyModule.factory('realtyLogosFactory', function($http) {
+
+        var urlBase = '/settings/realty-companies';
+
+        var realtyCompanies = [
+            {name:'Alain Pinel', img:'images/realtors/bradBeacham.png'},
+            {name:'Insignia Mortgage', img:'images/realtors/christian.png'},
+            {name:'J. Rockcliff Mortgage', img:'images/realtors/realtor.png'},
+            {name:'John L Scott Mortgage', img:'images/realtors/rich-z.png'},
+            {name:'Pacific Union', img:'images/realtors/structure.png'},
+            {name:'Realogics Sotheby', img:'images/empty-company-150x525.png'},
+            {name:'RealtyOne', img:'images/empty-company-150x525.png'},
+            {name:'Redfin', img:'images/empty-company-150x525.png'},
+            {name:'REMAX', img:'images/empty-company-150x525.png'},
+            {name:'REMAX Estate', img:'images/empty-company-150x525.png'},
+            {name:'Rockwell Realty', img:'images/empty-company-150x525.png'},
+            {name:'RSVP Real Estate', img:'images/empty-company-150x525.png'}
+        ];
+
+        var factory = {};
+        factory.getRealtyCompanies = function() {
+            //return realtyCompanies;
+            return $http.get(urlBase);
+        };
+        return factory;
+    });
+
+    realtyCompanyModule.controller('SelectRealtyLogoController', function($scope, realtyLogosFactory) {
+
+        $scope.realtyCompanies = [];
+
+        getRealtyCompanies();
+
+        function getRealtyCompanies() {
+            realtyLogosFactory.getRealtyCompanies()
+                .success(function (companies) {
+                    $scope.realtyCompanies = companies;
+                })
+                .error(function (error) {
+                    $scope.status = 'Unable to load realty companies data: ' + error.message;
+                });
+        }
+
+        $scope.selectRealtyLogo = function(realtyCompany) {
+            $scope.request.realtor.realty_name = realtyCompany.name;
+            $scope.request.realtor.realty_logo = realtyCompany.logo;
+            $('#chooseRealtyCompanyLogo').modal('hide');
+        };
+    });
+
+    realtyCompanyModule.controller('AdminCompaniesController', ['$scope', function($scope) {
         $scope.settings = settings;
     }]);
 
@@ -384,7 +434,7 @@
         return function(input){
             return "" != input && null !== input && input !== undefined
                 ? input
-                : '/images/empty-lender.png';
+                : '/images/empty-company-150x525.png';
         }
     });
 

@@ -111,7 +111,8 @@
                 first_name: null,
                 last_name: null,
                 bre_number: null,
-                estate_agency: null,
+                realty_name: null,
+                realty_logo: null,
                 phone: null,
                 email: null,
                 photo: null,
@@ -123,7 +124,7 @@
 
                     return this;
                 }
-            }
+            };
 
             this.address = {
                 address: '',

@@ -109,7 +109,7 @@ class RequestFlyerBase extends RequestBaseController{
             'method' => 'PUT'
         ];
 
-        $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
+        $realtor = $queue->getFlyer()->getRealtor();
 
         $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ['method' => 'PUT']);
         $firstRexForm->handleRequest($request);

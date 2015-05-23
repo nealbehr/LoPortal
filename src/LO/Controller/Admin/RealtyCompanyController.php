@@ -31,6 +31,21 @@ class RealtyCompanyController extends Base {
 
     private $errors = [];
 
+    public function getAllForSelect(Application $app, Request $request) {
+        try {
+            $em = $app->getEntityManager();
+            $allCompanies = $em->getRepository(RealtyCompany::class)->findAll();
+            $result = [];
+            foreach ($allCompanies as $company) {
+                /* @var RealtyCompany $company */
+                $result[] = $company->toArray();
+            }
+        } catch (\Exception $ex) {
+            $app->getMonolog()->addWarning($ex);
+        }
+
+    }
+
     public function getAllAction(Application $app, Request $request)
     {
 
@@ -59,7 +74,7 @@ class RealtyCompanyController extends Base {
             }
 
         } catch (\Exception $ex) {
-            var_dump($ex);
+            $app->getMonolog()->addWarning($ex);
         }
 
         return $app->json([
@@ -187,8 +202,7 @@ class RealtyCompanyController extends Base {
         if ($request->get(self::KEY_SEARCH)) {
             $q->andWhere(
                 $app->getEntityManager()->createQueryBuilder()->expr()->orX(
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(rc.name)", ':param'),
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(rc.address)", ':param')
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(rc.name)", ':param')
                 )
             )
                 ->setParameter('param', '%' . strtolower($request->get(self::KEY_SEARCH)) . '%');

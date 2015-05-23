@@ -207,7 +207,7 @@
                         .finally(function(){
                             waitingScreen.hide();
                         });
-                }
+                };
 
                 scope.save = function(){
                     waitingScreen.show();
@@ -242,7 +242,7 @@
                             waitingScreen.hide();
                         }
                     );
-                }
+                };
 
                 scope.setSelected = function(newVal){
                     if(!newVal || !scope.officer || !scope.officer.roles || scope.roles.length < 1){

@@ -27,6 +27,11 @@ class SettingsProvider implements ControllerProviderInterface {
             return new Settings();
         });
 
+        $app['realty.controller'] = $app->share(function() use ($app) {
+            return new UserRealtyCompanyController();
+        });
+
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
@@ -36,6 +41,8 @@ class SettingsProvider implements ControllerProviderInterface {
         $controllers
             ->get("/request/state", "settings.controller:getRequestStateAction");
 
+        $controllers
+            ->get("/realty-companies", "realty.controller:getAction");
 
         return $controllers;
     }

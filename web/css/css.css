@@ -67,3 +67,13 @@
 .action-none{
     color: #BABABA;
 }
+
+.logo-box ul li {
+    height: 50px;
+    width: 175px;
+    cursor: pointer;
+}
+
+.logo-box ul li a {
+    height: 50px;
+}

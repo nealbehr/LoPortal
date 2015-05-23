@@ -103,23 +103,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="main-info">
-                    <div class="user-photo">
-                        <div class="company realtor-photo">
-                            <img src="images/realtors/realtor.png" alt="">
-                        </div>
-                        <span class="upload">
-                            Upload Photo
-                            <div><input type="file" required=""></div>
-                        </span>
-                    </div>
-                    <div class="inputs-holder">
-                        <div class="input">
-                            <input class="input-lg" type="text" placeholder="Realtor company" ng-pattern="/^[A-Za-z\s]+$/">
-                        </div>
-                    </div>
-                    <a href="#" data-toggle="modal" data-target="#choiceLogo">Link</a>
-                </div>
+
                 <div class="inputs-holder">
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="Phone number" ng-pattern="/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/" ng-model="request.realtor.phone" required="" name="phone">
@@ -127,15 +111,28 @@
                     <div class="input">
                         <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">
                     </div>
-                </div>
-                <div class="inputs-holder">
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="BRE number" ng-model="request.realtor.bre_number" name="bre">
                     </div>
-                    <div class="input">
-                        <input class="input-lg" type="text" placeholder="Real estate agency" ng-model="request.realtor.estate_agency" name="agency">
+                </div>
+
+                <div class="thumbnail">
+                    <div class="realtor-photo"  style="text-align: center; height: 130px;overflow: hidden;">
+                        <img id="realtyLogoImage" data-ng-src="{{ '{{ request.realtor.realty_logo }}' }}">
+                    </div>
+                    <div class="caption">
+                       <span>
+                            <a href="#" data-toggle="modal" data-target="#chooseRealtyCompanyLogo">Select Realty Company Logo</a><br>
+                        </span>
                     </div>
                 </div>
+
+                <div class="inputs-holder">
+                    <div class="input">
+                        <input class="input-lg" type="text" placeholder="Realtor company" ng-model="request.realtor.realty_name" ng-pattern="/^[A-Za-z\s]+$/">
+                    </div>
+                </div>
+
                 <div class="row">
                     <div class="col-sm-4 pull-right">
                         <button class="btn btn-default btn-lg">[[ titles.button ]]</button>
@@ -153,38 +150,37 @@
     </div>
 </section>
 
-    <div class="modal fade" id="choiceLogo" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
-                <h4 class="modal-title">Select company logo</h4>
-                <p>Upload a new logo</p>
-                <div class="upload-holder">
-                    <button type="button" class="btn btn-default">Choose File</button>
-                    <input type="file">
-                </div>
-                
-              </div>
-              <div class="modal-body">
-                  <div class="logo-box">
-                     
-                    <div class="paging pull-right">
-                        1/6
-                        <a href="#" class="prev">prev</a>
-                        <a href="#" class="next inactive">next</a>
-                    </div>
-                      Choose an existing logo:
-                      <ul>
-                          <li><a href="#"><img src="images/realtors/rich-z.png" alt=""></a></li>
-                          <li><a href="#"><img src="images/realtors/realtor.png" alt=""></a></li>
-                          <li><a href="#"><img src="images/realtors/bradBeacham.png" alt=""></a></li>
-                          <li><a href="#"><img src="images/realtors/christian.png" alt=""></a></li>
-                          <li><a href="#"><img src="images/realtors/structure.png" alt=""></a></li>
-                          <li><a href="#"><img src="images/realtors/realtor.png" alt=""></a></li>
-                      </ul>
-                  </div>
-              </div>
+<div class="modal fade" id="chooseRealtyCompanyLogo" tabindex="-1" role="dialog" aria-hidden="true" data-ng-controller="SelectRealtyLogoController">
+    <div class="modal-dialog" style="width: 665px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+            <h4 class="modal-title">Select Company Logo</h4>
+            <p>Upload a new logo</p>
+            <div class="upload-holder">
+                <button type="button" class="btn btn-default">Choose File</button>
+                <input type="file">
             </div>
+
+          </div>
+          <div class="modal-body">
+              <div class="logo-box">
+                  Choose an existing company:
+                  <div class="top-bar">
+                  <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Search by company name" data-ng-model="test.realtyName">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Go!</button>
+                       </span>
+                  </div>
+                  </div>
+                  <ul>
+                      <li data-ng-click="selectRealtyLogo(realtyCompany)" data-ng-repeat="realtyCompany in realtyCompanies | filter:{name:test.realtyName||''} | orderBy:name | limitTo:9">
+                          <a><img data-ng-src="{{ '{{realtyCompany.logo }}' }}" alt="{{ '{{realtyCompany.name }}' }}"></a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
         </div>
     </div>
+</div>

@@ -110,6 +110,7 @@ class Queue extends Base{
     }
 
     public function approveRequestFlyerAction(Application $app, Request $request, $id){
+        $realtor = null;
         try{
             $app->getEntityManager()->beginTransaction();
             $data = [];
@@ -134,10 +135,10 @@ class Queue extends Base{
             $app->getEntityManager()->flush();
 
             /** @var Realtor $realtor */
-            $realtor = $app->getEntityManager()->getRepository(Realtor::CLASS_NAME)->find($queue->getFlyer()->getRealtorId());
+            $realtor = $queue->getFlyer()->getRealtor();
 
             if(!$realtor){
-                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found.", $queue->getFlyer()->getRealtorId()));
+                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found for flyer .", $queue->getFlyer()->getId()));
             }
 
             (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue->getFlyer(), $request->getSchemeAndHttpHost())))
@@ -206,7 +207,7 @@ class Queue extends Base{
         /** @var RequestFlyer $requestFlyer */
         $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::CLASS_NAME)->findOneBy(['queue_id' => $queue->getId()]);
         /** @var Realtor $realtor */
-        $realtor = $app->getEntityManager()->getRepository(Realtor::CLASS_NAME)->find($requestFlyer->getRealtorId());
+        $realtor = $requestFlyer->getRealtor();
 
         return new RequestFlyerDenial($realtor, $requestFlyer, $email);
     }
@@ -219,9 +220,10 @@ class Queue extends Base{
     private function findQueueWithRequestFlyerById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
-            ->select('q, f, u')
+            ->select('q, f, u, r')
             ->from(EntityQueue::CLASS_NAME, 'q')
             ->join('q.flyer', 'f')
+            ->join('f.realtor', 'r')
             ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)

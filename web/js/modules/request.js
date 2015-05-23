@@ -50,7 +50,7 @@
         $scope.titles = {
             button: "Submit",
             header: "Create Listing Flyer Request from property approval"
-        }
+        };
 
         $scope.$on('requestFlyerSaved', function () {
             sessionMessages.addSuccess("Successfully saved.");
@@ -90,7 +90,7 @@
         $scope.titles = {
             button: "Submit",
             header: "Listing Flyer Request Form"
-        }
+        };
 
         $scope.realtor = {};
 

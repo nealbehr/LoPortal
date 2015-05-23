@@ -56,13 +56,22 @@ class Realtor extends Base {
     protected $photo;
 
     /**
+     * @Column(type="string", length=50)
+     * @Assert\Length(
+     *              max = 50,
+     *              maxMessage = "Realty name cannot be longer than {{ limit }} characters"
+     * )
+     */
+    protected $realty_name;
+
+    /**
      * @Column(type="string", length=255)
      * @Assert\Length(
      *              max = 255,
-     *              maxMessage = "agency cannot be longer than {{ limit }} characters"
+     *              maxMessage = "Realty logo cannot be longer than {{ limit }} characters"
      * )
      */
-    protected $estate_agency;
+    protected $realty_logo;
 
     /**
      * @Column(type="string", length=255)
@@ -94,12 +103,6 @@ class Realtor extends Base {
         return $this;
     }
 
-    public function setEstateAgency($param){
-        $this->estate_agency = $param;
-
-        return $this;
-    }
-
     public function setFirstName($param){
         $this->first_name = $param;
     }
@@ -125,22 +128,12 @@ class Realtor extends Base {
         return $this;
     }
 
-    public function setAgency($param){
-        $this->estate_agency = $param;
-
-        return $this;
-    }
-
     public function getLastName(){
         return $this->last_name;
     }
 
     public function getFirstName(){
         return $this->first_name;
-    }
-
-    public function getEstateAgency(){
-        return $this->estate_agency;
     }
 
     public function getPhoto(){
@@ -159,5 +152,35 @@ class Realtor extends Base {
         return $this->bre_number;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getRealtyName()
+    {
+        return $this->realty_name;
+    }
 
+    /**
+     * @param mixed $realty_name
+     */
+    public function setRealtyName($realty_name)
+    {
+        $this->realty_name = $realty_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRealtyLogo()
+    {
+        return $this->realty_logo;
+    }
+
+    /**
+     * @param mixed $realty_logo
+     */
+    public function setRealtyLogo($realty_logo)
+    {
+        $this->realty_logo = $realty_logo;
+    }
 }
