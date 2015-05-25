@@ -29,7 +29,7 @@
             })
             .when('/flyer/:id/edit', {
                 templateUrl: '/partials/request.flyer.edit',
-                controller:  'requestFlyerEditCtrl',
+                controller:  'RequestFlyerEditController',
                 access: {
                     isFree: false
                 }
@@ -65,13 +65,13 @@
         ;
     }]);
 
-    request.controller('requestFlyerEditCtrl', ['$scope', 'createRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+    request.controller('RequestFlyerEditController', ['$scope', 'createRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
             button: "Submit",
             header: "Edit Listing Flyer Request"
-        }
+        };
 
         $scope.$on('requestFlyerSaved', function () {
             sessionMessages.addSuccess("Successfully saved.");
@@ -115,7 +115,7 @@
         $scope.titles = {
             button: "Submit",
             header: "Property Approval Request Form"
-        }
+        };
 
         $scope.$on('propertyApprovalSaved', function () {
             redirect('/request/success/approval');
@@ -131,6 +131,7 @@
                         : new requestBase('Request Another Flyer', 'flyer/new')
             ;
         }
+
         function requestBase(title, url){
             this.title = title;
             this.url   = url;

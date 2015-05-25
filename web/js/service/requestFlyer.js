@@ -5,14 +5,14 @@
     var flyerService = angular.module('requestFlyerModule', []);
 
     function extend(Child, Parent) {
-        var F = function() { }
-        F.prototype = Parent.prototype
-        Child.prototype = new F()
-        Child.prototype.constructor = Child
-        Child.superclass = Parent.prototype
+        var F = function() { };
+        F.prototype = Parent.prototype;
+        Child.prototype = new F();
+        Child.prototype.constructor = Child;
+        Child.superclass = Parent.prototype;
     }
 
-    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", "$q", function($http, createRequestFlyerBase, $q){
+    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
         function fromPropertyApproval(id){
             fromPropertyApproval.superclass.constructor.call(this);
             if(id){
@@ -50,6 +50,7 @@
     }]);
 
     flyerService.service("createRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
+        console.log("createRequestFlyer");
         return function(id){
             var flyer = new createRequestFlyerBase();
 
@@ -80,7 +81,7 @@
 
             flyer.update = function(){
                 return $http.put('/admin/flyer/' + this.id, this.getFields4Save());
-            }
+            };
             return flyer;
         }
     }]);
@@ -131,7 +132,7 @@
                 city:    null,
                 state:   null,
                 zip:     null,
-                clear: function(){
+                clear: function() {
                     this.address = '';
                     this.city    = null;
                     this.state   = null;
@@ -144,13 +145,13 @@
                         }
                     }
                 }
-            }
+            };
 
             this.fill = function(data){
                 this.fillObject(data);
 
                 return this;
-            }
+            };
 
             this.fillObject = function(data, object){
                 object = object || this;
@@ -162,12 +163,11 @@
 
                     if(typeof data[i] == "object"){
                         this.fillObject(data[i], object[i]);
-                    }
-                    else{
+                    } else{
                         object[i] = data[i];
                     }
                 }
-            }
+            };
 
             this.getFields4Save = function(object){
                 object = object || this;
@@ -183,7 +183,7 @@
                 }
 
                 return result;
-            }
+            };
 
             this.save = function(){
                 var deferred = $q.defer();
@@ -198,15 +198,15 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             this.add = function(){
                 throw new Error("Request add must be override");
-            }
+            };
 
             this.update = function(){
                 throw new Error("Request update must be override");
-            }
+            };
 
             var afterSaveCallback;
             this.afterSave = function(callback){

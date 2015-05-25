@@ -11,7 +11,7 @@
             approval.save = function(){
                 this.property.state = settings.queue.state.requested;
                 return $http.post('/request/approval', this.getFields4Save());
-            }
+            };
 
             return approval;
         }
@@ -40,19 +40,19 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             approval.save = function(){
                 return this.id? this.update(): this.add();
-            }
+            };
 
             approval.update = function(){
                 return $http.put('/admin/approval/' + this.id, this.getFields4Save())
-            }
+            };
 
             approval.add = function(){
                 throw new Error("ID not found");
-            }
+            };
 
             return approval;
         }
@@ -67,7 +67,7 @@
                 state: null
             };
 
-            this.address = null
+            this.address = null;
 
             this.fill = function(data){
                 for(var i in data){
@@ -75,7 +75,7 @@
                 }
 
                 return this;
-            }
+            };
 
             this.getFields4Save = function(){
                 var result = {};
@@ -86,7 +86,7 @@
                 }
 
                 return result;
-            }
+            };
 
             this.save = function(){
                 throw new Error("Request save must be override");
@@ -106,7 +106,7 @@
             },
             link: function(scope, element, attrs, controllers) {
                 scope.isValid = false;
-                scope.request = {}
+                scope.request = {};
 
                 scope.$watch('requestIn', function(newVal, oldVal){
 //                    if(newVal != oldVal){
@@ -119,13 +119,13 @@
 
                 scope.changeSearchField = function(o){
                     scope.isValid = false;
-                }
+                };
 
                 scope.cancel = function(e){
                     e.preventDefault();
 
                     history.back();
-                }
+                };
 
                 var input = document.getElementById('searchPlace');
 
@@ -134,7 +134,7 @@
                         sessionMessages.addDanger(message);
 
                         return this;
-                    }
+                    };
 
                     this.show = function(){
                         this.rootScope.$broadcast('showSessionMessage');
@@ -180,7 +180,7 @@
                             waitingScreen.hide();
                         })
                     ;
-                }
+                };
 
                 scope.save = function(){
                     waitingScreen.show();
@@ -202,7 +202,7 @@
                             waitingScreen.hide();
                         })
                     ;
-                }
+                };
 
                 function initialize(lat, lng) {
                     var markers = [];

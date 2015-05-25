@@ -246,6 +246,12 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http("We can re-save only draft.");
             }
 
+            $formBuilder =  $app->getFormFactory()->createBuilder(new FirstRexAddress());
+            $formBuilder->setMethod('PUT');
+            $firstRexForm = $formBuilder->getForm();
+            $firstRexForm->handleRequest($request);
+            $queue->setAdditionalInfo($firstRexForm->getData());
+
             $realtor = $queue->getFlyer()->getRealtor();
 
             $this->saveFlyer(

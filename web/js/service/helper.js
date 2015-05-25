@@ -428,7 +428,7 @@
                     return;
                 }
 
-                ctrl.$validators.address_components = function(modelValue){
+                ctrl.$validators.address_components = function(modelValue) {
                     if (ctrl.$isEmpty(modelValue)) {
                         // consider empty models to be valid
                         return true;
@@ -552,7 +552,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -563,9 +563,9 @@
             },
             link: function(scope, element, attrs, controllers){
                 scope.states = settings.queue.state;
-                scope.realtorPicture;
-                scope.propertyPicture;
-                scope.oldRequest;
+                scope.realtorPicture = {};
+                scope.propertyPicture = {};
+                scope.oldRequest = {};
                 scope.hideErrors = true;
                 scope.container = angular.element("#errors");
 
@@ -621,7 +621,7 @@
                         })
 
                     ;
-                }
+                };
 
                 scope.saveDraft = function(e){
                     e.preventDefault();
@@ -639,19 +639,20 @@
                     });
 
                     this.saveRequest(scope.requestDraft);
-                }
+                };
 
                 scope.showErrors = function(e){
                     e.preventDefault();
 
                     this.hideErrors = true;
-                }
+                };
 
                 scope.gotoErrorMessage = function(){
                     $anchorScroll(scope.container.attr("id"));
-                }
+                };
 
                 scope.save = function(form){
+                    console.log("save");
                     if(!form.$valid){
                         this.hideErrors = false;
                         this.gotoErrorMessage();
@@ -665,7 +666,7 @@
                     });
 
                     this.saveRequest(scope.request);
-                }
+                };
 
                 scope.saveRequest = function(request){
                     waitingScreen.show();
@@ -699,7 +700,7 @@
                             waitingScreen.hide();
                         })
                     ;
-                }
+                };
 
                 scope.isAddressReadOnly = function(){
                     return this.request instanceof createFromPropertyApproval;
@@ -789,7 +790,7 @@
             for(var i in params){
                 this[i] = params[i];
             }
-        }
+        };
 
         tab.prototype.location = $location;
 
