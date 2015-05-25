@@ -8,21 +8,21 @@
         $routeProvider
             .when('/admin/lender', {
                 templateUrl: '/partials/admin.lender',
-                controller:  'adminLendersCtrl',
+                controller:  'AdminLendersController',
                 access: {
                     isFree: false
                 }
             })
             .when('/admin/lender/new', {
                 templateUrl: '/partials/admin.panel.lender',
-                controller:  'adminLenderNewCtrl',
+                controller:  'AdminNewLenderController',
                 access: {
                     isFree: false
                 }
             })
             .when('/admin/lender/:id/edit', {
                 templateUrl: '/partials/admin.panel.lender',
-                controller:  'adminLenderEditCtrl',
+                controller:  'AdminEditLenderController',
                 access: {
                     isFree: false
                 }
@@ -66,7 +66,6 @@
                         deferred.resolve(data);
                     })
                     .error(function(data){
-                        console.log(data);
                         deferred.reject(data);
                     })
                 ;
@@ -120,7 +119,7 @@
                 return this;
             };
 
-            this.getFields4Save = function(){
+            this.getFields4Save = function() {
                 var result = {};
                 for(var key in this) {
                     if (this.hasOwnProperty(key)) {
@@ -174,15 +173,15 @@
         }
     }]);
 
-    lenderModule.controller('adminLendersCtrl', ['$scope', function($scope){
+    lenderModule.controller('AdminLendersController', ['$scope', function($scope){
         $scope.settings = settings;
     }]);
 
-    lenderModule.controller('adminLenderNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', function($scope, $http, redirect, $compile, waitingScreen, createLender) {
+    lenderModule.controller('AdminNewLenderController', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', function($scope, $http, redirect, $compile, waitingScreen, createLender) {
         $scope.lender = createLender();
     }]);
 
-    lenderModule.controller('adminLenderEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createLender, $routeParams){
+    lenderModule.controller('AdminEditLenderController', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createLender', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createLender, $routeParams){
         createLender().get($routeParams.id)
             .then(function(lender){
                 $scope.lender = lender;
@@ -271,7 +270,8 @@
             link: function(scope, element, attrs, controllers) {
 
                 scope.container = angular.element('#lenderMessage');
-                scope.lenderPicture;
+                scope.lenderPicture = {};
+                scope.hideErrors = true;
 
                 scope.$watch('lender.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.lender.id){
@@ -290,9 +290,10 @@
                     scope.lenderPicture = new pictureObject(
                         angular.element('#lenderPhoto'),
                         {container: $(".realtor-photo > img"), options: {
-                            minCropBoxWidth: 300,
-                            minCropBoxHeight: 300,
-                            aspectRatio: 3.5 / 1
+                            minCropBoxWidth: 100,
+                            minCropBoxHeight: 100,
+                            maxCropBoxWidth: 350,
+                            maxCropBoxHeight: 100
                         }},
                         scope.lender
                     );
@@ -303,12 +304,18 @@
                     history.back();
                 };
 
+                scope.showErrors = function(e){
+                    e.preventDefault();
+                    this.hideErrors = true;
+                };
+
                 scope.gotoErrorMessage = function(){
                     $anchorScroll(scope.container.attr("id"));
                 };
 
                 scope.submit = function(formLender){
-                    if(!formLender.$valid){
+                    if(!formLender.$valid) {
+                        this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
                     }
@@ -316,11 +323,21 @@
                 };
 
                 scope.save = function(){
-                    waitingScreen.show();
 
-                    if(scope.lender.picture) {
-                        scope.lenderPicture.prepareImage(300, 300, 1050, 300);
+                    if(scope.lender.picture && scope.lender.picture.indexOf('http') !== 0) {
+                        var isValid = scope.lenderPicture.validateNaturalSize(300, 300);
+                        if(!isValid) {
+                            renderMessage("Logos should be 300 px high and [300px - 1050] px wide", "danger", scope.container, scope);
+                            return;
+                        }
+                        scope.lenderPicture.prepareFixedHeightImage(300);
+
+                    } else if (scope.lender.id === null) {
+                        renderMessage("Lender Logo is required", "danger", scope.container, scope);
+                        return;
                     }
+
+                    waitingScreen.show();
 
                     scope.lender.save()
                         .then(function(data){
@@ -373,13 +390,5 @@
             }
         }
     }]);
-
-    lenderModule.filter('lenderImage', function(){
-        return function(input){
-            return "" != input && null !== input && input !== undefined
-                ? input
-                : '/images/empty-lender.png';
-        }
-    });
 
 })(settings);

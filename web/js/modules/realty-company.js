@@ -302,7 +302,8 @@
             link: function(scope, element, attrs, controllers) {
 
                 scope.container = angular.element('#companyMessage');
-                scope.realtyLogo = '';
+                scope.realtyLogo = {};
+                scope.hideErrors = true;
 
                 scope.$watch('company.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.company.id){
@@ -335,12 +336,18 @@
                     history.back();
                 };
 
+                scope.showErrors = function(e){
+                    e.preventDefault();
+                    this.hideErrors = true;
+                };
+
                 scope.gotoErrorMessage = function(){
                     $anchorScroll(scope.container.attr("id"));
                 };
 
                 scope.submit = function(formRealty){
-                    if(!formRealty.$valid){
+                    if(!formRealty.$valid) {
+                        this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
                     }
@@ -349,7 +356,7 @@
 
                 scope.save = function() {
 
-                    if(scope.company.logo) {
+                    if(scope.company.logo && scope.company.logo.indexOf('http') !== 0) {
                         var isValid = scope.realtyLogo.validateNaturalSize(300, 300);
                         if(!isValid) {
                             renderMessage("Logos should be 300 px high and [300px - 1050] px wide", "danger", scope.container, scope);

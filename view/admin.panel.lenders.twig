@@ -22,7 +22,7 @@
                 <td>[[ lender.address ]]</td>
                 <td>[[ lender.disclosure ]]</td>
                 <td>
-                    <img style="width: 175px; height: 50px;" ng-src="[[ lender.picture|lenderImage ]]" alt="lender">
+                    <img style="height: 50px;max-width: 175px; " ng-src="[[ lender.picture | defaultImage:'/images/empty-lender-150x525.png' ]]" alt="lender">
                 </td>
                 <td>
                     <div class="dropdown">
