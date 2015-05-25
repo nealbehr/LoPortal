@@ -62,7 +62,7 @@
                 <h2>Property Info</h2>
                 <div class="thumbnail">
                     <div class="property-photo" style="text-align: center;">
-                        <img ng-src="[[ request.property.photo|propertyImage ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
+                        <img ng-src="[[ request.property.photo | defaultImage:'/images/empty-big.png' ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
                     </div>
                     <div class="caption">
                         <span class="upload">
@@ -87,7 +87,7 @@
                 <div class="main-info">
                     <div class="user-photo">
                         <div class="realtor realtor-photo">
-                            <img ng-src="[[ request.realtor.photo|realtorImage ]]" alt="" ng-click="realtorPicture.choosePhoto()">
+                            <img ng-src="[[ request.realtor.photo | defaultImage:'/images/empty-user.png' ]]" alt="" ng-click="realtorPicture.choosePhoto()">
                         </div>
                         <span class="upload">
                             Upload Photo
@@ -118,7 +118,7 @@
 
                 <div class="thumbnail">
                     <div class="realtor-photo"  style="text-align: center; height: 130px;overflow: hidden;">
-                        <img id="realtyLogoImage" data-ng-src="{{ '{{ request.realtor.realty_logo }}' }}">
+                        <img id="realtyLogoImage" data-ng-src="[[ request.realtor.realty_logo | defaultImage:'/images/empty-company-150x525.png' ]]">
                     </div>
                     <div class="caption">
                        <span>

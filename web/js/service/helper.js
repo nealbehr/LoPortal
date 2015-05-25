@@ -18,10 +18,11 @@
                 'loType':        "@",
                 'loBody':        "@"
             },
-            link: function(scope, element, attrs, controllers){
+            link: function(scope, element, attrs, controllers) {
+
                 scope.isDanger = function(){
                     return scope.loType == 'danger';
-                }
+                };
 
                 scope.$watch('loType', function (newValue) {
                     scope.loType = newValue;
@@ -39,7 +40,7 @@
         return { restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
-                scope.user         = {}
+                scope.user         = {};
                 scope.isUserLoaded = false;
                 userService.get().then(function(user){
                     scope.user         = user;
@@ -87,7 +88,7 @@
                 scope.selectedLender = {};
                 scope.user = {};
                 scope.container = angular.element('#userProfileMessage');
-                scope.userPicture;
+                scope.userPicture = {};
                 scope.hideErrors = true;
 
                 scope.$watch('officer.id', function(newVal, oldVal){
@@ -100,10 +101,9 @@
                 });
 
                 scope.$watch('officer', function(newVal, oldVal){
-                    if(newVal == undefined || !("id" in newVal)){
+                    if(newVal == undefined){
                         return;
                     }
-
                     scope.userPicture = new pictureObject(
                         angular.element('#userPhoto'),
                         {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
@@ -743,12 +743,6 @@
         }
     }]);
 
-    helperService.filter('avatar', function(){
-        return function(input){
-            return input == null ? "images/empty.png": input;
-        }
-    });
-
     helperService.filter('fullName', function(){
         return function(user){
             return user.first_name + " " + user.last_name;
@@ -790,7 +784,7 @@
 
             this.isActive = function(){
                 return this.location.path() == this.path;
-            }
+            };
 
             for(var i in params){
                 this[i] = params[i];
@@ -818,12 +812,12 @@
            bgImg.onabort = function(){
                loadImages(images);
                console.log(image + ' loading has been aborted.')
-           }
+           };
 
            bgImg.onerror = function(){
                loadImages(images);
                console.log(image + ' error loading.')
-           }
+           };
 
            bgImg.src = image;
         }
@@ -871,13 +865,14 @@
     }]);
 
     helperService.factory("parseGoogleAddressComponents", [function(){
-        return function(data){
+        return function(data) {
+
             var result = {
                 address: '',
                 city:    null,
                 state:   null,
                 zip:     null
-            }
+            };
 
             for(var i in data){
                 if($.inArray("street_number", data[i].types) != -1){
@@ -1025,11 +1020,11 @@
 
             bgImg.onload = function(){
                 deferred.resolve(bgImg);
-            }
+            };
 
             bgImg.onerror = function(evt){
                 deferred.reject(evt);
-            }
+            };
 
             bgImg.src = url;
 
@@ -1037,8 +1032,8 @@
         }
     }]);
 
-    helperService.factory("sessionMessages", [function(){
-        return new function(){
+    helperService.factory("sessionMessages", [function() {
+        return new function() {
             console.log('create new sessionMessage');
             var TYPE_DANGER  = "danger";
             var TYPE_SUCCESS = "success";
@@ -1046,24 +1041,23 @@
 
             this.addDanger = function(message){
                 messages.push(this.createMessage(TYPE_DANGER, message));
-
                 return this;
-            }
+            };
 
             this.addSuccess = function(message){
                 messages.push(this.createMessage(TYPE_SUCCESS, message));
 
                 return this;
-            }
+            };
 
             this.createMessage = function(type, body){
-                var message = {}
+                var message = {};
 //                message.type = type;
                 message.body = body;
                 message.isDanger = TYPE_DANGER == type;
 
                 return message;
-            }
+            };
 
             this.get = function(clear){
                 try{
@@ -1083,7 +1077,7 @@
                 return letter.toUpperCase();
             });
         }
-    })
+    });
 
     helperService.filter('fromMysqlDate', function(){
         return function(input){
@@ -1093,19 +1087,13 @@
         }
     });
 
-    helperService.filter('propertyImage', function(){
-        return function(input){
-            return "" != input && null != input
-                ? input
-                : '/images/empty-big.png';
-        }
-    });
+    helperService.filter('defaultImage', function() {
 
-    helperService.filter('realtorImage', function(){
-        return function(input){
-            return "" != input && null !== input && input !== undefined
-                ? input
-                : '/images/empty.png';
+        return function(input, defaultImage) {
+            if("" != input && null !== input && input !== undefined) {
+                return input;
+            }
+            return defaultImage;
         }
     });
 

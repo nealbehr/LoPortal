@@ -415,13 +415,4 @@
         }
     }]);
 
-    realtyCompanyModule.filter('realtyLogo', function(){
-        return function(input){
-            return "" != input && null !== input && input !== undefined
-                ? input
-                : '/images/empty-company-150x525.png';
-        }
-    });
-
-
 })(settings);

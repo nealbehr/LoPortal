@@ -77,3 +77,13 @@
 .logo-box ul li a {
     height: 50px;
 }
+
+.user-menu img {
+    border-radius: 3px;
+}
+
+.main-info .user-photo .realtor-photo {
+    width: 125px;
+    height: 100%;
+
+}
