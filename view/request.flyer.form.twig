@@ -1,9 +1,9 @@
 <section class="container">
     <header class="page-title">
         <h1>[[ titles.header ]]</h1>
-        {#<div class="link" ng-if="!request.id">#}
-            {#<a href="/static/Example Listing Flyer.pdf" target="_blank" class="download">Download Sample</a>#}
-        {#</div>#}
+        <div class="link" ng-if="request.id">
+            <a href="/request/flyer/[[ request.id ]]/download" target="_blank" class="download">Download Sample</a>
+        </div>
     </header>
     <div class="row listing">
         <aside class="sidebar col-sm-3">

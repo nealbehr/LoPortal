@@ -22,7 +22,6 @@ use LO\Model\Entity\Realtor;
 use LO\Model\Entity\RequestFlyer;
 use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
-use LO\Model\Manager\RequestFlyerManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Snappy\Pdf;
@@ -57,8 +56,8 @@ class RequestFlyerController extends RequestFlyerBase {
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function download(Application $app, $id) {
-        $manager = new RequestFlyerManager($app);
-        $flyer = $manager->getById($id);
+        $queue = $this->getQueueById($app, $id);
+        $flyer = $queue->getFlyer();
         if($flyer) {
 
             try {
@@ -90,9 +89,8 @@ class RequestFlyerController extends RequestFlyerBase {
     }
 
     public function contentForPDF(Application $app, $id) {
-
-        $manager = new RequestFlyerManager($app);
-        $flyer = $manager->getById($id);
+        $queue = $this->getQueueById($app, $id);
+        $flyer = $queue->getFlyer();
         if($flyer) {
             return $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData($flyer));
         }

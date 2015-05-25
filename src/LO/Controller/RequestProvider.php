@@ -37,8 +37,7 @@ class RequestProvider implements ControllerProviderInterface{
             ->post("/", "request.flyer.controller:addAction");
 
         $controllers
-            ->put("/{id}", "request.flyer.controller:updateAction")
-        ;
+            ->put("/{id}", "request.flyer.controller:updateAction");
 
         $controllers
             ->put("/from/approval/{id}", "request.flyer.controller:createFromApprovalRequestAction");
@@ -48,8 +47,7 @@ class RequestProvider implements ControllerProviderInterface{
 
         $controllers
             ->get("/flyer/{id}/html", "request.flyer.controller:contentForPDF")
-            ->bind('contentForPDF')
-        ;
+            ->bind('contentForPDF');
 
         $controllers
             ->get("/approval/{id}", "request.approval.controller:getAction");
