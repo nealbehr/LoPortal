@@ -26,7 +26,7 @@ class RealtyCompanyController extends Base {
 
     const QUEUE_LIMIT = 20;
 
-    const DEFAULT_SORT_FIELD_NAME = 'created_at';
+    const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION = 'desc';
 
     private $errors = [];
