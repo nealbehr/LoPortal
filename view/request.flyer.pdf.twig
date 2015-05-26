@@ -180,7 +180,7 @@
         </div>
         <div class="right-side">
             <p class="promo">FirstREX can provide up to half the down payment required by a mortgage lender. The money from FirstREX is an investment not a loan, so there are no interest charges and you make no monthly payments to FirstREX. Instead, you agree to share part of the change in value when you sell - up to 30 years in the future. If your house increases in value, we earn a return on our investment. If the house decreases in value, we typically share in the loss. Either way, you get the home you really want today.</p>
-            <h1>Buy this home with<br>only {{discuontPart}}% down: <span>${{discuont}}</span></h1>
+            <h1>Buy this home with<br>only {{discuontPart}}% down: <span {% if discuont|length > 8 %}style="font-size: 75px;"{% endif %}>${{discuont}}</span></h1>
             <ul>
                 <li><em>Listing Price ...........................................................................................</em><span>{{listingPrice}}</span></li>
                 <li><em>Available Loan (@80% LTV) ....................................................</em> <span>{{availableLoan}}</span></li>
