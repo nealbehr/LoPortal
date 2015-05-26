@@ -183,4 +183,27 @@ class Realtor extends Base {
     {
         $this->realty_logo = $realty_logo;
     }
+
+    public function getRealty() {
+        $realtyCompany = new RealtyCompany();
+        $realtyCompany->setName($this->realty_name);
+        $realtyCompany->setLogo($this->realty_logo);
+        return $realtyCompany;
+    }
+
+    public function setRealty(RealtyCompany $realty) {
+        $this->realty_name = $realty->getName();
+        $this->realty_logo = $realty->getLogo();
+    }
+
+    public function getPublicInfo(){
+        $result = $this->toArray();
+        unset($result['realty_logo'], $result['realty_name'], $result['created_at'], $result['updated_at']);
+        $realtyCompany = new RealtyCompany();
+        $realtyCompany->setName($this->realty_name);
+        $realtyCompany->setLogo($this->realty_logo);
+        $result['realty'] = $realtyCompany->toArray();
+
+        return $result;
+    }
 }

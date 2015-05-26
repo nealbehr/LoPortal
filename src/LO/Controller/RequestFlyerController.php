@@ -33,17 +33,13 @@ class RequestFlyerController extends RequestFlyerBase {
         $queue = $this->getQueueById($app, $id);
 
         $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
-
         $requestFlyer = $queue->getFlyer();
-
         $formFlyerForm = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer);
-
         $realtor = $requestFlyer->getRealtor();
-        $realtorForm = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor);
 
         return $app->json([
             'property' => array_merge($this->getFormFieldsAsArray($queueForm), $this->getFormFieldsAsArray($formFlyerForm), ['state' => $queue->getState()]),
-            'realtor'  => $this->getFormFieldsAsArray($realtorForm),
+            'realtor'  => $realtor->getPublicInfo(),
             'address'  => $queue->getAdditionalInfo(),
             'user'     => $queue->getUser()->getPublicInfo(),
         ]);

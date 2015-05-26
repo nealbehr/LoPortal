@@ -17,6 +17,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Aws\S3\S3Client;
 
 class RealtorForm extends AbstractType {
+
     private $s3;
 
     public function __construct(S3Client $s3){
@@ -31,8 +32,7 @@ class RealtorForm extends AbstractType {
         $builder
             ->add('last_name', 'text')
             ->add('first_name', 'text')
-            ->add('realty_name', 'text')
-            ->add('realty_logo', 'text')
+            ->add('realty', new RealtyCompanyType($this->s3))
             ->add('photo', new S3Photo($this->s3, '1rex.realtor'))
             ->add('email', 'text')
             ->add('phone', 'text')

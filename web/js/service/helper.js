@@ -565,6 +565,7 @@
                 scope.states = settings.queue.state;
                 scope.realtorPicture = {};
                 scope.propertyPicture = {};
+                scope.realtyLogo = {};
                 scope.oldRequest = {};
                 scope.hideErrors = true;
                 scope.container = angular.element("#errors");
@@ -584,6 +585,17 @@
                         angular.element("#propertyImage"),
                         {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}},
                         scope.request.property
+                    );
+
+                    scope.realtyLogo = new pictureObject(
+                        angular.element('#realtyLogo'),
+                        {container: $("#realtyLogoImage"), options: {
+                            minCropBoxWidth: 100,
+                            minCropBoxHeight: 100,
+                            maxCropBoxWidth: 350,
+                            maxCropBoxHeight: 100
+                        }},
+                        scope.request.realtor.realty
                     );
 
                     scope.oldRequest = angular.copy(scope.request);

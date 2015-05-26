@@ -68,6 +68,9 @@
     color: #BABABA;
 }
 
+.logo-box {
+    margin-top: 0;
+}
 .logo-box ul li {
     height: 50px;
     width: 175px;

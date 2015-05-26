@@ -201,8 +201,8 @@
         }
 
         $scope.selectRealtyLogo = function(realtyCompany) {
-            $scope.request.realtor.realty_name = realtyCompany.name;
-            $scope.request.realtor.realty_logo = realtyCompany.logo;
+            $scope.request.realtor.realty.name = realtyCompany.name;
+            $scope.request.realtor.realty.logo = realtyCompany.logo;
             $('#chooseRealtyCompanyLogo').modal('hide');
         };
     }]);
@@ -323,7 +323,7 @@
 
                     scope.realtyLogo = new pictureObject(
                         angular.element('#realtyLogo'),
-                        {container: $(".realtor-photo > img"), options: {
+                        {container: $(".realty-logo-photo > img"), options: {
                             minCropBoxWidth: 100,
                             minCropBoxHeight: 100,
                             maxCropBoxWidth: 350,

@@ -112,8 +112,6 @@
                 first_name: null,
                 last_name: null,
                 bre_number: null,
-                realty_name: null,
-                realty_logo: null,
                 phone: null,
                 email: null,
                 photo: null,
@@ -124,7 +122,19 @@
                     this.photo = param;
 
                     return this;
+                },
+                realty: {
+                    logo: null,
+                    name: null,
+                    getPicture: function() {
+                        return this.logo;
+                    },
+                    setPicture: function(param) {
+                        this.logo = param;
+                        return this;
+                    }
                 }
+
             };
 
             this.address = {

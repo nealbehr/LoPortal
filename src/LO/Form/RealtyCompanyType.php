@@ -41,10 +41,12 @@ class RealtyCompanyType extends AbstractType {
         $builder->add('name', 'text', [
             'constraints' => [
                 new Assert\NotBlank([
-                    'message' => 'Name can not be empty.'
+                    'message' => 'Name can not be empty.',
+                    'groups' => ['New']
                 ]),
                 new Assert\Length([
                     'max' => 50,
+                    'groups' => ['New'],
                     'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                 ])
             ]

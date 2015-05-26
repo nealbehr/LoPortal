@@ -145,7 +145,7 @@ class RealtyCompanyController extends Base {
             $requestCompany = $request->request->get('company');
             $companyType = new RealtyCompanyType($app->getS3());
             $formOptions = [
-                'validation_groups' => ['Default'],
+                'validation_groups' => ['Default', 'New'],
             ];
             $form = $app->getFormFactory()->create($companyType, $company, $formOptions);
             $form->submit($this->removeExtraFields($requestCompany, $form));
