@@ -201,6 +201,9 @@
         }
 
         $scope.selectRealtyLogo = function(realtyCompany) {
+            if($scope.realtyLogo) {
+                $scope.realtyLogo.cropperDestroy();
+            }
             $scope.request.realtor.realty.name = realtyCompany.name;
             $scope.request.realtor.realty.logo = realtyCompany.logo;
             $('#chooseRealtyCompanyLogo').modal('hide');

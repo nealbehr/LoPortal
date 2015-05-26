@@ -39,6 +39,10 @@
                 return number < min? min: number;
             };
 
+            this.cropperDestroy = function() {
+                imageSettings.container.cropper("destroy");
+            };
+
             this.cropperInit = function(imageInfo){
                 $timeout(function(){
                     imageInfo.container.cropper('destroy');
