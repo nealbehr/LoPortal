@@ -102,10 +102,18 @@ class RequestFlyerController extends RequestFlyerBase {
         $loanOfficer = $queue->getUser();
         $lender = $loanOfficer->getLender();
 
+        $realtorPhoto = $realtor->getPhoto();
+        if($realtorPhoto == null) {
+            $realtorPhoto = 'https://s3.amazonaws.com/1rex.realtor/empty-user.png';
+        }
+        $propertyPhoto = $flyer->getPhoto();
+        if($propertyPhoto == null) {
+            $propertyPhoto = 'https://s3.amazonaws.com/1rex.property/empty-big.png';
+        }
         $data = array(
 
             'homeAddress' =>  preg_replace('/,/', '<br>', $queue->getAddress(), 1),
-            'homeImage' => $flyer->getPhoto(),
+            'homeImage' => $propertyPhoto,
             'discuontPart' => '10',
             'discuont' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
             'listingPrice' => number_format($flyer->getListingPrice(), 0, '.', ','),
@@ -125,8 +133,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 CA BRE #',
             'agencyCard1' => $lender->getPicture(),
             'lenderDisclosure' => $lender->getDisclosure(),
-
-            'photoCard2' => $realtor->getPhoto(),
+            'photoCard2' => $realtorPhoto,
             'nameCard2' => $realtor->getFirstName() . ' ' . $realtor->getLastName(),
             'infoCard2' => 'Realtor<sup>®</sup><br />
                 ' . $realtor->getPhone()  .'<br />
