@@ -101,7 +101,7 @@
         $scope.titles = {
             button: "Save",
             header: "Edit Property Approval Request Form"
-        }
+        };
 
         $scope.approval;
 
@@ -185,13 +185,12 @@
                 .finally(function(){
                     waitingScreen.hide();
                 });
-            ;
-        }
+        };
 
         $scope.change = function(e){
             e.preventDefault();
             $("#uploadPdf").click();
-        }
+        };
 
         $scope.remove = function(e){
             e.preventDefault();
@@ -250,12 +249,15 @@
                 scope.isLoaded = false;
                 scope.searchKey;
 
-                scope.getUsers = function(){
+                scope.getUsers = function() {
                     var deferred = $q.defer();
+                    waitingScreen.show();
                     $http.get('/admin/user', {
                         params: $location.search()
                     }).success(function(data){
                         return deferred.resolve(data);
+                    }).finally(function() {
+                        waitingScreen.hide();
                     });
 
                     return deferred.promise;
@@ -327,7 +329,7 @@
                             waitingScreen.hide();
                         })
                     ;
-                }
+                };
 
                 scope.resetPassword = function(e, user){
                     e.preventDefault();
@@ -349,7 +351,7 @@
         }
     }]);
 
-    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", function($http, tableHeadCol, $location, ngDialog, renderMessage){
+    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", "waitingScreen", function($http, tableHeadCol, $location, ngDialog, renderMessage, waitingScreen){
         return {
             restrict: 'EA',
             templateUrl: '/partials/admin.panel.requests',
@@ -361,6 +363,7 @@
                 scope.messageContainer = angular.element("#messageContainer")
                 scope.states = settings.queue.state;
 
+                waitingScreen.show();
                 $http.get('/admin/queue', {
                         params: $location.search()
                     })
@@ -390,6 +393,9 @@
                             new tableHeadCol(new params({key: "state", title: "Status"})),
                             new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
                         ];
+                    })
+                    .finally(function() {
+                        waitingScreen.hide();
                     })
                 ;
 
@@ -519,7 +525,7 @@
     admin.filter('requestType', ['$http', function($http){
         var filterFn = function initFilter(){
             return "loading";
-        }
+        };
 
         $http.get('/settings/request/type')
             .success(function(result) {
@@ -537,7 +543,7 @@
     admin.filter('requestState', ['$http', function($http){
         var filterFn = function initFilter(){
             return "loading";
-        }
+        };
 
         $http.get('/settings/request/state')
             .success(function(result) {
