@@ -133,11 +133,11 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-4 pull-right">
+                    <div class="col-sm-4 pull-right" ng-if="request.property.state != states.approved">
                         <button class="btn btn-default btn-lg">[[ titles.button ]]</button>
                     </div>
-                    <div class="col-sm-4 pull-right" ng-if="!request.property.state || request.property.state == states.draft">
-                        <button class="btn btn-default btn-lg" ng-click="saveDraft($event)">Save</button>
+                    <div class="col-sm-4 pull-right" ng-if="!request.property.state || request.property.state == states.draft || request.property.state == states.approved">
+                        <button class="btn btn-default btn-lg" ng-click="saveDraftOrApproved($event)">Save</button>
                     </div>
                     <div class="col-sm-4">
                         <a ng-if="!request.id" ng-href="/#/" class="back">Back to dashboard</a>

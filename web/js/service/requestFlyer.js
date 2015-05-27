@@ -33,8 +33,8 @@
         return function(){
             var flyer = new createRequestFlyerBase();
 
-            flyer.update = function(){
-                return $http.put('/request/draft/' + this.id, this.getFields4Save());
+            flyer.update = function() {
+                return $http.put('/request/flyer/' + this.id, this.getFields4Save());
             };
 
             flyer.add = function(){
@@ -195,7 +195,7 @@
                 return result;
             };
 
-            this.save = function(){
+            this.save = function() {
                 var deferred = $q.defer();
                 (function(){ return self.id? self.update(): self.add();})()
                     .success(function(data){

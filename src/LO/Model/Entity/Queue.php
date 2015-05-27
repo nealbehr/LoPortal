@@ -247,6 +247,20 @@ class Queue extends Base{
     }
 
     /**
+     * @Assert\Callback(groups = {"approved"})
+     */
+    public function isStateValidApproved(ExecutionContextInterface $context){
+        if ($this->getState() != static::STATE_APPROVED) {
+            $context->addViolationAt(
+                'state',
+                sprintf('Field "State" have not contained allowed state. Allowed state for draft is "%s"', static::STATE_APPROVED),
+                array(),
+                null
+            );
+        }
+    }
+
+    /**
      * @Assert\Callback(groups = {"fromPropertyApproval"})
      */
     public function isStateValidFromPropertyApproval(ExecutionContextInterface $context){

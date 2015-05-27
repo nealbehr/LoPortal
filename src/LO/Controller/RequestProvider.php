@@ -59,7 +59,10 @@ class RequestProvider implements ControllerProviderInterface{
             ->post("/draft", "request.flyer.controller:draftAddAction");
 
         $controllers
-            ->put("/draft/{id}", "request.flyer.controller:draftUpdateAction");
+            ->put("/flyer/{id}", "request.flyer.controller:flyerUpdateAction");
+
+        $controllers
+            ->put("/approved/{id}", "request.flyer.controller:approvedUpdateAction");
 
         $controllers
             ->delete("/draft/{id}", "request.flyer.controller:deleteDraftAction");

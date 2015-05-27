@@ -192,7 +192,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $queue = $this->getQueueById($app, $id);
 
-            if($queue->getState() !== Queue::STATE_DRAFT){
+            if($queue->getState() !== Queue::STATE_DRAFT) {
                 throw new Http("You can't edit this flyer.", Response::HTTP_BAD_REQUEST);
             }
 
@@ -201,7 +201,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->update($app, $request, $queue);
 
             $app->getEntityManager()->commit();
-        }catch (\Exception $e){
+        } catch (\Exception $e){
             $app->getEntityManager()->rollback();
             $app->getMonolog()->addError($e);
             $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
@@ -238,34 +238,32 @@ class RequestFlyerController extends RequestFlyerBase {
         return $app->json("success");
     }
 
-    public function draftUpdateAction(Application $app, Request $request, $id){
+    public function flyerUpdateAction(Application $app, Request $request, $id) {
         try {
             $app->getEntityManager()->beginTransaction();
             $queue = $this->getQueueById($app, $id);
-
-            if($queue->getState() !== Queue::STATE_DRAFT){
-                throw new Http("We can re-save only draft.");
-            }
-
+            $app->getMonolog()->addInfo("queue state: " . $queue->getState());
             $formBuilder =  $app->getFormFactory()->createBuilder(new FirstRexAddress());
             $formBuilder->setMethod('PUT');
             $firstRexForm = $formBuilder->getForm();
             $firstRexForm->handleRequest($request);
             $queue->setAdditionalInfo($firstRexForm->getData());
-
             $realtor = $queue->getFlyer()->getRealtor();
-
+            $validationGroup = "draft";
+            if($queue->getState() == Queue::STATE_APPROVED) {
+                $validationGroup = "approved";
+            }
             $this->saveFlyer(
                 $app,
                 $request,
                 $realtor,
                 $queue,
                 $queue->getFlyer(),
-                ['method' => 'PUT', 'validation_groups' => ["Default", "draft"]]
+                ['method' => 'PUT', 'validation_groups' => ["Default", $validationGroup]]
             );
 
             $app->getEntityManager()->commit();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $app->getEntityManager()->rollback();
             $app->getMonolog()->addError($e);
             $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');

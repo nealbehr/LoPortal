@@ -637,10 +637,12 @@
                         });
                 };
 
-                scope.saveDraft = function(e){
+                scope.saveDraftOrApproved = function(e) {
                     e.preventDefault();
 
-                    scope.request.property.state = settings.queue.state.draft;
+                    if(scope.request.property.state != settings.queue.state.approved) {
+                        scope.request.property.state = settings.queue.state.draft;
+                    }
 
                     scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
                     scope.realtorPicture.setObjectImage(scope.requestDraft.realtor);
@@ -690,7 +692,7 @@
                     request.save()
                         .catch(function(e){
                             var messages = [];
-                            messages.push('message' in e? e.message: "We have some problems. Please try later.")
+                            messages.push('message' in e? e.message: "We have some problems. Please try later.");
 
                             for(var i in e){
                                 if(e[i].constructor === Array){
@@ -716,15 +718,19 @@
                     ;
                 };
 
-                scope.isAddressReadOnly = function(){
+                scope.isAddressReadOnly = function() {
+
+                    if(typeof this.request.property === 'object' && this.request.property.state == settings.queue.state.approved) {
+                        return !scope.user.isAdmin();
+                    }
                     return this.request instanceof createFromPropertyApproval;
-                }
+                };
 
                 scope.clearAddress = function(e){
                     if(e.keyCode != 13){
                         this.request.address.clear();
                     }
-                }
+                };
 
                 loadGoogleMapsApi()
                     .then(function(){
@@ -814,7 +820,7 @@
     helperService.factory("loadImages", ["$q", function($q){
         var deferred = $q.defer();
         function loadImages(images){
-           var image = images.shift()
+           var image = images.shift();
            if(image == undefined){
                deferred.resolve();
            }
