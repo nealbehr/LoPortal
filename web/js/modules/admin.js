@@ -489,10 +489,11 @@
             scope: {
                 pagination: "=loPagination"
             },
-            link: function(scope, element, attrs, controllers){
+            link: function(scope, element, attrs, controllers) {
+
                 scope.getUrl = function(isNext){
                     return '/#' + $location.path() + '?' + this.getParams(isNext? scope.pagination.next: scope.pagination.previous);
-                }
+                };
 
                 scope.getParams = function(page){
                     var params = angular.copy($location.search());

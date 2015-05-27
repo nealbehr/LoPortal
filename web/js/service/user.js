@@ -26,7 +26,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             return userBase;
         }
@@ -53,11 +53,11 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             userBase.save = function(){
                 return this.id? this.update(): this.add();
-            }
+            };
 
             userBase.update = function(){
                 var deferred = $q.defer();
@@ -72,7 +72,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             userBase.add = function(){
                 var deferred = $q.defer();
