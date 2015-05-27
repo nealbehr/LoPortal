@@ -80,11 +80,11 @@
             for(var i in this.dashboard){
                 this.settingRows[i].isExpand = i != settings.queue.state.declined && this.dashboard[i].length > 0;
             }
-        }
+        };
 
         $scope.recalculateExpanded();
 
-        angular.element('.queue').click(function(e){
+        angular.element('.queue').click(function(e) {
             var target = angular.element(e.target);
 
             if(target.is('a.cancel')){
@@ -95,6 +95,19 @@
                         var element = $scope.dashboard[target.data('state')].splice([target.data('index')], 1).shift();
                         element.state = settings.queue.state.declined;
                         $scope.dashboard[settings.queue.state.declined].push(element);
+                        $scope.recalculateExpanded();
+                    })
+                    .error(function(data){
+                        console.log(data);
+                    });
+
+            } else if (target.is('a.delete')) {
+                e.preventDefault();
+
+                $http.delete('/queue/' + target.data('id'), {})
+                    .success(function(data) {
+                        var element = $scope.dashboard[target.data('state')].splice([target.data('index')], 1).shift();
+                        element.state = settings.queue.state.deleted;
                         $scope.recalculateExpanded();
                     })
                     .error(function(data){

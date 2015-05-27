@@ -23,7 +23,7 @@ class QueueProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
 
         $app['queue.controller'] = $app->share(function() use ($app) {
-            return new Queue();
+            return new QueueController();
         });
 
         /** @var ControllerCollection $controllers */
@@ -31,6 +31,9 @@ class QueueProvider implements ControllerProviderInterface {
 
         $controllers
             ->patch("/cancel/{id}", "queue.controller:cancelAction");
+
+        $controllers
+            ->delete("/{id}", "queue.controller:deleteAction");
 
         return $controllers;
     }

@@ -321,6 +321,10 @@
                 scope.isComplete = function(item){
                     return item.state == settings.queue.state.draft;
                 };
+                scope.isDeclined = function(item){
+                    return item.state == settings.queue.state.declined;
+                };
+
             }
         }
     }]);
@@ -630,9 +634,7 @@
                         })
                         .finally(function(){
                             waitingScreen.hide();
-                        })
-
-                    ;
+                        });
                 };
 
                 scope.saveDraft = function(e){
