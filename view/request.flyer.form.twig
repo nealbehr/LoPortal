@@ -9,6 +9,9 @@
         <aside class="sidebar col-sm-3">
             <h2>Loan Officer Info</h2>
             <a href="/#/user/[[ user.id ]]/edit" class="change">Change</a>
+            <div class="info-photo">
+                <img src="../images/empty-user.png" alt="">
+            </div>
             <dl>
                 <dt>First Name</dt>
                 <dd>[[ user.first_name ]]</dd>
@@ -24,11 +27,26 @@
                 <dd>[[ user.lender.name ]]</dd>
                 <dt>Primary Phone</dt>
                 <dd>[[ user.phone ]]</dd>
+                <dt>Mobile Phone</dt>
+                <dd>111-111-11</dd>
+                <dt>Address</dt>
+                <dd>1719 Westwood Blvd, Los Angeles,<br />Ca 90024</dd>
                 <dt>Email Address</dt>
                 <dd><a ng-href="mailto:[[ user.email ]]">[[ user.email ]]</a></dd>
                 <dt>NMLS #</dt>
                 <dd>[[ user.nmls ]]</dd>
             </dl>
+            <div class="contact-info">
+                <h4>Questions?</h4>
+                <p>
+                    Call your Sales Director Mike Lyon.<br />
+                    <strong>(800) 588-7600</strong>
+                </p>
+                <p>
+                    or Business Support at <br />
+                    <strong>(800) 365-3901</strong>
+                </p>
+            </div>
         </aside>
 
         <form ng-submit="save(newFlyer)" novalidate name="newFlyer">

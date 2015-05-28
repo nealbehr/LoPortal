@@ -17,12 +17,14 @@
             margin-bottom: 28px;
         }
         dl {
+            overflow: hidden;
             dt {
                 font: bold 15px 'PT Sans Caption', sans-serif;
                 margin-bottom: 2px;
                 @media (max-width: 767px)  {
                     float: left;
                     width: 40%;
+                    clear: left;
                 }
             }
             dd {
@@ -31,8 +33,6 @@
                     float: left;
                     width: 60%;
                     min-height: 20px;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
                     overflow: hidden;
                     margin-bottom: 5px;
                 }
@@ -59,6 +59,31 @@
         .btn {
             width: 100%;
         }
+    }
+}
+.info-photo {
+    width: 126px;
+    height: 168px;
+    margin-bottom: 18px;
+    border: 1px solid #cacaca;
+    border-radius: 3px;
+    overflow: hidden;
+    img {
+        width: 100%;
+    }
+}
+.contact-info {
+    margin-right: 10%;
+    border-top: 1px dashed #e4e4e4;
+    padding-top: 30px;
+    h4 {
+        font: bold 15px "PT Sans";
+        margin: 0 0 15px;
+        color: #626262;
+    }
+    p {
+        line-height: 27px;
+        margin: 0 0 15px;
     }
 }
 .main-info {
