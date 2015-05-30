@@ -555,7 +555,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", "createProfileUser", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage, createProfileUser){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -563,6 +563,7 @@
                 request: "=loRequest",
                 titles: "=loTitles",
                 user: '=loUser'
+
             },
             link: function(scope, element, attrs, controllers){
                 scope.states = settings.queue.state;
@@ -577,7 +578,6 @@
                     if(undefined == newVal || !("id" in newVal)){
                         return;
                     }
-
                     scope.realtorPicture = new pictureObject(
                         angular.element("#realtorImage"),
                         {container: $(".realtor.realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},

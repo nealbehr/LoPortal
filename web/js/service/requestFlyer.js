@@ -97,6 +97,8 @@
                 mls_number: null,
                 state: null,
                 listing_price: null,
+                funded_percentage: 10.00,
+                maximum_loan: 80.00,
                 photo: null,
                 getPicture: function(){
                     return this.photo;

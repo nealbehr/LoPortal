@@ -55,7 +55,7 @@ class DashboardManager extends Base{
                     ->getEntityManager()
                     ->createQueryBuilder()
                     ->select('f, q')
-                    ->from(RequestFlyer::CLASS_NAME, 'f')
+                    ->from(RequestFlyer::class, 'f')
                     ->join('f.queue', 'q')
                     ->where('q.user_id = :userId')
                     ->andWhere('q.state = :state')

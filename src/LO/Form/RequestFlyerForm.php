@@ -30,12 +30,20 @@ class RequestFlyerForm extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
             ->add('listing_price', 'text')
+            ->add('funded_percentage', 'percent', array(
+                'precision' => 2,
+                'type' => 'integer'
+            ))
+            ->add('maximum_loan', 'percent', array(
+                'precision' => 2,
+                'type' => 'integer'
+            ))
             ->add('photo', new S3Photo($this->s3, '1rex.property'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
         $resolver->setDefaults([
-            'data_class'        => RequestFlyer::CLASS_NAME,
+            'data_class'        => RequestFlyer::class,
             'csrf_protection'   => false,
             'validation_groups' => ['Default'],
         ]);

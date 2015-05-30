@@ -183,7 +183,7 @@
             <h1>Buy this home with<br>only {{discuontPart}}% down: <span {% if discuont|length > 8 %}style="font-size: 75px;"{% endif %}>${{discuont}}</span></h1>
             <ul>
                 <li><em>Listing Price ...........................................................................................</em><span>{{listingPrice}}</span></li>
-                <li><em>Available Loan (@80% LTV) ....................................................</em> <span>{{availableLoan}}</span></li>
+                <li><em>Available Loan (@{{maxiumLoanAmount}}% LTV) ....................................................</em> <span>{{availableLoan}}</span></li>
                 <li><em>Required Down Payment ........................................................</em> <span>{{requiredDownPayment}}</span></li>
                 <li><em>Our Down Payment Funding* ....................................................</em> <span>{{ourDownPayment}}</span></li>
                 <li><em>Your Down Payment ............................................................</em> <span>{{yourDownPayment}}</span></li>

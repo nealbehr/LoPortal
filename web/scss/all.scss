@@ -311,6 +311,18 @@ th.header {
         padding-left: 25px;
     }
 }
+.input-percent {
+  &:before {
+    content: "%";
+    position: absolute;
+    top: 19px;
+    left: 11px;
+    color: #adaeb1;
+  }
+  input {
+    padding-left: 35px;
+  }
+}
 .realtor-name {
     width: 70%;
 }

@@ -93,8 +93,15 @@
                         <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
                     </div>
                     <div class="input input-price">
-                        <input class="input-lg" type="text" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required="">
+                        <input class="input-lg" type="text" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price">
                     </div>
+                    <div class="input input-percent">
+                        <input class="input-lg" type="number" min="10" max="12.5" step="0.1" name="funded_percentage" placeholder="FirstREX Funded Percentage" ng-model="request.property.funded_percentage" required>
+                    </div>
+                    <div class="input input-percent">
+                        <input class="input-lg" type="number" min="75" max="80" name="maximum_loan" placeholder="Maximum Loan Amount" ng-model="request.property.maximum_loan" required>
+                    </div>
+
                 </div>
                 <hr>
                 <h2>Realtor Info</h2>

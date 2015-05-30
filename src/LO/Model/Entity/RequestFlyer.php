@@ -21,18 +21,28 @@ use Doctrine\ORM\Mapping\JoinColumn;
  */
 class RequestFlyer extends Base {
 
-    const CLASS_NAME = 'LO\Model\Entity\RequestFlyer';
-
     /**
      * @Column(type="integer")
      */
     protected $queue_id;
 
     /**
-     * @Column(type="string")
+     * @Column(type="decimal")
      * @Assert\NotBlank(message = "Listing price should not be blank.", groups = {"main"})
      */
     protected $listing_price;
+
+    /**
+     * @Column(type="float")
+     * @Assert\NotBlank(message = "FirstREX Funded Percentage should not be blank.", groups = {"main"})
+     */
+    protected $funded_percentage;
+
+    /**
+     * @Column(type="float")
+     * @Assert\NotBlank(message = "Maximum Loan Amount should not be blank.", groups = {"main"})
+     */
+    protected $maximum_loan;
 
     /**
      * @Column(type="string")
@@ -74,6 +84,38 @@ class RequestFlyer extends Base {
 
     public function getQueueId(){
         return $this->queue_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFundedPercentage()
+    {
+        return $this->funded_percentage;
+    }
+
+    /**
+     * @param mixed $funded_percentage
+     */
+    public function setFundedPercentage($funded_percentage)
+    {
+        $this->funded_percentage = $funded_percentage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaximumLoan()
+    {
+        return $this->maximum_loan;
+    }
+
+    /**
+     * @param mixed $maximum_loan
+     */
+    public function setMaximumLoan($maximum_loan)
+    {
+        $this->maximum_loan = $maximum_loan;
     }
 
     public static function getAllowedStates(){

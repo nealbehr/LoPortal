@@ -109,17 +109,23 @@ class RequestFlyerController extends RequestFlyerBase {
         if($propertyPhoto == null) {
             $propertyPhoto = 'https://s3.amazonaws.com/1rex.property/empty-big.png';
         }
+
+        $discountPart = ((1 - $flyer->getMaximumLoan()/100) - $flyer->getFundedPercentage()/100) * 100;
+        $discount = ((1 - $flyer->getMaximumLoan()/100) - $flyer->getFundedPercentage()/100) * $flyer->getListingPrice();
+        $address = preg_replace('/,/', '<br>', $queue->getAddress(), 1);
+        $address = str_replace(', USA', '', $address);
         $data = array(
 
-            'homeAddress' =>  preg_replace('/,/', '<br>', $queue->getAddress(), 1),
+            'homeAddress' =>  $address,
             'homeImage' => $propertyPhoto,
-            'discuontPart' => '10',
-            'discuont' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
+            'discuontPart' => $discountPart,
+            'maxiumLoanAmount' => $flyer->getMaximumLoan(),
+            'discuont' => number_format($discount, 0, '.', ','),
             'listingPrice' => number_format($flyer->getListingPrice(), 0, '.', ','),
-            'availableLoan' => number_format($flyer->getListingPrice() * 0.8, 0, '.', ','),
-            'requiredDownPayment' => number_format($flyer->getListingPrice() * 0.2, 0, '.', ','),
-            'ourDownPayment' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
-            'yourDownPayment' => number_format($flyer->getListingPrice() * 0.1, 0, '.', ','),
+            'availableLoan' => number_format($flyer->getListingPrice() * $flyer->getMaximumLoan() / 100, 0, '.', ','),
+            'requiredDownPayment' => number_format($flyer->getListingPrice() * (1 - $flyer->getMaximumLoan() / 100), 0, '.', ','),
+            'ourDownPayment' => number_format($flyer->getListingPrice() * $flyer->getFundedPercentage()/100, 0, '.', ','),
+            'yourDownPayment' => number_format($discount, 0, '.', ','),
 
             'photoCard1' => $loanOfficer->getPicture(),
             'nameCard1' => $loanOfficer->getFirstName() . ' '. $loanOfficer->getLastName(),

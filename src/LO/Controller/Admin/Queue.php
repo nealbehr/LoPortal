@@ -205,7 +205,7 @@ class Queue extends Base{
         }
 
         /** @var RequestFlyer $requestFlyer */
-        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::CLASS_NAME)->findOneBy(['queue_id' => $queue->getId()]);
+        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::class)->findOneBy(['queue_id' => $queue->getId()]);
         /** @var Realtor $realtor */
         $realtor = $requestFlyer->getRealtor();
 
