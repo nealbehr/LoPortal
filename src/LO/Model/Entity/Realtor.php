@@ -32,7 +32,7 @@ class Realtor extends Base {
      * @Column(type="string", length=255)
      * @Assert\NotBlank(message = "Phone should not be blank.", groups = {"main"})
      * @Assert\Regex(
-     *               pattern = "/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/",
+     *               pattern = "/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/",
      *               message = "Please input a valid US phone number including 3 digit area code and 7 digit number.",
      *               groups = {"main"}
      * )
