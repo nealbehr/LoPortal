@@ -175,8 +175,8 @@
                     $anchorScroll(scope.container.attr("id"));
                 };
 
-                scope.submit = function(formUser){
-                    if(!formUser.$valid){
+                scope.submit = function(formUser, $event) {
+                    if(!formUser.$valid) {
                         this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
@@ -500,7 +500,6 @@
             templateUrl: '/partials/session.messages',
             link: function(scope, elm, attrs, ctrl) {
                 scope.$on('showSessionMessage', function () {
-                    console.log('showSessionMessage');
                     scope.messages = sessionMessages.get();
                 });
 
@@ -518,7 +517,7 @@
             link: function(scope, element, attrs, ngModel) {
                 if (!ngModel){
                     return;
-                };
+                }
 
                 ngModel.$render = function() {};
 

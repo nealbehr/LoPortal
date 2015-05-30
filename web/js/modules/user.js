@@ -1,6 +1,5 @@
 (function(settings){
     "use strict";
-    settings = settings || {};
 
     var user = angular.module('userProfileModule', []);
 
@@ -9,28 +8,33 @@
             when('/user/:id/edit', {
                 templateUrl: '/partials/profile',
                 controller:  'userProfileCtrl',
+                resolve: {
+                    officerData: ["$q", "$http", '$route', 'waitingScreen', 'userService', 'createProfileUser', function($q, $http, $route, waitingScreen, userService, createProfileUser) {
+                        return userService.get()
+                    }]
+                },
                 access: {
                     isFree: false
                 }
             })
     }]);
 
-    user.controller('userProfileCtrl', ['$scope', 'createProfileUser', '$routeParams', 'userService', "$q", "$location", function($scope, createProfileUser, $routeParams, userService, $q, $location){
-        $scope.officer = {};
+    user.controller('userProfileCtrl', ['$scope', '$route', 'createProfileUser', '$routeParams', 'userService', "$q", "officerData", function($scope, $route, createProfileUser, $routeParams, userService, $q, officerData) {
+        $scope.officer = officerData;
 
-        userService
-            .get()
-            .then(function(user){
-                if(user.id == $routeParams.id){
-                    return $q.when(angular.copy(user));
-                }
-
-                return createProfileUser().get($routeParams.id);
-            })
-            .then(function(user){
-                $scope.officer = user;
-            })
+//        userService
+//            .get()
+//            .then(function(user){
+//                if(user.id == $routeParams.id){
+//                    return $q.when(angular.copy(user));
+//                }
+//
+//                return createProfileUser().get($routeParams.id);
+//            })
+//            .then(function(user){
+//                $scope.officer = user;
+//            })
     }]);
 
 
-})(settings);
+})();

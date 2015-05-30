@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
@@ -24,8 +25,6 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
 class User extends Base implements UserInterface{
-
-    const CLASS_NAME = 'LO\Model\Entity\User';
 
     /**
      * Roles list
@@ -42,6 +41,11 @@ class User extends Base implements UserInterface{
      * @GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})
+     **/
+    protected $address;
 
     /**
      * @Column(type="string")
@@ -146,9 +150,14 @@ class User extends Base implements UserInterface{
     protected $sales_director;
 
     /**
-     * @Column(type="string", length=255)
+     * @Column(type="string", length=100)
      */
     protected $sales_director_email;
+
+    /**
+     * @Column(type="string", length=100)
+     */
+    protected $sales_director_phone;
 
     /**
      * Init entity
@@ -534,9 +543,13 @@ class User extends Base implements UserInterface{
 
     public function getPublicInfo(){
         $result = $this->toArray();
-        unset($result['password'], $result['salt'], $result['state'], $result['lender']);
+        unset($result['password'], $result['salt'], $result['state'], $result['lender'], $result['address']);
         $result['lender'] = $this->getLender()->toArray();
-
+        $address = $this->getAddress();
+        if ($address == null) {
+            $address = new Address();
+        }
+        $result['address'] = $address->toArray();
         return $result;
     }
 
@@ -563,4 +576,40 @@ class User extends Base implements UserInterface{
     public function getNmls(){
         return $this->nmls;
     }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress()
+    {
+        if($this->address == null) {
+            $this->address = new Address();
+        }
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setAddress(Address $address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSalesDirectorPhone()
+    {
+        return $this->sales_director_phone;
+    }
+
+    /**
+     * @param mixed $sales_director_phone
+     */
+    public function setSalesDirectorPhone($sales_director_phone)
+    {
+        $this->sales_director_phone = $sales_director_phone;
+    }
+
 }

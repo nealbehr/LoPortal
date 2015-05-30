@@ -16,7 +16,7 @@ class AdminProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
 
         $app['admin.controller'] = $app->share(function() use ($app) {
-            return new Admin\User();
+            return new Admin\AdminUserController();
         });
 
         $app['admin.queue.controller'] = $app->share(function() use ($app) {

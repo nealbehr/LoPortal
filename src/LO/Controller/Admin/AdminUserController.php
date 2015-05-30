@@ -11,7 +11,7 @@ namespace LO\Controller\Admin;
 use LO\Application;
 use LO\Common\Email\NewPassword;
 use LO\Common\Email\ResetPassword;
-use LO\Form\UserAdminForm;
+use LO\Form\UserAdminFormType;
 use LO\Model\Entity\Lender;
 use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\User as EntityUser;
 
-class User extends Base{
+class AdminUserController extends Base {
     const USER_LIMIT    = 20;
 
     const DEFAULT_SORT_FIELD_NAME = 'id';
@@ -80,7 +80,7 @@ class User extends Base{
                  ->setPassword($app->encodePassword($user, $password));
 
             $this->getRequestLender($app, $request, $user);
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminForm($app->getS3()));
+            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminFormType($app->getS3()));
 
             if(count($errors) > 0){
                 $this->setErrorsForm($errors);
@@ -109,7 +109,7 @@ class User extends Base{
             $errors = (new UserManager($app))->validateAndSaveUser(
                 $request,
                 $user,
-                new UserAdminForm($app->getS3())
+                new UserAdminFormType($app->getS3())
             );
 
             if(count($errors) > 0){

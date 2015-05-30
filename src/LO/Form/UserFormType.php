@@ -9,18 +9,15 @@
 namespace LO\Form;
 
 use LO\Form\Extension\S3Photo;
-use LO\Model\Entity\Lender;
 use LO\Model\Entity\User;
 use LO\Validator\Unique;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Aws\S3\S3Client;
 
-class UserForm extends AbstractType {
+class UserFormType extends AbstractType {
     private $s3;
 
     public function __construct(S3Client $s3){
@@ -32,6 +29,7 @@ class UserForm extends AbstractType {
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
+
         $builder->add('first_name', 'text', [
             'constraints' => [
                 new Assert\Regex([
@@ -109,12 +107,17 @@ class UserForm extends AbstractType {
                 new Assert\Type(['type' => 'numeric', 'message' => 'NMLS # should be of type {{ type }}.']),
             ]
         ]);
+
+        $builder->add('address', new AddressType(), [
+            'cascade_validation' => true
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
         $resolver->setDefaults([
-            'data_class' => User::CLASS_NAME,
+            'data_class' => User::class,
             'csrf_protection' => false,
+            'allow_extra_fields' => true,
             'validation_groups' => ['Default']
         ]);
     }

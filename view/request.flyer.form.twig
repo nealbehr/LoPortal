@@ -10,7 +10,7 @@
             <h2>Loan Officer Info</h2>
             <a href="/#/user/[[ user.id ]]/edit" class="change">Change</a>
             <div class="info-photo">
-                <img src="../images/empty-user.png" alt="">
+                <img ng-src="[[ user.picture | defaultImage:'/images/empty-user.png' ]]" alt="user">
             </div>
             <dl>
                 <dt>First Name</dt>
@@ -19,10 +19,6 @@
                 <dd>[[ user.last_name ]]</dd>
                 <dt>Title</dt>
                 <dd>[[ user.title ]]</dd>
-                <dt>Sales Director</dt>
-                <dd>[[ user.sales_director ]]</dd>
-                <dt>Sales Manager Email</dt>
-                <dd>[[ user.sales_director_email ]]</dd>
                 <dt>Lender</dt>
                 <dd>[[ user.lender.name ]]</dd>
                 <dt>Primary Phone</dt>
@@ -30,7 +26,7 @@
                 <dt>Mobile Phone</dt>
                 <dd>111-111-11</dd>
                 <dt>Address</dt>
-                <dd>1719 Westwood Blvd, Los Angeles,<br />Ca 90024</dd>
+                <dd>[[ user.address.formatted_address ]]</dd>
                 <dt>Email Address</dt>
                 <dd><a ng-href="mailto:[[ user.email ]]">[[ user.email ]]</a></dd>
                 <dt>NMLS #</dt>
@@ -39,8 +35,8 @@
             <div class="contact-info">
                 <h4>Questions?</h4>
                 <p>
-                    Call your Sales Director Mike Lyon.<br />
-                    <strong>(800) 588-7600</strong>
+                    Call your Sales Director [[ user.sales_director ]]<br />
+                    <strong>[[ user.sales_director_phone ]]</strong>
                 </p>
                 <p>
                     or Business Support at <br />

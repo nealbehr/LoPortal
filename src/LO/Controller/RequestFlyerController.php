@@ -15,7 +15,6 @@ use LO\Common\Email\Request\RequestFlyerSubmission;
 use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
 use LO\Form\QueueForm;
-use LO\Form\RealtorForm;
 use LO\Form\RequestFlyerForm;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;

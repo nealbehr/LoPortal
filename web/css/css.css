@@ -90,3 +90,7 @@
     height: 168px;
 
 }
+
+.has-error {
+    color: red;
+}

@@ -15,7 +15,12 @@
             })
             .when('/admin/user/:id/edit', {
                 templateUrl: '/partials/admin.panel.user',
-                controller:  'adminUserEditCtrl',
+                controller:  'AdminUserEditController',
+                resolve: {
+                    officerData: ['$route', 'createUser', function($route, createUser) {
+                        return createUser().get($route.current.params.id);
+                    }]
+                },
                 access: {
                     isFree: false
                 }
@@ -139,11 +144,8 @@
 
     }]);
 
-    admin.controller('adminUserEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
-        createUser().get($routeParams.id)
-            .then(function(user){
-                $scope.officer = user;
-        });
+    admin.controller('AdminUserEditController', ['$scope', 'officerData', function($scope, officerData){
+        $scope.officer = officerData;
     }]);
 
     admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){

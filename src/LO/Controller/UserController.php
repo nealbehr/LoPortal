@@ -11,7 +11,7 @@ namespace LO\Controller;
 
 use LO\Application;
 use LO\Exception\Http;
-use LO\Form\UserForm;
+use LO\Form\UserFormType;
 use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,7 +19,7 @@ use LO\Model\Entity\User as UserEntity;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class User {
+class UserController {
     /** @var array  */
     private $errors = [];
 
@@ -27,11 +27,11 @@ class User {
         try {
             if ("me" == $id || $app->user()->getId() == $id) {
 //                app.security.token is not null and is_granted("ROLE_PREVIOUS_ADMIN")
-                $info =$app->user()->getPublicInfo();
-                return $app->json(array_merge($info, ['switched' => $app['security']->isGranted("ROLE_PREVIOUS_ADMIN")]));
+                $info = $app->user()->getPublicInfo();
+                return $app->json(array_merge($info, ['switched' => $app->getSecurity()->isGranted("ROLE_PREVIOUS_ADMIN")]));
             }
 
-            if ($app->user()->getId() != $id && !$app['security']->isGranted(UserEntity::ROLE_ADMIN)) {
+            if ($app->user()->getId() != $id && !$app->getSecurity()->isGranted(UserEntity::ROLE_ADMIN)) {
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
@@ -55,7 +55,8 @@ class User {
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function updateAction(Application $app, Request $request, $id){
+    public function updateAction(Application $app, Request $request, $id) {
+        $user = null;
         try{
             /** @var UserEntity $user */
             $user = $app->getEntityManager()->getRepository(UserEntity::class)->find($id);
@@ -63,7 +64,9 @@ class User {
                 throw new BadRequestHttpException("User not found.");
             }
 
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserForm($app->getS3()));
+            $userManager = new UserManager($app);
+            $userFormType = new UserFormType($app->getS3());
+            $errors = $userManager->validateAndSaveUser($request, $user, $userFormType);
 
             if(count($errors) > 0){
                 $this->errors['form_errors'] = $errors;
@@ -71,18 +74,19 @@ class User {
             }
 
             return $app->json('success');
+
         }catch(HttpException $e){
             if($app->user()->getId() == $id){
                 $app->getUserProvider()->refreshUser($user);
             }
-
             $app->getMonolog()->addWarning($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
-        }finally{
+        } finally{
             if($app->user()->getId() == $id && $user instanceof UserEntity){
                 $app->getEntityManager()->refresh($user);
             }
         }
+        return $app->json('error');
     }
 }

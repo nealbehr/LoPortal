@@ -1,4 +1,4 @@
-<form ng-submit="submit(formUser)" class="css-form" novalidate name="formUser">
+<form ng-submit="submit(formUser, $event)" class="css-form" novalidate name="formUser">
     <div class="row edit-user">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
             <div id="userProfileMessage"></div>
@@ -15,6 +15,8 @@
                 <div ng-show="formUser.$submitted && formUser.last_name.$error.loName">Last name is invalid</div>
                 <div ng-show="formUser.$submitted && formUser.nmls.$error.number">NMLS # should be of number.</div>
                 <div ng-show="formUser.$submitted && formUser.sales_director_email.$error.email">Please input a valid email in Sales Manager Email field.</div>
+                <div ng-show="formUser.$submitted && formUser.sales_director_phone.$error.usaPhoneFormat">Please input a valid phone in Sales Manager Phone field.</div>
+                <div ng-show="formUser.address.$invalid">Address is invalid.</div>
             </div>
 
             <h2>[[ title ]]</h2>
@@ -52,6 +54,9 @@
                 <div class="input" ng-if="user.id != officer.id && user.isAdmin()">
                     <input class="input-lg" type="email" name="sales_director_email" placeholder="Sales Manager Email" ng-model="officer.sales_director_email">
                 </div>
+                <div class="input" ng-if="user.id != officer.id && user.isAdmin()">
+                    <input class="input-lg" type="text" name="sales_director_phone" placeholder="Sales Manager Phone" usa-phone ng-model="officer.sales_director_phone">
+                </div>
             </div>
 
             <select class="form-control input-lg"
@@ -67,9 +72,22 @@
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="Mobile Phone" ng-model="officer.mobile">
                 </div>
-                <div class="input">
-                    <input class="input-lg" type="text" placeholder="Address">
+                <div ng-class="{'input':true, 'error':formUser.address.$dirty && formUser.address.$invalid}">
+                    <input id="address"
+                           name="address"
+                           type="text"
+                           class="input-lg"
+                           ng-model="officer.address.formatted_address"
+                           vs-google-autocomplete="{ types: ['address'], componentRestrictions: { country: 'US' } }"
+                           vs-autocomplete-validator="vs-google-place"
+                           vs-street-number="officer.address.street_number"
+                           vs-street="officer.address.street"
+                           vs-city="officer.address.city"
+                           vs-postal-code="officer.address.postal_code"
+                           vs-place-id="officer.address.place_id"
+                           vs-state="officer.address.state">
                 </div>
+                <div id="map-canvas"></div>
                 <div class="input">
                     <input class="input-lg" type="email" placeholder="Email" ng-model="officer.email" required="" name="email">
                 </div>
@@ -77,7 +95,7 @@
                     <input class="input-lg" type="number" placeholder="NMLS #" ng-model="officer.nmls" name="nmls" ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
-            <button class="btn btn-default btn-lg">Save</button>
+            <button type="submit" class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
                 <a ng-if="officer.id && user.id != officer.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete user</a>
                 <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
