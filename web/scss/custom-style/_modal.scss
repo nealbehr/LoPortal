@@ -162,3 +162,32 @@
         cursor: pointer;
     }
 }
+.request-info {
+    margin: 0 0 40px;
+    padding: 0;
+    list-style: none;
+    li {
+        display: table;
+        width: 100%;
+        border-bottom: 1px dashed #e4e4e4;
+    }
+    strong, span {
+        display: table-cell;
+        vertical-align: middle;
+        height: 72px;
+        padding: 15px 0;
+    }
+    strong {
+        font-size: 15px;
+    }
+    span {
+        width: 120px;
+        text-align: right;
+        input {
+            width: 90px;
+            display: inline-block;
+            margin-right: 5px;
+            padding: 0 10px 0 30px !important;
+        }
+    }
+}
