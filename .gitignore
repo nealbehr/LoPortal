@@ -5,6 +5,7 @@ composer.phar
 vendor/
 cache/
 bin/
+node_modules/
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
