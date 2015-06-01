@@ -21,8 +21,6 @@ use LO\Validator\FullName;
  */
 class Realtor extends Base {
 
-    const CLASS_NAME = 'LO\Model\Entity\Realtor';
-
     /**
      * @Column(type="string", length=255)
      */

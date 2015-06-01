@@ -8,10 +8,12 @@
 
 namespace LO\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\OneToMany;
 
 /**
  * @Entity
@@ -19,7 +21,9 @@ use Doctrine\ORM\Mapping\Column;
  */
 class Lender extends Base {
 
-    const CLASS_NAME = 'LO\Model\Entity\Lender';
+    public function __construct() {
+        $this->disclosures = new ArrayCollection();
+    }
 
     /**
      * @Column(type="string", length=50)
@@ -33,58 +37,13 @@ class Lender extends Base {
 
     /**
      * @Column(type="string", length=255)
-     * @Assert\NotBlank(message="Address should not be blank.", groups = {"main"})
-     * @Assert\Length(
-     *              max = 255,
-     *              maxMessage = "Address cannot be longer than {{ limit }} characters" )
-     */
-    protected $address;
-
-    /**
-     * @Column(type="string", length=65536)
-     * @Assert\NotBlank(message="Disclosure should not be blank.", groups = {"main"})
-     * @Assert\Length(
-     *              max = 65536,
-     *              maxMessage = "Disclosure cannot be longer than {{ limit }} characters" )
-     */
-    protected $disclosure;
-
-    /**
-     * @Column(type="string", length=255)
      */
     protected $picture;
 
     /**
-     * @return mixed
+     * @OneToMany(targetEntity="LenderDisclosure", mappedBy="lender", fetch="LAZY", cascade={"persist", "remove"})
      */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-
-    /**
-     * @param mixed $address
-     */
-    public function setAddress($address)
-    {
-        $this->address = $address;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getDisclosure()
-    {
-        return $this->disclosure;
-    }
-
-    /**
-     * @param mixed $disclosure
-     */
-    public function setDisclosure($disclosure)
-    {
-        $this->disclosure = $disclosure;
-    }
+    protected $disclosures;
 
     /**
      * @return mixed
@@ -111,6 +70,38 @@ class Lender extends Base {
     }
 
     /**
+     * @return mixed
+     */
+    public function getDisclosures()
+    {
+        return $this->disclosures;
+    }
+
+    /**
+     * @param mixed $disclosures
+     */
+    public function setDisclosures($disclosures)
+    {
+        $this->disclosures = $disclosures;
+    }
+
+    public function getDisclosureForState($state) {
+        $disclosureObjects = $this->getDisclosures();
+        $default = '';
+        if($disclosureObjects != null) {
+            foreach($disclosureObjects as $disclosureObject) {
+                /** @var LenderDisclosure $disclosureObject */
+                if($disclosureObject->getState() == $state) {
+                    return $disclosureObject->getDisclosure();
+                } else if ($disclosureObject->getState() == LenderDisclosure::ALL_STATES) {
+                    $default = $disclosureObject->getDisclosure();
+                }
+            }
+        }
+        return $default;
+    }
+
+    /**
      * @param mixed $picture
      */
     public function setPicture($picture)
@@ -126,12 +117,21 @@ class Lender extends Base {
     }
 
     public function toFullArray() {
+
+        $disclosuresArray = array();
+        $disclosureObjects = $this->getDisclosures();
+        if($disclosureObjects != null) {
+            foreach($disclosureObjects as $disclosureObject) {
+                /** @var LenderDisclosure $disclosureObject */
+                $disclosuresArray[] = $disclosureObject->toArray();
+            }
+        }
+
         return array(
             'id' => $this->id,
             'name' => $this->name,
-            'address' => $this->address,
-            'disclosure' => $this->disclosure,
-            'picture' => $this->picture
+            'picture' => $this->picture,
+            'disclosures' => $disclosuresArray
         );
 
     }

@@ -22,8 +22,6 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  */
 class Queue extends Base{
 
-    const CLASS_NAME = 'LO\Model\Entity\Queue';
-
     const STATE_LISTING_FLYER_PENDING = 1;
     const STATE_REQUESTED   = 2;
     const STATE_APPROVED    = 3;

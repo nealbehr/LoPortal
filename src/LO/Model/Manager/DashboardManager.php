@@ -20,7 +20,7 @@ class DashboardManager extends Base{
         $q = $this->getApp()->getEntityManager()
             ->createQueryBuilder()
             ->select('q, f')
-            ->from(Queue::CLASS_NAME, 'q')
+            ->from(Queue::class, 'q')
             ->leftJoin('q.flyer', 'f')
             ->where('q.user_id = :userId')
             ->orderBy('q.state', 'ASC')

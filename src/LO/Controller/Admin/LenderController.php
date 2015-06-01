@@ -11,6 +11,7 @@ namespace LO\Controller\Admin;
 use LO\Application;
 use LO\Form\LenderType;
 use LO\Model\Entity\Lender;
+use LO\Model\Entity\LenderDisclosure;
 use LO\Model\Entity\User;
 use LO\Exception\Http;
 use LO\Traits\GetFormErrors;
@@ -28,8 +29,8 @@ class LenderController extends Base
 
     const QUEUE_LIMIT = 20;
 
-    const DEFAULT_SORT_FIELD_NAME = 'created_at';
-    const DEFAULT_SORT_DIRECTION = 'desc';
+    const DEFAULT_SORT_FIELD_NAME = 'id';
+    const DEFAULT_SORT_DIRECTION = 'asc';
 
     private $errors = [];
 
@@ -61,7 +62,7 @@ class LenderController extends Base
             }
 
         } catch (\Exception $ex) {
-            var_dump($ex);
+            $app->getMonolog()->addError($ex);
         }
 
         return $app->json([
@@ -76,7 +77,7 @@ class LenderController extends Base
     }
 
     public function getAllJson(Application $app) {
-        $lenders = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->findAll();
+        $lenders = $app->getEntityManager()->getRepository(Lender::class)->findAll();
         $lendersArray = [];
         foreach($lenders as $lender) {
             /* @var Lender $lender*/
@@ -93,8 +94,7 @@ class LenderController extends Base
             }
 
             /** @var Lender $lender */
-            $lender = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->find($id);
-
+            $lender = $app->getEntityManager()->getRepository(Lender::class)->find($id);
             if (!$lender) {
                 throw new BadRequestHttpException("Lender not found.");
             }
@@ -122,8 +122,14 @@ class LenderController extends Base
                 $this->errors = $this->getFormErrors($form);
                 throw new BadRequestHttpException("Lender info isn't valid");
             }
+            $defaultDisclosure = new LenderDisclosure();
+            $defaultDisclosure->setState(LenderDisclosure::ALL_STATES);
+            $defaultDisclosure->setDisclosure($requestLender['disclosure']);
+            $defaultDisclosure->setLender($lender);
+
             $em = $app->getEntityManager();
             $em->persist($lender);
+            $em->persist($defaultDisclosure);
             $em->flush();
             return $app->json(['id' => $lender->getId()]);
         } catch (HttpException $e) {
@@ -137,7 +143,7 @@ class LenderController extends Base
     {
         $em = $app->getEntityManager();
         try {
-            $lender = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->find($id);
+            $lender = $app->getEntityManager()->getRepository(Lender::class)->find($id);
             /* @var Lender $lender */
             $requestLender = $request->request->get('lender');
             $lenderType = new LenderType($app->getS3());
@@ -166,11 +172,11 @@ class LenderController extends Base
     {
         try {
             $em = $app->getEntityManager();
-            $lender = $em->getRepository(Lender::CLASS_NAME)->find($id);
+            $lender = $em->getRepository(Lender::class)->find($id);
             if ($lender) {
                 $qb = $em->createQueryBuilder();
                 $qb ->select('u')
-                    ->from(User::CLASS_NAME, 'u')
+                    ->from(User::class, 'u')
                     ->leftJoin('u.lender', 'l')
                     ->andWhere($qb->expr()->eq('l.id', $id));
 
@@ -205,19 +211,18 @@ class LenderController extends Base
         $order = $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION);
 
         $q = $app->getEntityManager()->createQueryBuilder()
-            ->select('q1')
-            ->from(Lender::CLASS_NAME, 'q1')
-            ->setMaxResults(static::QUEUE_LIMIT)
+            ->select('l, ld')
+            ->from(Lender::class, 'l')
+            ->join('l.disclosures', 'ld')
             ->orderBy($sort, $order);
 
         if ($request->get(self::KEY_SEARCH)) {
             $q->andWhere(
                 $app->getEntityManager()->createQueryBuilder()->expr()->orX(
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(q1.name)", ':param'),
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(q1.address)", ':param')
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER(l.name)", ':param')
                 )
             )
-                ->setParameter('param', '%' . strtolower($request->get(self::KEY_SEARCH)) . '%');
+            ->setParameter('param', '%' . strtolower($request->get(self::KEY_SEARCH)) . '%');
         }
 
         return $q->getQuery()->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true);
@@ -226,6 +231,6 @@ class LenderController extends Base
     private function getOrderKey($id)
     {
         $allowFields = ['id', 'name'];
-        return 'q1.' . (in_array($id, $allowFields) ? $id : self::DEFAULT_SORT_FIELD_NAME);
+        return 'l.' . (in_array($id, $allowFields) ? $id : self::DEFAULT_SORT_FIELD_NAME);
     }
 } 

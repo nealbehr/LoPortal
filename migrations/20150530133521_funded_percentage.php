@@ -19,7 +19,7 @@ class FundedPercentage extends AbstractMigration
         $request->changeColumn('listing_price', 'decimal', array('precision' => 15, 'scale' => 0, 'default' => 0 ));
         $request->addColumn('funded_percentage', 'decimal', array('precision' => 4, 'scale' => 2, 'after' => 'listing_price', 'default' => 10.00));
         $request->addColumn('maximum_loan', 'decimal', array('precision' => 4, 'scale' => 2, 'after' => 'funded_percentage', 'default' => 80.00));
-//        $request->removeColumn('pdf_link');
+        $request->removeColumn('pdf_link');
         $request->update();
     }
     

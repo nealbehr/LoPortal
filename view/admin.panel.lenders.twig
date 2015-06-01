@@ -19,8 +19,11 @@
             <tr ng-repeat="(key, lender) in lenders">
                 <td>[[ lender.id ]]</td>
                 <td>[[ lender.name ]]</td>
-                <td>[[ lender.address ]]</td>
-                <td>[[ lender.disclosure ]]</td>
+                <td>
+                    <span ng-repeat="(key, disclosure) in lender.disclosures">
+                        <a href="#" data-toggle="modal" data-target="#showLenderDisclosure-[[disclosure.id]]" data-disclosure="[[ disclosure.disclosure ]]">[[ disclosure.state ]]</a><span ng-show="!$last">,</span>
+                    </span>
+                </td>
                 <td>
                     <img style="height: 50px;max-width: 175px; " ng-src="[[ lender.picture | defaultImage:'/images/empty-lender-150x525.png' ]]" alt="lender">
                 </td>
@@ -37,4 +40,28 @@
             </tbody>
         </table>
     </div>
+</div>
+
+<div ng-repeat="(key, lender) in lenders">
+<div ng-repeat="(key, disclosure) in lender.disclosures" class="modal fade" ng-attr-id="[[ 'showLenderDisclosure-' + disclosure.id ]]" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Disclosure</h4>
+            </div>
+
+            <div class="modal-body">
+                <div class="logo-box">
+                    <h5>[[ lender.name ]]</h5>
+                    <p ng-show="disclosure.state != 'US'">Lender disclosure applies to: [[ disclosure.state ]]</p>
+                    <p ng-show="disclosure.state == 'US'">Lender disclosure applies to: All States</p>
+                </div>
+                <div class="logo-box">
+                    <p>[[ disclosure.disclosure ]]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

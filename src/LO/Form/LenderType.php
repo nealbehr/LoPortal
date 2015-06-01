@@ -47,36 +47,12 @@ class LenderType extends AbstractType {
             ]
         ]);
 
-        $builder->add('address', 'text', [
-            'constraints' => [
-                new Assert\NotBlank([
-                    'message' => 'Address can not be empty.'
-                ]),
-                new Assert\Length([
-                    'max' => 255,
-                    'maxMessage' => 'Address must be shorter than {{ limit }} chars.',
-                ])
-            ]
-        ]);
-
-        $builder->add('disclosure', 'text', [
-            'constraints' => [
-                new Assert\NotBlank([
-                    'message' => 'Disclosure can not be empty.'
-                ]),
-                new Assert\Length([
-                    'max' => 65536,
-                    'maxMessage' => 'Disclosure must be shorter than {{ limit }} chars.',
-                ])
-            ]
-        ]);
-
         $builder->add('picture', new S3Photo($this->s3, '1rex.lenders.pictures'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
         $resolver->setDefaults([
-            'data_class' => Lender::CLASS_NAME,
+            'data_class' => Lender::class,
             'csrf_protection' => false,
             'validation_groups' => ['Default'],
         ]);

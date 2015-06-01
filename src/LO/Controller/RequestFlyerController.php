@@ -133,11 +133,11 @@ class RequestFlyerController extends RequestFlyerBase {
                 Ph: ' . $loanOfficer->getPhone() . '<br />
                 ' . $loanOfficer->getEmail() . '<br />
                 ' . $lender->getName() . '<br />
-                ' . preg_replace('/,/', '<br>', $lender->getAddress(), 1) . '<br />
+                ' . preg_replace('/,/', '<br>', $loanOfficer->getAddress()->getFormattedAddress(), 1) . '<br />
                 NMLS #' . $loanOfficer->getNmls() . '<br />
                 CA BRE #',
             'agencyCard1' => $lender->getPicture(),
-            'lenderDisclosure' => $lender->getDisclosure(),
+            'lenderDisclosure' => $lender->getDisclosureForState($loanOfficer->getAddress()->getState()),
             'photoCard2' => $realtorPhoto,
             'nameCard2' => $realtor->getFirstName() . ' ' . $realtor->getLastName(),
             'infoCard2' => 'Realtor<sup>®</sup><br />

@@ -96,9 +96,8 @@
 
             this.id = null;
             this.name = null;
-            this.address = null;
-            this.disclosure = null;
             this.picture = null;
+            this.disclosures = [];
 
             var self = this;
 
@@ -249,10 +248,9 @@
 
                     scope.headParams = [
                         new tableHeadCol(new params({key: "id", title: "id"})),
-                        new tableHeadCol(new params({key: "name", title: "Lender<br>name"})),
-                        new tableHeadCol(new params({key: "address", title: "Lender<br>address", isSortable: false})),
-                        new tableHeadCol(new params({key: "disclosure", title: "Lender<br>disclosure", isSortable: false})),
-                        new tableHeadCol(new params({key: "picture", title: "Lender<br>logo", isSortable: false})),
+                        new tableHeadCol(new params({key: "name", title: "Name"})),
+                        new tableHeadCol(new params({key: "disclosure", title: "Disclosures", isSortable: false})),
+                        new tableHeadCol(new params({key: "picture", title: "Logo", isSortable: false})),
                         new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
                     ];
                 })

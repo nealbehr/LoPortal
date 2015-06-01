@@ -231,7 +231,7 @@ class AdminUserController extends Base {
         $requestUser = $request->request->get('user');
         $requestLender = $requestUser['lender'];
         if ($requestLender) {
-            $lender = $app->getEntityManager()->getRepository(Lender::CLASS_NAME)->find($requestLender['id']);
+            $lender = $app->getEntityManager()->getRepository(Lender::class)->find($requestLender['id']);
             if ($lender) {
                 $user->setLender($lender);
             } else {

@@ -6,8 +6,6 @@
             <div class="alert alert-danger fade in" ng-show="!hideErrors && formLender.$submitted && !formLender.$valid">
                 <a ng-href="#" class="close" ng-click="showErrors($event)">close</a>
                 <div ng-show="formLender.name.$error.required">Lender name is required</div>
-                <div ng-show="formLender.address.$error.required">Lender address is required</div>
-                <div ng-show="formLender.disclosure.$error.required">Lender disclosure is required</div>
                 <!-- phone -->
             </div>
 
@@ -28,12 +26,7 @@
                     <input maxlength="50" class="input-lg" type="text" placeholder="Lender name" required="" ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
-            <div class="inputs-holder">
-                <div class="input">
-                    <input maxlength="255" class="input-lg" type="text" placeholder="Lender Address" required="" ng-model="lender.address" name="address" ng-model-options="{ updateOn: 'blur' }">
-                </div>
-            </div>
-            <textarea class="form-control" cols="30" rows="2" placeholder="Lender disclosure" required="" ng-model="lender.disclosure" name="disclosure"></textarea>
+            <textarea class="form-control" cols="30" rows="2" placeholder="Default disclosure" required="" ng-model="lender.disclosure" name="disclosure"></textarea>
             <button class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
                 <a ng-if="lender.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete lender</a>
