@@ -60,6 +60,7 @@
             .success(function(info){
                 $scope.request = (new createFromPropertyApproval($routeParams.id)).fill(info);
                 $scope.realtor = createProfileUser().fill(info.user);
+                $scope.user = $scope.realtor;
             })
         ;
     }]);
@@ -81,6 +82,7 @@
             .success(function(info){
                 $scope.request = (new createRequestFlyer($routeParams.id)).fill(info);
                 $scope.realtor = createProfileUser().fill(info.user);
+                $scope.user = $scope.realtor;
             })
         ;
     }]);
@@ -101,10 +103,11 @@
             .get()
             .then(function(user){
                 $scope.realtor = user;
+                $scope.user = user;
             })
         ;
 
-        $scope.request = createRequestFlyer()
+        $scope.request = createRequestFlyer();
     }]);
 
     request.controller('RequestPropertyApprovalController', ['redirect', '$scope', "createPropertyApproval", function(redirect, $scope, createPropertyApproval){

@@ -27,7 +27,7 @@ class RequestFlyer extends Base {
     protected $queue_id;
 
     /**
-     * @Column(type="decimal")
+     * @Column(type="float")
      * @Assert\NotBlank(message = "Listing price should not be blank.", groups = {"main"})
      */
     protected $listing_price;

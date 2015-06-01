@@ -166,7 +166,7 @@
                 return this.switched;
             };
 
-            this.isAdmin = function(){
+            this.isAdmin = function() {
                 for(var i in this.roles){
                     if(this.roles[i] == 'ROLE_ADMIN'){
                         return true;

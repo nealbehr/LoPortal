@@ -562,6 +562,7 @@
             scope: {
                 request: "=loRequest",
                 titles: "=loTitles",
+                officer: '=loOfficer',
                 user: '=loUser'
 
             },
@@ -720,7 +721,10 @@
                 scope.isAddressReadOnly = function() {
 
                     if(typeof this.request.property === 'object' && this.request.property.state == settings.queue.state.approved) {
-                        return !scope.user.isAdmin();
+                        if(angular.isFunction(scope.user.isAdmin)) {
+                            return !scope.user.isAdmin();
+                        }
+                        return true;
                     }
                     return this.request instanceof createFromPropertyApproval;
                 };

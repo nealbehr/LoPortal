@@ -8,35 +8,36 @@
     <div class="row listing">
         <aside class="sidebar col-sm-3">
             <h2>Loan Officer Info</h2>
-            <a href="/#/user/[[ user.id ]]/edit" class="change">Change</a>
+            <a ng-show="user.isAdmin()" href="/#/admin/user/[[ officer.id ]]/edit" class="change">Change</a>
+            <a ng-show="!user.isAdmin()" href="/#/user/[[ officer.id ]]/edit" class="change">Change</a>
             <div class="info-photo">
-                <img ng-src="[[ user.picture | defaultImage:'/images/empty-user.png' ]]" alt="user">
+                <img ng-src="[[ officer.picture | defaultImage:'/images/empty-user.png' ]]" alt="loan officer">
             </div>
             <dl>
                 <dt>First Name</dt>
-                <dd>[[ user.first_name ]]</dd>
+                <dd>[[ officer.first_name ]]</dd>
                 <dt>Last name</dt>
-                <dd>[[ user.last_name ]]</dd>
+                <dd>[[ officer.last_name ]]</dd>
                 <dt>Title</dt>
-                <dd>[[ user.title ]]</dd>
+                <dd>[[ officer.title ]]</dd>
                 <dt>Lender</dt>
-                <dd>[[ user.lender.name ]]</dd>
+                <dd>[[ officer.lender.name ]]</dd>
                 <dt>Primary Phone</dt>
-                <dd>[[ user.phone ]]</dd>
+                <dd>[[ officer.phone ]]</dd>
                 <dt>Mobile Phone</dt>
-                <dd>111-111-11</dd>
+                <dd>[[ officer.mobile ]]</dd>
                 <dt>Address</dt>
-                <dd>[[ user.address.formatted_address ]]</dd>
+                <dd>[[ officer.address.formatted_address ]]</dd>
                 <dt>Email Address</dt>
-                <dd><a ng-href="mailto:[[ user.email ]]">[[ user.email ]]</a></dd>
+                <dd><a ng-href="mailto:[[ officer.email ]]">[[ officer.email ]]</a></dd>
                 <dt>NMLS #</dt>
-                <dd>[[ user.nmls ]]</dd>
+                <dd>[[ officer.nmls ]]</dd>
             </dl>
             <div class="contact-info">
                 <h4>Questions?</h4>
                 <p>
-                    Call your Sales Director [[ user.sales_director ]]<br />
-                    <strong>[[ user.sales_director_phone ]]</strong>
+                    Call your Sales Director [[ officer.sales_director ]]<br />
+                    <strong>[[ officer.sales_director_phone ]]</strong>
                 </p>
                 <p>
                     or Business Support at <br />
@@ -85,6 +86,7 @@
                         </span>
                     </div>
                 </div>
+
                 <div class="inputs-holder">
                     <div class="input">
                         <input ng-readonly="isAddressReadOnly()" ng-keypress="clearAddress($event)" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
@@ -92,13 +94,17 @@
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
                     </div>
-                    <div class="input input-price">
-                        <input class="input-lg" type="text" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price">
+                    <div ng-class="{'input':true, 'input-price':true, 'error': newFlyer.listing_price.$touched && newFlyer.listing_price.$invalid }">
+                        <input class="input-lg" type="number" min="0" max="999999999" step="1000" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required>
                     </div>
-                    <div class="input input-percent">
+                    <div
+                            ng-show="user.isAdmin()"
+                            ng-class="{'input':true, 'input-percent':true, 'error': newFlyer.funded_percentage.$invalid }">
                         <input class="input-lg" type="number" min="10" max="12.5" step="0.1" name="funded_percentage" placeholder="FirstREX Funded Percentage" ng-model="request.property.funded_percentage" required>
                     </div>
-                    <div class="input input-percent">
+                    <div
+                            ng-show="user.isAdmin()"
+                            ng-class="{'input':true, 'input-percent':true, 'error': newFlyer.maximum_loan.$invalid }">
                         <input class="input-lg" type="number" min="75" max="80" name="maximum_loan" placeholder="Maximum Loan Amount" ng-model="request.property.maximum_loan" required>
                     </div>
 
