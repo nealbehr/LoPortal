@@ -26,7 +26,15 @@
                     <input maxlength="50" class="input-lg" type="text" placeholder="Lender name" required="" ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
-            <textarea class="form-control" cols="30" rows="2" placeholder="Default disclosure" required="" ng-model="lender.disclosure" name="disclosure"></textarea>
+            <span>Lender disclosure applies to: All States</span>
+            <textarea class="form-control" cols="30" rows="2" placeholder="Disclosure" required="" ng-model="lender.disclosure" name="disclosure"></textarea>
+            <a style="float: right; margin-top: -30px;margin-bottom: 20px;"  ng-href="/#/">+ Add a disclosure</a><br/>
+
+
+            <span>Lender disclosure applies to: CA</span>
+            <textarea class="form-control" cols="30" rows="2" placeholder="Disclosure" required="" ng-model="lender.disclosure" name="disclosure"></textarea>
+            <a style="float: right; margin-top: -30px;margin-bottom: 20px;"  ng-href="/#/">- Delete disclosure</a>
+
             <button class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
                 <a ng-if="lender.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete lender</a>
