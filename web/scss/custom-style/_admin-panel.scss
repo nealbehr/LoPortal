@@ -299,3 +299,33 @@
         }
     }
 }
+.state-list {
+    overflow: hidden;
+    width: 100%;
+    ul {
+        overflow: hidden;
+        margin: 0 -15px 40px;
+        padding: 0 0 25px;
+        list-style: none;
+        text-align: justify;
+        border-bottom: 1px solid #ededed;
+        @media (max-width: 767px)  {
+            margin: 0 -10px 40px;
+        }
+        li {
+            min-width: 11%;
+            display: inline-block;
+            text-align: center;
+            padding: 10px 0;
+            @media (max-width: 767px)  {
+                min-width: 15%;
+            }
+        }
+        a {
+            color: #ea5a5a;
+            &.filled {
+                color: #0c79ea;
+            }
+        }
+    }
+}

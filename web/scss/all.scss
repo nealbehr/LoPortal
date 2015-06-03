@@ -2,6 +2,9 @@
 html,body {
     height: 100%;
 }
+body {
+    min-width: 320px;
+}
 input[type="text"], input[type="email"], input[type="password"] {
     box-shadow: none;
 }
@@ -325,6 +328,11 @@ th.header {
 }
 .realtor-name {
     width: 70%;
+}
+.label-controls {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
 
 @import "custom-style/links";
