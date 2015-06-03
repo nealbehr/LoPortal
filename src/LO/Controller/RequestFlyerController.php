@@ -247,13 +247,6 @@ class RequestFlyerController extends RequestFlyerBase {
         try {
             $app->getEntityManager()->beginTransaction();
             $queue = $this->getQueueById($app, $id);
-
-            if($queue->getState() !== Queue::STATE_DRAFT) {
-                if(!$app->getSecurity()->isGranted(User::ROLE_ADMIN)) {
-                    throw new Http("Users can re-save only draft.");
-                }
-            }
-            $app->getMonolog()->addInfo("queue state: " . $queue->getState());
             $formBuilder =  $app->getFormFactory()->createBuilder(new FirstRexAddress());
             $formBuilder->setMethod('PUT');
             $firstRexForm = $formBuilder->getForm();

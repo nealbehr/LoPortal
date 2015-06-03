@@ -30,6 +30,7 @@
                             <li><a ng-if="isApprovedFlyer(v)" target="_blank" href="/request/flyer/[[ v.id ]]/download" class="download">Download PDF</a></li>
                             <li><a ng-if="canCancel(v)" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a></li>
                             <li><a ng-if="isComplete(v)" href="/#/flyer/[[ v.id ]]/edit" class="complete">Complete</a></li>
+                            <li><a ng-if="isApprovedFlyer(v)" href="/#/flyer/[[ v.id ]]/edit" class="complete">Edit</a></li>
                             <li><a ng-if="isDeclined(v)" class="delete" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Delete</a></li>
                         </ul>
                     </div>
