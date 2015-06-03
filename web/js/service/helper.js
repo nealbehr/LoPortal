@@ -671,7 +671,11 @@
                     scope.requestDraft.afterSave(function(){
                         sessionMessages.addSuccess("Successfully saved.");
                         scope.oldRequest = angular.copy(scope.request);
-                        history.back();
+                        if($rootScope.historyGet().indexOf('/request/success') != -1){
+                            redirect('/');
+                        }else{
+                            history.back();
+                        }
                     });
 
                     this.saveRequest(scope.requestDraft);
