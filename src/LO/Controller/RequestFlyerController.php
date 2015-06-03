@@ -247,8 +247,11 @@ class RequestFlyerController extends RequestFlyerBase {
         try {
             $app->getEntityManager()->beginTransaction();
             $queue = $this->getQueueById($app, $id);
-            if($queue->getState() !== Queue::STATE_DRAFT){
-                throw new Http("We can re-save only draft.");
+
+            if($queue->getState() !== Queue::STATE_DRAFT) {
+                if(!$app->getSecurity()->isGranted(User::ROLE_ADMIN)) {
+                    throw new Http("Users can re-save only draft.");
+                }
             }
             $app->getMonolog()->addInfo("queue state: " . $queue->getState());
             $formBuilder =  $app->getFormFactory()->createBuilder(new FirstRexAddress());
@@ -257,13 +260,17 @@ class RequestFlyerController extends RequestFlyerBase {
             $firstRexForm->handleRequest($request);
             $queue->setAdditionalInfo($firstRexForm->getData());
             $realtor = $queue->getFlyer()->getRealtor();
+            $validationGroup = "draft";
+            if($queue->getState() == Queue::STATE_APPROVED) {
+                $validationGroup = "approved";
+            }
             $this->saveFlyer(
                 $app,
                 $request,
                 $realtor,
                 $queue,
                 $queue->getFlyer(),
-                ['method' => 'PUT', 'validation_groups' => ["Default", "draft"]]
+                ['method' => 'PUT', 'validation_groups' => ["Default", $validationGroup]]
             );
 
             $app->getEntityManager()->commit();
