@@ -23,71 +23,24 @@
             </div>
             <span class="label-controls">Lender Name</span>
             <div class="inputs-holder">
-                <div class="input">
-                    <input maxlength="50" class="input-lg" type="text" placeholder="Lender name" required="" ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
+                <div ng-class="{'input':true, 'error': formLender.name.$touched && formLender.name.$invalid }">
+                    <input maxlength="50" class="input-lg" type="text" placeholder="Lender name" required ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
                 </div>
             </div>
             <span class="label-controls">Common Disclosure</span>
-            <textarea class="form-control" cols="30" rows="2" placeholder="Disclosure" required="" ng-model="lender.disclosure" name="disclosure"></textarea>
+            <textarea class="form-control" cols="30" rows="2" placeholder="Disclosure" ng-model="allStatesDisclosure.disclosure" name="disclosure"></textarea>
 
 
             <span class="label-controls">Lender Disclosure per State</span>
             <div class="state-list">
                 <ul>
-                    <li><a class="filled" href="#"  data-toggle="modal" data-target="#al">AL</a></li>
-                    <li><a class="filled" href="#">AK</a></li>
-                    <li><a class="filled" href="#">AZ</a></li>
-                    <li><a class="filled" href="#">AR</a></li>
-                    <li><a class="filled" href="#">CA</a></li>
-                    <li><a class="filled" href="#">CO</a></li>
-                    <li><a class="filled" href="#">CT</a></li>
-                    <li><a class="filled" href="#">DE</a></li>
-                    <li><a class="filled" href="#">FL</a></li>
-                    <li><a class="filled" href="#">GA</a></li>
-                    <li><a href="#">HI</a></li>
-                    <li><a class="filled" href="#">ID</a></li>
-                    <li><a class="filled" href="#">IL</a></li>
-                    <li><a class="filled" href="#">IN</a></li>
-                    <li><a class="filled" href="#">IA</a></li>
-                    <li><a class="filled" href="#">KS</a></li>
-                    <li><a class="filled" href="#">KY</a></li>
-                    <li><a class="filled" href="#">LA</a></li>
-                    <li><a class="filled" href="#">ME</a></li>
-                    <li><a href="#">MD</a></li>
-                    <li><a href="#">MA</a></li>
-                    <li><a href="#">MI</a></li>
-                    <li><a href="#">MN</a></li>
-                    <li><a href="#">MS</a></li>
-                    <li><a href="#">MO</a></li>
-                    <li><a href="#">MT</a></li>
-                    <li><a href="#">NE</a></li>
-                    <li><a href="#">NV</a></li>
-                    <li><a href="#">NH</a></li>
-                    <li><a href="#">NJ</a></li>
-                    <li><a href="#">NM</a></li>
-                    <li><a href="#">NY</a></li>
-                    <li><a href="#">NC</a></li>
-                    <li><a href="#">ND</a></li>
-                    <li><a href="#">OH</a></li>
-                    <li><a href="#">OK</a></li>
-                    <li><a href="#">OR</a></li>
-                    <li><a href="#">PA</a></li>
-                    <li><a href="#">RI</a></li>
-                    <li><a href="#">SC</a></li>
-                    <li><a href="#">SD</a></li>
-                    <li><a href="#">TN</a></li>
-                    <li><a href="#">TX</a></li>
-                    <li><a href="#">UT</a></li>
-                    <li><a href="#">VT</a></li>
-                    <li><a href="#">VA</a></li>
-                    <li><a href="#">WA</a></li>
-                    <li><a href="#">WV</a></li>
-                    <li><a href="#">WI</a></li>
-                    <li><a href="#">WY</a></li>
+                    <li ng-repeat="(key, value) in usaStates">
+                        <a title="[[ value.name ]]" href="#" ng-class="{'filled': value.filled }" ng-click="showModal($event, value.code, value.filled);">[[ value.code ]]</a>
+                    </li>
                 </ul>
             </div>
 
-            <button class="btn btn-default btn-lg">Save</button>
+            <button ng-disabled="formLender.$invalid" class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
                 <a ng-if="lender.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete lender</a>
                 <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
@@ -96,24 +49,24 @@
     </div>
 </form>
 
-    <div class="modal fade" id="al" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
+<div class="modal fade" id="lender-state-disclosure" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
                 <h4 class="modal-title">Apply Disclosure</h4>
-                <strong class="modal-subtitle">Mortgage Service Professionals</strong>
-              </div>
-              <div class="modal-body">
+                <strong class="modal-subtitle"ng-show="lender.name">[[ lender.name ]]</strong>
+            </div>
+            <div class="modal-body">
                 <div class="modal-box">
-                    <span class="label-controls">Lender disclosure applies to: LA</span>
-                    <textarea cols="30" rows="3" class="form-control"></textarea>
+                    <span class="label-controls">Lender disclosure applies to: [[ selectedDisclosure.state ]]</span>
+                    <textarea cols="30" rows="3" class="form-control" ng-model="selectedDisclosure.disclosure" ></textarea>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default btn-lg">Save</button>
-                <a href="#" class="delete">Delete</a>
-              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg" ng-click="confirmInModal($event);">Confirm</button>
+                <a ng-show="selectedDisclosure.filled" href="#" ng-click="deleteInModal($event);" class="delete">Delete</a>
             </div>
         </div>
     </div>
+</div>
