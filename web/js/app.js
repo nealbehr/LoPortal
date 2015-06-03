@@ -52,7 +52,17 @@
     .run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location', function($rootScope, TOKEN_KEY, $cookies, redirect, $location){
             $rootScope.debug = settings.debug;
 
+            $rootScope.history = [];
+
+            $rootScope.historyGet = function(){
+                return this.history.length > 1 ? this.history.splice(-2)[0] : "/";
+            }
+
             $rootScope.$on('$routeChangeStart', function(e, next, curr){
+                $rootScope.history.push($location.$$path);
+                if($rootScope.history.length > 3){
+                    $rootScope.history = $rootScope.history.slice(-2);
+                }
                 if ('access' in next && !next.access.isFree && $cookies[TOKEN_KEY] == undefined) {
                     redirect('/login', $location.url());
                 }
@@ -68,4 +78,5 @@
                 });
         }]
     );
+
 })(settings);
