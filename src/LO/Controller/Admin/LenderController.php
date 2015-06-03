@@ -8,6 +8,7 @@
 
 namespace LO\Controller\Admin;
 
+use Doctrine\ORM\EntityManager;
 use LO\Application;
 use LO\Form\LenderType;
 use LO\Model\Entity\Lender;
@@ -108,6 +109,7 @@ class LenderController extends Base
 
     public function addLenderAction(Application $app, Request $request)
     {
+        $em = $app->getEntityManager();
         try {
             $lender = new Lender();
             $requestLender = $request->request->get('lender');
@@ -122,18 +124,18 @@ class LenderController extends Base
                 $this->errors = $this->getFormErrors($form);
                 throw new BadRequestHttpException("Lender info isn't valid");
             }
-            $defaultDisclosure = new LenderDisclosure();
-            $defaultDisclosure->setState(LenderDisclosure::ALL_STATES);
-            $defaultDisclosure->setDisclosure($requestLender['disclosure']);
-            $defaultDisclosure->setLender($lender);
 
-            $em = $app->getEntityManager();
+            $em->beginTransaction();
+            $this->saleDisclosures($lender, $em, $requestLender);
+
             $em->persist($lender);
-            $em->persist($defaultDisclosure);
             $em->flush();
+            $em->commit();
             return $app->json(['id' => $lender->getId()]);
         } catch (HttpException $e) {
+            $em->rollback();
             $app->getMonolog()->addError($e);
+
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
         }
@@ -157,15 +159,24 @@ class LenderController extends Base
                 $this->errors = $this->getFormErrors($form);
                 throw new BadRequestHttpException("Lender info isn't valid");
             }
+
+            $em->beginTransaction();
+            $this->saleDisclosures($lender, $em, $requestLender);
             $em->persist($lender);
             $em->flush();
+            $em->commit();
         } catch (\Exception $e) {
+            $em->rollback();
             $app->getMonolog()->addError($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getCode());
         }
 
         return $app->json("success");
+    }
+
+    private function saveDisclosures() {
+
     }
 
     public function deleteAction(Application $app, $id)
@@ -232,5 +243,30 @@ class LenderController extends Base
     {
         $allowFields = ['id', 'name'];
         return 'l.' . (in_array($id, $allowFields) ? $id : self::DEFAULT_SORT_FIELD_NAME);
+    }
+
+    /**
+     * @param $lender
+     * @param $em
+     * @param $requestLender
+     */
+    private function saleDisclosures(Lender $lender, EntityManager $em, $requestLender)
+    {
+        foreach ($lender->getDisclosures() as $disclosure) {
+            $em->remove($disclosure);
+        }
+        $em->flush();
+        $disclosures = $requestLender['disclosures'];
+        foreach ($disclosures as $disclosure) {
+            $lenderDisclosure = new LenderDisclosure();
+            $lenderDisclosure->setLender($lender);
+            $lenderDisclosure->setState($disclosure['state']);
+            $text = $disclosure['disclosure'];
+            if($text == null) {
+                $text = '';
+            }
+            $lenderDisclosure->setDisclosure($text);
+            $em->persist($lenderDisclosure);
+        }
     }
 } 

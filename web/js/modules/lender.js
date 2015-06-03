@@ -261,7 +261,7 @@
         }
     }]);
 
-    lenderModule.directive('loAdminLenderInfo', ["redirect", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
+    lenderModule.directive('loAdminLenderInfo', ["redirect", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", "USA_STATES", function(redirect, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject, USA_STATES){
         return { restrict: 'EA',
             templateUrl: '/partials/admin.panel.lender.form',
             scope: {
@@ -272,6 +272,9 @@
                 scope.container = angular.element('#lenderMessage');
                 scope.lenderPicture = {};
                 scope.hideErrors = true;
+                scope.usaStates = [];
+                scope.selectedDisclosure = angular.copy(USA_STATES, scope.usaStates);
+                scope.allStatesDisclosure = null;
 
                 scope.$watch('lender.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.lender.id){
@@ -287,6 +290,9 @@
                         return;
                     }
 
+                    scope.initAllStatesDisclosure();
+                    scope.updateStates();
+
                     scope.lenderPicture = new pictureObject(
                         angular.element('#lenderPhoto'),
                         {container: $(".realtor-photo > img"), options: {
@@ -298,6 +304,81 @@
                         scope.lender
                     );
                 });
+
+                scope.initAllStatesDisclosure = function() {
+                    for (var i = 0; i <  scope.lender.disclosures.length; i++) {
+                        var disclosure = scope.lender.disclosures[i];
+                        if(disclosure.state == 'US') {
+                            scope.allStatesDisclosure = disclosure;
+                            break;
+                        }
+                    }
+                    if(scope.allStatesDisclosure == null) {
+                        scope.allStatesDisclosure = scope.newDisclosure('US');
+                        scope.lender.disclosures.push(scope.allStatesDisclosure);
+                    }
+                };
+
+                scope.newDisclosure = function(state) {
+                    return {
+                        id: null,
+                        state: state,
+                        disclosure: '',
+                        filled : false
+                    }
+                };
+
+                scope.updateStates = function() {
+                    for (var i = 0; i <  scope.usaStates.length; i++) {
+                        var state = scope.usaStates[i];
+                        state.filled = false;
+                        for (var j = 0; j <  scope.lender.disclosures.length; j++) {
+                            var disclosure = scope.lender.disclosures[j];
+                            if(disclosure.state == state.code) {
+                                state.filled = true;
+                                break;
+                            }
+                        }
+                    }
+                };
+
+                scope.showModal = function(e, state) {
+                    e.preventDefault();
+                    var found = false;
+                    for (var i = 0; i <  scope.lender.disclosures.length; i++) {
+                        var disclosure = scope.lender.disclosures[i];
+                        if(disclosure.state == state) {
+                            scope.selectedDisclosure = disclosure;
+                            scope.selectedDisclosure.filled = true;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) {
+                        scope.selectedDisclosure = scope.newDisclosure(state);
+                    }
+                    $('#lender-state-disclosure').modal('show');
+                };
+
+                scope.confirmInModal = function(e) {
+                    e.preventDefault();
+                    if(scope.selectedDisclosure.id == null) {
+                        scope.lender.disclosures.push(scope.selectedDisclosure);
+                        scope.updateStates();
+                    }
+                    $('#lender-state-disclosure').modal('hide');
+                };
+
+                scope.deleteInModal = function(e) {
+                    e.preventDefault();
+                    var index = scope.lender.disclosures.indexOf(scope.selectedDisclosure);
+                    if (index > -1) {
+                        scope.lender.disclosures.splice(index, 1);
+                    }
+                    scope.updateStates();
+                    $('#lender-state-disclosure').modal('hide');
+                };
+
 
                 scope.cancel = function(e){
                     e.preventDefault();
