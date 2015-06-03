@@ -82,11 +82,12 @@ class UserController {
             $app->getMonolog()->addWarning($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
-        } finally{
+        }finally{
             if($app->user()->getId() == $id && $user instanceof UserEntity){
                 $app->getEntityManager()->refresh($user);
             }
         }
+
         return $app->json('error');
     }
 }

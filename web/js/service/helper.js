@@ -111,6 +111,10 @@
                     );
                 });
 
+                scope.itsMe = function(){
+                    return this.officer.id && this.user.id == this.officer.id;
+                }
+
                 scope.cancel = function(e){
                     e.preventDefault();
                     history.back();
@@ -470,6 +474,22 @@
 
             }
         };
+    }]);
+
+    helperService.directive('compareTo', [function() {
+        return {
+            require: "ngModel",
+            restrict: '',
+            scope: {
+                otherModelValue: "=compareTo"
+            },
+            link: function (scope, element, attributes, ngModel) {
+
+                ngModel.$validators.compareTo = function (modelValue) {
+                    return modelValue == scope.otherModelValue;
+                };
+            }
+        }
     }]);
 
     helperService.directive('loNameValidator', [function(){

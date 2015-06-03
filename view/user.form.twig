@@ -17,6 +17,7 @@
                 <div ng-show="formUser.$submitted && formUser.sales_director_email.$error.email">Please input a valid email in Sales Manager Email field.</div>
                 <div ng-show="formUser.$submitted && formUser.sales_director_phone.$error.usaPhoneFormat">Please input a valid phone in Sales Manager Phone field.</div>
                 <div ng-show="formUser.address.$invalid">Address is invalid.</div>
+                <div ng-show="formUser.password_confirm.$error.compareTo">Passwords are not equal.</div>
             </div>
 
             <h2>[[ title ]]</h2>
@@ -94,10 +95,16 @@
                 <div class="input">
                     <input class="input-lg" type="number" placeholder="NMLS #" ng-model="officer.nmls" name="nmls" ng-model-options="{ updateOn: 'blur' }">
                 </div>
+                <div class="input" ng-if="itsMe()">
+                    <input class="input-lg" type="password" placeholder="New password" ng-model="officer.password.password" name="password">
+                    <div class="input">
+                        <input class="input-lg" type="password" placeholder="Confirm new password" compare-to="officer.password.password" ng-model="officer.password.password_confirm" name="password_confirm">
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
-                <a ng-if="officer.id && user.id != officer.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete user</a>
+                <a ng-if="!itsMe()" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete user</a>
                 <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>

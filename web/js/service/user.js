@@ -126,6 +126,10 @@
             this.email;
             this.nmls;
             this.picture;
+            this.password ={
+                password: null,
+                password_confirm: null
+            }
             this.roles = {};
             this.lender;
             this.switched = false;
