@@ -519,7 +519,7 @@
             restrict: 'EA',
             templateUrl: '/partials/session.messages',
             link: function(scope, elm, attrs, ctrl) {
-                scope.$on('showSessionMessage', function () {
+                scope.$on('renderSessionMesages', function () {
                     scope.messages = sessionMessages.get();
                 });
 
@@ -639,22 +639,7 @@
                 scope.cancel = function(e){
                     e.preventDefault();
 
-                    if(scope.request.property.state != settings.queue.state.draft){
-                        history.back();
-                        return;
-                    }
-
-                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
-
-                    waitingScreen.show();
-                    scope.requestDraft.remove()
-                        .success(function(){
-                            scope.oldRequest = angular.copy(scope.request);
-                            history.back();
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        });
+                    history.back();
                 };
 
                 scope.saveDraftOrApproved = function(e) {
@@ -1080,7 +1065,7 @@
         }
     }]);
 
-    helperService.factory("sessionMessages", [function() {
+    helperService.factory("sessionMessages", ['$rootScope', function($rootScope) {
         return new function() {
             console.log('create new sessionMessage');
             var TYPE_DANGER  = "danger";
@@ -1115,6 +1100,10 @@
                         messages = [];
                     }
                 }
+            }
+
+            this.render = function(){
+                $rootScope.$broadcast('renderSessionMesages');
             }
         }
     }]);

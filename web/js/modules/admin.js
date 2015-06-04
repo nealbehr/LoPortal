@@ -353,7 +353,7 @@
         }
     }]);
 
-    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", "waitingScreen", function($http, tableHeadCol, $location, ngDialog, renderMessage, waitingScreen){
+    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", "waitingScreen", 'sessionMessages', function($http, tableHeadCol, $location, ngDialog, renderMessage, waitingScreen, sessionMessages){
         return {
             restrict: 'EA',
             templateUrl: '/partials/admin.panel.requests',
@@ -424,7 +424,7 @@
 
                         if(data.value.state == "success"){
                             request.state = data.value.requestState;
-                            renderMessage("Approved", data.value.state, scope.messageContainer, scope);
+                            sessionMessages.addSuccess("Approved").render();
                             return;
                         }
 
@@ -450,7 +450,7 @@
 
                         if(data.value.state == "success"){
                             request.state = settings.queue.state.declined;
-                            renderMessage("Declined", data.value.state, scope.messageContainer, scope);
+                            sessionMessages.addSuccess("Declined").render();
                             return;
                         }
 

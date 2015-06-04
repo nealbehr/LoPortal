@@ -58,7 +58,7 @@
 
     }]);
 
-    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', function($scope, redirect, $http, data){
+    dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', 'createDraftRequestFlyer', 'waitingScreen', function($scope, redirect, $http, data, createDraftRequestFlyer, waitingScreen){
         $scope.dashboard    = data.dashboard;
 
         $scope.settingRows  = {}
@@ -84,23 +84,46 @@
 
         $scope.recalculateExpanded();
 
+        $scope.remove = function(target){
+            var requestDraft = (new createDraftRequestFlyer()).fill({id: target.data('id')});
+
+            waitingScreen.show();
+            requestDraft.remove()
+                .success(function(){
+                    $scope.dashboard[target.data('state')].splice([target.data('index')], 1).shift();
+                    $scope.recalculateExpanded();
+                })
+                .finally(function(){
+                    waitingScreen.hide();
+                })
+            ;
+        }
+
+        $scope.moveToDeclined = function(target){
+            $http.patch('/queue/cancel/' + target.data('id'), [])
+                .success(function(data){
+                    var element = $scope.dashboard[target.data('state')].splice([target.data('index')], 1).shift();
+                    element.state = settings.queue.state.declined;
+                    $scope.dashboard[settings.queue.state.declined].push(element);
+                    $scope.recalculateExpanded();
+                })
+                .error(function(data){
+                    console.log(data);
+                })
+            ;
+        }
+
         angular.element('.queue').click(function(e) {
             var target = angular.element(e.target);
 
             if(target.is('a.cancel')){
                 e.preventDefault();
 
-                $http.patch('/queue/cancel/' + target.data('id'), [])
-                    .success(function(data){
-                        var element = $scope.dashboard[target.data('state')].splice([target.data('index')], 1).shift();
-                        element.state = settings.queue.state.declined;
-                        $scope.dashboard[settings.queue.state.declined].push(element);
-                        $scope.recalculateExpanded();
-                    })
-                    .error(function(data){
-                        console.log(data);
-                    });
-
+                if(target.data('state') == settings.queue.state.draft){
+                    $scope.remove(target);// will removed
+                }else{
+                    $scope.moveToDeclined(target);//will moved
+                }
             } else if (target.is('a.delete')) {
                 e.preventDefault();
 
