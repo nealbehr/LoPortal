@@ -100,12 +100,12 @@
                     <div
                             ng-show="user.isAdmin()"
                             ng-class="{'input':true, 'input-percent':true, 'error': newFlyer.funded_percentage.$invalid }">
-                        <input class="input-lg" type="number" min="10" max="12.5" step="0.1" name="funded_percentage" placeholder="FirstREX Funded Percentage" ng-model="request.property.funded_percentage" required>
+                        <input class="input-lg" type="number" min="10" max="12.5" step="0.1" name="funded_percentage" placeholder="FirstREX Down Payment" ng-model="request.property.funded_percentage" required>
                     </div>
                     <div
                             ng-show="user.isAdmin()"
                             ng-class="{'input':true, 'input-percent':true, 'error': newFlyer.maximum_loan.$invalid }">
-                        <input class="input-lg" type="number" min="75" max="80" name="maximum_loan" placeholder="Maximum Loan Amount" ng-model="request.property.maximum_loan" required>
+                        <input class="input-lg" type="number" min="75" max="80" name="maximum_loan" placeholder="LTV" ng-model="request.property.maximum_loan" required>
                     </div>
 
                 </div>
