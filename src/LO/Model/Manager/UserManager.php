@@ -68,7 +68,7 @@ class UserManager extends Base{
 
         $userForm = $this->getApp()->getFormFactory()->create($userFormType, $user, $formOptions);
 
-        $userForm->handleRequest($request);
+        $userForm->submit($request);
 
         if(!$userForm->isValid()){
             return $this->getFormErrors($userForm);
