@@ -66,7 +66,7 @@ class UserController {
             }
 
             $userManager = new UserManager($app);
-            $userFormType = empty($request->request->get('user')['password']['password'])? new UserFormType($app->getS3()): new UserFormChangePassword($app->getS3());
+            $userFormType = empty($request->request->get('user')['password']['password'])? new UserFormType($app->getS3()): new UserFormChangePassword($app, $app->getS3());
             $errors = $userManager->validateAndSaveUser($request, $user, $userFormType);
 
             if(count($errors) > 0){
