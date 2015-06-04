@@ -11,6 +11,7 @@ namespace LO\Controller;
 
 use LO\Application;
 use LO\Exception\Http;
+use LO\Form\UserFormChangePassword;
 use LO\Form\UserFormType;
 use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,7 +66,7 @@ class UserController {
             }
 
             $userManager = new UserManager($app);
-            $userFormType = new UserFormType($app->getS3());
+            $userFormType = empty($request->request->get('user')['password']['password'])? new UserFormType($app->getS3()): new UserFormChangePassword($app->getS3());
             $errors = $userManager->validateAndSaveUser($request, $user, $userFormType);
 
             if(count($errors) > 0){
