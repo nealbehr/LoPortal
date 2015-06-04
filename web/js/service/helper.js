@@ -519,7 +519,7 @@
             restrict: 'EA',
             templateUrl: '/partials/session.messages',
             link: function(scope, elm, attrs, ctrl) {
-                scope.$on('showSessionMessage', function () {
+                scope.$on('renderSessionMesages', function () {
                     scope.messages = sessionMessages.get();
                 });
 
@@ -1065,7 +1065,7 @@
         }
     }]);
 
-    helperService.factory("sessionMessages", [function() {
+    helperService.factory("sessionMessages", ['$rootScope', function($rootScope) {
         return new function() {
             console.log('create new sessionMessage');
             var TYPE_DANGER  = "danger";
@@ -1100,6 +1100,10 @@
                         messages = [];
                     }
                 }
+            }
+
+            this.render = function(){
+                $rootScope.$broadcast('renderSessionMesages');
             }
         }
     }]);
