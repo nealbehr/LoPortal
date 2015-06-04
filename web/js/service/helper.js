@@ -639,22 +639,7 @@
                 scope.cancel = function(e){
                     e.preventDefault();
 
-                    if(scope.request.property.state != settings.queue.state.draft){
-                        history.back();
-                        return;
-                    }
-
-                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
-
-                    waitingScreen.show();
-                    scope.requestDraft.remove()
-                        .success(function(){
-                            scope.oldRequest = angular.copy(scope.request);
-                            history.back();
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        });
+                    history.back();
                 };
 
                 scope.saveDraftOrApproved = function(e) {
