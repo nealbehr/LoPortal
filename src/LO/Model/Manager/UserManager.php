@@ -55,11 +55,11 @@ class UserManager extends Base{
      * @param UserFormType $userForm
      * @return array|bool
      */
-    public function validateAndSaveUser(Request $request, User $user, UserFormType $userFormType){
+    public function validateAndSaveUser(Request $request, User $user, UserFormType $userFormType, $method = 'PUT'){
         $requestUser = $request->request->get('user');
         $formOptions = [
             'validation_groups' => ['Default'],
-            'method'            => 'PUT',
+            'method'            => $method,
         ];
 
         if(!$user || (isset($requestUser['email']) && $user->getEmail() != $requestUser['email'])){//remove unique constrain
@@ -68,7 +68,7 @@ class UserManager extends Base{
 
         $userForm = $this->getApp()->getFormFactory()->create($userFormType, $user, $formOptions);
 
-        $userForm->submit($request);
+        $userForm->handleRequest($request);
 
         if(!$userForm->isValid()){
             return $this->getFormErrors($userForm);

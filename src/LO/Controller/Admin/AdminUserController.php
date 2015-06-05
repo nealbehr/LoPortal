@@ -80,7 +80,7 @@ class AdminUserController extends Base {
                  ->setPassword($app->encodePassword($user, $password));
 
             $this->getRequestLender($app, $request, $user);
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminFormType($app->getS3()));
+            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminFormType($app->getS3()), 'POST');
 
             if(count($errors) > 0){
                 $this->setErrorsForm($errors);
