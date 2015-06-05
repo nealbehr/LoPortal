@@ -127,9 +127,9 @@ class AdminUserController extends Base {
 
     public function deleteAction(Application $app, $id){
         try {
-            $app->getEntityManager()->remove(
-                $this->getUser($app, $id, "You can not remove self.")
-            );
+            $user = $this->getUser($app, $id, 'You can not remove self.');
+            $user->setDeleted('1')->setEmail($user->getEmail().'-'.strtotime('now').'-deleted');
+            $app->getEntityManager()->persist($user);
             $app->getEntityManager()->flush();
 
             return $app->json('success');
@@ -192,6 +192,7 @@ class AdminUserController extends Base {
             ->select('u')
             ->from(EntityUser::class, 'u')
             ->where('u.state = :active')
+            ->andWhere("u.deleted = '0'")
             ->setMaxResults(static::USER_LIMIT)
             ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION))
             ->setParameter('active', EntityUser::STATE_ACTIVE)
