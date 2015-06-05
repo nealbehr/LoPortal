@@ -43,6 +43,11 @@ class User extends Base implements UserInterface{
     protected $id;
 
     /**
+     * @Column(type="string")
+     */
+    protected $deleted;
+
+    /**
      * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})
      **/
     protected $address;
@@ -166,6 +171,16 @@ class User extends Base implements UserInterface{
         parent::__construct();
         $this->salt   = $this->generateSalt();
         $this->state  = self::STATE_ACTIVE;
+    }
+
+    public function getDeleted() {
+        return $this->deleted;
+    }
+
+    public function setDeleted($param) {
+        $this->deleted = $param;
+
+        return $this;
     }
 
     /**

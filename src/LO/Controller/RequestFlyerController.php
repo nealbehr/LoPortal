@@ -134,8 +134,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 ' . $loanOfficer->getEmail() . '<br />
                 ' . $lender->getName() . '<br />
                 ' . preg_replace('/,/', '<br>', $loanOfficer->getAddress()->getFormattedAddress(), 1) . '<br />
-                NMLS #' . $loanOfficer->getNmls() . '<br />
-                CA BRE #',
+                NMLS #' . $loanOfficer->getNmls(),
             'agencyCard1' => $lender->getPicture(),
             'lenderDisclosure' => $lender->getDisclosureForState($loanOfficer->getAddress()->getState()),
             'photoCard2' => $realtorPhoto,
