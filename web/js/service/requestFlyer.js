@@ -189,6 +189,11 @@
                         continue;
                     }
 
+                    if(i == "listing_price"){
+                        result[i] = object[i].replace(/(\$|,)/, "");
+                        continue;
+                    }
+
                     result[i] = (typeof object[i] === "object" && object[i] !== null)
                                         ? this.getFields4Save(object[i])
                                         : object[i];

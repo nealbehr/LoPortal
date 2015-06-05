@@ -58,6 +58,7 @@
                     <div ng-show="newFlyer.address.$error.address_components">The Property address is invalid.</div>
                     <!-- Listing price -->
                     <div ng-show="newFlyer.listing_price.$error.required">The Listing price is required.</div>
+                    <div ng-show="newFlyer.listing_price.$error.pattern">The Listing price should look like $100,0000,000.</div>
                     <!-- realtor photo -->
                     <div ng-show="newFlyer.realtorfileimage.$error.required">The Realtor image is required.</div>
                     <!-- realtor first name -->
@@ -95,7 +96,7 @@
                         <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
                     </div>
                     <div ng-class="{'input':true, 'input-price':true, 'error': newFlyer.listing_price.$touched && newFlyer.listing_price.$invalid }">
-                        <input class="input-lg" type="number" min="0" max="999999999" step="1000" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required>
+                        <input class="input-lg" type="text" ng-pattern="/^\$?\d+(,\d+)*$/" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required>
                     </div>
                     <div
                             ng-show="user.isAdmin()"
