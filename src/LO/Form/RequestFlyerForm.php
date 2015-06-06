@@ -29,9 +29,10 @@ class RequestFlyerForm extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
-            ->add('listing_price', 'number', array(
-                    'precision' => 0
-                )
+            ->add('listing_price', 'number', [
+                    'precision' => 0,
+                    'empty_data' => '0',
+                ]
             )
             ->add('funded_percentage', 'percent', array(
                 'precision' => 2,
