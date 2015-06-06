@@ -47,7 +47,8 @@ class RequestFlyerBase extends RequestBaseController {
             $queue->setUser($app->user());
         }
         $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, $formOptions);
-        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
+        $queueForm->handleRequest($request);
+//        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
 
         if(!$queueForm->isValid()){
             $this->getMessage()->replace('property', $this->getFormErrors($queueForm));
@@ -62,7 +63,8 @@ class RequestFlyerBase extends RequestBaseController {
         $requestFlyer->setQueue($queue);
 
         $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer, $formOptions);
-        $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));
+        $formRequestFlyer->handleRequest($request);
+//        $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));
 
         if(!$formRequestFlyer->isValid()){
             $this->getMessage()->replace('property', $this->getFormErrors($form));

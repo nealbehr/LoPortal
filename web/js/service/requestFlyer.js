@@ -207,7 +207,9 @@
                     }
 
                     if(i == "listing_price" && null != object[i]){
-                        result[i] = object[i].replace(/(\$|,)/, "");
+                        console.log(i)
+                        console.log(object[i])
+                        result[i] = (object[i] + "").replace(/(\$|,)/, "");
                         continue;
                     }
 

@@ -59,6 +59,7 @@ class RealtyCompanyType extends AbstractType {
         $resolver->setDefaults([
             'data_class' => RealtyCompany::class,
             'csrf_protection' => false,
+            'allow_extra_fields' => true,
             'validation_groups' => ['Default'],
         ]);
     }
