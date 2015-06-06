@@ -45,7 +45,7 @@ class User extends Base implements UserInterface{
     /**
      * @Column(type="string")
      */
-    protected $deleted;
+    protected $deleted = '0';
 
     /**
      * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})
