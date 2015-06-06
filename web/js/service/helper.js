@@ -575,7 +575,7 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", "createProfileUser", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage, createProfileUser){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", "createProfileUser", "createDraftFromPropertyApproval", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage, createProfileUser, createDraftFromPropertyApproval){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -649,7 +649,11 @@
                         scope.request.property.state = settings.queue.state.draft;
                     }
 
-                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
+                    scope.requestDraft = this.request instanceof createFromPropertyApproval
+                                                        ? (new createDraftFromPropertyApproval())
+                                                        : (new createDraftRequestFlyer());
+
+                    scope.requestDraft.fill(scope.request.getFields4Save());
                     scope.realtorPicture.setObjectImage(scope.requestDraft.realtor);
                     scope.propertyPicture.setObjectImage(scope.requestDraft.property);
 

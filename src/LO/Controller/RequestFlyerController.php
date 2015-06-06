@@ -303,6 +303,49 @@ class RequestFlyerController extends RequestFlyerBase {
         return $app->json("success");
     }
 
+    public function draftFromFlyerUpdateAction(Application $app, Request $request, $id){
+        try {
+            $app->getEntityManager()->beginTransaction();
+
+            /** @var Queue $queue */
+            $queue = (new QueueManager($app))->getByIdWithUser($id);
+
+            if(!$queue){
+                throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)){
+                throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
+            }
+
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
+            $firstRexForm->handleRequest($request);
+
+            $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_DRAFT)->setAdditionalInfo($firstRexForm->getData());
+
+            $this->saveFlyer(
+                $app,
+                $request,
+                new Realtor(),
+                $queue,
+                new RequestFlyer(),
+                [
+                    'validation_groups' => ["Default", "draft"],
+                    'method' => 'PUT',
+                ]
+            );
+
+            $app->getEntityManager()->commit();
+        }catch (\Exception $e){
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->getMessage()->replace('message', $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.');
+            return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $app->json("success");
+    }
+
     public function createFromApprovalRequestAction(Application $app, Request $request, $id){
         try {
             $app->getEntityManager()->beginTransaction();
@@ -311,7 +354,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $queue = (new QueueManager($app))->getByIdWithUser($id);
 
             if(!$queue){
-                throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
+                throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
             if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)){

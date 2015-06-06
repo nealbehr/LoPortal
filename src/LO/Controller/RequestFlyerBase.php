@@ -84,7 +84,7 @@ class RequestFlyerBase extends RequestBaseController {
         /** @var Queue $queue */
         $queue = (new QueueManager($app))->getByIdWithRequestFlyeAndrUser($id);
         if(!$queue){
-            throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
+            throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
         }
 
         if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getSecurity()->isGranted(User::ROLE_ADMIN)) {
