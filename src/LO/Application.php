@@ -259,7 +259,7 @@ class Application extends \Silex\Application{
     /**
      * @return EntityManager
      */
-    public final function getEntityManager() {
+    public function getEntityManager() {
         return $this['orm.em'];
     }
 

@@ -18,9 +18,9 @@ use Symfony\Component\HttpFoundation\Response;
 class QueueController {
 
     public function cancelAction(Application $app, $id){
-
         /** @var Queue $queue */
         $queue = $app->getEntityManager()->getRepository(Queue::class)->findOneBy(['id' => $id, 'user_id' => $app->user()->getId()]);
+
         if(!$queue){
             throw new Http(sprintf('Queue \'%s\' not found', $id), Response::HTTP_BAD_REQUEST);
         }
