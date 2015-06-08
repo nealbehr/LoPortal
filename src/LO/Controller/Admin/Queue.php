@@ -18,7 +18,6 @@ use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerDenial;
 use LO\Common\Email\RequestApprove;
 use LO\Common\Email\RequestDecline;
-use LO\Common\UploadS3\Pdf;
 use LO\Model\Entity\Queue as EntityQueue;
 use LO\Model\Entity\Realtor;
 use LO\Traits\GetEntityErrors;
