@@ -21,7 +21,6 @@ use LO\Common\Email\RequestDecline;
 use LO\Common\UploadS3\Pdf;
 use LO\Model\Entity\Queue as EntityQueue;
 use LO\Model\Entity\Realtor;
-use LO\Model\Entity\RequestFlyer;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
@@ -135,13 +134,13 @@ class Queue extends Base{
             $app->getEntityManager()->flush();
 
             /** @var Realtor $realtor */
-            $realtor = $queue->getFlyer()->getRealtor();
+            $realtor = $queue->getRealtor();
 
             if(!$realtor){
-                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found for flyer .", $queue->getFlyer()->getId()));
+                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found for flyer .", $queue->getId()));
             }
 
-            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue->getFlyer(), $request->getSchemeAndHttpHost())))
+            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue, $request->getSchemeAndHttpHost())))
                 ->send();
 
 
@@ -204,12 +203,12 @@ class Queue extends Base{
             return new PropertyApprovalDenial($email);
         }
 
-        /** @var RequestFlyer $requestFlyer */
-        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::class)->findOneBy(['queue_id' => $queue->getId()]);
+        /** @var EntityQueue $queue */
+        $queue = $app->getEntityManager()->getRepository(EntityQueue::class)->findOneBy(['queue_id' => $queue->getId()]);
         /** @var Realtor $realtor */
-        $realtor = $requestFlyer->getRealtor();
+        $realtor = $queue->getRealtor();
 
-        return new RequestFlyerDenial($realtor, $requestFlyer, $email);
+        return new RequestFlyerDenial($realtor, $queue, $email);
     }
 
     /**

@@ -36,7 +36,7 @@ class AdminProvider implements ControllerProviderInterface {
         });
 
         $app['admin.request.flyer.controller'] = $app->share(function() use ($app) {
-            return new Admin\RequestFlyer();
+            return new Admin\RequestFlyerController();
         });
 
         /** @var ControllerCollection $controllers */

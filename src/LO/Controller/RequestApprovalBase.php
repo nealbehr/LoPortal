@@ -11,7 +11,7 @@ namespace LO\Controller;
 
 use LO\Application;
 use LO\Exception\Http;
-use LO\Form\QueueForm;
+use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
 use LO\Model\Manager\QueueManager;
 use LO\Traits\GetFormErrors;
@@ -42,7 +42,7 @@ class RequestApprovalBase extends RequestBaseController{
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     protected function getResponse(Application $app, Queue $queue){
-        $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
+        $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
 
         return $app->json([
             'property' => $this->getFormFieldsAsArray($queueForm),

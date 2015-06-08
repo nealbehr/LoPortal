@@ -9,17 +9,17 @@
 namespace LO\Common\Email\Request;
 
 
+use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;
-use LO\Model\Entity\RequestFlyer;
 
 class RequestFlyerDenial implements RequestInterface{
     private $realtor;
-    private $requestFlyer;
+    private $queue;
     private $email;
 
-    public function __construct(Realtor $realtor, RequestFlyer $requestFlyer, $email) {
+    public function __construct(Realtor $realtor, Queue $queue, $email) {
         $this->realtor      = $realtor;
-        $this->requestFlyer = $requestFlyer;
+        $this->queue        = $queue;
         $this->email        = $email;
     }
 
@@ -34,7 +34,7 @@ class RequestFlyerDenial implements RequestInterface{
     public function getTemplateVars(){
         return [
             'realtor'      => $this->realtor,
-            'requestFlyer' => $this->requestFlyer,
+            'queue'        => $this->queue,
             'email'        => $this->email,
         ];
     }

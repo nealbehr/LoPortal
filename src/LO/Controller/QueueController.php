@@ -11,7 +11,6 @@ namespace LO\Controller;
 use LO\Application;
 use LO\Exception\Http;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\RequestFlyer;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,16 +50,15 @@ class QueueController {
             throw new Http(sprintf('Queue \'%s\' not found', $id), Response::HTTP_BAD_REQUEST);
         }
 
-        $requestFlyer = $em->getRepository(RequestFlyer::class)->findOneBy(['queue_id' => $id]);
+        $queue = $em->getRepository(Queue::class)->findOneBy(['id' => $id]);
         try {
             $em->beginTransaction();
-            if($requestFlyer) {
-                /* @var RequestFlyer $requestFlyer */
-                $realtor = $requestFlyer->getRealtor();
+            if($queue) {
+                /* @var Queue $queue */
+                $realtor = $queue->getRealtor();
                 if($realtor) {
                     $em->remove($realtor);
                 }
-                $em->remove($requestFlyer);
             }
             $em->remove($queue);
             $em->flush();

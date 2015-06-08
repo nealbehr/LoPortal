@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: samoilenko
- * Date: 3/25/15
- * Time: 3:17 PM
- */
-
 namespace LO\Model\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
@@ -20,7 +13,10 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * @Entity
  * @Table(name="queue")
  */
-class Queue extends Base{
+class Queue extends Base {
+
+    const DEFAULT_FUNDED_PERCENTAGE = 10;
+    const DEFAULT_MAXIMUM_LOAN = 80;
 
     const STATE_LISTING_FLYER_PENDING = 1;
     const STATE_REQUESTED   = 2;
@@ -92,14 +88,45 @@ class Queue extends Base{
     private $user;
 
     /**
-     * var RequestFlyer
-     * @OneToOne(targetEntity="RequestFlyer", mappedBy="queue")
+     * @Column(type="float")
+     * @Assert\GreaterThanOrEqual(value = 0, message = "Listing price should not be blank.", groups = {"main"})
      */
-    private $flyer;
+    protected $listing_price;
+
+    /**
+     * @Column(type="float")
+     * @Assert\NotBlank(message = "FirstREX Funded Percentage should not be blank.", groups = {"main"})
+     */
+    protected $funded_percentage;
+
+    /**
+     * @Column(type="float")
+     * @Assert\NotBlank(message = "Maximum Loan Amount should not be blank.", groups = {"main"})
+     */
+    protected $maximum_loan;
+
+    /**
+     * @Column(type="string")
+     * @Assert\NotBlank(message = "Photo id should not be blank.", groups = {"main"})
+     * @Assert\Length(
+     *              max = 65536,
+     *              maxMessage = "Photo url cannot be longer than {{ limit }} characters"
+     * )
+     */
+    protected $photo;
+
+    /**
+     * @OneToOne(targetEntity="Realtor", fetch="LAZY")
+     * @JoinColumn(name="realtor_id", referencedColumnName="id")
+     **/
+    private $realtor;
 
     public function __construct(){
         parent::__construct();
 
+        $this->funded_percentage = self::DEFAULT_FUNDED_PERCENTAGE;
+        $this->maximum_loan = self::DEFAULT_MAXIMUM_LOAN;
+        $this->photo = '';
         $this->state = self::STATE_REQUESTED;
     }
 
@@ -172,21 +199,6 @@ class Queue extends Base{
     }
 
     /**
-     * @return RequestFlyer
-     */
-    public function getFlyer(){
-        return $this->flyer;
-    }
-
-    /**
-     * @param mixed $flyer
-     */
-    public function setFlyer($flyer)
-    {
-        $this->flyer = $flyer;
-    }
-
-    /**
      * @return User
      */
     public function getUser(){
@@ -204,11 +216,91 @@ class Queue extends Base{
     }
 
     /**
+     * @return mixed
+     */
+    public function getFundedPercentage()
+    {
+        return $this->funded_percentage;
+    }
+
+    /**
+     * @param mixed $funded_percentage
+     */
+    public function setFundedPercentage($funded_percentage)
+    {
+        $this->funded_percentage = $funded_percentage;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getListingPrice()
+    {
+        return $this->listing_price;
+    }
+
+    /**
+     * @param mixed $listing_price
+     */
+    public function setListingPrice($listing_price)
+    {
+        $this->listing_price = $listing_price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaximumLoan()
+    {
+        return $this->maximum_loan;
+    }
+
+    /**
+     * @param mixed $maximum_loan
+     */
+    public function setMaximumLoan($maximum_loan)
+    {
+        $this->maximum_loan = $maximum_loan;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param mixed $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRealtor()
+    {
+        return $this->realtor;
+    }
+
+    /**
+     * @param mixed $realtor
+     */
+    public function setRealtor($realtor)
+    {
+        $this->realtor = $realtor;
+    }
+
+    /**
      * @Assert\Callback(groups = {"main"})
      */
     public function isStateValid(ExecutionContextInterface $context){
         $allowedStates = static::TYPE_FLYER == $this->request_type
-            ? RequestFlyer::getAllowedStates()
+            ? Queue::getAllowedStates()
             : RequestApproval::getAllowedStates();
 /** @todo поиграться повесь колбек на само поле state */
         if (!in_array($this->getState(), $allowedStates)) {
@@ -294,5 +386,14 @@ class Queue extends Base{
         }
 
         return $states;
+    }
+
+    public static function getAllowedStates(){
+        return [
+            Queue::STATE_REQUESTED,
+            Queue::STATE_APPROVED,
+            Queue::STATE_DECLINED,
+            Queue::STATE_LISTING_FLYER_PENDING,
+        ];
     }
 } 

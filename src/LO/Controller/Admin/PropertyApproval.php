@@ -11,7 +11,7 @@ namespace LO\Controller\Admin;
 use LO\Application;
 use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
-use LO\Form\QueueForm;
+use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,7 +52,7 @@ class PropertyApproval extends RequestApprovalBase{
             $queue->set1RexId($id)
                   ->setAdditionalInfo($firstRexForm->getData());
 
-            $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, ["method" => "PUT"]);
+            $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue, ["method" => "PUT"]);
 //            $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
             $queueForm->handleRequest($request);
 

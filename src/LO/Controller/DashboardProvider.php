@@ -24,7 +24,7 @@ class DashboardProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
 
         $app['dashboard.controller'] = $app->share(function() use ($app) {
-            return new Dashboard();
+            return new DashboardController();
         });
 
         /** @var ControllerCollection $controllers */

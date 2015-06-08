@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use LO\Controller\RequestFlyerBase;
 use Symfony\Component\HttpFoundation\Response;
 
-class RequestFlyer extends RequestFlyerBase {
+class RequestFlyerController extends RequestFlyerBase {
 
     public function updateAction(Application $app, Request $request, $id){
         try {
