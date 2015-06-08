@@ -16,9 +16,7 @@ use LO\Common\Email\Request\PropertyApprovalDenial;
 use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerDenial;
-use LO\Common\Email\RequestApprove;
-use LO\Common\Email\RequestDecline;
-use LO\Model\Entity\Queue as EntityQueue;
+use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,7 +26,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Common\Email\Request\RequestInterface;
 
-class Queue extends Base{
+class QueueController extends Base{
     use GetEntityErrors;
     const QUEUE_LIMIT = 20;
 
@@ -53,7 +51,7 @@ class Queue extends Base{
 
         $items = [];
         $ids = [];
-        /** @var EntityQueue $item */
+        /** @var Queue $item */
         foreach($pagination->getItems() as $item){
             $items[] = $item->toArray();
             $ids[] = $item->getId();
@@ -78,14 +76,14 @@ class Queue extends Base{
     public function declineAction(Application $app, Request $request, $id){
         try {
             $app->getEntityManager()->beginTransaction();
-            /** @var EntityQueue $queue */
+            /** @var Queue $queue */
             $queue = $this->findQueueById($app, $id);
 
             if(null === $queue){
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(EntityQueue::STATE_DECLINED)
+            $queue->setState(Queue::STATE_DECLINED)
                   ->setReason($request->request->get('reason'));
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
@@ -118,7 +116,7 @@ class Queue extends Base{
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(EntityQueue::STATE_APPROVED);
+            $queue->setState(Queue::STATE_APPROVED);
             $queue->setReason($request->request->get('reason'));
 
             $errors = $app->getValidator()->validate($queue);
@@ -163,7 +161,7 @@ class Queue extends Base{
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(EntityQueue::STATE_APPROVED)
+            $queue->setState(Queue::STATE_APPROVED)
                   ->setReason($request->request->get('reason'));
             $errors = $app->getValidator()->validate($queue);
 
@@ -193,17 +191,17 @@ class Queue extends Base{
 
     /**
      * @param Application $app
-     * @param EntityQueue $queue
+     * @param Queue $queue
      * @return RequestInterface
      */
-    private function getEmailObject(Application $app, EntityQueue $queue){
+    private function getEmailObject(Application $app, Queue $queue){
         $email = $app->getConfigByName('firstrex', 'email', 'teplate', 'denial');
-        if($queue->getType() == EntityQueue::TYPE_PROPERTY_APPROVAL){
+        if($queue->getType() == Queue::TYPE_PROPERTY_APPROVAL){
             return new PropertyApprovalDenial($email);
         }
 
-        /** @var EntityQueue $queue */
-        $queue = $app->getEntityManager()->getRepository(EntityQueue::class)->findOneBy(['queue_id' => $queue->getId()]);
+        /** @var Queue $queue */
+        $queue = $app->getEntityManager()->getRepository(Queue::class)->findOneBy(['id' => $queue->getId()]);
         /** @var Realtor $realtor */
         $realtor = $queue->getRealtor();
 
@@ -213,13 +211,13 @@ class Queue extends Base{
     /**
      * @param Application $app
      * @param $id
-     * @return EntityQueue
+     * @return Queue
      */
     private function findQueueWithRequestFlyerById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
             ->select('q, f, u, r')
-            ->from(EntityQueue::class, 'q')
+            ->from(Queue::class, 'q')
             ->join('q.flyer', 'f')
             ->join('f.realtor', 'r')
             ->join('q.user', 'u')
@@ -233,13 +231,13 @@ class Queue extends Base{
     /**
      * @param Application $app
      * @param $id
-     * @return EntityQueue
+     * @return Queue
      */
     private function findQueueById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
             ->select('q, u')
-            ->from(EntityQueue::class, 'q')
+            ->from(Queue::class, 'q')
             ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)
@@ -254,13 +252,13 @@ class Queue extends Base{
         }
         $app->getEntityManager()->getConfiguration()->addCustomHydrationMode('Duplicates', '\LO\Bridge\Doctrine\Hydrator\Duplicates');
         $expr = $app->getEntityManager()->createQueryBuilder()->expr();
-        return $app->getEntityManager()->getRepository(EntityQueue::class)->createQueryBuilder('q1')
+        return $app->getEntityManager()->getRepository(Queue::class)->createQueryBuilder('q1')
             ->select('q1.id, q2.id, q2.created_at')
-            ->leftJoin(EntityQueue::class, 'q2', Expr\Join::WITH, "q1.address = q2.address")
+            ->leftJoin(Queue::class, 'q2', Expr\Join::WITH, "q1.address = q2.address")
             ->where('q1.id <> q2.id')
             ->andWhere('q1.created_at > q2.created_at')
-            ->andWhere($expr->notIn('q1.state', [EntityQueue::STATE_DRAFT]))
-            ->andWhere($expr->notIn('q2.state', [EntityQueue::STATE_DRAFT]))
+            ->andWhere($expr->notIn('q1.state', [Queue::STATE_DRAFT]))
+            ->andWhere($expr->notIn('q2.state', [Queue::STATE_DRAFT]))
             ->getQuery()
             ->getResult('Duplicates');
     }
@@ -269,8 +267,8 @@ class Queue extends Base{
         $expr = $app->getEntityManager()->createQueryBuilder()->expr();
         $q = $app->getEntityManager()->createQueryBuilder()
             ->select('q1')
-            ->from(EntityQueue::class, 'q1')
-            ->where($expr->notIn('q1.state', [EntityQueue::STATE_DRAFT]))
+            ->from(Queue::class, 'q1')
+            ->where($expr->notIn('q1.state', [Queue::STATE_DRAFT]))
             ->setMaxResults(static::QUEUE_LIMIT)
             ->orderBy($this->getOrderKey($request->query->get(self::KEY_SORT)), $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION))
         ;
