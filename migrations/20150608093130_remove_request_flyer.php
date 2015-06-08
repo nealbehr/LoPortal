@@ -1,6 +1,5 @@
 <?php
 
-use Phinx\Db\Adapter\MysqlAdapter;
 use Phinx\Migration\AbstractMigration;
 
 class RemoveRequestFlyer extends AbstractMigration
@@ -16,7 +15,7 @@ class RemoveRequestFlyer extends AbstractMigration
     public function change()
     {
         $table = $this->table('queue');
-        $table->addColumn('realtor_id', 'integer', array('limit' => MysqlAdapter::INT_REGULAR, 'signed' => false, 'after' => 'state', 'null'=> true));
+        $table->addColumn('realtor_id', 'integer', array('signed' => false, 'after' => 'state', 'null'=> true));
         $table->addColumn('listing_price', 'decimal', array('precision' => 15, 'scale' => 0, 'default' => 0, 'after' => 'realtor_id' ));
         $table->addColumn('funded_percentage', 'decimal', array('precision' => 4, 'scale' => 2, 'after' => 'listing_price', 'default' => 10.00));
         $table->addColumn('maximum_loan', 'decimal', array('precision' => 4, 'scale' => 2, 'after' => 'funded_percentage', 'default' => 80.00));
