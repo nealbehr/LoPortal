@@ -332,4 +332,8 @@ class Application extends \Silex\Application{
     public function getSecurity(){
         return $this['security'];
     }
+
+    public function isDebug(){
+        return isset($this['debug']) && $this['debug'];
+    }
 }

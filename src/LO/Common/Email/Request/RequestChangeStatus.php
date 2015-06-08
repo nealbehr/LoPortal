@@ -33,6 +33,14 @@ class RequestChangeStatus extends Base{
         $this->setDestinationList(array_merge($destinationList, $app->getConfigByName('firstrex', 'additional.emails')));
     }
 
+    public function send(){
+        if($this->app->isDebug()){
+            return;
+        }
+
+        parent::send();
+    }
+
     protected function getSubject(){
         return $this->request->getSubject();
     }
