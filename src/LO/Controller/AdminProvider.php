@@ -20,7 +20,7 @@ class AdminProvider implements ControllerProviderInterface {
         });
 
         $app['admin.queue.controller'] = $app->share(function() use ($app) {
-            return new Admin\Queue();
+            return new Admin\QueueController();
         });
 
         $app['admin.lender.controller'] = $app->share(function() use ($app) {

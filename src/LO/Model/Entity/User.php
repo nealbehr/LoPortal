@@ -108,26 +108,7 @@ class User extends Base implements UserInterface{
      * @Column(type="string", length=100)
      */
     protected $title;
-    /**
-     * @Column(type="string", length=255)
-     */
-    protected $account_name;
-    /**
-     * @Column(type="string", length=255)
-     */
-    protected $street;
-    /**
-     * @Column(type="string", length=255)
-     */
-    protected $city;
-    /**
-     * @Column(type="string", length=255)
-     */
-    protected $province;
-    /**
-     * @Column(type="integer")
-     */
-    protected $zip_code;
+
     /**
      * @Column(type="string", length=100)
      */
@@ -140,14 +121,6 @@ class User extends Base implements UserInterface{
      * @Column(type="integer")
      */
     protected $nmls;
-    /**
-     * @Column(type="string", length=10)
-     */
-    protected $pmp;
-    /**
-     * @Column(type="string", length=20)
-     */
-    protected $territory;
 
     /**
      * @Column(type="string", length=255)
@@ -440,56 +413,6 @@ class User extends Base implements UserInterface{
      * @param $param
      * @return $this
      */
-    public function setAccountName($param){
-        $this->account_name = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setStreet($param){
-        $this->street = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setCity($param){
-        $this->city = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setProvince($param){
-        $this->province = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setZipCode($param){
-        $this->zip_code = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
     public function setPhone($param){
         $this->phone = $param;
 
@@ -512,26 +435,6 @@ class User extends Base implements UserInterface{
      */
     public function setNmls($param){
         $this->nmls = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setPmp($param){
-        $this->pmp = $param;
-
-        return $this;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setTerritory($param){
-        $this->territory = $param;
 
         return $this;
     }

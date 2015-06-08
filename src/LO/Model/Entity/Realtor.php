@@ -45,7 +45,6 @@ class Realtor extends Base {
 
     /**
      * @Column(type="string", length=65536)
-     * @Assert\NotBlank(message = "Photo should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 65536,
      *              maxMessage = "photo url cannot be longer than {{ limit }} characters"

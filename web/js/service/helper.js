@@ -700,7 +700,10 @@
                 scope.saveRequest = function(request){
                     waitingScreen.show();
                     scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
-                    scope.realtorPicture.prepareImage(800, 400, 600, 300);
+                    if (request.realtor.hasOwnProperty('photo') && request.realtor.photo !== null) {
+                        scope.realtorPicture.prepareImage(800, 400, 600, 300);
+                    }
+
 
                     request.save()
                         .catch(function(e){
