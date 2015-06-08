@@ -1,4 +1,8 @@
 {
+    "require-dev": {
+        "phpunit/phpunit": "4.*",
+        "mockery/mockery": "@stable"
+    },
     "require": {
         "php": ">=5.5",
         "silex/silex": "~1.2",
@@ -19,7 +23,7 @@
     },
     "autoload": {
         "psr-0": {
-            "LO" : ["src/", "tests/"]
+            "LO" : ["src/", "tests/src"]
         }
     },
     "config": {

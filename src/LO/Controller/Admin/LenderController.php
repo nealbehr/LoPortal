@@ -118,7 +118,7 @@ class LenderController extends Base
                 'validation_groups' => ['Default', 'New'],
             ];
             $form = $app->getFormFactory()->create($lenderType, $lender, $formOptions);
-            $form->submit($this->removeExtraFields($requestLender, $form));
+//            $form->submit($this->removeExtraFields($requestLender, $form));
 
             if (!$form->isValid()) {
                 $this->errors = $this->getFormErrors($form);
@@ -153,7 +153,8 @@ class LenderController extends Base
                 'validation_groups' => ['Default'],
             ];
             $form = $app->getFormFactory()->create($lenderType, $lender, $formOptions);
-            $form->submit($this->removeExtraFields($requestLender, $form));
+            $form->handleRequest($request);
+//            $form->submit($this->removeExtraFields($requestLender, $form));
 
             if (!$form->isValid()) {
                 $this->errors = $this->getFormErrors($form);

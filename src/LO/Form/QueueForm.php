@@ -30,6 +30,7 @@ class QueueForm extends AbstractType {
         $resolver->setDefaults([
             'data_class'        => Queue::class,
             'csrf_protection'   => false,
+            'allow_extra_fields' => true,
             'validation_groups' => ['Default'],
         ]);
     }

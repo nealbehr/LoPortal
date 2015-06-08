@@ -53,8 +53,8 @@ class PropertyApproval extends RequestApprovalBase{
                   ->setAdditionalInfo($firstRexForm->getData());
 
             $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, ["method" => "PUT"]);
-            $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
-//            $queueForm->handleRequest($request);
+//            $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
+            $queueForm->handleRequest($request);
 
             if(!$queueForm->isValid()){
                 $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);

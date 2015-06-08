@@ -28,7 +28,7 @@ class RequestFlyer extends Base {
 
     /**
      * @Column(type="float")
-     * @Assert\NotBlank(message = "Listing price should not be blank.", groups = {"main"})
+     * @Assert\GreaterThanOrEqual(value = 0, message = "Listing price should not be blank.", groups = {"main"})
      */
     protected $listing_price;
 

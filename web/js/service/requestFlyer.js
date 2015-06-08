@@ -29,6 +29,23 @@
         return fromPropertyApproval;
     }]);
 
+    flyerService.service("createDraftFromPropertyApproval", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
+        function fromPropertyApproval(id){
+            fromPropertyApproval.superclass.constructor.call(this);
+            if(id){
+                this.id = id;
+            }
+
+            this.update = function(){
+                return $http.put('/request/from/approval/draft/' + this.id, this.getFields4Save());
+            }
+        }
+
+        extend(fromPropertyApproval, createRequestFlyerBase);
+
+        return fromPropertyApproval;
+    }]);
+
     flyerService.service("createDraftRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
         return function(){
             var flyer = new createRequestFlyerBase();
@@ -186,6 +203,13 @@
                 var result = {};
                 for(var i in object){
                     if (typeof object[i] === "function"){
+                        continue;
+                    }
+
+                    if(i == "listing_price" && null != object[i]){
+                        console.log(i)
+                        console.log(object[i])
+                        result[i] = (object[i] + "").replace(/(\$|,)/, "");
                         continue;
                     }
 
