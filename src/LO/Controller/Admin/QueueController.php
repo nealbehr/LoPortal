@@ -218,7 +218,7 @@ class QueueController extends Base{
             ->createQueryBuilder()
             ->select('q, u, r')
             ->from(Queue::class, 'q')
-            ->join('f.realtor', 'r')
+            ->join('q.realtor', 'r')
             ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)
