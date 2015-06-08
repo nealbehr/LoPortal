@@ -216,9 +216,8 @@ class QueueController extends Base{
     private function findQueueWithRequestFlyerById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
-            ->select('q, f, u, r')
+            ->select('q, u, r')
             ->from(Queue::class, 'q')
-            ->join('q.flyer', 'f')
             ->join('f.realtor', 'r')
             ->join('q.user', 'u')
             ->where('q.id = :id')
