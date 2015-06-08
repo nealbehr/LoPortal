@@ -67,3 +67,36 @@
 .action-none{
     color: #BABABA;
 }
+
+.logo-box {
+    margin-top: 0;
+}
+.logo-box ul li {
+    height: 50px;
+    width: 175px;
+    cursor: pointer;
+}
+
+.logo-box ul li a {
+    height: 50px;
+}
+
+.user-menu img {
+    border-radius: 3px;
+}
+
+.main-info .user-photo .realtor-photo {
+    width: 126px;
+    height: 168px;
+
+}
+
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance:textfield;
+}

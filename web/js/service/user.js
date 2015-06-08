@@ -5,7 +5,6 @@
     var userService = angular.module('userModule', []);
 
     userService.factory("userService", ["createProfileUser", function(createProfileUser){
-        console.log('called new User');
         return createProfileUser();
     }]);
 
@@ -27,7 +26,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             return userBase;
         }
@@ -54,11 +53,11 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             userBase.save = function(){
                 return this.id? this.update(): this.add();
-            }
+            };
 
             userBase.update = function(){
                 var deferred = $q.defer();
@@ -73,7 +72,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             userBase.add = function(){
                 var deferred = $q.defer();
@@ -89,7 +88,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             userBase.resetPassword = function(){
                 var deferred = $q.defer();
@@ -104,41 +103,55 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
 
             return userBase;
         }
     }]);
 
-    userService.service("createUserBase", ["$q", "$http", function($q, $http){
+    userService.service("createUserBase", ["$q", "$http", function($q, $http) {
+
         return function(){
             this.isLogged = false;
             this.id;
             this.first_name;
             this.last_name;
             this.title;
-            this.sales_director;
-            this.sales_director_email;
+            this.sales_director = '';
+            this.sales_director_email = '';
+            this.sales_director_phone = '';
             this.phone;
             this.mobile;
             this.email;
             this.nmls;
-            this.lender;
             this.picture;
+            this.password ={
+                password: null,
+                password_confirm: null
+            }
             this.roles = {};
+            this.lender;
             this.switched = false;
+            this.address = {
+            };
+            this.addressOptions = {
+                types: ['geocode'],
+                componentRestrictions: { country: 'US' }
+            };
+            this.addressDetails = {
+            };
 
             var self = this;
 
             this.getPicture = function(){
                 return this.picture;
-            }
+            };
+
             this.setPicture = function(param){
                 this.picture = param;
-
                 return this;
-            }
+            };
 
             this.getFields4Save = function(){
                 var result = {};
@@ -151,13 +164,13 @@
                 }
 
                 return result;
-            }
+            };
 
             this.isSwitched = function(){
                 return this.switched;
-            }
+            };
 
-            this.isAdmin = function(){
+            this.isAdmin = function() {
                 for(var i in this.roles){
                     if(this.roles[i] == 'ROLE_ADMIN'){
                         return true;
@@ -165,7 +178,7 @@
                 }
 
                 return false;
-            }
+            };
 
             this.get = function(id){
                 id = id || "me";
@@ -187,7 +200,7 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             this.fill = function(data){
                 for(var i in data){
@@ -195,7 +208,7 @@
                 }
 
                 return this;
-            }
+            };
 
             this.clear = function(){
                 for(var i in this){
@@ -208,7 +221,7 @@
 
                 this.roles = [];
                 this.isLogged = false;
-            }
+            };
 
             this.save = function(){
                 throw new Error("User add must be override");

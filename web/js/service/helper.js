@@ -18,10 +18,11 @@
                 'loType':        "@",
                 'loBody':        "@"
             },
-            link: function(scope, element, attrs, controllers){
+            link: function(scope, element, attrs, controllers) {
+
                 scope.isDanger = function(){
                     return scope.loType == 'danger';
-                }
+                };
 
                 scope.$watch('loType', function (newValue) {
                     scope.loType = newValue;
@@ -39,7 +40,7 @@
         return { restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
-                scope.user         = {}
+                scope.user         = {};
                 scope.isUserLoaded = false;
                 userService.get().then(function(user){
                     scope.user         = user;
@@ -74,7 +75,7 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
+    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "getLenders", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, getLenders, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -82,10 +83,13 @@
             },
             link: function(scope, element, attrs, controllers){
                 scope.roles = [];
+                scope.lenders = [];
                 scope.selected = {};
-                scope.user = {}
+                scope.selectedLender = {};
+                scope.user = {};
                 scope.container = angular.element('#userProfileMessage');
-                scope.userPicture;
+                scope.userPicture = {};
+                scope.hideErrors = true;
 
                 scope.$watch('officer.id', function(newVal, oldVal){
                     if(undefined != newVal && newVal == scope.user.id){
@@ -97,10 +101,9 @@
                 });
 
                 scope.$watch('officer', function(newVal, oldVal){
-                    if(newVal == undefined || !("id" in newVal)){
+                    if(newVal == undefined){
                         return;
                     }
-
                     scope.userPicture = new pictureObject(
                         angular.element('#userPhoto'),
                         {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
@@ -108,11 +111,14 @@
                     );
                 });
 
+                scope.itsMe = function(){
+                    return this.officer.id && this.user.id == this.officer.id;
+                }
+
                 scope.cancel = function(e){
                     e.preventDefault();
-
                     history.back();
-                }
+                };
 
                 userService.get()
                     .then(function(user){
@@ -135,6 +141,17 @@
                             scope.selected =  scope.roles[0];
                         }
                     })
+                    .then(function(){
+                        if(scope.user.isAdmin() && scope.lenders.length == 0) {
+                            getLenders().then(function(data){
+                                scope.lenders = data;
+                                if(scope.officer && !scope.officer.lender) {
+                                    scope.officer.lender =  scope.lenders[0];
+                                }
+                            })
+
+                        }
+                    })
                 ;
 
                 scope.$watch('officer', function(newVal){
@@ -150,19 +167,26 @@
                     }
 
                     return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
-                }
+                };
+
+                scope.showErrors = function(e){
+                    e.preventDefault();
+
+                    this.hideErrors = true;
+                };
 
                 scope.gotoErrorMessage = function(){
                     $anchorScroll(scope.container.attr("id"));
-                }
+                };
 
-                scope.submit = function(formUser){
-                    if(!formUser.$valid){
+                scope.submit = function(formUser, $event) {
+                    if(!formUser.$valid) {
+                        this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
                     }
                     this.save();
-                }
+                };
 
                 scope.delete = function(e){
                     e.preventDefault();
@@ -187,7 +211,7 @@
                         .finally(function(){
                             waitingScreen.hide();
                         });
-                }
+                };
 
                 scope.save = function(){
                     waitingScreen.show();
@@ -222,7 +246,7 @@
                             waitingScreen.hide();
                         }
                     );
-                }
+                };
 
                 scope.setSelected = function(newVal){
                     if(!newVal || !scope.officer || !scope.officer.roles || scope.roles.length < 1){
@@ -289,23 +313,22 @@
                     }
                 });
 
-
                 scope.isApprovedProperty = function(item){
                     return item.request_type == this.requestType.propertyApproval && item.state == settings.queue.state.approved;
-                }
-
-                scope.hasPdf = function(item){
-                    return item.request_type == this.requestType.flyer && item.flyer != null && item.flyer.pdf_link && item.state == settings.queue.state.approved
-                }
+                };
+                scope.isApprovedFlyer= function(item){
+                    return item.request_type == this.requestType.flyer && item.flyer != null && item.state == settings.queue.state.approved
+                };
                 scope.canCancel = function(item){
                     return item.state == settings.queue.state.requested || item.state == settings.queue.state.draft;
-                }
+                };
                 scope.isComplete = function(item){
                     return item.state == settings.queue.state.draft;
-                }
-                scope.isNone = function(item){
-                    return !(this.isApprovedProperty(item) || this.hasPdf(item) || this.canCancel(item) || this.isComplete(item));
-                }
+                };
+                scope.isDeclined = function(item){
+                    return item.state == settings.queue.state.declined;
+                };
+
             }
         }
     }]);
@@ -413,7 +436,7 @@
                     return;
                 }
 
-                ctrl.$validators.address_components = function(modelValue){
+                ctrl.$validators.address_components = function(modelValue) {
                     if (ctrl.$isEmpty(modelValue)) {
                         // consider empty models to be valid
                         return true;
@@ -432,7 +455,7 @@
     }]);
 
     helperService.directive('usaPhone', [function(){
-        var phoneFormat = /^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/;
+        var phoneFormat = /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/;
         return {
             require: 'ngModel',
             restrict: '',
@@ -451,6 +474,22 @@
 
             }
         };
+    }]);
+
+    helperService.directive('compareTo', [function() {
+        return {
+            require: "ngModel",
+            restrict: '',
+            scope: {
+                otherModelValue: "=compareTo"
+            },
+            link: function (scope, element, attributes, ngModel) {
+
+                ngModel.$validators.compareTo = function (modelValue) {
+                    return modelValue == scope.otherModelValue;
+                };
+            }
+        }
     }]);
 
     helperService.directive('loNameValidator', [function(){
@@ -480,8 +519,7 @@
             restrict: 'EA',
             templateUrl: '/partials/session.messages',
             link: function(scope, elm, attrs, ctrl) {
-                scope.$on('showSessionMessage', function () {
-                    console.log('showSessionMessage');
+                scope.$on('renderSessionMesages', function () {
                     scope.messages = sessionMessages.get();
                 });
 
@@ -499,7 +537,7 @@
             link: function(scope, element, attrs, ngModel) {
                 if (!ngModel){
                     return;
-                };
+                }
 
                 ngModel.$render = function() {};
 
@@ -537,38 +575,33 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer){
+    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", "createProfileUser", "createDraftFromPropertyApproval", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage, createProfileUser, createDraftFromPropertyApproval){
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
             scope: {
                 request: "=loRequest",
                 titles: "=loTitles",
+                officer: '=loOfficer',
                 user: '=loUser'
+
             },
             link: function(scope, element, attrs, controllers){
                 scope.states = settings.queue.state;
-                scope.realtorPicture;
-                scope.propertyPicture;
-                scope.oldRequest;
-
-                scope.$on('$locationChangeStart', function (event, next, current) {
-                    if (!angular.equals(scope.oldRequest, scope.request)) {
-                        var answer = confirm("Are you sure you want to leave without saving changes?");
-                        if (!answer) {
-                            event.preventDefault();
-                        }
-                    }
-                });
+                scope.realtorPicture = {};
+                scope.propertyPicture = {};
+                scope.realtyLogo = {};
+                scope.oldRequest = {};
+                scope.hideErrors = true;
+                scope.container = angular.element("#errors");
 
                 scope.$watch('request', function(newVal){
                     if(undefined == newVal || !("id" in newVal)){
                         return;
                     }
-
                     scope.realtorPicture = new pictureObject(
                         angular.element("#realtorImage"),
-                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
+                        {container: $(".realtor.realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
                         scope.request.realtor
                     );
 
@@ -578,7 +611,27 @@
                         scope.request.property
                     );
 
+                    scope.realtyLogo = new pictureObject(
+                        angular.element('#realtyLogo'),
+                        {container: $("#realtyLogoImage"), options: {
+                            minCropBoxWidth: 100,
+                            minCropBoxHeight: 100,
+                            maxCropBoxWidth: 350,
+                            maxCropBoxHeight: 100
+                        }},
+                        scope.request.realtor.realty
+                    );
+
                     scope.oldRequest = angular.copy(scope.request);
+
+                    scope.$on('$locationChangeStart', function (event, next, current) {
+                        if (!angular.equals(scope.oldRequest, scope.request)) {
+                            var answer = confirm("Are you sure you want to leave without saving changes?");
+                            if (!answer) {
+                                event.preventDefault();
+                            }
+                        }
+                    });
                 });
 
                 $('[data-toggle="tooltip"]').tooltip();
@@ -586,55 +639,63 @@
                 scope.cancel = function(e){
                     e.preventDefault();
 
-                    if(scope.request.property.state != settings.queue.state.draft){
-                        history.back();
-                        return;
-                    }
+                    history.back();
+                };
 
-                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
-                    delete scope.request;
-
-                    waitingScreen.show();
-                    scope.requestDraft.remove()
-                        .success(function(){
-                            scope.oldRequest = angular.copy(scope.request);
-                            history.back();
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        })
-
-                    ;
-                }
-
-                scope.saveDraft = function(e){
+                scope.saveDraftOrApproved = function(e) {
                     e.preventDefault();
 
-                    scope.request.property.state = settings.queue.state.draft;
+                    if(scope.request.property.state != settings.queue.state.approved) {
+                        scope.request.property.state = settings.queue.state.draft;
+                    }
 
-                    scope.requestDraft = (new createDraftRequestFlyer()).fill(scope.request.getFields4Save());
+                    scope.requestDraft = this.request instanceof createFromPropertyApproval
+                                                        ? (new createDraftFromPropertyApproval())
+                                                        : (new createDraftRequestFlyer());
+
+                    scope.requestDraft.fill(scope.request.getFields4Save());
                     scope.realtorPicture.setObjectImage(scope.requestDraft.realtor);
                     scope.propertyPicture.setObjectImage(scope.requestDraft.property);
-
-                    delete scope.request;
 
                     scope.requestDraft.afterSave(function(){
                         sessionMessages.addSuccess("Successfully saved.");
                         scope.oldRequest = angular.copy(scope.request);
-                        history.back();
+                        if($rootScope.historyGet().indexOf('/request/success') != -1){
+                            redirect('/');
+                        }else{
+                            history.back();
+                        }
                     });
 
                     this.saveRequest(scope.requestDraft);
-                }
+                };
 
-                scope.save = function(){
+                scope.showErrors = function(e){
+                    e.preventDefault();
+
+                    this.hideErrors = true;
+                };
+
+                scope.gotoErrorMessage = function(){
+                    $anchorScroll(scope.container.attr("id"));
+                };
+
+                scope.save = function(form){
+                    console.log("save");
+                    if(!form.$valid){
+                        this.hideErrors = false;
+                        this.gotoErrorMessage();
+                        return false;
+                    }
+
+
                     scope.request.afterSave(function(){
                         scope.oldRequest = angular.copy(scope.request);
                         $rootScope.$broadcast('requestFlyerSaved');
                     });
 
                     this.saveRequest(scope.request);
-                }
+                };
 
                 scope.saveRequest = function(request){
                     waitingScreen.show();
@@ -643,17 +704,49 @@
 
                     request.save()
                         .catch(function(e){
-                            alert("We have some problems. Please try later.");
+                            var messages = [];
+                            messages.push('message' in e? e.message: "We have some problems. Please try later.");
+
+                            for(var i in e){
+                                if(e[i].constructor === Array){
+                                    for(var j in e[i]){
+                                        if(e[i][j] != ""){
+                                            messages.push(e[i][j]);
+                                        }
+                                    }
+                                }
+                            }
+
+                            if(messages.length > 0){
+                                renderMessage(messages.join(" "), "danger", scope.container, scope);
+                                scope.gotoErrorMessage();
+                            }
+
+                            scope.realtorPicture.setObjectImage(scope.request.realtor);
+                            scope.propertyPicture.setObjectImage(scope.request.property);
                         })
                         .finally(function(){
                             waitingScreen.hide();
                         })
                     ;
-                }
+                };
 
-                scope.isAddressReadOnly = function(){
+                scope.isAddressReadOnly = function() {
+
+                    if(typeof this.request.property === 'object' && this.request.property.state == settings.queue.state.approved) {
+                        if(angular.isFunction(scope.user.isAdmin)) {
+                            return !scope.user.isAdmin();
+                        }
+                        return true;
+                    }
                     return this.request instanceof createFromPropertyApproval;
-                }
+                };
+
+                scope.clearAddress = function(e){
+                    if(e.keyCode != 13){
+                        this.request.address.clear();
+                    }
+                };
 
                 loadGoogleMapsApi()
                     .then(function(){
@@ -686,12 +779,6 @@
             }
         }
     }]);
-
-    helperService.filter('avatar', function(){
-        return function(input){
-            return input == null ? "images/empty.png": input;
-        }
-    });
 
     helperService.filter('fullName', function(){
         return function(user){
@@ -734,12 +821,12 @@
 
             this.isActive = function(){
                 return this.location.path() == this.path;
-            }
+            };
 
             for(var i in params){
                 this[i] = params[i];
             }
-        }
+        };
 
         tab.prototype.location = $location;
 
@@ -749,7 +836,7 @@
     helperService.factory("loadImages", ["$q", function($q){
         var deferred = $q.defer();
         function loadImages(images){
-           var image = images.shift()
+           var image = images.shift();
            if(image == undefined){
                deferred.resolve();
            }
@@ -762,12 +849,12 @@
            bgImg.onabort = function(){
                loadImages(images);
                console.log(image + ' loading has been aborted.')
-           }
+           };
 
            bgImg.onerror = function(){
                loadImages(images);
                console.log(image + ' error loading.')
-           }
+           };
 
            bgImg.src = image;
         }
@@ -794,7 +881,7 @@
 
             var script = document.createElement('script');
             script.type = 'text/javascript';
-            script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places&callback=initialize';
+            script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places&callback=initialize&language=en';
             document.body.appendChild(script);
 
             return deferred.promise;
@@ -815,13 +902,14 @@
     }]);
 
     helperService.factory("parseGoogleAddressComponents", [function(){
-        return function(data){
+        return function(data) {
+
             var result = {
                 address: '',
                 city:    null,
                 state:   null,
                 zip:     null
-            }
+            };
 
             for(var i in data){
                 if($.inArray("street_number", data[i].types) != -1){
@@ -854,8 +942,31 @@
         }
     }]);
 
+    helperService.factory("getLenders", ['$q', '$http', function($q, $http){
+        var lenders = [];
+
+        return function(needReload){
+            var deferred = $q.defer();
+            var counter = lenders.length;
+            if(counter != 0 && !needReload){
+                return $q.when(lenders);
+            }
+            $http.get('/admin/json/lenders')
+                .success(function(data) {
+                    lenders = data;
+                    deferred.resolve(data);
+                })
+                .error(function(data){
+                    deferred.reject(data);
+                }
+            );
+
+            return deferred.promise;
+        }
+    }]);
+
     helperService.factory("getRoles", ['$q', '$http', function($q, $http){
-        var roles = {}
+        var roles = {};
 
         return function(needReload){
             needReload = needReload || false;
@@ -900,7 +1011,7 @@
                             deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
                         }
                     });
-                })
+                });
 
             return deferred.promise;
         }
@@ -946,11 +1057,11 @@
 
             bgImg.onload = function(){
                 deferred.resolve(bgImg);
-            }
+            };
 
             bgImg.onerror = function(evt){
                 deferred.reject(evt);
-            }
+            };
 
             bgImg.src = url;
 
@@ -958,8 +1069,8 @@
         }
     }]);
 
-    helperService.factory("sessionMessages", [function(){
-        return new function(){
+    helperService.factory("sessionMessages", ['$rootScope', function($rootScope) {
+        return new function() {
             console.log('create new sessionMessage');
             var TYPE_DANGER  = "danger";
             var TYPE_SUCCESS = "success";
@@ -967,24 +1078,23 @@
 
             this.addDanger = function(message){
                 messages.push(this.createMessage(TYPE_DANGER, message));
-
                 return this;
-            }
+            };
 
             this.addSuccess = function(message){
                 messages.push(this.createMessage(TYPE_SUCCESS, message));
 
                 return this;
-            }
+            };
 
             this.createMessage = function(type, body){
-                var message = {}
+                var message = {};
 //                message.type = type;
                 message.body = body;
                 message.isDanger = TYPE_DANGER == type;
 
                 return message;
-            }
+            };
 
             this.get = function(clear){
                 try{
@@ -995,6 +1105,10 @@
                     }
                 }
             }
+
+            this.render = function(){
+                $rootScope.$broadcast('renderSessionMesages');
+            }
         }
     }]);
 
@@ -1004,7 +1118,7 @@
                 return letter.toUpperCase();
             });
         }
-    })
+    });
 
     helperService.filter('fromMysqlDate', function(){
         return function(input){
@@ -1014,19 +1128,13 @@
         }
     });
 
-    helperService.filter('propertyImage', function(){
-        return function(input){
-            return "" != input && null != input
-                ? input
-                : '/images/empty-big.png';
-        }
-    });
+    helperService.filter('defaultImage', function() {
 
-    helperService.filter('realtorImage', function(){
-        return function(input){
-            return "" != input && null !== input && input !== undefined
-                ? input
-                : '/images/empty.png';
+        return function(input, defaultImage) {
+            if("" != input && null !== input && input !== undefined) {
+                return input;
+            }
+            return defaultImage;
         }
     });
 

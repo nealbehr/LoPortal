@@ -21,7 +21,6 @@ use LO\Common\Email\RequestDecline;
 use LO\Common\UploadS3\Pdf;
 use LO\Model\Entity\Queue as EntityQueue;
 use LO\Model\Entity\Realtor;
-use LO\Model\Entity\RequestFlyer;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
@@ -110,27 +109,18 @@ class Queue extends Base{
     }
 
     public function approveRequestFlyerAction(Application $app, Request $request, $id){
+        $realtor = null;
         try{
             $app->getEntityManager()->beginTransaction();
             $data = [];
             $queue = $this->findQueueWithRequestFlyerById($app, $id);
-            $file = $request->request->get('file');
 
             if (null === $queue) {
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(empty($file)? EntityQueue::STATE_LISTING_FLYER_PENDING: EntityQueue::STATE_APPROVED)
-                  ->setReason($request->request->get('reason'))
-
-            ;
-
-            if(!empty($file)){
-                $link = (new Pdf($app->getS3(), $file, '1rex.pdf'))
-                    ->downloadFileToS3andGetUrl(time().mt_rand(1, 100000).'.pdf');
-
-                $queue->getFlyer()->setPdfLink($link);
-            }
+            $queue->setState(EntityQueue::STATE_APPROVED);
+            $queue->setReason($request->request->get('reason'));
 
             $errors = $app->getValidator()->validate($queue);
 
@@ -144,13 +134,13 @@ class Queue extends Base{
             $app->getEntityManager()->flush();
 
             /** @var Realtor $realtor */
-            $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($queue->getFlyer()->getRealtorId());
+            $realtor = $queue->getRealtor();
 
             if(!$realtor){
-                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found.", $queue->getFlyer()->getRealtorId()));
+                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found for flyer .", $queue->getId()));
             }
 
-            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue->getFlyer(), $request->getSchemeAndHttpHost())))
+            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue, $request->getSchemeAndHttpHost())))
                 ->send();
 
 
@@ -175,10 +165,7 @@ class Queue extends Base{
             }
 
             $queue->setState(EntityQueue::STATE_APPROVED)
-                  ->setReason($request->request->get('reason'))
-
-            ;
-
+                  ->setReason($request->request->get('reason'));
             $errors = $app->getValidator()->validate($queue);
 
             if(count($errors) > 0){
@@ -190,8 +177,9 @@ class Queue extends Base{
             $app->getEntityManager()->persist($queue);
             $app->getEntityManager()->flush();
 
-            (new RequestChangeStatus($app, $queue, new PropertyApprovalAccept($request->getSchemeAndHttpHost())))
-                ->send();
+            $request = new PropertyApprovalAccept($request->getSchemeAndHttpHost());
+            $changeStatusRequest = new RequestChangeStatus($app, $queue, $request);
+            $changeStatusRequest->send();
 
             $app->getEntityManager()->commit();
 
@@ -215,12 +203,12 @@ class Queue extends Base{
             return new PropertyApprovalDenial($email);
         }
 
-        /** @var RequestFlyer $requestFlyer */
-        $requestFlyer = $app->getEntityManager()->getRepository(RequestFlyer::class)->findOneBy(['queue_id' => $queue->getId()]);
+        /** @var EntityQueue $queue */
+        $queue = $app->getEntityManager()->getRepository(EntityQueue::class)->findOneBy(['queue_id' => $queue->getId()]);
         /** @var Realtor $realtor */
-        $realtor = $app->getEntityManager()->getRepository(Realtor::class)->find($requestFlyer->getRealtorId());
+        $realtor = $queue->getRealtor();
 
-        return new RequestFlyerDenial($realtor, $requestFlyer, $email);
+        return new RequestFlyerDenial($realtor, $queue, $email);
     }
 
     /**
@@ -231,9 +219,10 @@ class Queue extends Base{
     private function findQueueWithRequestFlyerById(Application $app, $id){
         return $app->getEntityManager()
             ->createQueryBuilder()
-            ->select('q, f, u')
+            ->select('q, f, u, r')
             ->from(EntityQueue::class, 'q')
             ->join('q.flyer', 'f')
+            ->join('f.realtor', 'r')
             ->join('q.user', 'u')
             ->where('q.id = :id')
             ->setParameter('id', $id)
@@ -275,7 +264,6 @@ class Queue extends Base{
             ->andWhere($expr->notIn('q2.state', [EntityQueue::STATE_DRAFT]))
             ->getQuery()
             ->getResult('Duplicates');
-        ;
     }
 
     private function getQueueList(Request $request, Application $app){

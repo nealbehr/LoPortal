@@ -56,11 +56,16 @@ class Application extends \Silex\Application{
      * @param $configFilename
      * @param $pathToConfig
      * @return $this
-     * @throws ParseException If the YAML is not valid
+     * @throws \Exception If the YAML is not valid
      */
     private function fillConfigFromFiles($configFilename, $pathToConfig){
         foreach ((array)$configFilename as $filename) {
-            $this->_configValues = array_replace_recursive($this->_configValues, Yaml::parse($pathToConfig . $filename . '.yml'));
+            $fullFilename = $pathToConfig . $filename . '.yml';
+            if(is_file($fullFilename) === false || false === is_readable($fullFilename)){
+                throw new \Exception(sprintf("%s is not file.", $fullFilename));
+            }
+
+            $this->_configValues = array_replace_recursive($this->_configValues, Yaml::parse(file_get_contents($fullFilename)));
         }
 
         return $this;
@@ -155,7 +160,8 @@ class Application extends \Silex\Application{
             $this->getMonolog()->addError($code);
             switch ($e->getCode() || $code) {
                 case Response::HTTP_NOT_FOUND:
-                    $message      = 'The requested page could not be found.';
+//                    $message      = 'The requested page could not be found.';
+                    $message      = $e->getMessage();
                     $responseCode = $code;
                     break;
                 case Response::HTTP_METHOD_NOT_ALLOWED:
@@ -253,7 +259,7 @@ class Application extends \Silex\Application{
     /**
      * @return EntityManager
      */
-    public final function getEntityManager() {
+    public function getEntityManager() {
         return $this['orm.em'];
     }
 

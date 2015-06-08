@@ -19,7 +19,7 @@
 
     <footer id="footer">
         <div class="container">
-            <a class="hidden-xs" href="#"><img src="images/logo-footer.png" width="77" height="40" alt="firstREX"></a>
+            <a class="hidden-xs" href="/#/"><img src="images/logo-footer.png" width="77" height="40" alt="firstREX"></a>
             <ul>
                 <li><a href="http://rexhomebuyer.com/privacy-security/" target="_blank">Privacy Policy</a></li>
                 <li><a href="http://rexhomebuyer.com/terms-of-use/" target="_blank">Terms of Use</a></li>
@@ -55,7 +55,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-resource.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-cookies.min.js"></script>
-    <!-- script src="https://maps.googleapis.com/maps/api/js?key={{ app.getConfigByName('google', 'apiKey') }}&libraries=places"></script -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ app.getConfigByName('google', 'apiKey') }}&libraries=places&language=en"></script>
 
     <!-- build:js < JS_FILENAME > -->
         <script src="/js/jquery-ui.min.js"></script>
@@ -71,8 +71,12 @@
         <script src="/js/modules/request.js"></script>
         <script src="/js/modules/user.js"></script>
         <script src="/js/modules/admin.js"></script>
+        <script src="/js/modules/lender.js"></script>
+        <script src="/js/modules/realty-company.js"></script>
         <script src="/js/cropper.js"></script>
         <script src="/js/ngDialog.0.3.7.js"></script>
+        <script src="/js/vs-google-autocomplete.js"></script>
+
     <!-- /build -->
 
     <script type="text/javascript">

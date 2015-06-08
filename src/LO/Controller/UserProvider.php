@@ -24,7 +24,7 @@ class UserProvider implements ControllerProviderInterface {
     public function connect(Application $app) {
 
         $app['user.controller'] = $app->share(function() use ($app) {
-            return new User();
+            return new UserController();
         });
 
         /** @var ControllerCollection $controllers */

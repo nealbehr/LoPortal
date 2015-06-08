@@ -15,7 +15,12 @@
             })
             .when('/admin/user/:id/edit', {
                 templateUrl: '/partials/admin.panel.user',
-                controller:  'adminUserEditCtrl',
+                controller:  'AdminUserEditController',
+                resolve: {
+                    officerData: ['$route', 'createUser', function($route, createUser) {
+                        return createUser().get($route.current.params.id);
+                    }]
+                },
                 access: {
                     isFree: false
                 }
@@ -36,7 +41,7 @@
             })
             .when('/admin/flyer/:id/edit', {
                 templateUrl: '/partials/admin.request.flyer.edit',
-                controller:  'adminRequestFlyerEditCtrl',
+                controller:  'AdminRequestFlyerEditController',
                 access: {
                     isFree: false
                 }
@@ -48,16 +53,16 @@
                     isFree: false
                 }
             })
-            .when('/admin/lenders', {
-                templateUrl: '/partials/admin.lenders',
-                controller:  'lendersCtrl',
+            .when('/admin/realtors', {
+                templateUrl: '/partials/admin.realtors',
+                controller:  'realtorsCtrl',
                 access: {
                     isFree: false
                 }
             })
-            .when('/admin/lender/:id/edit', {
-                templateUrl: '/partials/admin.lender.edit',
-                controller:  'lenderEditCtrl',
+            .when('/admin/realtor/:id/edit', {
+                templateUrl: '/partials/admin.realtor.edit',
+                controller:  'realtorEditCtrl',
                 access: {
                     isFree: false
                 }
@@ -65,22 +70,21 @@
         ;
     }]);
 
-    admin.controller('lendersCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+    admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
 
     }]);
 
-    admin.controller('lenderEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+    admin.controller('realtorEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
 
     }]);
 
-
-    admin.controller('adminRequestFlyerEditCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+    admin.controller('AdminRequestFlyerEditController', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};
         $scope.titles = {
             button: "Submit",
             header: "Edit Listing Flyer Request"
-        }
+        };
 
         $scope.$on('requestFlyerSaved', function () {
             sessionMessages.addSuccess("Successfully saved.");
@@ -102,7 +106,7 @@
         $scope.titles = {
             button: "Save",
             header: "Edit Property Approval Request Form"
-        }
+        };
 
         $scope.approval;
 
@@ -140,11 +144,8 @@
 
     }]);
 
-    admin.controller('adminUserEditCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', '$routeParams', function($scope, $http, redirect, $compile, waitingScreen, createUser, $routeParams){
-        createUser().get($routeParams.id)
-            .then(function(user){
-                $scope.officer = user;
-        });
+    admin.controller('AdminUserEditController', ['$scope', 'officerData', function($scope, officerData){
+        $scope.officer = officerData;
     }]);
 
     admin.controller('adminCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
@@ -186,13 +187,12 @@
                 .finally(function(){
                     waitingScreen.hide();
                 });
-            ;
-        }
+        };
 
         $scope.change = function(e){
             e.preventDefault();
             $("#uploadPdf").click();
-        }
+        };
 
         $scope.remove = function(e){
             e.preventDefault();
@@ -230,38 +230,47 @@
             templateUrl: '/partials/admin.nav.bar',
             link: function(scope, element, attrs, controllers){
                 scope.tabs = [
-                    new Tab({path: '/admin', title: "User Management"}),
-                    new Tab({path: '/admin/queue', title: "Request Management"})
+                    new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
+                    new Tab({path: '/admin/queue', title: "Request Management"}),
+                    new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"}),
+                    new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"})
                 ]
             }
         }
     }]);
 
-    admin.directive('loAdminUsers', ['$http', "getRoles", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", "$q", function($http, getRoles, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q){
+    admin.directive('loAdminUsers', ['$http', "getRoles", "getLenders", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", "$q", function($http, getRoles, getLenders, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q){
         return { restrict: 'EA',
             templateUrl: '/partials/admin.panel.users',
             link: function(scope, element, attrs, controllers){
                 scope.pagination = {};
                 scope.users = [];
                 scope.roles = {};
+                scope.lenders = [];
                 scope.searchingString;
                 scope.isLoaded = false;
                 scope.searchKey;
 
-                scope.getUsers = function(){
+                scope.getUsers = function() {
                     var deferred = $q.defer();
+                    waitingScreen.show();
                     $http.get('/admin/user', {
                         params: $location.search()
                     }).success(function(data){
                         return deferred.resolve(data);
-                    })
+                    }).finally(function() {
+                        waitingScreen.hide();
+                    });
 
                     return deferred.promise;
-                }
+                };
 
                 getRoles()
                     .then(function(data){
                         scope.roles = data;
+                    })
+                    .then(function(){
+                        scope.lenders = getLenders();
                     })
                     .then(function(){
                         return scope.getUsers();
@@ -322,7 +331,7 @@
                             waitingScreen.hide();
                         })
                     ;
-                }
+                };
 
                 scope.resetPassword = function(e, user){
                     e.preventDefault();
@@ -344,18 +353,19 @@
         }
     }]);
 
-    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", function($http, tableHeadCol, $location, ngDialog, renderMessage){
+    admin.directive('loAdminRequests', ['$http', 'tableHeadCol', '$location', "ngDialog", "renderMessage", "waitingScreen", 'sessionMessages', function($http, tableHeadCol, $location, ngDialog, renderMessage, waitingScreen, sessionMessages){
         return {
             restrict: 'EA',
             templateUrl: '/partials/admin.panel.requests',
             link: function(scope, element, attrs, controllers){
-                scope.queue = []
+                scope.queue = [];
                 scope.searchKey;
                 scope.searchingString;
                 scope.pagination = {};
                 scope.messageContainer = angular.element("#messageContainer")
                 scope.states = settings.queue.state;
 
+                waitingScreen.show();
                 $http.get('/admin/queue', {
                         params: $location.search()
                     })
@@ -386,6 +396,9 @@
                             new tableHeadCol(new params({key: "action", title: "Actions", isSortable: false}))
                         ];
                     })
+                    .finally(function() {
+                        waitingScreen.hide();
+                    })
                 ;
 
                 scope.getDialogByRequest = function(request){
@@ -397,7 +410,7 @@
                             request: request
                         }
                     });
-                }
+                };
 
                 scope.approve = function(e, request){
                     e.preventDefault();
@@ -411,13 +424,13 @@
 
                         if(data.value.state == "success"){
                             request.state = data.value.requestState;
-                            renderMessage("Approved", data.value.state, scope.messageContainer, scope);
+                            sessionMessages.addSuccess("Approved").render();
                             return;
                         }
 
                         renderMessage(data.value.message, data.value.state, scope.messageContainer, scope);
                     });
-                }
+                };
 
                 scope.decline = function (e, request) {
                     e.preventDefault();
@@ -437,7 +450,7 @@
 
                         if(data.value.state == "success"){
                             request.state = settings.queue.state.declined;
-                            renderMessage("Declined", data.value.state, scope.messageContainer, scope);
+                            sessionMessages.addSuccess("Declined").render();
                             return;
                         }
 
@@ -478,10 +491,11 @@
             scope: {
                 pagination: "=loPagination"
             },
-            link: function(scope, element, attrs, controllers){
+            link: function(scope, element, attrs, controllers) {
+
                 scope.getUrl = function(isNext){
                     return '/#' + $location.path() + '?' + this.getParams(isNext? scope.pagination.next: scope.pagination.previous);
-                }
+                };
 
                 scope.getParams = function(page){
                     var params = angular.copy($location.search());
@@ -514,7 +528,7 @@
     admin.filter('requestType', ['$http', function($http){
         var filterFn = function initFilter(){
             return "loading";
-        }
+        };
 
         $http.get('/settings/request/type')
             .success(function(result) {
@@ -532,7 +546,7 @@
     admin.filter('requestState', ['$http', function($http){
         var filterFn = function initFilter(){
             return "loading";
-        }
+        };
 
         $http.get('/settings/request/state')
             .success(function(result) {

@@ -13,7 +13,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class FirstRexAddress extends AbstractType{
+class FirstRexAddress extends AbstractType {
     public function getName() {
         return 'address';
     }

@@ -6,23 +6,7 @@
                 <h4 class="modal-title">Approve the request</h4>
             </div>
             <div class="modal-body">
-                <textarea cols="30" rows="3" class="form-control" placeholder="Reason"></textarea>
-                <div class="attach">
-                    <p>Upload final marketing collateral:</p>
-                    <div class="wrap">
-                        <div>
-                            <a href="#" class="upload" ng-if="!marketingCollateral">Attach the document</a>
-                            <a href="#" class="download" ng-if="marketingCollateral">[[ filename ]]</a>
-                            <span ng-if="!marketingCollateral">PDF format only</span>
-                            <input type="file" accept="application/pdf" lo-filereader ng-model="marketingCollateral" id="uploadPdf">
-                            <div class="pull-right" ng-if="marketingCollateral">
-                                <a href="#" class="change" ng-click="change($event)">Change</a> |
-                                <a href="#" class="remove" ng-click="remove($event)">Remove</a>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
+                <textarea cols="30" rows="3" class="form-control" placeholder="Notes"></textarea>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default btn-lg" ng-click="approve()">Approve</button>

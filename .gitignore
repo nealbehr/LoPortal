@@ -3,7 +3,9 @@
 composer.phar
 .DS_Store
 vendor/
+cache/
 bin/
+node_modules/
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml

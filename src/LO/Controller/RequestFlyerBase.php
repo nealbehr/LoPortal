@@ -12,22 +12,22 @@ namespace LO\Controller;
 use LO\Application;
 use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
-use LO\Form\QueueForm;
+use LO\Form\QueueType;
 use LO\Form\RealtorForm;
-use LO\Form\RequestFlyerForm;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;
-use LO\Model\Entity\RequestFlyer;
 use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class RequestFlyerBase extends RequestBaseController{
+class RequestFlyerBase extends RequestBaseController {
+
     use GetFormErrors;
 
-    protected function saveFlyer(Application $app, Request $request, Realtor $realtor, Queue $queue, RequestFlyer $requestFlyer, array $formOptions = []){
+    protected function saveFlyer(Application $app, Request $request, Realtor $realtor, Queue $queue, array $formOptions = []){
         $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptions);
         $form->handleRequest($request);
         if(!$form->isValid()){
@@ -38,39 +38,23 @@ class RequestFlyerBase extends RequestBaseController{
 
         $app->getEntityManager()->persist($realtor);
         $app->getEntityManager()->flush();
+        $queue->setType(Queue::TYPE_FLYER);
 
-        $queue
-            ->setType(Queue::TYPE_FLYER)
-            ->setUser($app->user())
-        ;
-
-        $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue, $formOptions);
-        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
+        if($queue->getUser() == null) {
+            // do not change queue user when edited by admin
+            $queue->setUser($app->user());
+        }
+        $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue, $formOptions);
+        $queueForm->handleRequest($request);
+//        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
 
         if(!$queueForm->isValid()){
             $this->getMessage()->replace('property', $this->getFormErrors($queueForm));
 
             throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
         }
-
+        $queue->setRealtor($realtor);
         $app->getEntityManager()->persist($queue);
-        $app->getEntityManager()->flush();
-
-        $requestFlyer
-            ->setRealtorId($realtor->getId())
-            ->setQueue($queue)
-        ;
-
-        $formRequestFlyer = $app->getFormFactory()->create(new RequestFlyerForm($app->getS3()), $requestFlyer, $formOptions);
-        $formRequestFlyer->submit($this->removeExtraFields($request->request->get('property'), $formRequestFlyer));
-
-        if(!$formRequestFlyer->isValid()){
-            $this->getMessage()->replace('property', $this->getFormErrors($form));
-
-            throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
-        }
-
-        $app->getEntityManager()->persist($requestFlyer);
         $app->getEntityManager()->flush();
     }
 
@@ -83,12 +67,11 @@ class RequestFlyerBase extends RequestBaseController{
     protected function getQueueById(Application $app, $id){
         /** @var Queue $queue */
         $queue = (new QueueManager($app))->getByIdWithRequestFlyeAndrUser($id);
-
         if(!$queue){
-            throw new Http(sprintf("Request flyer \'%s\' not found.", $id), Response::HTTP_BAD_REQUEST);
+            throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
         }
 
-        if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)) {
+        if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getSecurity()->isGranted(User::ROLE_ADMIN)) {
             throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
         }
 
@@ -111,30 +94,26 @@ class RequestFlyerBase extends RequestBaseController{
             'validation_groups' => ["Default", "main"],
             'method' => 'PUT'
         ];
-
-        $realtor = $this->getRealtorById($app, $queue->getFlyer()->getRealtorId());
-
+        $realtor = $queue->getRealtor();
         $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ['method' => 'PUT']);
         $firstRexForm->handleRequest($request);
 
         if(!$firstRexForm->isValid()){
 //                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
 
-            throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            throw new BadRequestHttpException('Additional info is not valid');
         }
 
         $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
 
-        $queue->set1RexId($id)
-            ->setAdditionalInfo($firstRexForm->getData())
-        ;
+        $queue->set1RexId($id);
+        $queue->setAdditionalInfo($firstRexForm->getData());
 
         $this->saveFlyer(
             $app,
             $request,
             $realtor,
             $queue,
-            $queue->getFlyer(),
             $formOptions
         );
     }

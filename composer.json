@@ -1,4 +1,8 @@
 {
+    "require-dev": {
+        "phpunit/phpunit": "4.*",
+        "mockery/mockery": "@stable"
+    },
     "require": {
         "php": ">=5.5",
         "silex/silex": "~1.2",
@@ -7,18 +11,19 @@
         "symfony/yaml": ">=2.5.8",
         "symfony/form": ">=2.5.8",
         "symfony/validator": ">=2.5.8",
-        "symfony/doctrine-bridge": ">=2.5.8",
+        "symfony/doctrine-bridge": "~2.6.0",
         "monolog/monolog":     "~1.7",
         "robmorgan/phinx": "*",
         "aws/aws-sdk-php": "2.*",
         "knplabs/knp-paginator-bundle": "~2.4",
-        "dflydev/doctrine-orm-service-provider": "v1.0.6",
+        "dflydev/doctrine-orm-service-provider": "*",
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~2.0",
-        "php-curl-class/php-curl-class": ">=2.1.0"
+        "php-curl-class/php-curl-class": ">=2.1.0",
+        "knplabs/knp-snappy": "^0.4.0"
     },
     "autoload": {
         "psr-0": {
-            "LO" : ["src/", "tests/"]
+            "LO" : ["src/", "tests/src"]
         }
     },
     "config": {

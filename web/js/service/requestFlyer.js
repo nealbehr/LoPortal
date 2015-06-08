@@ -5,14 +5,14 @@
     var flyerService = angular.module('requestFlyerModule', []);
 
     function extend(Child, Parent) {
-        var F = function() { }
-        F.prototype = Parent.prototype
-        Child.prototype = new F()
-        Child.prototype.constructor = Child
-        Child.superclass = Parent.prototype
+        var F = function() { };
+        F.prototype = Parent.prototype;
+        Child.prototype = new F();
+        Child.prototype.constructor = Child;
+        Child.superclass = Parent.prototype;
     }
 
-    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", "$q", function($http, createRequestFlyerBase, $q){
+    flyerService.service("createFromPropertyApproval", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
         function fromPropertyApproval(id){
             fromPropertyApproval.superclass.constructor.call(this);
             if(id){
@@ -29,27 +29,45 @@
         return fromPropertyApproval;
     }]);
 
+    flyerService.service("createDraftFromPropertyApproval", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
+        function fromPropertyApproval(id){
+            fromPropertyApproval.superclass.constructor.call(this);
+            if(id){
+                this.id = id;
+            }
+
+            this.update = function(){
+                return $http.put('/request/from/approval/draft/' + this.id, this.getFields4Save());
+            }
+        }
+
+        extend(fromPropertyApproval, createRequestFlyerBase);
+
+        return fromPropertyApproval;
+    }]);
+
     flyerService.service("createDraftRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
         return function(){
             var flyer = new createRequestFlyerBase();
 
-            flyer.update = function(){
-                return $http.put('/request/draft/' + this.id, this.getFields4Save());
-            }
+            flyer.update = function() {
+                return $http.put('/request/flyer/' + this.id, this.getFields4Save());
+            };
 
             flyer.add = function(){
                 return $http.post('/request/draft', this.getFields4Save());
-            }
+            };
 
             flyer.remove = function(){
                 return $http.delete('/request/draft/' + this.id);
-            }
+            };
 
             return flyer;
         }
     }]);
 
     flyerService.service("createRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
+        console.log("createRequestFlyer");
         return function(id){
             var flyer = new createRequestFlyerBase();
 
@@ -59,11 +77,11 @@
 
             flyer.add = function(){
                 return $http.post('/request/', this.getFields4Save());
-            }
+            };
 
             flyer.update = function(){
                 return $http.put('/request/' + this.id, this.getFields4Save());
-            }
+            };
 
             return flyer;
         }
@@ -80,7 +98,7 @@
 
             flyer.update = function(){
                 return $http.put('/admin/flyer/' + this.id, this.getFields4Save());
-            }
+            };
             return flyer;
         }
     }]);
@@ -96,6 +114,8 @@
                 mls_number: null,
                 state: null,
                 listing_price: null,
+                funded_percentage: 10.00,
+                maximum_loan: 80.00,
                 photo: null,
                 getPicture: function(){
                     return this.photo;
@@ -111,7 +131,6 @@
                 first_name: null,
                 last_name: null,
                 bre_number: null,
-                estate_agency: null,
                 phone: null,
                 email: null,
                 photo: null,
@@ -122,15 +141,27 @@
                     this.photo = param;
 
                     return this;
+                },
+                realty: {
+                    logo: null,
+                    name: null,
+                    getPicture: function() {
+                        return this.logo;
+                    },
+                    setPicture: function(param) {
+                        this.logo = param;
+                        return this;
+                    }
                 }
-            }
+
+            };
 
             this.address = {
                 address: '',
                 city:    null,
                 state:   null,
                 zip:     null,
-                clear: function(){
+                clear: function() {
                     this.address = '';
                     this.city    = null;
                     this.state   = null;
@@ -143,13 +174,13 @@
                         }
                     }
                 }
-            }
+            };
 
             this.fill = function(data){
                 this.fillObject(data);
 
                 return this;
-            }
+            };
 
             this.fillObject = function(data, object){
                 object = object || this;
@@ -161,12 +192,11 @@
 
                     if(typeof data[i] == "object"){
                         this.fillObject(data[i], object[i]);
-                    }
-                    else{
+                    } else{
                         object[i] = data[i];
                     }
                 }
-            }
+            };
 
             this.getFields4Save = function(object){
                 object = object || this;
@@ -176,15 +206,22 @@
                         continue;
                     }
 
+                    if(i == "listing_price" && null != object[i]){
+                        console.log(i)
+                        console.log(object[i])
+                        result[i] = (object[i] + "").replace(/(\$|,)/, "");
+                        continue;
+                    }
+
                     result[i] = (typeof object[i] === "object" && object[i] !== null)
                                         ? this.getFields4Save(object[i])
                                         : object[i];
                 }
 
                 return result;
-            }
+            };
 
-            this.save = function(){
+            this.save = function() {
                 var deferred = $q.defer();
                 (function(){ return self.id? self.update(): self.add();})()
                     .success(function(data){
@@ -197,15 +234,15 @@
                 ;
 
                 return deferred.promise;
-            }
+            };
 
             this.add = function(){
                 throw new Error("Request add must be override");
-            }
+            };
 
             this.update = function(){
                 throw new Error("Request update must be override");
-            }
+            };
 
             var afterSaveCallback;
             this.afterSave = function(callback){

@@ -2,13 +2,13 @@
     <div class="col-sm-4 col-lg-3" ng-repeat="v in items">
         <div class="thumbnail">
             <div class="thumb-holder">
-                <img ng-src="[[ v.photo ]]" width="263" height="258" alt="">
+                <img ng-src="[[ v.photo ]]" style="width: 263px; height: 175px;" alt="">
             </div>
             <div class="caption">
                 <address>[[ v.queue.address ]]</address>
             </div>
             <div class="link">
-                <a ng-href="[[ v.pdf_link ]]" class="download">Download Listing Flyer</a>
+                <a target="_blank" href="/request/flyer/[[ v.queue.id ]]/download" class="download">Download Listing Flyer</a>
             </div>
         </div>
     </div>

@@ -9,7 +9,8 @@
 namespace LO\Model\Manager;
 
 use Doctrine\ORM\Query\Expr;
-use LO\Form\UserForm;
+use LO\Form\AddressType;
+use LO\Form\UserFormType;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User as EntityUser;
 use LO\Model\Entity\User;
@@ -51,28 +52,30 @@ class UserManager extends Base{
     /**
      * @param Request $request
      * @param User $user
-     * @param UserForm $userForm
+     * @param UserFormType $userForm
      * @return array|bool
      */
-    public function validateAndSaveUser(Request $request, User $user, UserForm $userForm){
+    public function validateAndSaveUser(Request $request, User $user, UserFormType $userFormType, $method = 'PUT'){
         $requestUser = $request->request->get('user');
         $formOptions = [
             'validation_groups' => ['Default'],
+            'method'            => $method,
         ];
 
-        if(!$user || (isset($requestUser['email']) && $user->getEmail() != $requestUser['email'])){//remove uniq constrain
+        if(!$user || (isset($requestUser['email']) && $user->getEmail() != $requestUser['email'])){//remove unique constrain
             $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ["New"]);
         }
 
-        $form = $this->getApp()->getFormFactory()->create($userForm, $user, $formOptions);
+        $userForm = $this->getApp()->getFormFactory()->create($userFormType, $user, $formOptions);
 
-        $form->submit($this->removeExtraFields($requestUser, $form));
+        $userForm->handleRequest($request);
 
-        if(!$form->isValid()){
-            return $this->getFormErrors($form);
+        if(!$userForm->isValid()){
+            return $this->getFormErrors($userForm);
         }
 
         $this->getApp()->getEntityManager()->persist($user);
+//        $this->getApp()->getEntityManager()->persist($address);
         $this->getApp()->getEntityManager()->flush();
 
         return [];

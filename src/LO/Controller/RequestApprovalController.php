@@ -13,7 +13,7 @@ use LO\Common\Email\Request\PropertyApprovalSubmission;
 use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
-use LO\Form\QueueForm;
+use LO\Form\QueueType;
 use LO\Model\Entity\RequestApproval;
 use LO\Model\Entity\Queue;
 use LO\Model\Manager\QueueManager;
@@ -23,9 +23,10 @@ use LO\Traits\GetFormErrors;
 
 class RequestApprovalController extends RequestApprovalBase{
     public function AddAction(Application $app, Request $request){
+        $data = [];
         try{
             $app->getEntityManager()->beginTransaction();
-            $data = [];
+
             $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
             $firstRexForm->handleRequest($request);
 
@@ -43,13 +44,13 @@ class RequestApprovalController extends RequestApprovalBase{
                 ->setUser($app->user())
                 ->setAdditionalInfo($firstRexForm->getData())
             ;
-
-            $queueForm = $app->getFormFactory()->create(new QueueForm(), $queue);
-            $queueForm->handleRequest($request);
-
+            $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
+            $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
             $queue->setState(Queue::STATE_REQUESTED);
 
-            if(!$queueForm->isValid()){
+            if(!$queueForm->isValid()) {
+                $errors = $queueForm->getErrorsAsString();
+                $app->getMonolog()->addInfo($errors);
                 $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);
 
                 throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);

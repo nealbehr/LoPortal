@@ -9,16 +9,16 @@
 namespace LO\Common\Email\Request;
 
 
+use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;
-use LO\Model\Entity\RequestFlyer;
 
 class RequestFlyerSubmission implements RequestInterface{
     private $realtor;
-    private $requestFlyer;
+    private $queue;
 
-    public function __construct(Realtor $realtor, RequestFlyer $requestFlyer) {
+    public function __construct(Realtor $realtor, Queue $queue) {
         $this->realtor = $realtor;
-        $this->requestFlyer = $requestFlyer;
+        $this->queue = $queue;
     }
 
     public function getSubject(){
@@ -32,7 +32,7 @@ class RequestFlyerSubmission implements RequestInterface{
     public function getTemplateVars(){
         return [
             'realtor' => $this->realtor,
-            'requestFlyer' => $this->requestFlyer,
+            'queue' => $this->queue,
         ];
     }
 }

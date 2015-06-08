@@ -1,0 +1,72 @@
+<form ng-submit="submit(formLender)" class="css-form" novalidate name="formLender">
+    <div class="row edit-user">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-5 col-lg-offset-4">
+            <div id="lenderMessage"></div>
+
+            <div class="alert alert-danger fade in" ng-show="!hideErrors && formLender.$submitted && !formLender.$valid">
+                <a ng-href="#" class="close" ng-click="showErrors($event)">close</a>
+                <div ng-show="formLender.name.$error.required">Lender name is required</div>
+                <!-- phone -->
+            </div>
+
+            <h2>[[ title ]]</h2>
+            <div class="thumbnail">
+                <div class="realtor-photo"  style="text-align: center; height: 150px;">
+                    <img ng-src="[[ lender.picture | defaultImage:'/images/empty-lender-150x525.png' ]]" alt="lender" ng-click="lenderPicture.choosePhoto()">
+                </div>
+                <div class="caption">
+                   <span class="upload">
+                        Upload Lender Logo
+                        <div><input class="upload" id="lenderPhoto" type="file" valid-file name="fileimage" ng-model="lender.picture"></div>
+                    </span>
+                </div>
+            </div>
+            <span class="label-controls">Lender Name</span>
+            <div class="inputs-holder">
+                <div ng-class="{'input':true, 'error': formLender.name.$touched && formLender.name.$invalid }">
+                    <input maxlength="50" class="input-lg" type="text" placeholder="Lender name" required ng-model="lender.name" name="name" ng-model-options="{ updateOn: 'blur' }">
+                </div>
+            </div>
+            <span class="label-controls">Common Disclosure</span>
+            <textarea class="form-control" cols="30" rows="2" placeholder="Disclosure" ng-model="allStatesDisclosure.disclosure" name="disclosure"></textarea>
+
+
+            <span class="label-controls">Lender Disclosure per State</span>
+            <div class="state-list">
+                <ul>
+                    <li ng-repeat="(key, value) in usaStates">
+                        <a title="[[ value.name ]]" href="#" ng-class="{'filled': value.filled }" ng-click="showModal($event, value.code, value.filled);">[[ value.code ]]</a>
+                    </li>
+                </ul>
+            </div>
+
+            <button ng-disabled="formLender.$invalid" class="btn btn-default btn-lg">Save</button>
+            <div class="bottom-nav">
+                <a ng-if="lender.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete lender</a>
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="lender-state-disclosure" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Apply Disclosure</h4>
+                <strong class="modal-subtitle"ng-show="lender.name">[[ lender.name ]]</strong>
+            </div>
+            <div class="modal-body">
+                <div class="modal-box">
+                    <span class="label-controls">Lender disclosure applies to: [[ selectedDisclosure.state ]]</span>
+                    <textarea cols="30" rows="3" class="form-control" ng-model="selectedDisclosure.disclosure" ></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default btn-lg" ng-click="confirmInModal($event);">Confirm</button>
+                <a ng-show="selectedDisclosure.filled" href="#" ng-click="deleteInModal($event);" class="delete">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>

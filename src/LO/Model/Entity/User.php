@@ -12,6 +12,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\UniqueConstraint;
@@ -22,6 +25,7 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
 class User extends Base implements UserInterface{
+
     /**
      * Roles list
      */
@@ -37,6 +41,16 @@ class User extends Base implements UserInterface{
      * @GeneratedValue(strategy="AUTO")
      */
     protected $id;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $deleted = '0';
+
+    /**
+     * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})
+     **/
+    protected $address;
 
     /**
      * @Column(type="string")
@@ -80,8 +94,9 @@ class User extends Base implements UserInterface{
     protected $state;
 
     /**
-     * @Column(type="string")
-     */
+     * @ManyToOne(targetEntity="Lender")
+     * @JoinColumn(name="lender_id", referencedColumnName="id")
+     **/
     protected $lender;
 
     /**
@@ -140,9 +155,14 @@ class User extends Base implements UserInterface{
     protected $sales_director;
 
     /**
-     * @Column(type="string", length=255)
+     * @Column(type="string", length=100)
      */
     protected $sales_director_email;
+
+    /**
+     * @Column(type="string", length=100)
+     */
+    protected $sales_director_phone;
 
     /**
      * Init entity
@@ -151,6 +171,16 @@ class User extends Base implements UserInterface{
         parent::__construct();
         $this->salt   = $this->generateSalt();
         $this->state  = self::STATE_ACTIVE;
+    }
+
+    public function getDeleted() {
+        return $this->deleted;
+    }
+
+    public function setDeleted($param) {
+        $this->deleted = $param;
+
+        return $this;
     }
 
     /**
@@ -179,6 +209,9 @@ class User extends Base implements UserInterface{
         return $this;
     }
 
+    /**
+     * @return Lender
+     */
     public function getLender(){
         return $this->lender;
     }
@@ -525,8 +558,13 @@ class User extends Base implements UserInterface{
 
     public function getPublicInfo(){
         $result = $this->toArray();
-        unset($result['password'], $result['salt'], $result['state']);
-
+        unset($result['password'], $result['salt'], $result['state'], $result['lender'], $result['address']);
+        $result['lender'] = $this->getLender()->toArray();
+        $address = $this->getAddress();
+        if ($address == null) {
+            $address = new Address();
+        }
+        $result['address'] = $address->toArray();
         return $result;
     }
 
@@ -553,4 +591,40 @@ class User extends Base implements UserInterface{
     public function getNmls(){
         return $this->nmls;
     }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress()
+    {
+        if($this->address == null) {
+            $this->address = new Address();
+        }
+        return $this->address;
+    }
+
+    /**
+     * @param Address $address
+     */
+    public function setAddress(Address $address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSalesDirectorPhone()
+    {
+        return $this->sales_director_phone;
+    }
+
+    /**
+     * @param mixed $sales_director_phone
+     */
+    public function setSalesDirectorPhone($sales_director_phone)
+    {
+        $this->sales_director_phone = $sales_director_phone;
+    }
+
 }

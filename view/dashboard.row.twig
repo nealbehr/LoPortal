@@ -1,10 +1,12 @@
 <div class="panel panel-default" ng-show="items.length > 0">
-    <div class="panel-heading">
+<div class="panel-heading">
         <strong class="panel-title">
             <a class="collapsed" data-toggle="collapse" href="#[[ id ]]" aria-controls="inProcess"><span class="arrow"></span>[[ title ]] <span class="badge">[[ items.length ]]</span></a>
         </strong>
     </div>
     <div id="[[ id ]]" class="panel-collapse collapse">
+        <div class="admin-table user-managment">
+        <div class="table-holder">
         <table class="table table-striped">
             <thead>
             <tr>
@@ -21,14 +23,22 @@
                 <td>[[ v.address ]]</td>
                 <td>[[ v.request_type|dashboardType ]]</td>
                 <td>
-                    <a ng-if="isApprovedProperty(v)" ng-href="/#/flyer/from/approval/[[ v.id ]]/edit" class="flyer-from-approval">Add Request Listing Flyer</a>
-                    <a ng-if="hasPdf(v)" ng-href="[[ v.flyer.pdf_link ]]" class="download">Download PDF</a>
-                    <a ng-if="canCancel(v)" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a>
-                    <a ng-if="isComplete(v)" href="/#/flyer/[[ v.id ]]/edit" class="complete">Complete</a>
-                    <span class="action-none" ng-if="isNone(v)">None</span>
+                    <div class="dropdown">
+                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a ng-if="isApprovedProperty(v)" ng-href="/#/flyer/from/approval/[[ v.id ]]/edit" class="flyer-from-approval">Add Request Listing Flyer</a></li>
+                            <li><a ng-if="isApprovedFlyer(v)" target="_blank" href="/request/flyer/[[ v.id ]]/download" class="download">Download PDF</a></li>
+                            <li><a ng-if="canCancel(v)" href="#" class="cancel" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Cancel</a></li>
+                            <li><a ng-if="isComplete(v)" href="/#/flyer/[[ v.id ]]/edit" class="complete">Complete</a></li>
+                            <li><a ng-if="isApprovedFlyer(v)" href="/#/flyer/[[ v.id ]]/edit" class="complete">Edit</a></li>
+                            <li><a ng-if="isDeclined(v)" class="delete" data-id="[[ v.id ]]" data-state="[[ state ]]" data-index="[[ k ]]">Delete</a></li>
+                        </ul>
+                    </div>
                 </td>
             </tr>
             </tbody>
         </table>
+        </div>
+        </div>
     </div>
 </div>

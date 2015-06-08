@@ -2,6 +2,9 @@
 html,body {
     height: 100%;
 }
+body {
+    min-width: 320px;
+}
 input[type="text"], input[type="email"], input[type="password"] {
     box-shadow: none;
 }
@@ -298,6 +301,38 @@ th.header {
     td {
         padding: 16px 20px !important;
     }
+}
+.input-price {
+    &:before {
+        content: "$";
+        position: absolute;
+        top: 19px;
+        left: 11px;
+        color: #adaeb1;
+    }
+    input {
+        padding-left: 25px;
+    }
+}
+.input-percent {
+  &:before {
+    content: "%";
+    position: absolute;
+    top: 19px;
+    left: 11px;
+    color: #adaeb1;
+  }
+  input {
+    padding-left: 35px;
+  }
+}
+.realtor-name {
+    width: 70%;
+}
+.label-controls {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
 
 @import "custom-style/links";

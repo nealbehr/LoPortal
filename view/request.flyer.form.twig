@@ -1,117 +1,171 @@
 <section class="container">
     <header class="page-title">
         <h1>[[ titles.header ]]</h1>
-        <div class="link" ng-if="!request.id">
-            <a href="/static/Example Listing Flyer.pdf" target="_blank" class="download">Download Sample</a>
+        <div class="link" ng-if="request.id">
+            <a href="/request/flyer/[[ request.id ]]/download" target="_blank" class="download">Download Sample</a>
         </div>
     </header>
     <div class="row listing">
         <aside class="sidebar col-sm-3">
             <h2>Loan Officer Info</h2>
-            <a href="/#/user/[[ user.id ]]/edit" class="change">Change</a>
+            <a ng-show="user.isAdmin()" href="/#/admin/user/[[ officer.id ]]/edit" class="change">Change</a>
+            <a ng-show="!user.isAdmin()" href="/#/user/[[ officer.id ]]/edit" class="change">Change</a>
+            <div class="info-photo">
+                <img ng-src="[[ officer.picture | defaultImage:'/images/empty-user.png' ]]" alt="loan officer">
+            </div>
             <dl>
                 <dt>First Name</dt>
-                <dd>[[ user.first_name ]]</dd>
+                <dd>[[ officer.first_name ]]</dd>
                 <dt>Last name</dt>
-                <dd>[[ user.last_name ]]</dd>
+                <dd>[[ officer.last_name ]]</dd>
                 <dt>Title</dt>
-                <dd>[[ user.title ]]</dd>
-                <dt>Sales Director</dt>
-                <dd>[[ user.sales_director ]]</dd>
-                <dt>Sales Manager Email</dt>
-                <dd>[[ user.sales_director_email ]]</dd>
+                <dd>[[ officer.title ]]</dd>
                 <dt>Lender</dt>
-                <dd>[[ user.lender ]]</dd>
+                <dd>[[ officer.lender.name ]]</dd>
                 <dt>Primary Phone</dt>
-                <dd>[[ user.phone ]]</dd>
+                <dd>[[ officer.phone ]]</dd>
+                <dt>Mobile Phone</dt>
+                <dd>[[ officer.mobile ]]</dd>
+                <dt>Address</dt>
+                <dd>[[ officer.address.formatted_address ]]</dd>
                 <dt>Email Address</dt>
-                <dd><a ng-href="mailto:[[ user.email ]]">[[ user.email ]]</a></dd>
+                <dd><a ng-href="mailto:[[ officer.email ]]">[[ officer.email ]]</a></dd>
                 <dt>NMLS #</dt>
-                <dd>[[ user.nmls ]]</dd>
+                <dd>[[ officer.nmls ]]</dd>
             </dl>
+            <div class="contact-info">
+                <h4>Questions?</h4>
+                <p>
+                    Call your Sales Director [[ officer.sales_director ]]<br />
+                    <strong>[[ officer.sales_director_phone ]]</strong>
+                </p>
+                <p>
+                    or Business Support at <br />
+                    <strong>(800) 365-3901</strong>
+                </p>
+            </div>
         </aside>
 
-        <form ng-submit="newFlyer.$valid && save()" novalidate name="newFlyer">
+        <form ng-submit="save(newFlyer)" novalidate name="newFlyer">
             <main class="col-sm-8 col-md-6 col-lg-5 col-sm-offset-1">
+                <div id="errors"></div>
+                <div ng-show="!hideErrors && newFlyer.$submitted && !newFlyer.$valid" class="alert alert-danger fade in">
+                    <a ng-href="#" class="close" aria-label="Close" ng-click="showErrors($event)">close</a>
+                    <!-- property photo -->
+                    <div ng-show="newFlyer.fileimage.$error.required">The Property image is required.</div>
+                    <!-- address -->
+                    <div ng-show="newFlyer.address.$error.required">The Property address is required.</div>
+                    <div ng-show="newFlyer.address.$error.address_components">The Property address is invalid.</div>
+                    <!-- Listing price -->
+                    <div ng-show="newFlyer.listing_price.$error.required">The Listing price is required.</div>
+                    <div ng-show="newFlyer.listing_price.$error.pattern">The Listing price should look like $100,0000,000.</div>
+                    <!-- realtor photo -->
+                    <div ng-show="newFlyer.realtorfileimage.$error.required">The Realtor image is required.</div>
+                    <!-- realtor first name -->
+                    <div ng-show="newFlyer.first_name.$error.required">The First name is required.</div>
+                    <div ng-show="newFlyer.first_name.$error.pattern">The First name is invalid.</div>
+                    <!-- realtor last name -->
+                    <div ng-show="newFlyer.last_name.$error.required">The Last name is required.</div>
+                    <div ng-show="newFlyer.last_name.$error.pattern">The Last name is required.</div>
+                    <!-- realtor phone number -->
+                    <div ng-show="newFlyer.phone.$error.required">The Phone is required.</div>
+                    <div ng-show="newFlyer.phone.$error.pattern">The Phone is invalid.</div>
+                    <!-- realtor email -->
+                    <div ng-show="newFlyer.email.$error.required">The Email is required.</div>
+                    <div ng-show="newFlyer.email.$error.email">The Email is invalid.</div>
+                </div>
+
                 <h2>Property Info</h2>
                 <div class="thumbnail">
                     <div class="property-photo" style="text-align: center;">
-                        <img ng-src="[[ request.property.photo|propertyImage ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
+                        <img ng-src="[[ request.property.photo | defaultImage:'/images/empty-big.png' ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
                     </div>
                     <div class="caption">
                         <span class="upload">
                             Upload Property image
                             <div><input class="upload" id="propertyImage" type="file" valid-file name="fileimage" required="" ng-model="request.property.photo"></div>
                         </span>
-                        <span class="error-badge" ng-show="newFlyer.$submitted && newFlyer.fileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Property image is required.">!</span>
                     </div>
                 </div>
+
                 <div class="inputs-holder">
                     <div class="input">
-                        <input ng-readonly="isAddressReadOnly()" ng-keydown="request.address.clear();" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
-                        <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.required" data-toggle="tooltip" data-placement="right" title="The Property address is required.">!</span>
-                        <span ng-show="(newFlyer.$submitted || newFlyer.address.$touched) && newFlyer.address.$error.address_components" data-toggle="tooltip" data-placement="right" title="The Property address is invalid.">!</span>
+                        <input ng-readonly="isAddressReadOnly()" ng-keypress="clearAddress($event)" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
                     </div>
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="MLS Number (Optional)" ng-model="request.property.mls_number">
                     </div>
-                    <div class="input">
-                        <input class="input-lg" type="text" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required="">
-                        <span ng-show="(newFlyer.$submitted || newFlyer.listing_price.$touched) && newFlyer.listing_price.$error.required" data-toggle="tooltip" data-placement="right" title="The Listing price is required.">!</span>
+                    <div ng-class="{'input':true, 'input-price':true, 'error': newFlyer.listing_price.$touched && newFlyer.listing_price.$invalid }">
+                        <input class="input-lg" type="text" ng-pattern="/^\$?\d+(,\d+)*$/" name="listing_price" placeholder="Listing Price" ng-model="request.property.listing_price" required>
                     </div>
+                    <div
+                            ng-show="user.isAdmin()"
+                            ng-class="{'input':true, 'input-percent':true, 'error': newFlyer.funded_percentage.$invalid }">
+                        <input class="input-lg" type="number" min="10" max="12.5" step="0.1" name="funded_percentage" placeholder="FirstREX Down Payment" ng-model="request.property.funded_percentage" required>
+                    </div>
+                    <div
+                            ng-show="user.isAdmin()"
+                            ng-class="{'input':true, 'input-percent':true, 'error': newFlyer.maximum_loan.$invalid }">
+                        <input class="input-lg" type="number" min="75" max="80" name="maximum_loan" placeholder="LTV" ng-model="request.property.maximum_loan" required>
+                    </div>
+
                 </div>
                 <hr>
                 <h2>Realtor Info</h2>
                 <div class="main-info">
                     <div class="user-photo">
-                        <div class="realtor-photo">
-                            <img ng-src="[[ request.realtor.photo|realtorImage ]]" alt="" ng-click="realtorPicture.choosePhoto()">
+                        <div class="realtor realtor-photo">
+                            <img ng-src="[[ request.realtor.photo | defaultImage:'/images/empty-user.png' ]]" alt="" ng-click="realtorPicture.choosePhoto()">
                         </div>
                         <span class="upload">
                             Upload Photo
                             <div><input id="realtorImage" type="file" valid-file name="realtorfileimage" required="" ng-model="request.realtor.photo"></div>
                         </span>
-                        <span class="error-badge" ng-show="(newFlyer.$submitted || newFlyer.realtorfileimage.$touched) && newFlyer.realtorfileimage.$error.required" data-toggle="tooltip" data-placement="right" title="The Realtor image is required.">!</span>
                     </div>
                     <div class="inputs-holder">
                         <div class="input">
                             <input class="input-lg" type="text" placeholder="First name" ng-pattern="/^[A-Za-z\s]+$/" ng-model="request.realtor.first_name" required="" name="first_name">
-                            <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.required" data-toggle="tooltip" data-placement="left" title="The First name is required.">!</span>
-                            <span ng-show="(newFlyer.$submitted || newFlyer.first_name.$touched) && newFlyer.first_name.$error.pattern" data-toggle="tooltip" data-placement="left" title="The First name is invalid.">!</span>
                         </div>
                         <div class="input">
                             <input class="input-lg" type="text" ng-pattern="/^[A-Za-z\s]+$/" placeholder="Last name" ng-model="request.realtor.last_name" required="" name="last_name">
-                            <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.required" data-toggle="tooltip" data-placement="left" title="The Last name is required.">!</span>
-                            <span ng-show="(newFlyer.$submitted || newFlyer.last_name.$touched) && newFlyer.last_name.$error.pattern" data-toggle="tooltip" data-placement="left" title="The Last name is required.">!</span>
                         </div>
                     </div>
                 </div>
+
                 <div class="inputs-holder">
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="Phone number" ng-pattern="/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/" ng-model="request.realtor.phone" required="" name="phone">
-                        <span ng-show="(newFlyer.$submitted || newFlyer.phone.$touched) && newFlyer.phone.$error.required" data-toggle="tooltip" data-placement="right" title="The Phone is required.">!</span>
-                        <span ng-show="(newFlyer.$submitted || newFlyer.phone.$touched) && newFlyer.phone.$error.pattern" data-toggle="tooltip" data-placement="right" title="The Phone is invalid.">!</span>
                     </div>
                     <div class="input">
                         <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">
-                        <span ng-show="(newFlyer.$submitted || newFlyer.email.$touched) && newFlyer.email.$error.required" data-toggle="tooltip" data-placement="right" title="The Email is required.">!</span>
-                        <span ng-show="(newFlyer.$submitted || newFlyer.email.$touched) && newFlyer.email.$error.email" data-toggle="tooltip" data-placement="right" title="The Email is invalid.">!</span>
                     </div>
-                </div>
-                <div class="inputs-holder">
                     <div class="input">
                         <input class="input-lg" type="text" placeholder="BRE number" ng-model="request.realtor.bre_number" name="bre">
                     </div>
-                    <div class="input">
-                        <input class="input-lg" type="text" placeholder="Real estate agency" ng-model="request.realtor.estate_agency" name="agency">
+                </div>
+
+                <div class="thumbnail">
+                    <div class="realtor-photo"  style="text-align: center; height: 130px;overflow: hidden;">
+                        <img id="realtyLogoImage" data-ng-src="[[ request.realtor.realty.logo | defaultImage:'/images/empty-company-150x525.png' ]]">
+                    </div>
+                    <div class="caption">
+                        <span class="upload">Upload Company Logo<div><input class="upload" id="realtyLogo" type="file" valid-file name="fileimage" required="" ng-model="request.realtor.realty.logo"></div></span>
+                        <span class="upload" style="background-position: -21px 0;margin-left: 40px;" data-toggle="modal" data-target="#chooseRealtyCompanyLogo">Select Company Logo</span>
                     </div>
                 </div>
+
+                <div class="inputs-holder">
+                    <div class="input">
+                        <input class="input-lg" type="text" placeholder="Realtor company" ng-model="request.realtor.realty.name" ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9\.\-#&\s]*$/">
+                    </div>
+                </div>
+
                 <div class="row">
-                    <div class="col-sm-4 pull-right">
+                    <div class="col-sm-4 pull-right" ng-if="request.property.state != states.approved">
                         <button class="btn btn-default btn-lg">[[ titles.button ]]</button>
                     </div>
-                    <div class="col-sm-4 pull-right" ng-if="!request.property.state || request.property.state == states.draft">
-                        <button class="btn btn-default btn-lg" ng-click="saveDraft($event)">Save</button>
+                    <div class="col-sm-4 pull-right" ng-if="!request.property.state || request.property.state == states.draft || request.property.state == states.approved">
+                        <button class="btn btn-default btn-lg" ng-click="saveDraftOrApproved($event)">Save</button>
                     </div>
                     <div class="col-sm-4">
                         <a ng-if="!request.id" ng-href="/#/" class="back">Back to dashboard</a>
@@ -122,3 +176,39 @@
         </form>
     </div>
 </section>
+
+<div class="modal fade" id="chooseRealtyCompanyLogo" tabindex="-1" role="dialog" aria-hidden="true" data-ng-controller="SelectRealtyLogoController">
+    <div class="modal-dialog" style="width: 665px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Select Company Logo</h4>
+                {#<p>Upload a new logo</p>#}
+                {#<div class="" style="width: 456px; margin: 0 auto;">#}
+                    {#<div class="upload-holder">#}
+                        {#<button type="button" id="realtyLogo" class="btn btn-default">Choose File</button>#}
+                    {#</div>#}
+                {#</div>#}
+            </div>
+
+          <div class="modal-body">
+              <div class="logo-box">
+                  {#Choose an existing company:#}
+                  {#<div class="top-bar">#}
+                  <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Search by company name" data-ng-model="test.realtyName">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Go!</button>
+                       </span>
+                  </div>
+                  {#</div>#}
+                  <ul>
+                      <li data-ng-click="selectRealtyLogo(realtyCompany)" data-ng-repeat="realtyCompany in realtyCompanies | filter:{name:test.realtyName||''} | orderBy:name | limitTo:9">
+                          <a><img data-ng-src="{{ '{{realtyCompany.logo }}' }}" alt="{{ '{{realtyCompany.name }}' }}"></a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+        </div>
+    </div>
+</div>
