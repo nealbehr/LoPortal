@@ -117,7 +117,13 @@
                         </div>
                         <span class="upload">
                             Upload Photo
-                            <div><input id="realtorImage" type="file" valid-file name="realtorfileimage"></div>
+                            <div>
+                                <input id="realtorImage"
+                                       type="file"
+                                       valid-file
+                                       name="realtorfileimage"
+                                       ng-model="request.realtor.photo">
+                            </div>
                         </span>
                     </div>
                     <div class="inputs-holder">
