@@ -34,7 +34,7 @@ firstrex:
     teplate:
       denial: joanna.umali@1rex.com
 google:
-  apiKey: NotPresent
+  apiKey: AIzaSyCvs5PnZWvzQlQAmlBdR24YGhkfgFavF6I
 amazon:
     securityCredentials:
       key:    AKIAJGGPNM46RAXZIFDA
