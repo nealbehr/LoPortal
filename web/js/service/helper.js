@@ -317,7 +317,7 @@
                     return item.request_type == this.requestType.propertyApproval && item.state == settings.queue.state.approved;
                 };
                 scope.isApprovedFlyer= function(item){
-                    return item.request_type == this.requestType.flyer && item.flyer != null && item.state == settings.queue.state.approved
+                    return item.request_type == this.requestType.flyer && item.state == settings.queue.state.approved
                 };
                 scope.canCancel = function(item){
                     return item.state == settings.queue.state.requested || item.state == settings.queue.state.draft;

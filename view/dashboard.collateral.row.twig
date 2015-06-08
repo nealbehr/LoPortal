@@ -1,14 +1,14 @@
 <div class="row thumbnails">
-    <div class="col-sm-4 col-lg-3" ng-repeat="v in items">
+    <div class="col-sm-4 col-lg-3" ng-repeat="queue in items">
         <div class="thumbnail">
             <div class="thumb-holder">
-                <img ng-src="[[ v.photo ]]" style="width: 263px; height: 175px;" alt="">
+                <img ng-src="[[ queue.photo ]]" style="width: 263px; height: 175px;" alt="">
             </div>
             <div class="caption">
-                <address>[[ v.queue.address ]]</address>
+                <address>[[ queue.address ]]</address>
             </div>
             <div class="link">
-                <a target="_blank" href="/request/flyer/[[ v.queue.id ]]/download" class="download">Download Listing Flyer</a>
+                <a target="_blank" href="/request/flyer/[[ queue.id ]]/download" class="download">Download Listing Flyer</a>
             </div>
         </div>
     </div>
