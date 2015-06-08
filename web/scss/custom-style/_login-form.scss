@@ -5,7 +5,17 @@
     }
     .logo-holder {
         text-align: center;
-        margin-bottom: 41px;
+        margin-bottom: 31px;
+    }
+    .welcome-msg {
+        font: italic 19px "PT serif", serif;
+        color: #747474;
+        margin-bottom: 35px;
+        word-spacing: -1px;
+        text-align: center;
+        strong {
+            font-weight: normal;
+        }
     }
     .wrap {
         width: 100%;
