@@ -56,9 +56,11 @@ class DashboardManager extends Base{
                     ->from(Queue::class, 'q')
                     ->where('q.user_id = :userId')
                     ->andWhere('q.state = :state')
+                    ->andWhere('q.request_type = :request_type')
                     ->addOrderBy('q.created_at', 'DESC')
                     ->setParameter('userId' , $userId)
                     ->setParameter('state', Queue::STATE_APPROVED)
+                    ->setParameter('request_type', Queue::TYPE_FLYER)
                     ->getQuery()
                     ->getResult($hydrate)
         ;
