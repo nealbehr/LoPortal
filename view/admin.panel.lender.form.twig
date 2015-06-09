@@ -12,6 +12,10 @@
             <h2>[[ title ]]</h2>
             <div class="thumbnail">
                 <div class="realtor-photo"  style="text-align: center; height: 150px;">
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Crop photo by dragging the edges and corners of the light blue box over the photo. You can also enlarge or reduce the photo by using two finger gestures on your trackpad or the scrollwheel on your mouse.
+                    </div>
                     <img ng-src="[[ lender.picture | defaultImage:'/images/empty-lender-150x525.png' ]]" alt="lender" ng-click="lenderPicture.choosePhoto()">
                 </div>
                 <div class="caption">
