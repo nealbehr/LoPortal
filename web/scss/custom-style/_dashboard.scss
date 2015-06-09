@@ -140,32 +140,15 @@
     }
     table {
         font-size: 14px;
-        thead {
-            @media (max-width: 767px)  {
-                display: none;
-            }
-        }
         th {
             border: none !important;
             &:first-child {
                 padding-left: 30px;
             }
         }
-        tr {
-            @media (max-width: 767px)  {
-                display: block;
-                width: 100% !important;
-                padding: 15px 0  !important;
-            }
-        }
         td {
             border: none !important;
             width: 18%;
-            @media (max-width: 767px)  {
-                display: block;
-                width: 100% !important;
-                padding: 5px 10px !important;
-            }
             &:first-child {
                 padding-left: 32px;
             }
