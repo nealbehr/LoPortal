@@ -10,16 +10,17 @@ namespace LO\Model\Entity;
 
 
 use Symfony\Component\Validator\Constraints as Assert;
-    use Doctrine\ORM\Mapping\Entity;
-    use Doctrine\ORM\Mapping\Table;
-    use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Column;
 use LO\Validator\FullName;
 
 /**
  * @Entity
  * @Table(name="realtor")
  */
-class Realtor extends Base {
+class Realtor extends Base
+{
 
     /**
      * @Column(type="string", length=255)
@@ -94,58 +95,73 @@ class Realtor extends Base {
      */
     protected $last_name;
 
-    public function setLastName($param){
+    public function setLastName($param)
+    {
         $this->last_name = $param;
 
         return $this;
     }
 
-    public function setFirstName($param){
+    public function setFirstName($param)
+    {
         $this->first_name = $param;
     }
 
-    public function setBreNumber($param){
+    public function setBreNumber($param)
+    {
         $this->bre_number = $param;
 
         return $this;
     }
-    public function setPhone($param){
+
+    public function setPhone($param)
+    {
         $this->phone = $param;
 
         return $this;
     }
-    public function setEmail($param){
+
+    public function setEmail($param)
+    {
         $this->email = $param;
 
         return $this;
     }
-    public function setPhoto($param){
+
+    public function setPhoto($param)
+    {
         $this->photo = $param;
 
         return $this;
     }
 
-    public function getLastName(){
+    public function getLastName()
+    {
         return $this->last_name;
     }
 
-    public function getFirstName(){
+    public function getFirstName()
+    {
         return $this->first_name;
     }
 
-    public function getPhoto(){
+    public function getPhoto()
+    {
         return $this->photo;
     }
 
-    public function getEmail(){
+    public function getEmail()
+    {
         return $this->email;
     }
 
-    public function getPhone(){
+    public function getPhone()
+    {
         return $this->phone;
     }
 
-    public function getBreNumber(){
+    public function getBreNumber()
+    {
         return $this->bre_number;
     }
 
@@ -181,19 +197,22 @@ class Realtor extends Base {
         $this->realty_logo = $realty_logo;
     }
 
-    public function getRealty() {
+    public function getRealty()
+    {
         $realtyCompany = new RealtyCompany();
         $realtyCompany->setName($this->realty_name);
         $realtyCompany->setLogo($this->realty_logo);
         return $realtyCompany;
     }
 
-    public function setRealty(RealtyCompany $realty) {
+    public function setRealty(RealtyCompany $realty)
+    {
         $this->realty_name = $realty->getName();
         $this->realty_logo = $realty->getLogo();
     }
 
-    public function getPublicInfo(){
+    public function getPublicInfo()
+    {
         $result = $this->toArray();
         unset($result['realty_logo'], $result['realty_name'], $result['created_at'], $result['updated_at']);
         $realtyCompany = new RealtyCompany();
@@ -202,5 +221,13 @@ class Realtor extends Base {
         $result['realty'] = $realtyCompany->toArray();
 
         return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->first_name . " " . $this->last_name;
     }
 }

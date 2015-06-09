@@ -280,7 +280,7 @@ class Queue extends Base {
     }
 
     /**
-     * @return mixed
+     * @return Realtor
      */
     public function getRealtor()
     {
@@ -288,7 +288,7 @@ class Queue extends Base {
     }
 
     /**
-     * @param mixed $realtor
+     * @param Realtor $realtor
      */
     public function setRealtor($realtor)
     {
