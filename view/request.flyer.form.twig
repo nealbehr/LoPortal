@@ -137,8 +137,8 @@
                 </div>
 
                 <div class="inputs-holder">
-                    <div class="input">
-                        <input class="input-lg" type="text" placeholder="Phone number" ng-pattern="/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/" ng-model="request.realtor.phone" required="" name="phone">
+                    <div ng-class="{'input':true, 'error':newFlyer.phone && newFlyer.phone.$invalid}">
+                        <input class="input-lg" type="text" placeholder="Phone number" usa-phone ng-model="request.realtor.phone" required="" name="phone">
                     </div>
                     <div class="input">
                         <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">

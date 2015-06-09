@@ -72,7 +72,7 @@ class UserFormType extends AbstractType {
                     'maxMessage' => 'Phone must be shorter than {{ limit }} chars.',
                 ]),
                 new Assert\Regex([
-                    'pattern' => '/^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/',
+                    'pattern' => '/^[0-9+\(\)#\.\s\/ext-]+$/',
                     'message' => 'Please input a valid US phone number including 3 digit area code and 7 digit number.'
                 ])
             ]
