@@ -137,7 +137,7 @@
                 </div>
 
                 <div class="inputs-holder">
-                    <div ng-class="{'input':true, 'error':newFlyer.phone && newFlyer.phone.$invalid}">
+                    <div ng-class="{'input':true, 'error':newFlyer.phone.$dirty && newFlyer.phone.$invalid}">
                         <input class="input-lg" type="text" placeholder="Phone number" usa-phone ng-model="request.realtor.phone" required="" name="phone">
                     </div>
                     <div class="input">
