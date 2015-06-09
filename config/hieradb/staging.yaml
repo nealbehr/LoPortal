@@ -1,5 +1,0 @@
-configure::basepath: /var/www/vhosts/staging.broadwaytenniscenter.com/current
-configure::vhost: staging.broadwaytenniscenter.com
-configure::facebook_app_id: 1556634824577573
-configure::facebook_app_secret: 73812b5bb5c083fdf47d20ac193e4cd5
-configure::percona_password: GPz3quD4YXK7aaY9
