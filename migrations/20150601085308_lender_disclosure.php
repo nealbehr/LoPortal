@@ -16,7 +16,7 @@ class LenderDisclosure extends AbstractMigration
     public function change()
     {
         $table = $this->table('lender_disclosure');
-        $table->addColumn('lender_id', 'integer', array('limit' => MysqlAdapter::INT_REGULAR, 'signed' => false));
+        $table->addColumn('lender_id', 'integer', array('signed' => false));
         $table->addColumn('state', 'string', array('limit' => 2, 'null'=> true));
         $table->addColumn('disclosure', 'text');
         $table->addTimestamps();
