@@ -2,6 +2,7 @@
 .thumbnail{
     box-shadow: 0 1px 3px rgba(180,180,180,0.6);
     margin-bottom: 30px;
+    position: relative;
     .thumb-holder {
         margin: -1px;
     }
@@ -9,6 +10,33 @@
         border-radius: 3px 3px 0 0;
         width: 100%;
         max-width: 100%;
+    }
+    .alert {
+        position: absolute;
+        width: 80%;
+        margin: 7px 10% 0;
+        font-size: 13px;
+        text-align: left;
+        padding: 10px;
+        color: #626262;
+        background: #fff;
+        border: 1px solid #bdbdbd;
+        .close {
+            border-radius: 0;
+            text-indent: 0;
+            height: auto;
+            width: auto;
+            right: -6px;
+            top: -7px;
+            font-size: 20px;
+            &:before {
+                display: none;
+            }
+            &:hover {
+                background: inherit;
+                color: inherit;
+            }
+        }
     }
     address {
         margin: 0;
