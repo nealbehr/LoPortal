@@ -111,6 +111,7 @@ class LenderController extends Base
     {
         $em = $app->getEntityManager();
         try {
+            $em->beginTransaction();
             $lender = new Lender();
             $requestLender = $request->request->get('lender');
             $lenderType = new LenderType($app->getS3());
@@ -118,16 +119,14 @@ class LenderController extends Base
                 'validation_groups' => ['Default', 'New'],
             ];
             $form = $app->getFormFactory()->create($lenderType, $lender, $formOptions);
-//            $form->submit($this->removeExtraFields($requestLender, $form));
+            $form->handleRequest($request);
 
             if (!$form->isValid()) {
                 $this->errors = $this->getFormErrors($form);
                 throw new BadRequestHttpException("Lender info isn't valid");
             }
 
-            $em->beginTransaction();
             $this->saleDisclosures($lender, $em, $requestLender);
-
             $em->persist($lender);
             $em->flush();
             $em->commit();
@@ -135,7 +134,6 @@ class LenderController extends Base
         } catch (HttpException $e) {
             $em->rollback();
             $app->getMonolog()->addError($e);
-
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
         }
@@ -145,12 +143,14 @@ class LenderController extends Base
     {
         $em = $app->getEntityManager();
         try {
-            $lender = $app->getEntityManager()->getRepository(Lender::class)->find($id);
+            $em->beginTransaction();
+            $lender = $em->getRepository(Lender::class)->find($id);
             /* @var Lender $lender */
             $requestLender = $request->request->get('lender');
             $lenderType = new LenderType($app->getS3());
             $formOptions = [
                 'validation_groups' => ['Default'],
+                'method' => 'PUT'
             ];
             $form = $app->getFormFactory()->create($lenderType, $lender, $formOptions);
             $form->handleRequest($request);
@@ -161,7 +161,6 @@ class LenderController extends Base
                 throw new BadRequestHttpException("Lender info isn't valid");
             }
 
-            $em->beginTransaction();
             $this->saleDisclosures($lender, $em, $requestLender);
             $em->persist($lender);
             $em->flush();
