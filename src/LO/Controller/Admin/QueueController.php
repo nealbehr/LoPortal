@@ -82,16 +82,15 @@ class QueueController extends Base
         try {
             $em->beginTransaction();
             /** @var Queue $queue */
-            $queue = $this->findQueueWithRequestFlyerById($app, $id);
-
+            $queue = $em->find(Queue::class, $id);
             if (null === $queue) {
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
             $denialReason = $request->request->get('reason');
             $queue->setState(Queue::STATE_DECLINED)->setReason($denialReason);
-            $app->getEntityManager()->persist($queue);
-            $app->getEntityManager()->flush();
+            $em->persist($queue);
+            $em->flush();
 
             $requestInterface = $this->getEmailObject($app, $queue);
             $requestChangeStatus = new RequestChangeStatus($app, $queue, $requestInterface);
@@ -109,11 +108,11 @@ class QueueController extends Base
     public function approveRequestFlyerAction(Application $app, Request $request, $id)
     {
         $realtor = null;
+        $em = $app->getEntityManager();
         try {
-            $app->getEntityManager()->beginTransaction();
+            $em->beginTransaction();
             $data = [];
-            $queue = $this->findQueueWithRequestFlyerById($app, $id);
-
+            $queue = $em->find(Queue::class, $id);
             if (null === $queue) {
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
@@ -129,8 +128,8 @@ class QueueController extends Base
                 throw new BadRequestHttpException("Data is not valid.");
             }
 
-            $app->getEntityManager()->persist($queue);
-            $app->getEntityManager()->flush();
+            $em->persist($queue);
+            $em->flush();
 
             /** @var Realtor $realtor */
             $realtor = $queue->getRealtor();
@@ -143,11 +142,11 @@ class QueueController extends Base
                 ->send();
 
 
-            $app->getEntityManager()->commit();
+            $em->commit();
 
             return $app->json("success");
         } catch (HttpException $e) {
-            $app->getEntityManager()->rollback();
+            $em->rollback();
             $app->getMonolog()->addWarning($e);
             return $app->json(["message" => $e->getMessage()], $e->getStatusCode());
         }
@@ -155,10 +154,11 @@ class QueueController extends Base
 
     public function approveRequestApprovalAction(Application $app, Request $request, $id)
     {
+        $em = $app->getEntityManager();
         try {
-            $app->getEntityManager()->beginTransaction();
+            $em->beginTransaction();
             $data = [];
-            $queue = $this->findQueueWithRequestFlyerById($app, $id);
+            $queue = $em->find(Queue::class, $id);
 
             if (null === $queue) {
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
@@ -174,18 +174,18 @@ class QueueController extends Base
                 throw new BadRequestHttpException("Data is not valid.");
             }
 
-            $app->getEntityManager()->persist($queue);
-            $app->getEntityManager()->flush();
+            $em->persist($queue);
+            $em->flush();
 
             $request = new PropertyApprovalAccept($request->getSchemeAndHttpHost());
             $changeStatusRequest = new RequestChangeStatus($app, $queue, $request);
             $changeStatusRequest->send();
 
-            $app->getEntityManager()->commit();
+            $em->commit();
 
             return $app->json("success");
         } catch (HttpException $e) {
-            $app->getEntityManager()->rollback();
+            $em->rollback();
             $app->getMonolog()->addWarning($e);
             $data["message"] = $e->getMessage();
             return $app->json($data, $e->getStatusCode());
@@ -207,26 +207,6 @@ class QueueController extends Base
         /** @var Realtor $realtor */
         $realtor = $queue->getRealtor();
         return new RequestFlyerDenial($realtor, $queue, $email);
-    }
-
-    /**
-     * @param Application $app
-     * @param $id
-     * @return Queue
-     */
-    private function findQueueWithRequestFlyerById(Application $app, $id)
-    {
-        return $app->getEntityManager()
-            ->createQueryBuilder()
-            ->select('q, u, r')
-            ->from(Queue::class, 'q')
-            ->join('q.realtor', 'r')
-            ->join('q.user', 'u')
-            ->where('q.id = :id')
-            ->setParameter('id', $id)
-            ->getQuery()
-            ->setHint(Query::HINT_FORCE_PARTIAL_LOAD, true)
-            ->getOneOrNullResult();
     }
 
     private function getDuplicates(Application $app, array $ids)

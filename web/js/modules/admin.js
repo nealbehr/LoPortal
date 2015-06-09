@@ -179,7 +179,7 @@
             waitingScreen.show();
             $http.patch("/admin/queue/approve/flyer/" + $scope.ngDialogData.request.id, {file: this.marketingCollateral, reason: this.reason})
                 .success(function(data){
-                    $scope.closeThisDialog({state: "success", requestState: ($scope.marketingCollateral? settings.queue.state.approved: settings.queue.state.listingFlyerPending)});
+                    $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
                 .error(function(data, code){
                     $scope.closeThisDialog({state: "danger", message: (typeof data == "object" && data !== null && "message" in data? data.message: data)});
