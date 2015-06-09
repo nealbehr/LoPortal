@@ -15,6 +15,7 @@ db.options:
     charset:  utf8
 google:
   apiKey: AIzaSyC4lwX5bWIydtFeREY-T5bYT64q8s4WxTk
+  analytics: UA-63926109-1
 amazon:
     securityCredentials:
       key:    AKIAJGGPNM46RAXZIFDA

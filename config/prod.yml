@@ -35,6 +35,7 @@ firstrex:
       denial: joanna.umali@1rex.com
 google:
   apiKey: AIzaSyAxuigzKpMper8uWzvQYdHI6lQJm4f26JM
+  analytics: UA-63817823-1
 amazon:
     securityCredentials:
       key:    AKIAJGGPNM46RAXZIFDA
