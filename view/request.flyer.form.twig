@@ -76,6 +76,10 @@
                 <h2>Property Info</h2>
                 <div class="thumbnail">
                     <div class="property-photo" style="text-align: center;">
+                        <div class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            Crop photo by dragging the edges and corners of the light blue box over the photo. You can also enlarge or reduce the photo by using two finger gestures on your trackpad or the scrollwheel on your mouse.
+                        </div>
                         <img ng-src="[[ request.property.photo | defaultImage:'/images/empty-big.png' ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
                     </div>
                     <div class="caption">
