@@ -21,7 +21,7 @@ class RealtorCompany extends AbstractMigration
             ->update();
 
         $this->execute('alter table `realtor` change column `realty_name` `realty_name` varchar(50)');
-        $this->execute("update realtor set realty_name='John L Scott Mortgage', realty_logo='https://s3.amazonaws.com/1rex/realty.logo/143239065380785.JPEG';");
+        $this->execute("update realtor set realty_name='John L Scott Mortgage', realty_logo='https://s3-us-west-1.amazonaws.com/1rex/realty.logo/143239065380785.JPEG';");
     }
     
     /**
