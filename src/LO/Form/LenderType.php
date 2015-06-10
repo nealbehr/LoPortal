@@ -47,7 +47,7 @@ class LenderType extends AbstractType {
             ]
         ]);
 
-        $builder->add('picture', new S3Photo($this->s3, '1rex.lenders.pictures'));
+        $builder->add('picture', new S3Photo($this->s3, '1rex/lenders.pictures'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){

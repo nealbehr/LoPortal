@@ -95,11 +95,11 @@ class RequestFlyerController extends RequestFlyerBase {
 
         $realtorPhoto = $realtor->getPhoto();
         if($realtorPhoto == null) {
-            $realtorPhoto = 'https://s3.amazonaws.com/1rex.realtor/empty-user.png';
+            $realtorPhoto = 'https://s3.amazonaws.com/1rex/realtor/empty-user.png';
         }
         $propertyPhoto = $queue->getPhoto();
         if($propertyPhoto == null) {
-            $propertyPhoto = 'https://s3.amazonaws.com/1rex.property/empty-big.png';
+            $propertyPhoto = 'https://s3.amazonaws.com/1rex/property/empty-big.png';
         }
 
         $discountPart = ((1 - $queue->getMaximumLoan()/100) - $queue->getFundedPercentage()/100) * 100;

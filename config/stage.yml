@@ -16,8 +16,9 @@ google:
   analytics: UA-63916987-1
 amazon:
     securityCredentials:
-      key:    AKIAJGGPNM46RAXZIFDA
-      secret: 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
+      key:    AKIAIDYXBAKHZD5BUYVQ
+      secret: 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
+      region: us-west-1
 firstrex:
   api:
     url:  http://tools.1rex.com:3000/inquiries.json

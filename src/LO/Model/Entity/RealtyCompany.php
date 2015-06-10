@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping\Column;
  */
 class RealtyCompany extends Base {
 
-    const NO_LOGO_PICTURE = 'https://s3.amazonaws.com/1rex.realty.logo/logo-stub.png';
+    const NO_LOGO_PICTURE = 'https://s3.amazonaws.com/1rex/realty.logo/logo-stub.png';
 
     /**
      * @Column(type="string", length=50)

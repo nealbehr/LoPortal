@@ -49,7 +49,7 @@ class QueueType extends AbstractType {
                 'type' => 'integer',
                 'empty_data' => '80'
             ))
-            ->add('photo', new S3Photo($this->s3, '1rex.property'));
+            ->add('photo', new S3Photo($this->s3, '1rex/property'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){
