@@ -14,14 +14,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :forwarded_port, guest: 80, host: 5009
   config.vm.network :forwarded_port, guest: 443, host: 10081
 
-  config.vm.synced_folder '.', '/vagrant', nfs: true
+  config.vm.synced_folder ".", "/vagrant", mount_options: ["dmode=777","fmode=777"]
 
-  config.vm.provider "virtualbox" do |v|
-
-    cpus = `sysctl -n hw.ncpu`.to_i
-    mem = `sysctl -n hw.memsize`.to_i / 1024 / 1024 / 4
-    v.customize ["modifyvm", :id, "--memory", mem]
-    v.customize ["modifyvm", :id, "--cpus", cpus]
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--memory", 2048]
+    vb.customize ["modifyvm", :id, "--name", "appsoramium"]
+    vb.customize ["modifyvm", :id, "--ioapic", "on"]
+    vb.customize ["modifyvm", :id, "--cpus", "2"]
   end
 
   config.vm.provision :shell, :path => "puppet/bootstrap.sh"
@@ -33,6 +33,5 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.hiera_config_path = "hiera.yaml"
     puppet.working_directory = "/vagrant"
   end
-
 
 end
