@@ -14,6 +14,10 @@ percona::database:
   "loportal": {}
 
 percona::rights:
+  loportal:
+    user    : "%{hiera('configure::percona_user')}"
+    database: "%{hiera('configure::percona_database')}"
+    password: "%{hiera('configure::percona_password')}"
   loportal_test:
     user    : "%{hiera('configure::percona_user')}"
     database: "loportal_test"
