@@ -22,7 +22,7 @@ environments:
         charset: utf8
     prod:
         adapter: mysql
-        host: aa1h5guh7x79vai.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
+        host: aa9wwt0e5kkesg.cc4h8hidbkl4.us-west-1.rds.amazonaws.com
         name: ebdb
         user: loportal
         pass: GPz3quD4YXK7aaY9
