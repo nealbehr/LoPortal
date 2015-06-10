@@ -33,7 +33,7 @@ class RealtorForm extends AbstractType {
             ->add('last_name', 'text')
             ->add('first_name', 'text')
             ->add('realty', new RealtyCompanyType($this->s3))
-            ->add('photo', new S3Photo($this->s3, '1rex.realtor'))
+            ->add('photo', new S3Photo($this->s3, '1rex/realtor'))
             ->add('email', 'text')
             ->add('phone', 'text')
             ->add('bre_number', 'text');

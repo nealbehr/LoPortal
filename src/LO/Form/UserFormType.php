@@ -78,7 +78,7 @@ class UserFormType extends AbstractType {
             ]
         ]);
 
-        $builder->add('picture', new S3Photo($this->s3, '1rex.users.avatar'));
+        $builder->add('picture', new S3Photo($this->s3, '1rex/users.avatar'));
 
         $builder->add('mobile', 'text', [
             'constraints' => [
