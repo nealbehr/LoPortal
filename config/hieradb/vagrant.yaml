@@ -9,6 +9,9 @@ configure::group: games
 
 configure::percona_password: GPz3quD4YXK7aaY9
 
+percona::database:
+  "loportal_test": {}
+
 percona::rights:
   loportal_test:
     user    : "%{hiera('configure::percona_user')}"

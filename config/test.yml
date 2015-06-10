@@ -1,6 +1,6 @@
 db.options:
     driver:   pdo_mysql
-    host:     vagrant.lo-portal.com
+    host:     localhost
     dbname:   loportal_test
     user:     loportal
     password: GPz3quD4YXK7aaY9
