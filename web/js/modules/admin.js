@@ -136,7 +136,18 @@
     }]);
 
     admin.controller('adminQueueCtrl', ['$scope', function($scope){
-        $scope.settings = settings;
+        $scope.settings  = settings;
+        $scope.stateRows = {};
+        $scope.typeRows  = {};
+
+        $scope.stateRows[settings.queue.state.listingFlyerPending] = {id: 'listingFlyerPending', title: 'Pending'};
+        $scope.stateRows[settings.queue.state.requested]      = {id: 'requested', title: 'Requested'};
+        $scope.stateRows[settings.queue.state.approved]       = {id: 'approved', title: 'Approved'};
+        $scope.stateRows[settings.queue.state.declined]       = {id: 'declined', title: 'Declined'};
+        $scope.stateRows[settings.queue.state.draft]          = {id: 'draft', title: 'Incomplete'};
+
+        $scope.typeRows[settings.queue.type.flyer]            = {id: 'flyer', title: 'Listing Flyer'};
+        $scope.typeRows[settings.queue.type.propertyApproval] = {id: 'propertyApproval', title: 'Property Approval'};
     }]);
 
     admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
@@ -525,11 +536,11 @@
         }
     });
 
-    admin.filter('replaceOnValue', function() {
+    admin.filter('replaceOnTitle', function() {
         return function(val, obj) {
             for (var key in obj) {
-                if (parseInt(obj[key]) === parseInt(val)) {
-                    return key;
+                if (obj[key].hasOwnProperty('title') && parseInt(key) === parseInt(val)) {
+                    return obj[key]['title'];
                 }
             }
         };
