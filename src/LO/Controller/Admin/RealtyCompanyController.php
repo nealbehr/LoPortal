@@ -91,10 +91,6 @@ class RealtyCompanyController extends Base {
     public function getByIdAction(Application $app, $id)
     {
         try {
-            if (!$app->getSecurity()->isGranted(User::ROLE_ADMIN)) {
-                throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
-            }
-
             /** @var RealtyCompany $company */
             $company = $app->getEntityManager()->getRepository(RealtyCompany::class)->find($id);
 

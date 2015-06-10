@@ -301,7 +301,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)){
+            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
@@ -343,7 +343,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getSecurity()->isGranted(User::ROLE_ADMIN)){
+            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
