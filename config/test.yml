@@ -1,0 +1,9 @@
+db.options:
+    driver:   pdo_mysql
+    host:     localhost
+    dbname:   loportal_test
+    user:     loportal
+    password: GPz3quD4YXK7aaY9
+    charset:  utf8
+session.test: true
+debug: true

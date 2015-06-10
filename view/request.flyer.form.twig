@@ -67,15 +67,21 @@
                     <div ng-show="newFlyer.last_name.$error.pattern">The Last name is required.</div>
                     <!-- realtor phone number -->
                     <div ng-show="newFlyer.phone.$error.required">The Phone is required.</div>
-                    <div ng-show="newFlyer.phone.$error.pattern">The Phone is invalid.</div>
+                    <div ng-show="newFlyer.phone.$invalid">The Phone is invalid.</div>
+
                     <!-- realtor email -->
                     <div ng-show="newFlyer.email.$error.required">The Email is required.</div>
                     <div ng-show="newFlyer.email.$error.email">The Email is invalid.</div>
+
                 </div>
 
                 <h2>Property Info</h2>
                 <div class="thumbnail">
                     <div class="property-photo" style="text-align: center;">
+                        <div class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            Crop photo by dragging the edges and corners of the light blue box over the photo. You can also enlarge or reduce the photo by using two finger gestures on your trackpad or the scrollwheel on your mouse.
+                        </div>
                         <img ng-src="[[ request.property.photo | defaultImage:'/images/empty-big.png' ]]" height="258" alt="" ng-click="propertyPicture.choosePhoto()">
                     </div>
                     <div class="caption">
@@ -137,10 +143,10 @@
                 </div>
 
                 <div class="inputs-holder">
-                    <div class="input">
-                        <input class="input-lg" type="text" placeholder="Phone number" ng-pattern="/^\(?(\d{3})\)?[-\. ]?(\d{3})[-\. ]?(\d{4})$/" ng-model="request.realtor.phone" required="" name="phone">
+                    <div ng-class="{'input':true, 'error':newFlyer.phone.$dirty && newFlyer.phone.$invalid}">
+                        <input class="input-lg" type="text" placeholder="Phone number" usa-phone ng-model="request.realtor.phone" required="" name="phone">
                     </div>
-                    <div class="input">
+                    <div ng-class="{'input':true, 'error':newFlyer.email.$dirty && newFlyer.email.$invalid}">
                         <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">
                     </div>
                     <div class="input">

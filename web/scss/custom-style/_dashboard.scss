@@ -2,13 +2,42 @@
 .thumbnail{
     box-shadow: 0 1px 3px rgba(180,180,180,0.6);
     margin-bottom: 30px;
+    position: relative;
     .thumb-holder {
         margin: -1px;
     }
     img {
         border-radius: 3px 3px 0 0;
-        width: 100%;
+        width: 100% !important;
+        height: auto !important;
         max-width: 100%;
+    }
+    .alert {
+        position: absolute;
+        width: 80%;
+        margin: 7px 10% 0;
+        font-size: 13px;
+        text-align: left;
+        padding: 10px;
+        color: #626262;
+        background: #fff;
+        border: 1px solid #bdbdbd;
+        .close {
+            border-radius: 0;
+            text-indent: 0;
+            height: auto;
+            width: auto;
+            right: -6px;
+            top: -7px;
+            font-size: 20px;
+            &:before {
+                display: none;
+            }
+            &:hover {
+                background: inherit;
+                color: inherit;
+            }
+        }
     }
     address {
         margin: 0;
@@ -112,32 +141,15 @@
     }
     table {
         font-size: 14px;
-        thead {
-            @media (max-width: 767px)  {
-                display: none;
-            }
-        }
         th {
             border: none !important;
             &:first-child {
                 padding-left: 30px;
             }
         }
-        tr {
-            @media (max-width: 767px)  {
-                display: block;
-                width: 100% !important;
-                padding: 15px 0  !important;
-            }
-        }
         td {
             border: none !important;
             width: 18%;
-            @media (max-width: 767px)  {
-                display: block;
-                width: 100% !important;
-                padding: 5px 10px !important;
-            }
             &:first-child {
                 padding-left: 32px;
             }

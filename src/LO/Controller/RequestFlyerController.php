@@ -95,11 +95,11 @@ class RequestFlyerController extends RequestFlyerBase {
 
         $realtorPhoto = $realtor->getPhoto();
         if($realtorPhoto == null) {
-            $realtorPhoto = 'https://s3.amazonaws.com/1rex.realtor/empty-user.png';
+            $realtorPhoto = 'https://s3.amazonaws.com/1rex/realtor/empty-user.png';
         }
         $propertyPhoto = $queue->getPhoto();
         if($propertyPhoto == null) {
-            $propertyPhoto = 'https://s3.amazonaws.com/1rex.property/empty-big.png';
+            $propertyPhoto = 'https://s3.amazonaws.com/1rex/property/empty-big.png';
         }
 
         $discountPart = ((1 - $queue->getMaximumLoan()/100) - $queue->getFundedPercentage()/100) * 100;
@@ -301,7 +301,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($app->user()->getId() != $queue->getUser()->getId() && !$app['security']->isGranted(User::ROLE_ADMIN)){
+            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
@@ -343,11 +343,11 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getSecurity()->isGranted(User::ROLE_ADMIN)){
+            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
-            $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_LISTING_FLYER_PENDING);
+            $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_REQUESTED);
 
             $realtor = new Realtor();
 

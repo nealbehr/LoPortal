@@ -136,7 +136,17 @@
     }]);
 
     admin.controller('adminQueueCtrl', ['$scope', function($scope){
-        $scope.settings = settings;
+        $scope.settings  = settings;
+        $scope.stateRows = {};
+        $scope.typeRows  = {};
+
+        $scope.stateRows[settings.queue.state.requested]      = {id: 'requested', title: 'Requested'};
+        $scope.stateRows[settings.queue.state.approved]       = {id: 'approved', title: 'Approved'};
+        $scope.stateRows[settings.queue.state.declined]       = {id: 'declined', title: 'Declined'};
+        $scope.stateRows[settings.queue.state.draft]          = {id: 'draft', title: 'Incomplete'};
+
+        $scope.typeRows[settings.queue.type.flyer]            = {id: 'flyer', title: 'Listing Flyer'};
+        $scope.typeRows[settings.queue.type.propertyApproval] = {id: 'propertyApproval', title: 'Property Approval'};
     }]);
 
     admin.controller('adminUserNewCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'createUser', function($scope, $http, redirect, $compile, waitingScreen, createUser){
@@ -179,7 +189,7 @@
             waitingScreen.show();
             $http.patch("/admin/queue/approve/flyer/" + $scope.ngDialogData.request.id, {file: this.marketingCollateral, reason: this.reason})
                 .success(function(data){
-                    $scope.closeThisDialog({state: "success", requestState: ($scope.marketingCollateral? settings.queue.state.approved: settings.queue.state.listingFlyerPending)});
+                    $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
                 .error(function(data, code){
                     $scope.closeThisDialog({state: "danger", message: (typeof data == "object" && data !== null && "message" in data? data.message: data)});
@@ -525,39 +535,13 @@
         }
     });
 
-    admin.filter('requestType', ['$http', function($http){
-        var filterFn = function initFilter(){
-            return "loading";
-        };
-
-        $http.get('/settings/request/type')
-            .success(function(result) {
-                filterFn = function newFilter(str){
-                    return result[str];
+    admin.filter('replaceOnTitle', function() {
+        return function(val, obj) {
+            for (var key in obj) {
+                if (obj[key].hasOwnProperty('title') && parseInt(key) === parseInt(val)) {
+                    return obj[key]['title'];
                 }
-            })
-        ;
-
-        return function tempFilter(str) {
-            return filterFn(str);
+            }
         };
-    }]);
-
-    admin.filter('requestState', ['$http', function($http){
-        var filterFn = function initFilter(){
-            return "loading";
-        };
-
-        $http.get('/settings/request/state')
-            .success(function(result) {
-                filterFn = function newFilter(str){
-                    return result[str];
-                }
-            })
-        ;
-
-        return function tempFilter(str) {
-            return filterFn(str);
-        };
-    }]);
+    });
 })(settings);

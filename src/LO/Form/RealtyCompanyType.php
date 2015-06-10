@@ -52,7 +52,7 @@ class RealtyCompanyType extends AbstractType {
             ]
         ]);
 
-        $builder->add('logo', new S3Photo($this->s3, '1rex.realty.logo'));
+        $builder->add('logo', new S3Photo($this->s3, '1rex/realty.logo'));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){

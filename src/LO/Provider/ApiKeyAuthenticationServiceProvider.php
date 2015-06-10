@@ -49,7 +49,7 @@ class ApiKeyAuthenticationServiceProvider implements ServiceProviderInterface
 
             $app['security.authentication_listener.' . $name . '.apikey'] = $app->share(function () use ($app, $name, $options) {
                 return new SimplePreAuthenticationListener(
-                    $app['security'],
+                    $app->getSecurityTokenStorage(),
                     $app['security.authentication_manager'],
                     $name,
                     $app['security.apikey.authenticator'](),
@@ -78,7 +78,7 @@ class ApiKeyAuthenticationServiceProvider implements ServiceProviderInterface
 
 
                 $listener = new LogoutListener(
-                    $app['security'],
+                    $app->getSecurityTokenStorage(),
                     $app['security.http_utils'],
                     $app['security.authentication.logout_handler.'.$name],
                     $options,

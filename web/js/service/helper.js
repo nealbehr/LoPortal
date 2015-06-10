@@ -86,6 +86,7 @@
                 scope.lenders = [];
                 scope.selected = {};
                 scope.selectedLender = {};
+                scope.masterUserData = {};
                 scope.user = {};
                 scope.container = angular.element('#userProfileMessage');
                 scope.userPicture = {};
@@ -113,19 +114,24 @@
 
                 scope.itsMe = function(){
                     return this.officer.id && this.user.id == this.officer.id;
-                }
+                };
 
-                scope.cancel = function(e){
+                scope.resetUserData = function() {
+                    angular.copy(scope.masterUserData, scope.user);
+                };
+
+                scope.cancel = function(e) {
                     e.preventDefault();
+                    scope.resetUserData();
                     history.back();
                 };
 
                 userService.get()
                     .then(function(user){
-                        scope.user = user;
-                        return scope.user.isAdmin() && scope.roles.length == 0
-                            ? getRoles()
-                            : $q.when({});
+                        scope.masterUserData = angular.copy(user);
+                        scope.user           = user;
+
+                        return scope.user.isAdmin() && scope.roles.length == 0 ? getRoles() : $q.when({});
                     })
                     .then(function(data){
                         scope.roles = [];
@@ -455,7 +461,7 @@
     }]);
 
     helperService.directive('usaPhone', [function(){
-        var phoneFormat = /^(?:(?:\+?1\s*(?:[.-]\s*)?)?(?:\(\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9])\s*\)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*(?:[.-]\s*)?)?([2-9]1[02-9]|[2-9][02-9]1|[2-9][02-9]{2})\s*(?:[.-]\s*)?([0-9]{4})(?:\s*(?:#|x\.?|ext\.?|extension)\s*(\d+))?$/;
+        var phoneFormat = /^[0-9+\(\)#\.\s\/ext-]+$/;
         return {
             require: 'ngModel',
             restrict: '',

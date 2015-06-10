@@ -24,6 +24,8 @@ use LO\Provider\Amazon;
 use LO\Model\Manager\DashboardManager;
 use Symfony\Component\Validator\Validator;
 use Symfony\Component\Form\FormFactory;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class Application extends \Silex\Application{
     use SecurityTrait;
@@ -327,9 +329,20 @@ class Application extends \Silex\Application{
     }
 
     /**
-     * @return \Symfony\Component\Security\Core\SecurityContext
+     * @return TokenStorage
      */
-    public function getSecurity(){
-        return $this['security'];
+    public function getSecurityTokenStorage(){
+        return $this['security.token_storage'];
+    }
+
+    public function isDebug(){
+        return isset($this['debug']) && $this['debug'];
+    }
+
+    /**
+     * @return AuthorizationChecker
+     */
+    public function getAuthorizationChecker(){
+        return $this['security.authorization_checker'];
     }
 }
