@@ -6,7 +6,7 @@ monolog.config:
     s3.logs: s3://1rex.app/stage.log
 db.options:
     driver:   pdo_mysql
-    host:     aawzleztuiykms.c0hzddsu3ovk.us-east-1.rds.amazonaws.com
+    host:     aa12xzqfzvrgu0t.cc4h8hidbkl4.us-west-1.rds.amazonaws.com
     dbname:   ebdb
     user:     loportal
     password: GPz3quD4YXK7aaY9
