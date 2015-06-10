@@ -525,39 +525,13 @@
         }
     });
 
-    admin.filter('requestType', ['$http', function($http){
-        var filterFn = function initFilter(){
-            return "loading";
-        };
-
-        $http.get('/settings/request/type')
-            .success(function(result) {
-                filterFn = function newFilter(str){
-                    return result[str];
+    admin.filter('replaceOnValue', function() {
+        return function(val, obj) {
+            for (var key in obj) {
+                if (parseInt(obj[key]) === parseInt(val)) {
+                    return key;
                 }
-            })
-        ;
-
-        return function tempFilter(str) {
-            return filterFn(str);
+            }
         };
-    }]);
-
-    admin.filter('requestState', ['$http', function($http){
-        var filterFn = function initFilter(){
-            return "loading";
-        };
-
-        $http.get('/settings/request/state')
-            .success(function(result) {
-                filterFn = function newFilter(str){
-                    return result[str];
-                }
-            })
-        ;
-
-        return function tempFilter(str) {
-            return filterFn(str);
-        };
-    }]);
+    });
 })(settings);
