@@ -11,6 +11,7 @@ configure::percona_password: GPz3quD4YXK7aaY9
 
 percona::database:
   "loportal_test": {}
+  "loportal": {}
 
 percona::rights:
   loportal_test:
