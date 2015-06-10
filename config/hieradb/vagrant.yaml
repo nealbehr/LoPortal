@@ -9,6 +9,14 @@ configure::group: games
 
 configure::percona_password: GPz3quD4YXK7aaY9
 
+percona::rights:
+  loportal_test:
+    user    : "%{hiera('configure::percona_user')}"
+    database: "loportal_test"
+    host:     "%"
+    password: "%{hiera('configure::percona_password')}"
+
+
 #configure::config_path: "%{hiera('configure::basepath')}/config/services.json"
 
 apache::vhosts:
