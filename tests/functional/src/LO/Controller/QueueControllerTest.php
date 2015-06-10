@@ -24,6 +24,7 @@ class QueueControllerTest extends WebTestCase{
         $app = (new Application(['prod', 'test'], __DIR__.'/../../../../../config/'))->bootstrap()->initRoutes();
         unset($app['exception_handler']);
         $app['session.test'] = true;
+        $app['debug.test'] = true;
         $app->boot();
 
         return $app;
@@ -38,7 +39,7 @@ class QueueControllerTest extends WebTestCase{
     public function testCancelAction(){
         $this->logIn();
         $id = 1;
-        $crawler = $this->client->request('PATCH', '/queue/cancel/'.$id, [ApiKeyAuthenticator::PARAM_NAME => '$2y$10$K8nDKFEJMfAqT/h6tooZrOA5PPb2mOU0LLsElBJ6cnZp6GMZ/ZOjW']);
+        $this->client->request('PATCH', '/queue/cancel/'.$id);
 
         /** @var Queue $queue */
         $queue = $this->app->getEntityManager()->getRepository(Queue::class)->findOneBy(['id' => $id]);

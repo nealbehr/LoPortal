@@ -29,10 +29,10 @@ class UserController {
             if ("me" == $id || $app->user()->getId() == $id) {
 //                app.security.token is not null and is_granted("ROLE_PREVIOUS_ADMIN")
                 $info = $app->user()->getPublicInfo();
-                return $app->json(array_merge($info, ['switched' => $app->getSecurity()->isGranted("ROLE_PREVIOUS_ADMIN")]));
+                return $app->json(array_merge($info, ['switched' => $app->getAuthorizationChecker()->isGranted("ROLE_PREVIOUS_ADMIN")]));
             }
 
-            if ($app->user()->getId() != $id && !$app->getSecurity()->isGranted(UserEntity::ROLE_ADMIN)) {
+            if ($app->user()->getId() != $id && !$app->getAuthorizationChecker()->isGranted(UserEntity::ROLE_ADMIN)) {
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
