@@ -25,7 +25,6 @@ class Settings {
             Queue::STATE_APPROVED    => "Approved",
             Queue::STATE_DECLINED    => "Declined",
             Queue::STATE_REQUESTED   => "Requested",
-            Queue::STATE_LISTING_FLYER_PENDING => "Pending",
         ]);
     }
 } 

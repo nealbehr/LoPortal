@@ -347,7 +347,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
-            $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_LISTING_FLYER_PENDING);
+            $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_REQUESTED);
 
             $realtor = new Realtor();
 

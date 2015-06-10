@@ -18,7 +18,6 @@ class Queue extends Base {
     const DEFAULT_FUNDED_PERCENTAGE = 10;
     const DEFAULT_MAXIMUM_LOAN = 80;
 
-    const STATE_LISTING_FLYER_PENDING = 1;
     const STATE_REQUESTED   = 2;
     const STATE_APPROVED    = 3;
     const STATE_DECLINED    = 4;
@@ -302,20 +301,11 @@ class Queue extends Base {
         $allowedStates = static::TYPE_FLYER == $this->request_type
             ? Queue::getAllowedStates()
             : RequestApproval::getAllowedStates();
-/** @todo поиграться повесь колбек на само поле state */
+
         if (!in_array($this->getState(), $allowedStates)) {
             $context->addViolationAt(
                 'state',
                 sprintf('Field "State" have not contained allowed states. Allowed states for type \'%d\' are [%s]', $this->request_type, implode(', ', $allowedStates)),
-                array(),
-                null
-            );
-        }
-
-        if(static::TYPE_FLYER !== $this->request_type && $this->state === static::STATE_LISTING_FLYER_PENDING){
-            $context->addViolationAt(
-                'state',
-                '"APPROVED" state can only be a request flyer with the downloaded pdf file.',
                 array(),
                 null
             );
@@ -354,10 +344,10 @@ class Queue extends Base {
      * @Assert\Callback(groups = {"fromPropertyApproval"})
      */
     public function isStateValidFromPropertyApproval(ExecutionContextInterface $context){
-        if ($this->getState() != static::STATE_LISTING_FLYER_PENDING) {
+        if ($this->getState() != static::STATE_REQUESTED) {
             $context->addViolationAt(
                 'state',
-                sprintf('Field "State" have not contained allowed state. Allowed state for draft is "%s"', static::STATE_LISTING_FLYER_PENDING),
+                sprintf('Field "State" have not contained allowed state. Allowed state for draft is "%s"', static::STATE_REQUESTED),
                 array(),
                 null
             );
@@ -392,8 +382,7 @@ class Queue extends Base {
         return [
             Queue::STATE_REQUESTED,
             Queue::STATE_APPROVED,
-            Queue::STATE_DECLINED,
-            Queue::STATE_LISTING_FLYER_PENDING,
+            Queue::STATE_DECLINED
         ];
     }
 } 

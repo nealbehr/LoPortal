@@ -140,7 +140,6 @@
         $scope.stateRows = {};
         $scope.typeRows  = {};
 
-        $scope.stateRows[settings.queue.state.listingFlyerPending] = {id: 'listingFlyerPending', title: 'Pending'};
         $scope.stateRows[settings.queue.state.requested]      = {id: 'requested', title: 'Requested'};
         $scope.stateRows[settings.queue.state.approved]       = {id: 'approved', title: 'Approved'};
         $scope.stateRows[settings.queue.state.declined]       = {id: 'declined', title: 'Declined'};
