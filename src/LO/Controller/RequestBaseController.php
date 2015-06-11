@@ -43,7 +43,7 @@ class RequestBaseController {
             $curl->post($app->getConfigByName('firstrex', 'api', 'url'), json_encode($data));
 
             if ($curl->error) {
-                throw new \Exception(sprintf('Curl error: \'%d\': \'%s\'', $curl->error_code, $curl->error_message));
+                throw new \Exception(sprintf('Curl error: \'%d\': \'%s\'. Response: %s', $curl->error_code, $curl->error_message, print_r($curl->response, true)));
             }
 
             if(false === $curl->response || !property_exists($curl->response, 'id')){
