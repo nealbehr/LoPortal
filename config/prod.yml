@@ -5,7 +5,7 @@ monolog.config:
     monolog.logfile: logs/prod.log
     monolog.level:   WARNING
     isSaveLocal:     false
-    s3.logs: s3://1rex.app/prod.log
+    s3.logs: s3://1rex/app/prod.log
 orm.em.options:
     mappings:
       0:
@@ -38,8 +38,8 @@ google:
   analytics: UA-63817823-1
 amazon:
     securityCredentials:
-      key:    AKIAJGGPNM46RAXZIFDA
-      secret: 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
+      key:    AKIAIDYXBAKHZD5BUYVQ
+      secret: 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
       region: us-west-1
     ses:
       securityCredentials:

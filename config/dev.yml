@@ -5,7 +5,7 @@ monolog.config:
     monolog.logfile: ../logs/dev.log
     monolog.level:   DEBUG
     isSaveLocal:     true
-    s3.logs: s3://1rex.app/dev.log
+    s3.logs: s3://1rex/app/dev.log
 db.options:
     driver:   pdo_mysql
     host:     localhost
