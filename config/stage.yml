@@ -3,7 +3,7 @@ name: STAGE Loan Officers portal
 monolog.config:
     monolog.logfile: ../logs/stage.log
     monolog.level:   DEBUG
-    s3.logs: s3://1rex.app/stage.log
+    s3.logs: s3://1rex/app/stage.log
 db.options:
     driver:   pdo_mysql
     host:     aaf7mknlkrfibf.cc4h8hidbkl4.us-west-1.rds.amazonaws.com

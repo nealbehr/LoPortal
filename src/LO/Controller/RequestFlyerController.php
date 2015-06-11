@@ -61,7 +61,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 $pdf->setOption('margin-bottom', 0);
 
                 $time = time();
-                $pdfFile = 'flayer-' . $id . '-'. $time . '.pdf';
+                $pdfFile = 'flyer-' . $id . '-'. $time . '.pdf';
                 $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData($queue));
 
                 header('Content-Type: application/pdf');

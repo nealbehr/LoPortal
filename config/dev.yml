@@ -5,7 +5,7 @@ monolog.config:
     monolog.logfile: ../logs/dev.log
     monolog.level:   DEBUG
     isSaveLocal:     true
-    s3.logs: s3://1rex.app/dev.log
+    s3.logs: s3://1rex/app/dev.log
 db.options:
     driver:   pdo_mysql
     host:     localhost
@@ -25,7 +25,7 @@ amazon:
       securityCredentials:
         key: AKIAIINCG3J7RCRMROOA
         secret: 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
-        region: us-west-1
+        region: us-east-1
       source: rexinfo12@gmail.com
 firstrex:
   api:
