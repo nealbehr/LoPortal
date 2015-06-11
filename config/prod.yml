@@ -45,7 +45,7 @@ amazon:
       securityCredentials:
         key: AKIAIINCG3J7RCRMROOA
         secret: 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
-        region: us-west-1
+        region: us-east-1
       source: rexinfo12@gmail.com
 
 knp_paginator:
