@@ -109,16 +109,16 @@ class RealtyCompanyController extends Base {
     {
         try {
             $company = new RealtyCompany();
-//            $requestCompany = $request->request->get('company');
+            $requestCompany = $request->request->get('company');
             $companyType = new RealtyCompanyType($app->getS3());
             $formOptions = [
                 'validation_groups' => ['Default', 'New'],
             ];
             $form = $app->getFormFactory()->create($companyType, $company, $formOptions);
-            $form->handleRequest($request);
-//            $form->submit($this->removeExtraFields($requestCompany, $form));
+            $form->submit($requestCompany);
 
             if (!$form->isValid()) {
+                $app->getMonolog()->addError($form->getErrors(true));
                 $this->errors = $this->getFormErrors($form);
                 throw new BadRequestHttpException("Realty info isn't valid");
             }
@@ -145,8 +145,7 @@ class RealtyCompanyController extends Base {
                 'validation_groups' => ['Default', 'New'],
             ];
             $form = $app->getFormFactory()->create($companyType, $company, $formOptions);
-            $form->handleRequest($request);
-//            $form->submit($this->removeExtraFields($requestCompany, $form));
+            $form->submit($requestCompany);
 
             if (!$form->isValid()) {
                 $this->errors = $this->getFormErrors($form);
