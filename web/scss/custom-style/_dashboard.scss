@@ -5,10 +5,12 @@
     position: relative;
     .thumb-holder {
         margin: -1px;
-    }
-    img {
-        border-radius: 3px 3px 0 0;
-        max-width: 100%;
+        >img {
+            border-radius: 3px 3px 0 0;
+            max-width: 100%;
+            width: 100% !important;
+            height: auto !important;
+        }
     }
     .alert {
         position: absolute;

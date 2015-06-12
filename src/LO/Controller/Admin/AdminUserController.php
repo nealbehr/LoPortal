@@ -9,7 +9,7 @@
 namespace LO\Controller\Admin;
 
 use LO\Application;
-use LO\Common\Email\NewPassword;
+use LO\Common\Email\NewUserWelcomeEmail;
 use LO\Common\Email\ResetPassword;
 use LO\Form\UserAdminFormType;
 use LO\Model\Entity\Lender;
@@ -87,7 +87,7 @@ class AdminUserController extends Base {
                 throw new BadRequestHttpException('User info not valid.');
             }
 
-            (new NewPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $password))
+            (new NewUserWelcomeEmail($app, $app->getConfigByName('amazon', 'ses', 'source'), $password, $user->getEmail()))
                 ->setDestinationList($user->getEmail())
                 ->send();
 
