@@ -34,7 +34,7 @@ class RequestChangeStatus extends Base{
     }
 
     public function send(){
-        if($this->app->isDebug()){
+        if($this->app->getConfigByName('firstrex', 'doSend') == false){
             return;
         }
 
