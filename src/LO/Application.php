@@ -1,6 +1,7 @@
 <?php
 namespace LO;
 
+use LO\Common\Factory;
 use LO\Exception\Http;
 use LO\Model\Entity\User;
 use LO\Validator\UniqueValidator;
@@ -26,6 +27,7 @@ use Symfony\Component\Validator\Validator;
 use Symfony\Component\Form\FormFactory;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use Symfony\Component\Security\Core\Encoder\EncoderFactory;
 
 class Application extends \Silex\Application{
     use SecurityTrait;
@@ -147,6 +149,10 @@ class Application extends \Silex\Application{
             $loader = new \Symfony\Component\Validator\Mapping\Loader\AnnotationLoader($reader);
 //            $cache  = extension_loaded('apc') ? new \Symfony\Component\Validator\Mapping\ClassMetadata\ApcCache : null;
             return new \Symfony\Component\Validator\Mapping\ClassMetadataFactory($loader);
+        });
+
+        $this['lo.factory'] = $this->share(function(){
+            return new Factory();
         });
 
         Request::enableHttpMethodParameterOverride();
@@ -344,5 +350,19 @@ class Application extends \Silex\Application{
      */
     public function getAuthorizationChecker(){
         return $this['security.authorization_checker'];
+    }
+
+    /**
+     * @return EncoderFactory
+     */
+    public function getEncoderFactory(){
+        return $this['security.encoder_factory'];
+    }
+
+    /**
+     * @return Factory
+     */
+    public function getFactory(){
+        return $this['lo.factory'] ;
     }
 }
