@@ -28,6 +28,7 @@ amazon:
         region: us-east-1
       source: rexinfo12@gmail.com
 firstrex:
+  doSend: false
   api:
     url:  http://tools.1rex.com:3000/inquiries.json
   additional.emails:

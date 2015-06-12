@@ -24,10 +24,11 @@ user:
     token.expire: 5 # 5 days
     recovery.password.expire.days: 1 # 1 day
 firstrex:
+  doSend: true
   api:
     user: FirstREX
     pass: Admin007
-    url: http://tools.1rex.com:3000/inquiries.json
+    url: http://tools.1rex.com/inquiries.json
   additional.emails:
     - joanna.umali@1rex.com
   email:

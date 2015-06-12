@@ -15,7 +15,7 @@ class NewPasswordTest extends \PHPUnit_Framework_TestCase{
 
         $app = m::mock('\LO\Application');
 
-        $email = new NewPassword($app, "", "");
+        $email = new NewUserWelcomeEmail($app, "", "", "testing@appsorama.com");
         $email->send();
     }
 }
