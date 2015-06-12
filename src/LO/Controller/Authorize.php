@@ -71,7 +71,7 @@ class Authorize {
             $app->getEntityManager()->persist($recoveryPassword);
             $app->getEntityManager()->flush();
 
-            (new Email\RecoveryPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $recoveryPassword))
+            $app->getFactory()->recoveryPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $recoveryPassword)
                 ->setDestinationList($user->getEmail())
                 ->send();
 
