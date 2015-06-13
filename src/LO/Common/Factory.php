@@ -11,6 +11,7 @@ namespace LO\Common;
 use LO\Application;
 use LO\Common\Email\RecoveryPassword;
 use LO\Model\Entity\Token;
+use LO\Model\Entity\RecoveryPassword as RecoveryPasswordEntity;
 
 class Factory {
     /**
@@ -26,7 +27,7 @@ class Factory {
      * @param $recoveryPassword
      * @return RecoveryPassword
      */
-    public function recoveryPassword(Application $app, $source, $recoveryPassword){
+    public function recoveryPassword(Application $app, $source, RecoveryPasswordEntity $recoveryPassword){
         return new RecoveryPassword($app, $source, $recoveryPassword);
     }
 } 
