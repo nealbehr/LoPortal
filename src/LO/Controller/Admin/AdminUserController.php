@@ -180,7 +180,7 @@ class AdminUserController extends Base {
             throw new BadRequestHttpException("User not found.");
         }
 
-        if($user->getId() == $app->user()->getId()){
+        if($user->getId() == $app->getSecurityTokenStorage()->getToken()->getUser()->getId()){
             throw new BadRequestHttpException($errorMessage);
         }
 

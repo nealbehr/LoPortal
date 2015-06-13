@@ -15,13 +15,13 @@ class DashboardController {
 
     public function indexAction(Application $app){
         return $app->json([
-            'dashboard' => $app->getDashboardManager()->getByUserId($app->user()->getId(), false),
+            'dashboard' => $app->getDashboardManager()->getByUserId($app->getSecurityTokenStorage()->getToken()->getUser()->getId(), false),
         ]);
     }
 
     public function getCollateralAction(Application $app){
         return $app->json(
-            $app->getDashboardManager()->getCollateralByUserId($app->user()->getId(), AbstractQuery::HYDRATE_ARRAY)
+            $app->getDashboardManager()->getCollateralByUserId($app->getSecurityTokenStorage()->getToken()->getUser()->getId(), AbstractQuery::HYDRATE_ARRAY)
         );
     }
 } 
