@@ -10,10 +10,12 @@ namespace LO\Common;
 
 use LO\Application;
 use LO\Model\Entity\Token;
+use LO\Model\Manager\QueueManager;
 use \Mockery as m;
 use LO\Common\Email\RecoveryPassword;
 use LO\Model\Entity\RecoveryPassword as RecoveryPasswordEntity;
 use Aws\Ses\SesClient;
+use Curl\Curl;
 
 class FactoryTest extends \PHPUnit_Framework_TestCase{
     public function testToken(){
@@ -27,5 +29,14 @@ class FactoryTest extends \PHPUnit_Framework_TestCase{
         $recoveryPassword = m::mock(RecoveryPasswordEntity::class);
 
         $this->assertInstanceOf(RecoveryPassword::class, (new Factory())->recoveryPassword($app, 'source', $recoveryPassword));
+    }
+
+    public function testCurl(){
+        $this->assertInstanceOf(Curl::class, (new Factory())->curl());
+    }
+
+    public function testQueueManager(){
+        $app = m::mock(Application::class);
+        $this->assertInstanceOf(QueueManager::class, (new Factory())->queueManager($app));
     }
 } 

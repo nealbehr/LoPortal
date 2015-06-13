@@ -12,7 +12,7 @@
         "symfony/yaml": ">=2.5.8",
         "symfony/form": ">=2.5.8",
         "symfony/validator": ">=2.5.8",
-        "symfony/doctrine-bridge": "~2.6.0",
+        "symfony/doctrine-bridge": ">=2.6.0",
         "monolog/monolog":     "~1.7",
         "robmorgan/phinx": "*",
         "aws/aws-sdk-php": "2.*",

@@ -8,7 +8,6 @@
 
 namespace LO\Controller;
 
-use Curl\Curl;
 use LO\Application;
 use LO\Common\Message;
 use LO\Model\Entity\User;
@@ -32,7 +31,7 @@ class RequestBaseController
 
     protected function sendRequestTo1Rex(Application $app, array $address, User $user)
     {
-        $curl = new Curl();
+        $curl = $app->getFactory()->curl();
         try {
             $data = array_merge(
                 $address,

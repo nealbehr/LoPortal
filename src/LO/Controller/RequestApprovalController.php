@@ -14,9 +14,7 @@ use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
-use LO\Model\Entity\RequestApproval;
 use LO\Model\Entity\Queue;
-use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
@@ -28,6 +26,7 @@ class RequestApprovalController extends RequestApprovalBase{
             $app->getEntityManager()->beginTransaction();
 
             $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
+
             $firstRexForm->handleRequest($request);
 
             if(!$firstRexForm->isValid()){
@@ -64,6 +63,7 @@ class RequestApprovalController extends RequestApprovalBase{
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
+
             $app->getEntityManager()->rollback();
             $app->getMonolog()->addError($e);
             $data['message'] = $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.';

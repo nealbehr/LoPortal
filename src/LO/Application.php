@@ -309,7 +309,7 @@ class Application extends \Silex\Application{
     /**
      * @return FormFactory
      */
-    public final function getFormFactory() {
+    public function getFormFactory() {
         return $this["form.factory"];
     }
 
