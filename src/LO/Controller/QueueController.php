@@ -18,7 +18,7 @@ class QueueController {
 
     public function cancelAction(Application $app, $id){
         /** @var Queue $queue */
-        $queue = $app->getEntityManager()->getRepository(Queue::class)->findOneBy(['id' => $id, 'user_id' => $app->user()->getId()]);
+        $queue = $app->getEntityManager()->getRepository(Queue::class)->findOneBy(['id' => $id, 'user_id' => $app->getSecurityTokenStorage()->getToken()->getUser()->getId()]);
 
         if(!$queue){
             throw new Http(sprintf('Queue \'%s\' not found', $id), Response::HTTP_BAD_REQUEST);
@@ -42,7 +42,7 @@ class QueueController {
     public function deleteAction(Application $app, $id) {
 
         $em = $app->getEntityManager();
-        $currentUserID = $app->user()->getId();
+        $currentUserID = $app->getSecurityTokenStorage()->getToken()->getUser()->getId();
         $queue = $em->getRepository(Queue::class)->findOneBy(
             ['id' => $id, 'user_id' => $currentUserID, 'state' => Queue::STATE_DECLINED]
         );

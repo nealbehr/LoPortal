@@ -42,7 +42,7 @@ class RequestFlyerBase extends RequestBaseController {
 
         if($queue->getUser() == null) {
             // do not change queue user when edited by admin
-            $queue->setUser($app->user());
+            $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
         }
         $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue, $formOptions);
         $queueForm->handleRequest($request);
@@ -71,7 +71,7 @@ class RequestFlyerBase extends RequestBaseController {
             throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
         }
 
-        if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)) {
+        if ($app->getSecurityTokenStorage()->getToken()->getUser()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)) {
             throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
         }
 
@@ -104,7 +104,7 @@ class RequestFlyerBase extends RequestBaseController {
             throw new BadRequestHttpException('Additional info is not valid');
         }
 
-        $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
+        $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
 
         $queue->set1RexId($id);
         $queue->setAdditionalInfo($firstRexForm->getData());
