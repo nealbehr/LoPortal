@@ -47,6 +47,10 @@ class UserAdminFormType extends UserFormType {
                         'max' => 100,
                         'maxMessage' => 'Sales director phone must be shorter than {{ limit }} chars.',
                     ]),
+                    new Assert\Regex([
+                        'pattern' => '/^[0-9+\(\)#\.\s\/ext-]+$/',
+                        'message' => 'Please input a valid US phone number including 3 digit area code and 7 digit number.'
+                    ])
                 ]
         ]);
     }
