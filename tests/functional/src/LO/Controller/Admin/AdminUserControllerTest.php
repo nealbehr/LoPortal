@@ -60,29 +60,34 @@ class AdminUserControllerTest extends WebTestCase
         return ['user' => $user];
     }
 
-    public function testAddUser() {
+    private function addUser($data) {
         $controller = new Admin\AdminUserController();
         $request    = new Request();
 
-        $data = json_decode(
-            $controller->addUserAction($this->app, $request->create('/admin/user', 'POST', $this->user))->getContent(),
+        return json_decode(
+            $controller->addUserAction($this->app, $request->create('/admin/user', 'POST', $data))->getContent(),
             true
         );
+    }
+
+    public function testUserPhoneInvalid() {
+        $data                  = $this->user;
+        $data['user']['phone'] = '(510) 339-4300 ext. 106b';
+        $data                  = $this->addUser($data);
+
+        $this->assertEquals(true, isset($data['form_errors']));
+    }
+
+    public function testAddUser() {
+        $data = $this->addUser($this->user);
 
         $this->assertEquals('101', $data['id']);
     }
 
     public function testEmailAddressIsAlreadyRegistered() {
-        $controller = new Admin\AdminUserController();
-        $request    = new Request();
-
         $data                  = $this->user;
         $data['user']['email'] = 'admin@1rex.com';
-
-        $data = json_decode(
-            $controller->addUserAction($this->app, $request->create('/admin/user', 'POST', $data))->getContent(),
-            true
-        );
+        $data                  = $this->addUser($data);
 
         $this->assertEquals(true, isset($data['form_errors']));
     }
