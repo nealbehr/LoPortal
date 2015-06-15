@@ -149,7 +149,7 @@
                     })
                     .then(function(){
                         if(scope.user.isAdmin() && scope.lenders.length == 0) {
-                            getLenders().then(function(data){
+                            getLenders(true).then(function(data) {
                                 scope.lenders = data;
                                 if(scope.officer && !scope.officer.lender) {
                                     scope.officer.lender =  scope.lenders[0];
