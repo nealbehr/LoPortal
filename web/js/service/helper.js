@@ -499,7 +499,7 @@
     }]);
 
     helperService.directive('loNameValidator', [function(){
-        var nameFormat = /^([A-Za-z0-9_\s]+)$/;
+        var nameFormat = /^([A-Za-z0-9-_\s]+)$/;
         return {
             require: 'ngModel',
             restrict: '',
