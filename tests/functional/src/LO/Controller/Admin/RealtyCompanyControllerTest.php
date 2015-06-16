@@ -43,19 +43,31 @@ class RealtyCompanyControllerTest extends WebTestCase
         return ['company' => $company->toArray()];
     }
 
-    public function testAddCompany() {
+    private function addCompany($data) {
         $controller = new Admin\RealtyCompanyController();
         $request    = new Request();
 
-        $data = json_decode(
+        return json_decode(
             $controller->addCompanyAction(
                 $this->app,
-                $request->create('/admin/realty', 'POST', $this->getCompanyData())
+                $request->create('/admin/realty', 'POST', $data)
             )->getContent(),
             true
         );
+    }
+
+    public function testAddCompany() {
+        $data = $this->addCompany($this->getCompanyData());
 
         $this->assertEquals('33', $data['id']);
+    }
+
+    public function testAddCompanyNoName() {
+        $data = $this->getCompanyData();
+        $data['company']['name'] = '';
+        $data = $this->addCompany($data);
+
+        $this->assertEquals(false, isset($data['id']));
     }
 
     public function testEditCompany() {
