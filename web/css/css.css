@@ -29,6 +29,7 @@
     width: inherit;
     height: inherit;
     cursor: pointer;
+    max-width: 100%;
 }
 
 .upload{
