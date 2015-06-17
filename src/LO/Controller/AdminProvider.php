@@ -39,6 +39,10 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\RequestFlyerController();
         });
 
+        $app['admin.sales.director.controller'] = $app->share(function() use ($app) {
+            return new Admin\SalesDirectorController();
+        });
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
@@ -85,7 +89,11 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers
             ->put("/flyer/{id}", "admin.request.flyer.controller:updateAction");
 
-
+        /**
+         * Routes for SalesDirectorController
+         */
+        $controllers->get('/salesdirector', 'admin.sales.director.controller:getAllAction');
+        
         return $controllers;
     }
 }
