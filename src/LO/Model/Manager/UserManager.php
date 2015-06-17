@@ -9,7 +9,6 @@
 namespace LO\Model\Manager;
 
 use Doctrine\ORM\Query\Expr;
-use LO\Form\AddressType;
 use LO\Form\UserFormType;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User as EntityUser;

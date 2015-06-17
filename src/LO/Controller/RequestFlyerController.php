@@ -154,7 +154,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
+            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
 
             $realtor      = new Realtor();
             $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
@@ -301,7 +301,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
+            if ($app->getSecurityTokenStorage()->getToken()->getUser()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
@@ -343,7 +343,7 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http(sprintf("Request flyer '%s' not found.", $id), Response::HTTP_BAD_REQUEST);
             }
 
-            if ($app->user()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
+            if ($app->getSecurityTokenStorage()->getToken()->getUser()->getId() != $queue->getUser()->getId() && !$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)){
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 

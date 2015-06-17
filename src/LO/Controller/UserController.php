@@ -26,13 +26,13 @@ class UserController {
 
     public function getByIdAction(Application $app, $id){
         try {
-            if ("me" == $id || $app->user()->getId() == $id) {
+            if ("me" == $id || $app->getSecurityTokenStorage()->getToken()->getUser()->getId() == $id) {
 //                app.security.token is not null and is_granted("ROLE_PREVIOUS_ADMIN")
-                $info = $app->user()->getPublicInfo();
+                $info = $app->getSecurityTokenStorage()->getToken()->getUser()->getPublicInfo();
                 return $app->json(array_merge($info, ['switched' => $app->getAuthorizationChecker()->isGranted("ROLE_PREVIOUS_ADMIN")]));
             }
 
-            if ($app->user()->getId() != $id && !$app->getAuthorizationChecker()->isGranted(UserEntity::ROLE_ADMIN)) {
+            if ($app->getSecurityTokenStorage()->getToken()->getUser()->getId() != $id && !$app->getAuthorizationChecker()->isGranted(UserEntity::ROLE_ADMIN)) {
                 throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
             }
 
@@ -77,14 +77,14 @@ class UserController {
             return $app->json('success');
 
         }catch(HttpException $e){
-            if($app->user()->getId() == $id){
+            if($app->getSecurityTokenStorage()->getToken()->getUser()->getId() == $id){
                 $app->getUserProvider()->refreshUser($user);
             }
             $app->getMonolog()->addWarning($e);
             $this->errors['message'] = $e->getMessage();
             return $app->json($this->errors, $e->getStatusCode());
         }finally{
-            if($app->user()->getId() == $id && $user instanceof UserEntity){
+            if($app->getSecurityTokenStorage()->getToken()->getUser()->getId() == $id && $user instanceof UserEntity){
                 $app->getEntityManager()->refresh($user);
             }
         }

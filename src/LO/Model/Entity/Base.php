@@ -66,11 +66,14 @@ class Base {
     }
 
     /**
-     * @param mixed $id
+     * @param $id
+     * @return $this
      */
     public function setId($id)
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -82,11 +85,14 @@ class Base {
     }
 
     /**
-     * @param mixed $created_at
+     * @param $created_at
+     * @return $this
      */
     public function setCreatedAt($created_at)
     {
         $this->created_at = $created_at;
+
+        return $this;
     }
 
     /**
@@ -98,10 +104,13 @@ class Base {
     }
 
     /**
-     * @param mixed $updated_at
+     * @param $updated_at
+     * @return $this
      */
     public function setUpdatedAt($updated_at)
     {
         $this->updated_at = $updated_at;
+
+        return $this;
     }
 }

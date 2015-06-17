@@ -36,12 +36,12 @@ class RequestApprovalController extends RequestApprovalBase{
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->user());
+            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
 
             $queue = (new Queue())
                 ->set1RexId($id)
                 ->setType(Queue::TYPE_PROPERTY_APPROVAL)
-                ->setUser($app->user())
+                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
                 ->setAdditionalInfo($firstRexForm->getData())
             ;
             $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
@@ -76,7 +76,7 @@ class RequestApprovalController extends RequestApprovalBase{
     public function getAction(Application $app, $id){
         $queue = $this->getQueueById($app, $id);
 
-        if ($app->user()->getId() != $queue->getUser()->getId()) {
+        if ($app->getSecurityTokenStorage()->getToken()->getUser()->getId() != $queue->getUser()->getId()) {
             throw new Http("You do not have privileges.", Response::HTTP_FORBIDDEN);
         }
 

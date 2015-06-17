@@ -14,8 +14,9 @@
                 <div ng-show="formUser.$submitted && formUser.first_name.$error.loName">First name is invalid</div>
                 <div ng-show="formUser.$submitted && formUser.last_name.$error.loName">Last name is invalid</div>
                 <div ng-show="formUser.$submitted && formUser.nmls.$error.number">NMLS # should be of number.</div>
-                <div ng-show="formUser.$submitted && formUser.sales_director_email.$error.email">Please input a valid email in Sales Manager Email field.</div>
-                <div ng-show="formUser.$submitted && formUser.sales_director_phone.$error.usaPhoneFormat">Please input a valid phone in Sales Manager Phone field.</div>
+                <div ng-show="formUser.$submitted && formUser.sales_director_email.$error.email">Please input a valid email in Sales Director Email field.</div>
+                <div ng-show="formUser.$submitted && formUser.sales_director_phone.$error.usaPhoneFormat">Please input a valid phone in Sales Director Phone field.</div>
+                <div ng-show="formUser.$submitted && formUser.mobile.$error.usaPhoneFormat">Please input a valid mobile phone.</div>
                 <div ng-show="formUser.address.$invalid">Address is invalid.</div>
                 <div ng-show="formUser.password_confirm.$error.compareTo">Passwords are not equal.</div>
             </div>
@@ -53,10 +54,10 @@
                     <input class="input-lg" type="text" placeholder="Sales Director" ng-model="officer.sales_director">
                 </div>
                 <div class="input" ng-if="user.id != officer.id && user.isAdmin()">
-                    <input class="input-lg" type="email" name="sales_director_email" placeholder="Sales Manager Email" ng-model="officer.sales_director_email">
+                    <input class="input-lg" type="email" name="sales_director_email" placeholder="Sales Director Email" ng-model="officer.sales_director_email">
                 </div>
                 <div class="input" ng-if="user.id != officer.id && user.isAdmin()">
-                    <input class="input-lg" type="text" name="sales_director_phone" placeholder="Sales Manager Phone" usa-phone ng-model="officer.sales_director_phone">
+                    <input class="input-lg" type="text" name="sales_director_phone" placeholder="Sales Director Phone" usa-phone ng-model="officer.sales_director_phone">
                 </div>
             </div>
 
@@ -71,7 +72,12 @@
                     <input class="input-lg" type="text" placeholder="Primary Phone" ng-model="officer.phone" name="phone" usa-phone ng-model-options="{ updateOn: 'blur' }">
                 </div>
                 <div class="input">
-                    <input class="input-lg" type="text" placeholder="Mobile Phone" ng-model="officer.mobile">
+                    <input class="input-lg"
+                           type="text"
+                           placeholder="Mobile Phone"
+                           name="mobile"
+                           usa-phone
+                           ng-model="officer.mobile">
                 </div>
                 <div ng-class="{'input':true, 'error':formUser.address.$dirty && formUser.address.$invalid}">
                     <input id="address"

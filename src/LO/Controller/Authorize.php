@@ -21,12 +21,11 @@ class Authorize {
         if(!$user){
             return $app->json(['message' => 'Your email address is not recognized'], Response::HTTP_BAD_REQUEST);
         }
-
-        if(!$app['security.encoder_factory']->getEncoder($user)->isPasswordValid($user->getPassword(), $request->get('password'), $user->getSalt())){
+        if(!$app->getEncoderFactory()->getEncoder($user)->isPasswordValid($user->getPassword(), $request->get('password'), $user->getSalt())){
             return $app->json(['message' => 'Entered password is incorrect'], Response::HTTP_BAD_REQUEST);
         }
 
-        $token = (new Token())->setUserId($user->getId())
+        $token = $app->getFactory()->token()->setUserId($user->getId())
                               ->setExpirationTime($app->getConfigByName('user', 'token.expire'))
         ;
 
@@ -72,7 +71,7 @@ class Authorize {
             $app->getEntityManager()->persist($recoveryPassword);
             $app->getEntityManager()->flush();
 
-            (new Email\RecoveryPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $recoveryPassword))
+            $app->getFactory()->recoveryPassword($app, $app->getConfigByName('amazon', 'ses', 'source'), $recoveryPassword)
                 ->setDestinationList($user->getEmail())
                 ->send();
 

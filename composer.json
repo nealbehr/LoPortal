@@ -21,7 +21,8 @@
         "saxulum/saxulum-doctrine-orm-manager-registry-provider": "~2.0",
         "php-curl-class/php-curl-class": ">=2.1.0",
         "knplabs/knp-snappy": "^0.4.0",
-        "symfony/console": "^2.7"
+        "symfony/console": "^2.7",
+        "nuovo/spreadsheet-reader": "^0.5.11"
     },
     "autoload": {
         "psr-0": {

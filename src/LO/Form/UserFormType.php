@@ -46,7 +46,7 @@ class UserFormType extends AbstractType {
         $builder->add('last_name', 'text', [
             'constraints' => [
                 new Assert\Regex([
-                    'pattern' => "/^([A-Za-z_\s]+)$/",
+                    'pattern' => "/^([A-Za-z-_\s]+)$/",
                     'message' => 'Last name is invalid'
                 ]),
                 new Assert\Length([
@@ -86,6 +86,10 @@ class UserFormType extends AbstractType {
                     'max' => 100,
                     'maxMessage' => 'Mobile must be shorter than {{ limit }} chars.',
                 ]),
+                new Assert\Regex([
+                    'pattern' => '/^[0-9+\(\)#\.\s\/ext-]+$/',
+                    'message' => 'Please input a valid US mobile phone number.'
+                ])
             ]
         ]);
 

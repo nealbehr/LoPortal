@@ -12,7 +12,7 @@ db.options:
     password: GPz3quD4YXK7aaY9
     charset:  utf8
 google:
-  apiKey: AIzaSyAWiNe3wNoy0kh1WOVgHcPGPJ65ukBwBu0
+  apiKey: AIzaSyCvs5PnZWvzQlQAmlBdR24YGhkfgFavF6I
   analytics: UA-63916987-1
 amazon:
     securityCredentials:
@@ -24,3 +24,4 @@ firstrex:
     url:  http://tools.1rex.com:3000/inquiries.json
   additional.emails:
     - serhii.samoilenko@appsorama.com
+    - dmitry@appsorama.com

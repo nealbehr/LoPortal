@@ -149,7 +149,7 @@
                     })
                     .then(function(){
                         if(scope.user.isAdmin() && scope.lenders.length == 0) {
-                            getLenders().then(function(data){
+                            getLenders(true).then(function(data) {
                                 scope.lenders = data;
                                 if(scope.officer && !scope.officer.lender) {
                                     scope.officer.lender =  scope.lenders[0];
@@ -499,7 +499,7 @@
     }]);
 
     helperService.directive('loNameValidator', [function(){
-        var nameFormat = /^([A-Za-z0-9_\s]+)$/;
+        var nameFormat = /^([A-Za-z0-9-_\s]+)$/;
         return {
             require: 'ngModel',
             restrict: '',

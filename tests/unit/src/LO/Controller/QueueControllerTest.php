@@ -11,6 +11,8 @@ namespace LO\Controller;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\User;
 use \Mockery as m;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class QueueControllerTest extends \PHPUnit_Framework_TestCase{
     public function testCancelDidNotFindQueueById(){
@@ -30,8 +32,13 @@ class QueueControllerTest extends \PHPUnit_Framework_TestCase{
         $app->shouldReceive('getEntityManager')
             ->andReturn($em);
 
-        $app->shouldReceive('user')
-            ->andReturn(new User());
+        $tokenInterface = m::mock(TokenInterface::class);
+        $tokenInterface->shouldReceive('getUser')->andReturn(new User());
+
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setToken($tokenInterface);
+
+        $app->shouldReceive('getSecurityTokenStorage')->andReturn($tokenStorage);
 
         $controller = new QueueController();
         $controller->cancelAction($app, 'testId');
@@ -49,13 +56,18 @@ class QueueControllerTest extends \PHPUnit_Framework_TestCase{
         $em->shouldReceive('persist');
         $em->shouldReceive('flush');
 
+        $tokenInterface = m::mock(TokenInterface::class);
+        $tokenInterface->shouldReceive('getUser')->andReturn(new User());
+
+        $tokenStorage = new TokenStorage();
+        $tokenStorage->setToken($tokenInterface);
+
         $app = m::mock('\LO\Application')->makePartial();
 
         $app->shouldReceive('getEntityManager')
             ->andReturn($em);
 
-        $app->shouldReceive('user')
-            ->andReturn(new User());
+        $app->shouldReceive('getSecurityTokenStorage')->andReturn($tokenStorage);
 
         $controller = new QueueController();
 
