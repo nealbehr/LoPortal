@@ -29,8 +29,8 @@ class RequestChangeStatus extends Base{
         if($queue->getUser()->getSalesDirectorEmail()){
             $destinationList[] = $queue->getUser()->getSalesDirectorEmail();
         }
-
-        $this->setDestinationList(array_merge($destinationList, $app->getConfigByName('firstrex', 'additional.emails')));
+        $bsEmails = $app->getConfigByName('firstrex', 'additional.emails');
+        $this->setDestinationList(array_merge($destinationList, $bsEmails));
     }
 
     public function send(){

@@ -31,6 +31,7 @@ firstrex:
     url: http://tools.1rex.com/inquiries.json
   additional.emails:
     - joanna.umali@1rex.com
+    - sabin.speiser@1rex.com
   email:
     teplate:
       denial: joanna.umali@1rex.com

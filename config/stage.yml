@@ -24,3 +24,4 @@ firstrex:
     url:  http://tools.1rex.com:3000/inquiries.json
   additional.emails:
     - serhii.samoilenko@appsorama.com
+    - dmitry@appsorama.com
