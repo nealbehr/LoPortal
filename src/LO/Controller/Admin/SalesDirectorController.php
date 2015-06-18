@@ -2,6 +2,7 @@
 
 use LO\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use LO\Model\Entity\SalesDirector;
 
 class SalesDirectorController extends Base
@@ -43,6 +44,17 @@ class SalesDirectorController extends Base
         ]);
     }
 
+    public function getByIdAction(Application $app, $id)
+    {
+        try {
+            return $app->json($this->getSalesDirectorById($app, $id)->toArray());
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
     public function addAction()
     {
 
@@ -56,7 +68,7 @@ class SalesDirectorController extends Base
     public function deleteAction(Application $app, $id)
     {
         try {
-            $model = $this->getSalesDirector($app, $id);
+            $model = $this->getSalesDirectorById($app, $id);
             $model->setDeleted('1')->setEmail($model->getEmail().'-'.strtotime('now').'-deleted');
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -102,12 +114,12 @@ class SalesDirectorController extends Base
         return in_array($col, ['id', 'name', 'email', 'created_at'], true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
     }
 
-    private function getSalesDirector(Application $app, $id)
+    private function getSalesDirectorById(Application $app, $id)
     {
-        if (!($data = $app->getEntityManager()->getRepository(SalesDirector::class)->find($id))) {
+        if (!($model = $app->getEntityManager()->getRepository(SalesDirector::class)->find((int)$id))) {
             throw new BadRequestHttpException('Sales director not found.');
         }
 
-        return $data;
+        return $model;
     }
 }

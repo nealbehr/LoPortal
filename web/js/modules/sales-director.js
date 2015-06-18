@@ -15,24 +15,185 @@
             access     : { isFree: false }
         }).when('/admin/salesdirector/:id/edit', {
             templateUrl: '/partials/admin.sales.director',
-            controller :  'salesDirectorCtrl',
+            controller :  'salesDirectorEditCtrl',
             access     : { isFree: false }
         });
     }]);
 
+    salesDirectorModule.factory('getSalesDirectors', ['$q', '$http', function($q, $http){
+        var salesDirectors = [];
+
+        return function(needReload) {
+            var deferred = $q.defer();
+            if (salesDirectors.length !== 0 && !needReload) {
+                return $q.when(salesDirectors);
+            }
+
+            $http.get('/admin/salesdirector').success(function(data) {
+                salesDirectors = data;
+                deferred.resolve(data);
+            }).error(function(data) {
+                deferred.reject(data);
+            });
+
+            return deferred.promise;
+        }
+    }]);
+
+    salesDirectorModule.service(
+        'createSalesDirector',
+        ['$q', '$http', 'createSalesDirectorBase', 'getSalesDirectors',
+            function($q, $http, createSalesDirectorBase, getSalesDirectors) {
+        return function() {
+            var salesDirector = new createSalesDirectorBase(),
+                path          = '/admin/salesdirector/';
+
+            salesDirector.getList = function(needReload) {
+                return getSalesDirectors(needReload)
+            };
+
+            salesDirector.delete = function(){
+                if (!this.id) {
+                    alert('User id has not set.');
+                }
+
+                var deferred = $q.defer();
+                $http.delete(path+this.id, {}).success(function(data) {
+                    deferred.resolve(data);
+                }).error(function(data){
+                    deferred.reject(data);
+                });
+
+                return deferred.promise;
+            };
+
+            salesDirector.save = function() {
+                return this.id? this.update(): this.add();
+            };
+
+            salesDirector.update = function() {
+                var deferred = $q.defer();
+                $http.put(path+this.id, {salesDirector: this.getFields4Save()})
+                    .success(function(data){
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            };
+
+            salesDirector.add = function(){
+                var deferred = $q.defer();
+                $http.post(path, {salesDirector: this.getFields4Save()})
+                    .success(function(data){
+                        userBase.id = data.id;
+                        deferred.resolve(data);
+                    })
+                    .error(function(data){
+                        console.log(data);
+                        deferred.reject(data);
+                    })
+                ;
+
+                return deferred.promise;
+            };
+
+            return salesDirector;
+        }
+    }]);
+
+    salesDirectorModule.service('createSalesDirectorBase', ['$q', '$http', function($q, $http) {
+        return function() {
+            this.id    = null;
+            this.name  = null;
+            this.email = null;
+            this.phone = null;
+
+            var self = this;
+
+            this.fill = function(data) {
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        this[key] = data[key];
+                    }
+                }
+                return this;
+            };
+
+            this.getFields4Save = function() {
+                var result = {};
+                for (var key in this) {
+                    if (this.hasOwnProperty(key)) {
+                        if (typeof this[key] == 'function') {
+                            continue;
+                        }
+                        result[key] = this[key];
+                    }
+                }
+                return result;
+            };
+
+            this.get = function(id) {
+                var deferred = $q.defer();
+                $http.get('/admin/salesdirector/'+id).success(function(data) {
+                    self.fill(data);
+                    deferred.resolve(self)
+                }).error(function(data) {
+                    deferred.reject(data);
+                });
+
+                return deferred.promise;
+            };
+
+            this.clear = function() {
+                for (var key in this) {
+                    if (this.hasOwnProperty(key)) {
+                        if (typeof this[key] == 'function') {
+                            continue;
+                        }
+                        this[key] = undefined;
+                    }
+                }
+            };
+
+            this.save = function() {
+                throw new Error('Add must be override');
+            };
+
+            this.add = function() {
+                throw new Error('Request add must be override');
+            };
+
+            this.update = function() {
+                throw new Error('Request update must be override');
+            };
+        }
+    }]);
+
     salesDirectorModule.controller(
         'salesDirectorCtrl',
-        ['$scope', 'createAdminRequestFlyer', '$routeParams', 'createProfileUser', 'sessionMessages', '$http',
-            function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http)
-        {
+        ['$scope', 'createSalesDirector', function($scope, createSalesDirector) {
+            $scope.salesDirector = createSalesDirector();
+        }
+    ]);
 
+    salesDirectorModule.controller(
+        'salesDirectorEditCtrl', ['$scope', 'createSalesDirector', '$routeParams',
+            function($scope, createSalesDirector, $routeParams)
+        {
+            createSalesDirector().get($routeParams.id).then(function(data) {
+                $scope.salesDirector = data;
+            });
         }
     ]);
 
     salesDirectorModule.directive(
         'loAdminSalesDirectorList',
-        ['$http', '$location', 'tableHeadCol', 'waitingScreen',  'renderMessage', '$q',
-            function($http, $location, tableHeadCol, waitingScreen,  renderMessage, $q)
+        ['$http', '$location', 'tableHeadCol', 'waitingScreen',  'renderMessage', '$q', 'createSalesDirector',
+            function($http, $location, tableHeadCol, waitingScreen,  renderMessage, $q, createSalesDirector)
         {
             return {
                 restrict   : 'EA',
@@ -45,21 +206,6 @@
                     scope.searchingString;
                     scope.searchKey;
 
-                    scope.getList = function () {
-                        var deferred = $q.defer();
-
-                        waitingScreen.show();
-                        $http.get('/admin/salesdirector', {
-                            params: $location.search()
-                        }).success(function(data) {
-                            return deferred.resolve(data);
-                        }).finally(function() {
-                            waitingScreen.hide();
-                        });
-
-                        return deferred.promise;
-                    };
-
                     scope.delete = function(e, key, val) {
                         e.preventDefault();
                         if (!confirm('Are you sure?')) {
@@ -67,26 +213,27 @@
                         }
 
                         waitingScreen.show();
-
-                        var deferred = $q.defer();
-                        $http.delete('/admin/salesdirector/'+val.id, {}).success(function(data) {
+                        var salesDirector = createSalesDirector();
+                        salesDirector.id = val.id;
+                        salesDirector.delete().then(function(data) {
                             renderMessage('Sales director was deleted.', 'success', scope.container, scope);
                             scope.salesDirectors.splice(key, 1);
-                            deferred.resolve(data);
-                        }).error(function(data) {
-                            deferred.reject(data);
+                        }).catch(function(data){
+                            renderMessage(data.message, "danger", scope.container, scope);
                         }).finally(function() {
                             waitingScreen.hide();
                         });
 
-                        return deferred.promise;
+                        salesDirector = null;
                     };
 
-                    scope.getList().then(function(data) {
-                        scope.pagination = data.pagination;
-                        scope.salesDirectors = data.salesDirector;
+                    waitingScreen.show();
+
+                    createSalesDirector().getList().then(function(data) {
+                        scope.pagination      = data.pagination;
+                        scope.salesDirectors  = data.salesDirector;
                         scope.searchingString = $location.search()[data.keySearch];
-                        scope.searchKey = data.keySearch;
+                        scope.searchKey       = data.keySearch;
 
                         function params(settings) {
                             this.key = settings.key;
@@ -108,6 +255,7 @@
                         ];
                     }).finally(function() {
                         scope.isLoaded = true;
+                        waitingScreen.hide();
                     });
                 }
             }
@@ -124,9 +272,16 @@
             return {
                 restrict   : 'EA',
                 templateUrl: '/partials/admin.sales.director.form',
+                scope      : { salesDirector: '=loSalesDirector' },
                 link       : function(scope, element, attrs, controllers) {
+                    scope.$watch('salesDirector.id', function(newVal, oldVal) {
+                        scope.title = newVal? 'Edit Sales Director': 'Add Sales Director';
+                    });
 
-
+                    scope.cancel = function(e) {
+                        e.preventDefault();
+                        history.back();
+                    };
                 }
             }
         }
