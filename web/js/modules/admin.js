@@ -548,10 +548,11 @@
                 scope.pagination     = {};
                 scope.salesDirectors = [];
                 scope.isLoaded       = false;
+                scope.container      = angular.element("#salesDirectorMessage");
                 scope.searchingString;
                 scope.searchKey;
 
-                scope.getSalesDirector = function() {
+                scope.getList = function() {
                     var deferred = $q.defer();
 
                     waitingScreen.show();
@@ -566,39 +567,55 @@
                     return deferred.promise;
                 };
 
-                scope.getSalesDirector().then(function(data) {
-                        scope.pagination      = data.pagination;
-                        scope.salesDirectors  = data.salesDirector;
-                        scope.searchingString = $location.search()[data.keySearch];
-                        scope.searchKey       = data.keySearch;
+                scope.delete = function(e, key, val) {
+                    e.preventDefault();
+                    if (!confirm('Are you sure?')) {
+                        return false;
+                    }
 
-                        function params(settings) {
-                            this.key   = settings.key;
-                            this.title = settings.title;
-                        }
+                    waitingScreen.show();
 
-                        params.prototype.directionKey     = data.keyDirection;
-                        params.prototype.sortKey          = data.keySort;
-                        params.prototype.defaultDirection = data.defDirection;
-                        params.prototype.defaultSortKey   = data.defField;
-
-                        scope.headParams = [
-                            new tableHeadCol(new params({key: 'id', title: 'id', isSortable: true})),
-                            new tableHeadCol(new params({key: 'name', title: 'Name', isSortable: true})),
-                            new tableHeadCol(new params({key: 'email', title: 'Email', isSortable: true})),
-                            new tableHeadCol(new params({key: 'phone', title: 'Phone', isSortable: false})),
-                            new tableHeadCol(new params({key: 'created_at', title: 'Created', isSortable: true})),
-                            new tableHeadCol(new params({key: 'action', title: 'Actions', isSortable: false}))
-                        ];
-                    })
-                    .finally(function() {
-                        scope.isLoaded = true;
+                    var deferred = $q.defer();
+                    $http.delete('/admin/salesdirector/'+val.id, {}).success(function(data) {
+                        renderMessage('Sales director was deleted.', 'success', scope.container, scope);
+                        scope.salesDirectors.splice(key, 1);
+                        deferred.resolve(data);
+                    }).error(function(data){
+                        deferred.reject(data);
+                    }).finally(function() {
+                        waitingScreen.hide();
                     });
 
-                scope.container = angular.element("#salesDirectorMessage");
-                scope.delete = function(e, key, val) {
-
+                    return deferred.promise;
                 };
+
+                scope.getList().then(function(data) {
+                    scope.pagination      = data.pagination;
+                    scope.salesDirectors  = data.salesDirector;
+                    scope.searchingString = $location.search()[data.keySearch];
+                    scope.searchKey       = data.keySearch;
+
+                    function params(settings) {
+                        this.key   = settings.key;
+                        this.title = settings.title;
+                    }
+
+                    params.prototype.directionKey     = data.keyDirection;
+                    params.prototype.sortKey          = data.keySort;
+                    params.prototype.defaultDirection = data.defDirection;
+                    params.prototype.defaultSortKey   = data.defField;
+
+                    scope.headParams = [
+                        new tableHeadCol(new params({key: 'id', title: 'id', isSortable: true})),
+                        new tableHeadCol(new params({key: 'name', title: 'Name', isSortable: true})),
+                        new tableHeadCol(new params({key: 'email', title: 'Email', isSortable: true})),
+                        new tableHeadCol(new params({key: 'phone', title: 'Phone', isSortable: false})),
+                        new tableHeadCol(new params({key: 'created_at', title: 'Created', isSortable: true})),
+                        new tableHeadCol(new params({key: 'action', title: 'Actions', isSortable: false}))
+                    ];
+                }).finally(function() {
+                    scope.isLoaded = true;
+                });
             }
         }
     }]);

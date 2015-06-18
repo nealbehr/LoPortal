@@ -11,7 +11,7 @@ class SalesDirectorController extends Base
     const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION  = 'asc';
 
-    public function getAllAction(Application $app, Request $request)
+    public function getListAction(Application $app, Request $request)
     {
         $pagination = $app->getPaginator()->paginate(
             $this->getSalesDirectorList($request, $app),
@@ -43,6 +43,34 @@ class SalesDirectorController extends Base
         ]);
     }
 
+    public function addAction()
+    {
+
+    }
+
+    public function updateAction()
+    {
+
+    }
+
+    public function deleteAction(Application $app, $id)
+    {
+        try {
+            $model = $this->getSalesDirector($app, $id);
+            $model->setDeleted('1')->setEmail($model->getEmail().'-'.strtotime('now').'-deleted');
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
+
+            return $app->json('success');
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            $this->errors['message'] = $e->getMessage();
+
+            return $app->json($this->errors, $e->getStatusCode());
+        }
+    }
+
     private function getSalesDirectorList(Request $request, Application $app)
     {
         $alias = 'sd';
@@ -72,5 +100,14 @@ class SalesDirectorController extends Base
     private function getOrderKey($col)
     {
         return in_array($col, ['id', 'name', 'email', 'created_at'], true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
+    }
+
+    private function getSalesDirector(Application $app, $id)
+    {
+        if (!($data = $app->getEntityManager()->getRepository(SalesDirector::class)->find($id))) {
+            throw new BadRequestHttpException('Sales director not found.');
+        }
+
+        return $data;
     }
 }
