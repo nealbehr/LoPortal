@@ -547,11 +547,8 @@
             link       : function(scope, element, attrs, controllers) {
                 scope.pagination     = {};
                 scope.salesDirectors = [];
-
-                scope.roles = {};
-                scope.lenders = [];
+                scope.isLoaded       = false;
                 scope.searchingString;
-                scope.isLoaded = false;
                 scope.searchKey;
 
                 scope.getSalesDirector = function() {
@@ -569,13 +566,7 @@
                     return deferred.promise;
                 };
 
-                getRoles().then(function(data) {
-                        scope.roles = data;
-                    })
-                    .then(function() {
-                        return scope.getSalesDirector();
-                    })
-                    .then(function(data) {
+                scope.getSalesDirector().then(function(data) {
                         scope.pagination      = data.pagination;
                         scope.salesDirectors  = data.salesDirector;
                         scope.searchingString = $location.search()[data.keySearch];
