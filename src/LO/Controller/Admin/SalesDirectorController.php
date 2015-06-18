@@ -45,16 +45,32 @@ class SalesDirectorController extends Base
 
     private function getSalesDirectorList(Request $request, Application $app)
     {
-        $q = $app->getEntityManager()->createQueryBuilder()
-            ->select('sd')
-            ->from(SalesDirector::class, 'sd')
-            ->where("sd.deleted = '0'")
-            ->setMaxResults(self::LIMIT);
+        $alias = 'sd';
+        $query = $app->getEntityManager()->createQueryBuilder()
+            ->select($alias)
+            ->from(SalesDirector::class, $alias)
+            ->where("$alias.deleted = '0'")
+            ->setMaxResults(self::LIMIT)
+            ->orderBy(
+                $alias.'.'.$this->getOrderKey($request->query->get(self::KEY_SORT)),
+                $this->getOrderDirection($request->query->get(self::KEY_DIRECTION), self::DEFAULT_SORT_DIRECTION)
+            );
 
-        if ($request->get(self::KEY_SEARCH)){
-
+        if ($request->get(self::KEY_SEARCH)) {
+            $query->andWhere(
+                $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.name)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.email)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.phone)", ':param')
+                )
+            )->setParameter('param', '%'.strtolower($request->get(self::KEY_SEARCH)).'%');
         }
 
-        return $q->getQuery();
+        return $query->getQuery();
+    }
+
+    private function getOrderKey($col)
+    {
+        return in_array($col, ['id', 'name', 'email', 'created_at'], true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
     }
 }

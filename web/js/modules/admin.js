@@ -67,10 +67,21 @@
                     isFree: false
                 }
             })
-        ;
+            .when('/admin/salesdirector', {
+                templateUrl: '/partials/admin.sales.director',
+                controller : 'salesDirectorCtrl',
+                access     : { isFree: false }
+            });
     }]);
 
     admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
+
+    }]);
+
+    admin.controller(
+        'salesDirectorCtrl',
+        ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http",
+            function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http) {
 
     }]);
 
@@ -243,7 +254,13 @@
                     new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
                     new Tab({path: '/admin/queue', title: "Request Management"}),
                     new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"}),
-                    new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"})
+                    new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"}),
+                    new Tab({
+                        path       : '/admin/salesdirector',
+                        title      : 'Sales Director',
+                        button_text: 'Add Sales Director', 
+                        button_href: '/admin/salesdirector/new'
+                    })
                 ]
             }
         }
@@ -515,6 +532,82 @@
 
                     return $.param(params);
                 }
+            }
+        }
+    }]);
+
+    admin.directive(
+        'loAdminSalesDirectorList',
+        ['$http', 'getRoles', 'getLenders', '$location', 'tableHeadCol', 'waitingScreen', 'createUser', 'renderMessage', '$q',
+            function($http, getRoles, getLenders, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q)
+        {
+        return {
+            restrict   : 'EA',
+            templateUrl: '/partials/admin.sales.director.list',
+            link       : function(scope, element, attrs, controllers) {
+                scope.pagination     = {};
+                scope.salesDirectors = [];
+
+                scope.roles = {};
+                scope.lenders = [];
+                scope.searchingString;
+                scope.isLoaded = false;
+                scope.searchKey;
+
+                scope.getSalesDirector = function() {
+                    var deferred = $q.defer();
+
+                    waitingScreen.show();
+                    $http.get('/admin/salesdirector', {
+                        params: $location.search()
+                    }).success(function(data) {
+                        return deferred.resolve(data);
+                    }).finally(function() {
+                        waitingScreen.hide();
+                    });
+
+                    return deferred.promise;
+                };
+
+                getRoles().then(function(data) {
+                        scope.roles = data;
+                    })
+                    .then(function() {
+                        return scope.getSalesDirector();
+                    })
+                    .then(function(data) {
+                        scope.pagination      = data.pagination;
+                        scope.salesDirectors  = data.salesDirector;
+                        scope.searchingString = $location.search()[data.keySearch];
+                        scope.searchKey       = data.keySearch;
+
+                        function params(settings) {
+                            this.key   = settings.key;
+                            this.title = settings.title;
+                        }
+
+                        params.prototype.directionKey     = data.keyDirection;
+                        params.prototype.sortKey          = data.keySort;
+                        params.prototype.defaultDirection = data.defDirection;
+                        params.prototype.defaultSortKey   = data.defField;
+
+                        scope.headParams = [
+                            new tableHeadCol(new params({key: 'id', title: 'id', isSortable: true})),
+                            new tableHeadCol(new params({key: 'name', title: 'Name', isSortable: true})),
+                            new tableHeadCol(new params({key: 'email', title: 'Email', isSortable: true})),
+                            new tableHeadCol(new params({key: 'phone', title: 'Phone', isSortable: false})),
+                            new tableHeadCol(new params({key: 'created_at', title: 'Created', isSortable: true})),
+                            new tableHeadCol(new params({key: 'action', title: 'Actions', isSortable: false}))
+                        ];
+                    })
+                    .finally(function() {
+                        scope.isLoaded = true;
+                    });
+
+                scope.container = angular.element("#salesDirectorMessage");
+                scope.delete = function(e, key, val) {
+
+                };
             }
         }
     }]);
