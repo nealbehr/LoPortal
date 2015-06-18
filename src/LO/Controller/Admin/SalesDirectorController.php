@@ -15,7 +15,7 @@ class SalesDirectorController extends Base
     {
         $pagination = $app->getPaginator()->paginate(
             $this->getSalesDirectorList($request, $app),
-            (int) $request->get(self::KEY_PAGE, 1),
+            (int)$request->get(self::KEY_PAGE, 1),
             self::LIMIT,
             [
                 'pageParameterName'          => self::KEY_PAGE,
