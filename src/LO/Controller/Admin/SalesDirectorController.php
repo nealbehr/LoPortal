@@ -84,14 +84,22 @@ class SalesDirectorController extends Base
 
     public function updateAction(Application $app, Request $request, $id)
     {
-        $model = $this->getSalesDirectorById($app, $id);
+        try{
+            $model = $this->getSalesDirectorById($app, $id);
 
-        $this->createForm($app, $request, $model);
+            $this->createForm($app, $request, $model);
 
-        $app->getEntityManager()->persist($model);
-        $app->getEntityManager()->flush();
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
 
-        return $app->json('success');
+            return $app->json('success');
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            $this->errors['message'] = $e->getMessage();
+
+            return $app->json($this->errors, $e->getStatusCode());
+        }
     }
 
     public function deleteAction(Application $app, $id)

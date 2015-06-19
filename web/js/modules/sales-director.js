@@ -185,8 +185,8 @@
 
     salesDirectorModule.directive(
         'loAdminSalesDirectorList',
-        ['$http', '$location', 'tableHeadCol', 'waitingScreen',  'renderMessage', '$q', 'createSalesDirector',
-            function($http, $location, tableHeadCol, waitingScreen,  renderMessage, $q, createSalesDirector)
+        ['$http', '$location', 'tableHeadCol', 'waitingScreen', 'renderMessage', 'createSalesDirector',
+            function($http, $location, tableHeadCol, waitingScreen, renderMessage, createSalesDirector)
         {
             return {
                 restrict   : 'EA',
