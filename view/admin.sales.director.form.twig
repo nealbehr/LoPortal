@@ -1,35 +1,51 @@
-<form ng-submit="submit(formUser, $event)" class="css-form" novalidate name="formSalesDirector">
+<form ng-submit="submit(formSalesDirector, $event)" class="css-form" novalidate name="formSalesDirector">
     <div class="row edit-user">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+
             <div id="salesDirectorMessage"></div>
 
-            <div class="alert alert-danger fade in" ng-show="!hideErrors && formUser.$submitted && !formUser.$valid">
+            <div class="alert alert-danger fade in" ng-show="!hideErrors && formSalesDirector.$submitted && !formSalesDirector.$valid">
                 <a ng-href="#" class="close" ng-click="showErrors($event)">close</a>
-                <div ng-show="isValidEmail(formUser)">
-                    <span ng-show="formUser.email.$error.email">The entered email is invalid.</span>
-                    <span ng-show="formUser.email.$error.required">Email can't be empty.</span>
+                <div ng-show="formSalesDirector.$submitted && formSalesDirector.name.$error.required">Name can't be empty.</div>
+                <div ng-show="formSalesDirector.$submitted && formSalesDirector.name.$error.loName">Name is invalid.</div>
+                <div ng-show="isValidEmail(formSalesDirector)">
+                    <span ng-show="formSalesDirector.email.$error.email">The entered email is invalid.</span>
+                    <span ng-show="formSalesDirector.email.$error.required">Email can't be empty.</span>
                 </div>
-                <div ng-show="formUser.$submitted && formUser.phone.$error.usaPhoneFormat">Please input a valid US phone number including 3 digit area code and 7 digit number.</div>
-                <div ng-show="formUser.$submitted && formUser.first_name.$error.loName">First name is invalid</div>
-                <div ng-show="formUser.$submitted && formUser.last_name.$error.loName">Last name is invalid</div>
-                <div ng-show="formUser.$submitted && formUser.nmls.$error.number">NMLS # should be of number.</div>
-                <div ng-show="formUser.$submitted && formUser.sales_director_email.$error.email">Please input a valid email in Sales Director Email field.</div>
-                <div ng-show="formUser.$submitted && formUser.sales_director_phone.$error.usaPhoneFormat">Please input a valid phone in Sales Director Phone field.</div>
-                <div ng-show="formUser.$submitted && formUser.mobile.$error.usaPhoneFormat">Please input a valid mobile phone.</div>
-                <div ng-show="formUser.address.$invalid">Address is invalid.</div>
-                <div ng-show="formUser.password_confirm.$error.compareTo">Passwords are not equal.</div>
+                <div ng-show="formSalesDirector.$submitted && formSalesDirector.phone.$error.usaPhoneFormat">
+                    Please input a valid US phone number including 3 digit area code and 7 digit number.
+                </div>
             </div>
 
             <h2>[[ title ]]</h2>
             <div class="inputs-holder">
                 <div class="input">
-                    <input class="input-lg" type="text" name="name" placeholder="Name" ng-model="salesDirector.name">
+                    <input class="input-lg"
+                           type="text"
+                           name="name"
+                           placeholder="Name"
+                           lo-name-validator
+                           required=""
+                           ng-model="salesDirector.name"
+                           ng-model-options="{updateOn: 'blur'}">
                 </div>
                 <div class="input">
-                    <input class="input-lg" type="email" name="email" placeholder="Email" ng-model="salesDirector.email">
+                    <input class="input-lg"
+                           type="email"
+                           name="email"
+                           placeholder="Email"
+                           required=""
+                           ng-model="salesDirector.email"
+                           ng-model-options="{updateOn: 'blur'}">
                 </div>
                 <div class="input">
-                    <input class="input-lg" type="text" name="phone" placeholder="Phone" usa-phone ng-model="salesDirector.phone">
+                    <input class="input-lg"
+                           type="text"
+                           name="phone"
+                           placeholder="Phone"
+                           usa-phone
+                           ng-model="salesDirector.phone"
+                           g-model-options="{updateOn: 'blur'}">
                 </div>
             </div>
 

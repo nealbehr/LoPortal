@@ -84,16 +84,12 @@
 
             salesDirector.add = function(){
                 var deferred = $q.defer();
-                $http.post(path, {salesDirector: this.getFields4Save()})
-                    .success(function(data){
-                        userBase.id = data.id;
-                        deferred.resolve(data);
-                    })
-                    .error(function(data){
-                        console.log(data);
-                        deferred.reject(data);
-                    })
-                ;
+                $http.post(path, {salesDirector: this.getFields4Save()}).success(function(data){
+                    userBase.id = data.id;
+                    deferred.resolve(data);
+                }).error(function(data){
+                    deferred.reject(data);
+                });
 
                 return deferred.promise;
             };
@@ -264,17 +260,50 @@
 
     salesDirectorModule.directive(
         'loAdminSalesDirectorForm',
-        ['waitingScreen', 'renderMessage', 'sessionMessages', function(waitingScreen, renderMessage, sessionMessages) {
+        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll',
+            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll)
+        {
             return {
                 restrict   : 'EA',
                 templateUrl: '/partials/admin.sales.director.form',
                 scope      : { salesDirector: '=loSalesDirector' },
                 link       : function(scope, element, attrs, controllers) {
-                    scope.container = angular.element('#salesDirectorMessage');
+                    scope.container  = angular.element('#salesDirectorMessage');
+                    scope.hideErrors = true;
 
                     scope.$watch('salesDirector.id', function(newVal, oldVal) {
                         scope.title = newVal? 'Edit Sales Director': 'Add Sales Director';
                     });
+
+                    scope.isValidEmail = function(form){
+                        if(!form.email){
+                            return;
+                        }
+
+                        return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
+                    };
+
+                    scope.showErrors = function(e) {
+                        e.preventDefault();
+                        this.hideErrors = true;
+                    };
+
+                    scope.gotoErrorMessage = function(){
+                        $anchorScroll(scope.container.attr('id'));
+                    };
+
+                    scope.submit = function(formSalesDirector, $event) {
+                        if (!formSalesDirector.$valid) {
+                            this.hideErrors = false;
+                            this.gotoErrorMessage();
+                            return false;
+                        }
+                        this.save();
+                    };
+
+                    scope.save = function() {
+                        waitingScreen.show();
+                    };
 
                     scope.cancel = function(e) {
                         e.preventDefault();
