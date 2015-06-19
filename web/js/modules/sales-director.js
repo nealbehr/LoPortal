@@ -20,7 +20,7 @@
         });
     }]);
 
-    salesDirectorModule.factory('getSalesDirectors', ['$q', '$http', function($q, $http){
+    salesDirectorModule.factory('getSalesDirectors', ['$q', '$http', function($q, $http) {
         var salesDirectors = [];
 
         return function(needReload) {
@@ -68,19 +68,16 @@
             };
 
             salesDirector.save = function() {
-                return this.id? this.update(): this.add();
+                return this.id ? this.update() : this.add();
             };
 
             salesDirector.update = function() {
                 var deferred = $q.defer();
-                $http.put(path+this.id, {salesDirector: this.getFields4Save()})
-                    .success(function(data){
-                        deferred.resolve(data);
-                    })
-                    .error(function(data){
-                        deferred.reject(data);
-                    })
-                ;
+                $http.put(path+this.id, {salesDirector: this.getFields4Save()}).success(function(data){
+                    deferred.resolve(data);
+                }).error(function(data){
+                    deferred.reject(data);
+                });
 
                 return deferred.promise;
             };
@@ -107,12 +104,12 @@
 
     salesDirectorModule.service('createSalesDirectorBase', ['$q', '$http', function($q, $http) {
         return function() {
+            var self   = this;
+
             this.id    = null;
             this.name  = null;
             this.email = null;
             this.phone = null;
-
-            var self = this;
 
             this.fill = function(data) {
                 for (var key in data) {
@@ -215,11 +212,11 @@
                         waitingScreen.show();
                         var salesDirector = createSalesDirector();
                         salesDirector.id = val.id;
-                        salesDirector.delete().then(function(data) {
+                        salesDirector.delete().then(function() {
                             renderMessage('Sales director was deleted.', 'success', scope.container, scope);
                             scope.salesDirectors.splice(key, 1);
-                        }).catch(function(data){
-                            renderMessage(data.message, "danger", scope.container, scope);
+                        }).catch(function(data) {
+                            renderMessage(data.message, 'danger', scope.container, scope);
                         }).finally(function() {
                             waitingScreen.hide();
                         });
@@ -229,9 +226,12 @@
 
                     waitingScreen.show();
 
-                    createSalesDirector().getList().then(function(data) {
+                    createSalesDirector().getList(true).then(function(data) {
+                        for (var i in data.salesDirectors) {
+                            scope.salesDirectors.push(createSalesDirector().fill(data.salesDirectors[i]));
+                        }
+
                         scope.pagination      = data.pagination;
-                        scope.salesDirectors  = data.salesDirector;
                         scope.searchingString = $location.search()[data.keySearch];
                         scope.searchKey       = data.keySearch;
 
@@ -240,10 +240,10 @@
                             this.title = settings.title;
                         }
 
-                        params.prototype.directionKey = data.keyDirection;
-                        params.prototype.sortKey = data.keySort;
+                        params.prototype.directionKey     = data.keyDirection;
+                        params.prototype.sortKey          = data.keySort;
                         params.prototype.defaultDirection = data.defDirection;
-                        params.prototype.defaultSortKey = data.defField;
+                        params.prototype.defaultSortKey   = data.defField;
 
                         scope.headParams = [
                             new tableHeadCol(new params({key: 'id', title: 'id', isSortable: true})),
@@ -264,16 +264,14 @@
 
     salesDirectorModule.directive(
         'loAdminSalesDirectorForm',
-        ['redirect', 'userService', '$http', 'waitingScreen', 'renderMessage', 'getRoles', 'getLenders', '$location',
-            '$q', 'sessionMessages', '$anchorScroll', 'loadFile', '$timeout', 'pictureObject',
-            function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, getLenders, $location, $q,
-                     sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject)
-        {
+        ['waitingScreen', 'renderMessage', 'sessionMessages', function(waitingScreen, renderMessage, sessionMessages) {
             return {
                 restrict   : 'EA',
                 templateUrl: '/partials/admin.sales.director.form',
                 scope      : { salesDirector: '=loSalesDirector' },
                 link       : function(scope, element, attrs, controllers) {
+                    scope.container = angular.element('#salesDirectorMessage');
+
                     scope.$watch('salesDirector.id', function(newVal, oldVal) {
                         scope.title = newVal? 'Edit Sales Director': 'Add Sales Director';
                     });
@@ -281,6 +279,24 @@
                     scope.cancel = function(e) {
                         e.preventDefault();
                         history.back();
+                    };
+
+                    scope.delete = function(e) {
+                        e.preventDefault();
+                        if (!confirm('Are you sure?')) {
+                            return false;
+                        }
+
+                        waitingScreen.show();
+                        scope.salesDirector.delete().then(function() {
+                            sessionMessages.addSuccess('Sales director was deleted.');
+                            scope.salesDirector.clear();
+                            history.back();
+                        }).catch(function(data) {
+                            renderMessage(data.message, 'danger', scope.container, scope);
+                        }).finally(function() {
+                            waitingScreen.hide();
+                        });
                     };
                 }
             }

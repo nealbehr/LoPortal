@@ -15,7 +15,7 @@ class SalesDirectorController extends Base
     public function getListAction(Application $app, Request $request)
     {
         $pagination = $app->getPaginator()->paginate(
-            $this->getSalesDirectorList($request, $app),
+            $this->getSalesDirectorList($app, $request),
             (int)$request->get(self::KEY_PAGE, 1),
             self::LIMIT,
             [
@@ -34,13 +34,13 @@ class SalesDirectorController extends Base
         }
 
         return $app->json([
-            'pagination'    => $pagination->getPaginationData(),
-            'keySearch'     => self::KEY_SEARCH,
-            'keySort'       => self::KEY_SORT,
-            'keyDirection'  => self::KEY_DIRECTION,
-            'salesDirector' => $items,
-            'defDirection'  => self::DEFAULT_SORT_DIRECTION,
-            'defField'      => self::DEFAULT_SORT_FIELD_NAME,
+            'pagination'     => $pagination->getPaginationData(),
+            'keySearch'      => self::KEY_SEARCH,
+            'keySort'        => self::KEY_SORT,
+            'keyDirection'   => self::KEY_DIRECTION,
+            'salesDirectors' => $items,
+            'defDirection'   => self::DEFAULT_SORT_DIRECTION,
+            'defField'       => self::DEFAULT_SORT_FIELD_NAME,
         ]);
     }
 
@@ -83,7 +83,7 @@ class SalesDirectorController extends Base
         }
     }
 
-    private function getSalesDirectorList(Request $request, Application $app)
+    private function getSalesDirectorList(Application $app, Request $request)
     {
         $alias = 'sd';
         $query = $app->getEntityManager()->createQueryBuilder()
@@ -116,7 +116,8 @@ class SalesDirectorController extends Base
 
     private function getSalesDirectorById(Application $app, $id)
     {
-        if (!($model = $app->getEntityManager()->getRepository(SalesDirector::class)->find((int)$id))) {
+        $model = $app->getEntityManager()->getRepository(SalesDirector::class)->find((int)$id);
+        if (!$model || $model->getDeleted() !== '0') {
             throw new BadRequestHttpException('Sales director not found.');
         }
 
