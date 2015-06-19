@@ -95,7 +95,7 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->get('/salesdirector', 'admin.sales.director.controller:getListAction');
         $controllers->get('/salesdirector/{id}', 'admin.sales.director.controller:getByIdAction');
         $controllers->post('/salesdirector', 'admin.sales.director.controller:addAction');
-        $controllers->put('/salesdirector/{id}', 'admin.sales.director.controlle:updateAction');
+        $controllers->put('/salesdirector/{id}', 'admin.sales.director.controller:updateAction');
         $controllers->delete('/salesdirector/{id}', 'admin.sales.director.controller:deleteAction');
         
         return $controllers;

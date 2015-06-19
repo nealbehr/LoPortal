@@ -46,19 +46,19 @@
             function($q, $http, createSalesDirectorBase, getSalesDirectors) {
         return function() {
             var salesDirector = new createSalesDirectorBase(),
-                path          = '/admin/salesdirector/';
+                path          = '/admin/salesdirector';
 
             salesDirector.getList = function(needReload) {
                 return getSalesDirectors(needReload)
             };
 
-            salesDirector.delete = function(){
+            salesDirector.delete = function() {
                 if (!this.id) {
                     alert('User id has not set.');
                 }
 
                 var deferred = $q.defer();
-                $http.delete(path+this.id, {}).success(function(data) {
+                $http.delete(path+'/'+this.id, {}).success(function(data) {
                     deferred.resolve(data);
                 }).error(function(data){
                     deferred.reject(data);
@@ -73,7 +73,7 @@
 
             salesDirector.update = function() {
                 var deferred = $q.defer();
-                $http.put(path+this.id, {salesDirector: this.getFields4Save()}).success(function(data){
+                $http.put(path+'/'+this.id, {salesDirector: this.getFields4Save()}).success(function(data){
                     deferred.resolve(data);
                 }).error(function(data){
                     deferred.reject(data);
@@ -82,10 +82,10 @@
                 return deferred.promise;
             };
 
-            salesDirector.add = function(){
+            salesDirector.add = function() {
                 var deferred = $q.defer();
-                $http.post(path, {salesDirector: this.getFields4Save()}).success(function(data){
-                    userBase.id = data.id;
+                $http.post(path, {salesDirector: this.getFields4Save()}).success(function(data) {
+                    salesDirector.id = data.id;
                     deferred.resolve(data);
                 }).error(function(data){
                     deferred.reject(data);
@@ -222,7 +222,7 @@
 
                     waitingScreen.show();
 
-                    createSalesDirector().getList(true).then(function(data) {
+                    $http.get('admin/salesdirector', {params: $location.search()}).success(function(data) {
                         for (var i in data.salesDirectors) {
                             scope.salesDirectors.push(createSalesDirector().fill(data.salesDirectors[i]));
                         }
@@ -275,12 +275,13 @@
                         scope.title = newVal? 'Edit Sales Director': 'Add Sales Director';
                     });
 
-                    scope.isValidEmail = function(form){
-                        if(!form.email){
+                    scope.isValidEmail = function(form) {
+                        if (!form.email) {
                             return;
                         }
 
-                        return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
+                        return (form.$submitted || form.email.$touched)
+                            && (form.email.$error.email || form.email.$error.required);
                     };
 
                     scope.showErrors = function(e) {
@@ -288,7 +289,7 @@
                         this.hideErrors = true;
                     };
 
-                    scope.gotoErrorMessage = function(){
+                    scope.gotoErrorMessage = function() {
                         $anchorScroll(scope.container.attr('id'));
                     };
 
@@ -303,6 +304,25 @@
 
                     scope.save = function() {
                         waitingScreen.show();
+
+                        scope.salesDirector.save().then(function(data) {
+                            sessionMessages.addSuccess('Successfully saved.');
+                            history.back();
+                        }).catch(function(data) {
+                            var errors = '';
+                            if ('message' in data) {
+                                errors += data.message+' ';
+                            }
+
+                            if ('form_errors' in data){ 
+                                errors += data.form_errors.join(' ');
+                            }
+
+                            renderMessage(errors, 'danger', scope.container, scope);
+                            scope.gotoErrorMessage();
+                        }).finally(function() {
+                            waitingScreen.hide();
+                        });
                     };
 
                     scope.cancel = function(e) {

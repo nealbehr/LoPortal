@@ -2,13 +2,17 @@
 
 use LO\Application;
 use Symfony\Component\HttpFoundation\Request;
+use LO\Traits\GetFormErrors;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use LO\Form\SalesDirectorType;
 use LO\Model\Entity\SalesDirector;
 
 class SalesDirectorController extends Base
 {
-    const LIMIT = 20;
+    use GetFormErrors;
 
+    const LIMIT                   = 20;
     const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION  = 'asc';
 
@@ -55,14 +59,39 @@ class SalesDirectorController extends Base
         }
     }
 
-    public function addAction()
+    public function addAction(Application $app, Request $request)
     {
+        try {
+            $app->getEntityManager()->beginTransaction();
+            $model = new SalesDirector();
 
+            $this->createForm($app, $request, $model);
+
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
+            $app->getEntityManager()->commit();
+
+            return $app->json(['id' => $model->getId()]);
+        }
+        catch (HttpException $e) {
+            $app->getEntityManager()->rollback();
+            $app->getMonolog()->addError($e);
+            $this->errors['message'] = $e->getMessage();
+
+            return $app->json($this->errors, $e->getStatusCode());
+        }
     }
 
-    public function updateAction()
+    public function updateAction(Application $app, Request $request, $id)
     {
+        $model = $this->getSalesDirectorById($app, $id);
 
+        $this->createForm($app, $request, $model);
+
+        $app->getEntityManager()->persist($model);
+        $app->getEntityManager()->flush();
+
+        return $app->json('success');
     }
 
     public function deleteAction(Application $app, $id)
@@ -81,6 +110,27 @@ class SalesDirectorController extends Base
 
             return $app->json($this->errors, $e->getStatusCode());
         }
+    }
+
+    private function createForm(Application $app, Request $request, SalesDirector $model)
+    {
+        $formOptions = ['validation_groups' => ['Default']];
+        $data        = $request->request->get('salesDirector');
+
+        if (isset($data['email']) && $model->getEmail() !== $data['email']) {
+            $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ['New']);
+        }
+
+        $form  = $app->getFormFactory()->create(new SalesDirectorType($app->getS3()), $model, $formOptions);
+        $form->submit($request->request->get('salesDirector'));
+
+        if (!$form->isValid()) {
+            $app->getMonolog()->addError($form->getErrors(true));
+            $this->errors = $this->getFormErrors($form);
+            throw new BadRequestHttpException(implode(' ', $this->errors));
+        }
+
+        return $form;
     }
 
     private function getSalesDirectorList(Application $app, Request $request)
