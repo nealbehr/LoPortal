@@ -19,7 +19,14 @@ amazon:
       key:    AKIAIDYXBAKHZD5BUYVQ
       secret: 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
       region: us-west-1
+    ses:
+      securityCredentials:
+        key: AKIAJEUQ76HEF5BQPUUQ
+        secret: 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
+        region: us-east-1
+      source: development@1rex.com
 firstrex:
+  doSend: false
   api:
     url:  http://tools.1rex.com:3000/inquiries.json
   additional.emails:
