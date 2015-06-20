@@ -149,8 +149,6 @@ class RequestFlyerController extends RequestFlyerBase {
             $firstRexForm->handleRequest($request);
 
             if(!$firstRexForm->isValid()){
-//                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
-
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
@@ -167,7 +165,8 @@ class RequestFlyerController extends RequestFlyerBase {
                 $formOptions
             );
 
-            (new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $queue)))->send();
+            $changeStatusEmail = new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $queue));
+            $changeStatusEmail->send();
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
@@ -180,19 +179,37 @@ class RequestFlyerController extends RequestFlyerBase {
         return $app->json("success");
     }
 
-    public function updateAction(Application $app, Request $request, $id){
+    public function updateAction(Application $app, Request $request, $id) {
         try {
             $app->getEntityManager()->beginTransaction();
-
             $queue = $this->getQueueById($app, $id);
 
             if($queue->getState() !== Queue::STATE_DRAFT) {
-                throw new Http("You can't edit this flyer.", Response::HTTP_BAD_REQUEST);
+                throw new Http("You can't submit this flyer.", Response::HTTP_BAD_REQUEST);
             }
 
+            $formBuilder =  $app->getFormFactory()->createBuilder(new FirstRexAddress());
+            $formBuilder->setMethod('PUT');
+            $firstRexForm = $formBuilder->getForm();
+            $firstRexForm->handleRequest($request);
+            $queue->setAdditionalInfo($firstRexForm->getData());
+
+            $user = $app->getSecurityTokenStorage()->getToken()->getUser();
+            $billboardID = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $user);
+            $app->getMonolog()->addInfo("billboard id: " . $billboardID);
+            $queue->set1RexId($billboardID);
             $queue->setState(Queue::STATE_REQUESTED);
 
-            $this->update($app, $request, $queue);
+            $this->saveFlyer(
+                $app,
+                $request,
+                $queue->getRealtor(),
+                $queue,
+                ['method' => 'PUT', 'validation_groups' => ["Default", "main"]]
+            );
+
+            $changeStatusEmail = new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($queue->getRealtor(), $queue));
+            $changeStatusEmail->send();
 
             $app->getEntityManager()->commit();
         } catch (\Exception $e){

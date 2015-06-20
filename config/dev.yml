@@ -23,10 +23,10 @@ amazon:
       region: us-west-1
     ses:
       securityCredentials:
-        key: AKIAIINCG3J7RCRMROOA
-        secret: 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
+        key: AKIAJEUQ76HEF5BQPUUQ
+        secret: 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
         region: us-east-1
-      source: rexinfo12@gmail.com
+      source: development@1rex.com
 firstrex:
   doSend: false
   api:

@@ -38,42 +38,41 @@ abstract class Base {
         return $this->source;
     }
 
-    public function send(){
+    public function send() {
         if(empty($this->getDestinationList())){
             throw new \Exception('Destination must be not empty.');
         }
-
-        $this->ses->sendEmail(
-            [
-                // Source is required
-                'Source' => $this->getSource(),
-                // Destination is required
-                'Destination' => [
-                    'ToAddresses' => $this->getDestinationList(),
+        $args = [
+            // Source is required
+            'Source' => $this->getSource(),
+            // Destination is required
+            'Destination' => [
+                'ToAddresses' => $this->getDestinationList(),
+            ],
+            // Message is required
+            'Message' => [
+                // Subject is required
+                'Subject' => [
+                    // Data is required
+                    'Data' => $this->getSubject(),
+                    'Charset' => 'UTF8',
                 ],
-                // Message is required
-                'Message' => [
-                    // Subject is required
-                    'Subject' => [
-                        // Data is required
-                        'Data' => $this->getSubject(),
-                        'Charset' => 'UTF8',
-                    ],
-                    // Body is required
-                    'Body' => [
+                // Body is required
+                'Body' => [
 //                        'Text' => [
 //                            // Data is required
 //                            'Data' => 'stringBody',
 //                            'Charset' => 'UTF8',
 //                        ],
-                        'Html' => [
-                            // Data is required
-                            'Data' => $this->getBody(),
-                            'Charset' => 'UTF8',
-                        ],
+                    'Html' => [
+                        // Data is required
+                        'Data' => $this->getBody(),
+                        'Charset' => 'UTF8',
                     ],
                 ],
-            ]
-        );
+            ],
+        ];
+
+        $this->ses->sendEmail($args);
     }
 } 
