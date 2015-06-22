@@ -129,8 +129,8 @@ class SalesDirectorController extends Base
             $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ['New']);
         }
 
-        $form  = $app->getFormFactory()->create(new SalesDirectorType($app->getS3()), $model, $formOptions);
-        $form->submit($request->request->get('salesDirector'));
+        $form = $app->getFormFactory()->create(new SalesDirectorType($app->getS3()), $model, $formOptions);
+        $form->submit($data);
 
         if (!$form->isValid()) {
             $app->getMonolog()->addError($form->getErrors(true));

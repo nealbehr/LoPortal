@@ -314,7 +314,7 @@
                                 errors += data.message+' ';
                             }
 
-                            if ('form_errors' in data){ 
+                            if ('form_errors' in data) {
                                 errors += data.form_errors.join(' ');
                             }
 
