@@ -57,9 +57,9 @@ class RequestBaseController
             if (false === $curl->response || !property_exists($curl->response, 'id')) {
                 throw new \Exception(sprintf('Bad response have taken from 1REX. Response \'%s\'', $curl->response));
             }
-
             return $curl->response->id;
         } catch (\Exception $e) {
+            $app->getMonolog()->addError($e);
             throw $e;
         } finally {
             $curl->close();

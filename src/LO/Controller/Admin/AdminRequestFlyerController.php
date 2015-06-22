@@ -10,11 +10,13 @@ namespace LO\Controller\Admin;
 
 use LO\Application;
 use LO\Exception\Http;
+use LO\Form\FirstRexAddress;
 use Symfony\Component\HttpFoundation\Request;
 use LO\Controller\RequestFlyerBase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-class RequestFlyerController extends RequestFlyerBase {
+class AdminRequestFlyerController extends RequestFlyerBase {
 
     public function updateAction(Application $app, Request $request, $id){
         try {
@@ -22,7 +24,26 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $queue = $this->getQueueById($app, $id);
 
-            $this->update($app, $request, $queue);
+            $formOptions = [
+                'validation_groups' => ["Default", "main"],
+                'method' => 'PUT'
+            ];
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress(), null, ['method' => 'PUT']);
+            $firstRexForm->handleRequest($request);
+
+            if(!$firstRexForm->isValid()){
+                throw new BadRequestHttpException('Additional info is not valid');
+            }
+
+            $queue->setAdditionalInfo($firstRexForm->getData());
+
+            $this->saveFlyer(
+                $app,
+                $request,
+                $queue->getRealtor(),
+                $queue,
+                $formOptions
+            );
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){

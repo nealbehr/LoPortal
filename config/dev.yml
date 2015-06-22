@@ -14,7 +14,7 @@ db.options:
     password: GPz3quD4YXK7aaY9
     charset:  utf8
 google:
-  apiKey: AIzaSyC4lwX5bWIydtFeREY-T5bYT64q8s4WxTk
+  apiKey: AIzaSyCvs5PnZWvzQlQAmlBdR24YGhkfgFavF6I
   analytics: UA-63926109-1
 amazon:
     securityCredentials:
@@ -23,13 +23,14 @@ amazon:
       region: us-west-1
     ses:
       securityCredentials:
-        key: AKIAIINCG3J7RCRMROOA
-        secret: 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
+        key: AKIAJEUQ76HEF5BQPUUQ
+        secret: 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
         region: us-east-1
-      source: rexinfo12@gmail.com
+      source: development@1rex.com
 firstrex:
   doSend: false
   api:
     url:  http://tools.1rex.com:3000/inquiries.json
   additional.emails:
-    - serhii.samoilenko@appsorama.com
+    - dmitry@appsorama.com
+    - kobyleha@gmail.com
