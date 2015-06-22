@@ -51,7 +51,7 @@
 
             <button type="submit" class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
-                <a ng-if="!itsMe()" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete sales director</a>
+                <a ng-if="salesDirector.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete sales director</a>
                 <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>
