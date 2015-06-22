@@ -86,6 +86,7 @@ class SalesDirectorController extends Base
     {
         try{
             $model = $this->getSalesDirectorById($app, $id);
+            $model->setUpdatedAt($model->getCurrentDate());
 
             $this->createForm($app, $request, $model);
 
