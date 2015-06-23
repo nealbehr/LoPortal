@@ -26,7 +26,7 @@ class AddSalesDirectors extends AbstractMigration
             'name'  => 'Mike Lyon',
             'email' => 'mike.lyon@1rex.com',
             'phone' => '925-548-5157',
-        ], [
+        ],[
             'name'  => 'Paul Careaga',
             'email' => 'paul.careaga@1rex.com',
             'phone' => '253-677-4470',
@@ -48,6 +48,6 @@ class AddSalesDirectors extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('sales_director');
+
     }
 }
