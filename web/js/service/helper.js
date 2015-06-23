@@ -88,7 +88,6 @@
             link: function(scope, element, attrs, controllers){
                 scope.roles = [];
                 scope.lenders = [];
-                scope.salesDirector = [];
                 scope.selected = {};
                 scope.selectedLender = {};
                 scope.masterUserData = {};
@@ -134,24 +133,24 @@
                 scope.autoComplete = function(event) {
                     var element = $(event.target);
 
-                    element.tableAutocomplete({
-                        columns: [
-                            {field: 'id',    title: 'Id'},
-                            {field: 'value', title: 'Name'},
-                            {field: 'email', title: 'E-mail'},
-                            {field: 'phone', title: 'Phone'}
-                        ],
+                    element.autocomplete({
                         source: function(request, response) {
                             $http.get(
                                 '/admin/salesdirector',
                                 {
-                                    params: {'filterValue': element.val().toLowerCase()},
+                                    params: {
+                                        'filterValue': element.val().toLowerCase(),
+                                        'searchBy'   : 'name'
+                                    },
                                     cache : true
                                 }
                             ).then(function(resp) {
                                 response($.map(resp.data.salesDirectors, function(item) {
-                                    item.value = item.name;
-                                    return item;
+                                    return {
+                                        label        : item.name,
+                                        value        : item.name,
+                                        salesDirector: item
+                                    };
                                 }));
                             });
                         },
@@ -159,12 +158,14 @@
                         delay: 500,
                         select: function(event, ui) {
                             if (ui.item !== undefined) {
-                                scope.salesDirector = ui.item;
-                                $(this).val(ui.item.value);
+                                scope.officer.sales_director       = ui.item.value;
+                                scope.officer.sales_director_phone = ui.item.salesDirector.phone;
+                                scope.officer.sales_director_email = ui.item.salesDirector.email;
+                                scope.$apply();
                             }
                             return false;
                         }
-                    }).tableAutocomplete('search', element.val());
+                    }).autocomplete('search', element.val().toLowerCase());
                 };
 
                 userService.get()

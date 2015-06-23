@@ -13,6 +13,7 @@ class SalesDirectorController extends Base
     use GetFormErrors;
 
     const LIMIT                   = 20;
+    const KEY_SEARCH_BY           = 'searchBy';
     const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION  = 'asc';
 
@@ -156,13 +157,22 @@ class SalesDirectorController extends Base
             );
 
         if ($request->get(self::KEY_SEARCH)) {
-            $query->andWhere(
-                $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+            if (in_array($request->get(self::KEY_SEARCH_BY), ['name', 'email', 'phone'], true)) {
+                $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like(
+                        "LOWER($alias.".$request->get(self::KEY_SEARCH_BY).")",
+                        ':param'
+                    )
+                );
+            }
+            else {
+                $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
                     $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.name)", ':param'),
                     $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.email)", ':param'),
                     $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.phone)", ':param')
-                )
-            )->setParameter('param', '%'.strtolower($request->get(self::KEY_SEARCH)).'%');
+                );
+            }
+            $query->andWhere($where)->setParameter('param', '%'.strtolower($request->get(self::KEY_SEARCH)).'%');
         }
 
         return $query->getQuery();
