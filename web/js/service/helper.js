@@ -75,7 +75,11 @@
         }
     }]);
 
-    helperService.directive('loUserInfo', ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "getLenders", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject", function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, getLenders, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject){
+    helperService.directive(
+        'loUserInfo',
+        ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "getLenders", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject",
+            function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, getLenders, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject)
+        {
         return { restrict: 'EA',
             templateUrl: '/partials/user.form',
             scope: {
@@ -84,6 +88,7 @@
             link: function(scope, element, attrs, controllers){
                 scope.roles = [];
                 scope.lenders = [];
+                scope.salesDirector = [];
                 scope.selected = {};
                 scope.selectedLender = {};
                 scope.masterUserData = {};
@@ -124,6 +129,42 @@
                     e.preventDefault();
                     scope.resetUserData();
                     history.back();
+                };
+
+                scope.autoComplete = function(event) {
+                    var element = $(event.target);
+
+                    element.tableAutocomplete({
+                        columns: [
+                            {field: 'id',    title: 'Id'},
+                            {field: 'value', title: 'Name'},
+                            {field: 'email', title: 'E-mail'},
+                            {field: 'phone', title: 'Phone'}
+                        ],
+                        source: function(request, response) {
+                            $http.get(
+                                '/admin/salesdirector',
+                                {
+                                    params: {'filterValue': element.val().toLowerCase()},
+                                    cache : true
+                                }
+                            ).then(function(resp) {
+                                response($.map(resp.data.salesDirectors, function(item) {
+                                    item.value = item.name;
+                                    return item;
+                                }));
+                            });
+                        },
+                        minLength: 0,
+                        delay: 500,
+                        select: function(event, ui) {
+                            if (ui.item !== undefined) {
+                                scope.salesDirector = ui.item;
+                                $(this).val(ui.item.value);
+                            }
+                            return false;
+                        }
+                    }).tableAutocomplete('search', element.val());
                 };
 
                 userService.get()
@@ -785,6 +826,81 @@
                         }
                     });
                 }
+            }
+        }
+    }]);
+
+    helperService.directive('loAutoComplete', ['$timeout', '$http', '$q', function($timeout, $http, $q) {
+        return {
+            restrict: "A",
+            scope: {
+                items: "=loAutoComplete"
+            },
+            link: function (scope, element, attrs) {
+                var availableTags = [
+                    "ActionScript",
+                    "AppleScript",
+                    "Asp",
+                    "BASIC",
+                    "C",
+                    "C++",
+                    "Clojure",
+                    "COBOL",
+                    "ColdFusion",
+                    "Erlang",
+                    "Fortran",
+                    "Groovy",
+                    "Haskell",
+                    "Java",
+                    "JavaScript",
+                    "Lisp",
+                    "Perl",
+                    "PHP",
+                    "Python",
+                    "Ruby",
+                    "Scala",
+                    "Scheme"
+                ];
+
+                /*if (items) {
+                    var items = undefined;
+                }
+
+
+                function getItems() {
+                    console.log(1);
+                    var deferred = $q.defer();
+                    // if (scope.items && scope.items.length !== 0) {
+                    if (items) {
+                        return $q.when(items);
+                    }
+                    console.log(2);
+
+                    $http.get(attrs.loAutoComplete).success(function (data) {
+                        items = data;
+                        deferred.resolve(data);
+                    }).error(function (data) {
+                        deferred.reject(data);
+                    });
+
+                    return deferred.promise;
+                }
+
+                console.log(getItems());*/
+                console.log(scope.items)
+
+
+                element.autocomplete({
+                    source   : availableTags,
+                    minLength: 0,
+                    select   : function() {
+                        $timeout(function () {
+                            element.trigger('input');
+                        }, 0);
+                    }
+                }).on('focus', function(e) {
+                    $(this).autocomplete('search', element.val());
+                });
             }
         }
     }]);

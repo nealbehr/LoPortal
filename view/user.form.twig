@@ -59,6 +59,15 @@
                 <div class="input" ng-if="user.id != officer.id && user.isAdmin()">
                     <input class="input-lg" type="text" name="sales_director_phone" placeholder="Sales Director Phone" usa-phone ng-model="officer.sales_director_phone">
                 </div>
+                <div class="input">
+                    <input class="input-lg"
+                           type="text"
+                           name="sales_director"
+                           placeholder="Select Sales Director"
+                           ng-if="user.id != officer.id && user.isAdmin()"
+                           ng-click="autoComplete($event)"
+                           ng-model="salesDirector.name">
+                </div>
             </div>
 
             <select class="form-control input-lg"
