@@ -92,7 +92,7 @@ class QueueController extends Base
             $em->persist($queue);
             $em->flush();
 
-            $requestInterface = $this->getEmailObject($app, $queue);
+            $requestInterface = $this->getEmailObject($app, $queue, ['note' => $request->request->get('reason')]);
             $requestChangeStatus = new RequestChangeStatus($app, $queue, $requestInterface);
             $requestChangeStatus->send();
             $em->commit();
@@ -138,9 +138,16 @@ class QueueController extends Base
                 throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found for flyer .", $queue->getId()));
             }
 
-            (new RequestChangeStatus($app, $queue, new RequestFlyerApproval($realtor, $queue, $request->getSchemeAndHttpHost())))
-                ->send();
-
+            (new RequestChangeStatus(
+                $app,
+                $queue,
+                new RequestFlyerApproval(
+                    $realtor,
+                    $queue,
+                    $request->getSchemeAndHttpHost(),
+                    ['note' => $request->request->get('note')]
+                )
+            ))->send();
 
             $em->commit();
 
@@ -177,7 +184,10 @@ class QueueController extends Base
             $em->persist($queue);
             $em->flush();
 
-            $request = new PropertyApprovalAccept($request->getSchemeAndHttpHost());
+            $request = new PropertyApprovalAccept(
+                $request->getSchemeAndHttpHost(),
+                ['note' => $request->request->get('note')]
+            );
             $changeStatusRequest = new RequestChangeStatus($app, $queue, $request);
             $changeStatusRequest->send();
 
@@ -197,16 +207,16 @@ class QueueController extends Base
      * @param Queue $queue
      * @return RequestInterface
      */
-    private function getEmailObject(Application $app, Queue $queue)
+    private function getEmailObject(Application $app, Queue $queue, $data = [])
     {
         $email = $app->getConfigByName('firstrex', 'email', 'teplate', 'denial');
         if ($queue->getType() == Queue::TYPE_PROPERTY_APPROVAL) {
-            return new PropertyApprovalDenial($email);
+            return new PropertyApprovalDenial($email, $data);
         }
 
         /** @var Realtor $realtor */
         $realtor = $queue->getRealtor();
-        return new RequestFlyerDenial($realtor, $queue, $email);
+        return new RequestFlyerDenial($realtor, $queue, $email, $data);
     }
 
     private function getDuplicates(Application $app, array $ids)

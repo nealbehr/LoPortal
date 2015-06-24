@@ -180,13 +180,26 @@
         }
     }]);
 
-    admin.controller('adminApproveFlyerCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+    admin.controller(
+        'adminApproveFlyerCtrl',
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
+            function($scope, $http, redirect, $compile, waitingScreen)
+        {
         $scope.reason;
         $scope.marketingCollateral;
         $scope.filename;
+        $scope.note;
         $scope.approve = function(){
             waitingScreen.show();
-            $http.patch("/admin/queue/approve/flyer/" + $scope.ngDialogData.request.id, {file: this.marketingCollateral, reason: this.reason})
+            console.log($scope.ngDialogData.request);
+            $http.patch(
+                '/admin/queue/approve/flyer/'+$scope.ngDialogData.request.id,
+                {
+                    file  : this.marketingCollateral,
+                    reason: this.reason,
+                    note  : this.note
+                }
+            )
                 .success(function(data){
                     $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
@@ -210,11 +223,15 @@
         }
     }]);
 
-    admin.controller('adminApproveCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
-        $scope.reason;
+    admin.controller(
+        'adminApproveCtrl',
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
+            function($scope, $http, redirect, $compile, waitingScreen)
+        {
+        $scope.note;
         $scope.approve = function(){
             waitingScreen.show();
-            $http.patch("/admin/queue/approve/" + $scope.ngDialogData.request.id, {reason: this.reason})
+            $http.patch('/admin/queue/approve/'+$scope.ngDialogData.request.id, {note: this.note})
                 .success(function(data){
                     $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })

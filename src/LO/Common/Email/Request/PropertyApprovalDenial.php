@@ -11,9 +11,11 @@ namespace LO\Common\Email\Request;
 
 class PropertyApprovalDenial implements RequestInterface{
     private $email;
+    private $data;
 
-    public function __construct($email){
+    public function __construct($email, $data = []){
         $this->email = $email;
+        $this->data  = $data;
     }
 
     public function getSubject(){
@@ -27,6 +29,7 @@ class PropertyApprovalDenial implements RequestInterface{
     public function getTemplateVars(){
         return [
             'email' => $this->email,
+            'data'  => $this->data
         ];
     }
 
