@@ -16,11 +16,13 @@ class RequestFlyerApproval implements RequestInterface{
     private $realtor;
     private $queue;
     private $url;
+    private $data;
 
-    public function __construct(Realtor $realtor, Queue $queue, $url) {
+    public function __construct(Realtor $realtor, Queue $queue, $url, $data = []) {
         $this->realtor      = $realtor;
         $this->queue        = $queue;
         $this->url          = $url;
+        $this->data         = $data;
     }
 
     public function getSubject(){
@@ -36,6 +38,7 @@ class RequestFlyerApproval implements RequestInterface{
             'realtor'      => $this->realtor,
             'queue'        => $this->queue,
             'url'          => $this->url,
+            'data'         => $this->data,
         ];
     }
 } 

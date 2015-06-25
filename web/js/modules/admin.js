@@ -66,8 +66,7 @@
                 access: {
                     isFree: false
                 }
-            })
-        ;
+            });
     }]);
 
     admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
@@ -181,13 +180,26 @@
         }
     }]);
 
-    admin.controller('adminApproveFlyerCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+    admin.controller(
+        'adminApproveFlyerCtrl',
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
+            function($scope, $http, redirect, $compile, waitingScreen)
+        {
         $scope.reason;
         $scope.marketingCollateral;
         $scope.filename;
+        $scope.note;
         $scope.approve = function(){
             waitingScreen.show();
-            $http.patch("/admin/queue/approve/flyer/" + $scope.ngDialogData.request.id, {file: this.marketingCollateral, reason: this.reason})
+            console.log($scope.ngDialogData.request);
+            $http.patch(
+                '/admin/queue/approve/flyer/'+$scope.ngDialogData.request.id,
+                {
+                    file  : this.marketingCollateral,
+                    reason: this.reason,
+                    note  : this.note
+                }
+            )
                 .success(function(data){
                     $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
@@ -211,11 +223,15 @@
         }
     }]);
 
-    admin.controller('adminApproveCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
-        $scope.reason;
+    admin.controller(
+        'adminApproveCtrl',
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
+            function($scope, $http, redirect, $compile, waitingScreen)
+        {
+        $scope.note;
         $scope.approve = function(){
             waitingScreen.show();
-            $http.patch("/admin/queue/approve/" + $scope.ngDialogData.request.id, {reason: this.reason})
+            $http.patch('/admin/queue/approve/'+$scope.ngDialogData.request.id, {note: this.note})
                 .success(function(data){
                     $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
@@ -243,7 +259,13 @@
                     new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
                     new Tab({path: '/admin/queue', title: "Request Management"}),
                     new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"}),
-                    new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"})
+                    new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"}),
+                    new Tab({
+                        path       : '/admin/salesdirector',
+                        title      : 'Sales Director',
+                        button_text: 'Add Sales Director', 
+                        button_href: '/admin/salesdirector/new'
+                    })
                 ]
             }
         }

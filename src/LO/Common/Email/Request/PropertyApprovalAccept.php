@@ -11,10 +11,13 @@ namespace LO\Common\Email\Request;
 
 class PropertyApprovalAccept implements RequestInterface{
     private $url;
+    private $data;
 
-    public function __construct($url){
-        $this->url = $url;
-    }
+    public function __construct($url, $data = [])
+    {
+        $this->url  = $url;
+        $this->data = $data;
+     }
 
     public function getSubject(){
         return "Property Approval Request has been Approved";
@@ -26,7 +29,8 @@ class PropertyApprovalAccept implements RequestInterface{
 
     public function getTemplateVars(){
         return [
-            'url' => $this->url,
+            'url'  => $this->url,
+            'data' => $this->data
         ];
     }
 

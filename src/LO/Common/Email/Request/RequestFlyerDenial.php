@@ -16,11 +16,13 @@ class RequestFlyerDenial implements RequestInterface{
     private $realtor;
     private $queue;
     private $email;
+    private $data;
 
-    public function __construct(Realtor $realtor, Queue $queue, $email) {
+    public function __construct(Realtor $realtor, Queue $queue, $email, $data = []) {
         $this->realtor      = $realtor;
         $this->queue        = $queue;
         $this->email        = $email;
+        $this->data         = $data;
     }
 
     public function getSubject(){
@@ -36,6 +38,7 @@ class RequestFlyerDenial implements RequestInterface{
             'realtor'      => $this->realtor,
             'queue'        => $this->queue,
             'email'        => $this->email,
+            'data'         => $this->data
         ];
     }
 } 

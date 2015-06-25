@@ -33,9 +33,16 @@ class Base {
      */
     protected $updated_at;
 
-    public function __construct() {
-        $this->created_at = new \DateTime();
-        $this->updated_at = new \DateTime();
+    public function __construct()
+    {
+        $currentDate      = $this->getCurrentDate();
+        $this->created_at = $currentDate;
+        $this->updated_at = $currentDate;
+    }
+
+    public function getCurrentDate()
+    {
+        return new \DateTime();
     }
 
     public function toArray(){
