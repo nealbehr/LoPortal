@@ -121,15 +121,25 @@
                 }
             };
         }]);
-    }])
-    .run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location', function($rootScope, TOKEN_KEY, $cookies, redirect, $location){
+    }]).run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location',
+            function($rootScope, TOKEN_KEY, $cookies, redirect, $location
+        ) {
             $rootScope.debug = settings.debug;
 
             $rootScope.history = [];
 
             $rootScope.historyGet = function(){
                 return this.history.length > 1 ? this.history.splice(-2)[0] : "/";
-            }
+            };
+
+            /**
+             * Tracking google analytics
+             */
+            $rootScope.$on('$locationChangeSuccess', function(e, next, current) {
+                if (typeof window.ga === 'function') {
+                    ga('send', 'pageview', $location.url());
+                }
+            });
 
             $rootScope.$on('$routeChangeStart', function(e, next, curr){
                 $rootScope.history.push($location.$$path);
@@ -140,8 +150,8 @@
                     redirect('/login', $location.url());
                 }
             });
-        }])
-    ;
+        }
+    ]);
 
     app.config(['$routeProvider',
         function($routeProvider) {
