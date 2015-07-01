@@ -113,6 +113,7 @@
                 address: null,
                 mls_number: null,
                 state: null,
+                omit_realtor_info: '1',
                 listing_price: null,
                 funded_percentage: 10.00,
                 maximum_loan: 80.00,

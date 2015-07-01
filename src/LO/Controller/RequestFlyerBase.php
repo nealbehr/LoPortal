@@ -27,8 +27,19 @@ class RequestFlyerBase extends RequestBaseController {
 
     use GetFormErrors;
 
-    protected function saveFlyer(Application $app, Request $request, Realtor $realtor, Queue $queue, array $formOptions = []){
-        $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptions);
+    protected function saveFlyer(
+        Application $app,
+        Request $request,
+        Realtor $realtor,
+        Queue $queue,
+        array $formOptions = []
+    ) {
+        $formOptionsCopy = $formOptions;
+        if ($queue->getOmitRealtorInfo() === '1') {
+            $formOptionsCopy['validation_groups'] = ['Default', 'draft'];
+        }
+
+        $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptionsCopy);
         $form->handleRequest($request);
         if(!$form->isValid()){
             $this->getMessage()->replace('realtor', $this->getFormErrors($form));

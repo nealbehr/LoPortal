@@ -693,6 +693,10 @@
                 scope.saveDraftOrApproved = function(e) {
                     e.preventDefault();
 
+                    if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
+                        return false;
+                    }
+
                     if(scope.request.property.state != settings.queue.state.approved) {
                         scope.request.property.state = settings.queue.state.draft;
                     }
@@ -728,14 +732,16 @@
                     $anchorScroll(scope.container.attr("id"));
                 };
 
-                scope.save = function(form){
-                    console.log("save");
-                    if(!form.$valid){
+                scope.save = function(form) {
+                    if (!form.$valid) {
                         this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
                     }
 
+                    if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
+                        return false;
+                    }
 
                     scope.request.afterSave(function(){
                         scope.oldRequest = angular.copy(scope.request);
