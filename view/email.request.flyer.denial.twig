@@ -1,12 +1,6 @@
 Your Listing Flyer Request has been declined. For more details regarding the reasons behind the denial, please contact {{ email }}.
 
-{% include 'email.request.flyer.new.twig' %}
-
-{% if data.note is defined and data.note is not empty %}
-    <h2>Note</h2>
-    <table border="0">
-        <tr>
-            <td>{{data.note}}</td>
-        </tr>
-    </table>
-{% endif %}
+{% include 'email.note.twig' with {data: data} %}
+{% include 'email.loan.officer.twig' with {user: queue.getUser()} %}
+{% include 'email.property.info.twig' with {queue: queue} %}
+{% include 'email.realtor.info.twig' with {realtor: realtor} %}

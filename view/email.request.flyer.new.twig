@@ -1,43 +1,5 @@
-Thank you for your Listing Flyer Request.
+Thank you for your Listing Flyer Request. We will notify you by email when the request is approved.
 
 {% include 'email.loan.officer.twig' with {user: queue.getUser()} %}
-
-<h2>Property Info</h2>
-<table border="0">
-    <tr>
-        <td>Property address:</td>
-        <td>{{ queue.getAddress() }}</td>
-    </tr>
-    <tr>
-        <td>MLS Number:</td>
-        <td>{{ queue.getMlsNumber() }}</td>
-    </tr>
-    <tr>
-        <td>Listing Price:</td>
-        <td>{{ queue.getListingPrice() }}</td>
-    </tr>
-</table>
-
-<h2>Realtor info</h2>
-<table border="0">
-    <tr>
-        <td>Realtor:</td>
-        <td>{{ realtor.getFirstName() }} {{ realtor.getLastName() }}</td>
-    </tr>
-    <tr>
-        <td>Phone:</td>
-        <td>{{ realtor.getPhone() }}</td>
-    </tr>
-    <tr>
-        <td>Email:</td>
-        <td>{{ realtor.getEmail() }}</td>
-    </tr>
-    <tr>
-        <td>BRE Number:</td>
-        <td>{{ realtor.getBreNumber() }}</td>
-    </tr>
-    <tr>
-        <td>Real Estate Agency:</td>
-        <td>{{ realtor.getRealtyName() }}</td>
-    </tr>
-</table>
+{% include 'email.property.info.twig' with {queue: queue} %}
+{% include 'email.realtor.info.twig' with {realtor: realtor} %}

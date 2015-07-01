@@ -1,13 +1,6 @@
-Your Listing Flyer Request has been approved. Visit FirstREX portal to download a PDF of your flyer: {{ url }}
+Your Property Approval Request has been approved. Visit FirstREX portal to view your property approvals or to request a listing flyer: {{ url }}
 
-{% if data.note is defined and data.note is not empty %}
-    <h2>Note</h2>
-    <table border="0">
-        <tr>
-            <td>{{data.note}}</td>
-        </tr>
-    </table>
-{% endif %}
-
-{% include 'email.property.approval.new.twig' %}
+{% include 'email.note.twig' with {data: data} %}
+{% include 'email.loan.officer.twig' with {user: queue.getUser()} %}
+{% include 'email.property.info.twig' with {queue: queue} %}
 

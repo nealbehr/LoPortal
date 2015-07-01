@@ -28,7 +28,7 @@ amazon:
         region: us-east-1
       source: development@1rex.com
 firstrex:
-  doSend: false
+  doSend: true
   api:
     url:  http://tools.1rex.com:3000/inquiries.json
   additional.emails:
