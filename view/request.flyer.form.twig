@@ -115,15 +115,15 @@
 
                 </div>
                 <hr>
-                <div class="inputs-holder">
-                    <div class="input">
-                        <input type="checkbox"
-                               name="omit_realtor_info"
-                               ng-true-value="'1'"
-                               ng-false-value="'0'"
-                               ng-change="string"
-                               ng-model="request.property.omit_realtor_info"/> Omit realtor information?
-                    </div>
+                <div class="check-holder">
+                    <input type="checkbox"
+                           name="omit_realtor_info"
+                           ng-true-value="'1'"
+                           ng-false-value="'0'"
+                           ng-change="string"
+                           ng-model="request.property.omit_realtor_info"
+                           id="omit"/>
+                    <label for="omit">Omit realtor information?</label>
                 </div>
                 <div ng-show="request.property.omit_realtor_info == 0">
                     <h2>Realtor Info</h2>
