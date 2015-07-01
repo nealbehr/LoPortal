@@ -115,6 +115,11 @@ class Queue extends Base {
     protected $photo;
 
     /**
+     * @Column(type="string")
+     */
+    protected $omit_realtor_info = '1';
+
+    /**
      * @OneToOne(targetEntity="Realtor", fetch="LAZY")
      * @JoinColumn(name="realtor_id", referencedColumnName="id")
      **/
@@ -276,6 +281,18 @@ class Queue extends Base {
     public function setPhoto($photo)
     {
         $this->photo = $photo;
+    }
+
+    public function getOmitRealtorInfo()
+    {
+        return $this->omit_realtor_info;
+    }
+
+    public function setOmitRealtorInfo($param)
+    {
+        $this->omit_realtor_info = $param;
+
+        return $this;
     }
 
     /**

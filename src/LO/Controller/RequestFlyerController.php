@@ -106,8 +106,7 @@ class RequestFlyerController extends RequestFlyerBase {
         $discount = ((1 - $queue->getMaximumLoan()/100) - $queue->getFundedPercentage()/100) * $queue->getListingPrice();
         $address = preg_replace('/,/', '<br>', $queue->getAddress(), 1);
         $address = str_replace(', USA', '', $address);
-        $data = array(
-
+        $data = [
             'homeAddress' =>  $address,
             'homeImage' => $propertyPhoto,
             'discuontPart' => $discountPart,
@@ -135,8 +134,9 @@ class RequestFlyerController extends RequestFlyerBase {
                 ' . $realtor->getPhone()  .'<br />
                 ' . $realtor->getEmail() .'<br />
                 CA BRE #' . $realtor->getBreNumber(),
-            'agencyCard2' => $realtor->getRealtyLogo()
-        );
+            'agencyCard2' => $realtor->getRealtyLogo(),
+            'omitRealtorInfo' => ($queue->getOmitRealtorInfo() === '0')
+        ];
         return $data;
     }
 
