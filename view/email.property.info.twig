@@ -10,7 +10,7 @@
         <td>{{ queue.getMlsNumber() }}</td>
     </tr>
     {% endif %}
-    {% if queue.getListingPrice() is not empty %}
+    {% if queue.getListingPrice() is not empty and queue.getListingPrice() > 0 %}
     <tr>
         <td>Listing Price:</td>
         <td>{{ queue.getListingPrice() }}</td>
