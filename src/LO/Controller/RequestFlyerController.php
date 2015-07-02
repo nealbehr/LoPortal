@@ -16,7 +16,7 @@ use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\Realtor;
+use LO\Model\Entity\QueueRealtor;
 use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -154,7 +154,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
 
-            $realtor      = new Realtor();
+            $realtor      = new QueueRealtor();
             $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
 
             $this->saveFlyer(
@@ -232,7 +232,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->saveFlyer(
                 $app,
                 $request,
-                new Realtor(),
+                new QueueRealtor(),
                 (new Queue())->setState(Queue::STATE_DRAFT)->setAdditionalInfo($firstRexForm->getData()),
                 ['validation_groups' => ["Default", "draft"]]
             );
@@ -330,7 +330,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->saveFlyer(
                 $app,
                 $request,
-                new Realtor(),
+                new QueueRealtor(),
                 $queue,
                 [
                     'validation_groups' => ["Default", "draft"],
@@ -366,7 +366,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_REQUESTED);
 
-            $realtor = new Realtor();
+            $realtor = new QueueRealtor();
 
             $this->saveFlyer(
                 $app,

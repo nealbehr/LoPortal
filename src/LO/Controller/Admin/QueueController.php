@@ -17,7 +17,7 @@ use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerDenial;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\Realtor;
+use LO\Model\Entity\QueueRealtor;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;

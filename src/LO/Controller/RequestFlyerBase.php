@@ -15,7 +15,7 @@ use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
 use LO\Form\RealtorForm;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\Realtor;
+use LO\Model\Entity\QueueRealtor;
 use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,7 +30,7 @@ class RequestFlyerBase extends RequestBaseController {
     protected function saveFlyer(
         Application $app,
         Request $request,
-        Realtor $realtor,
+        QueueRealtor $realtor,
         Queue $queue,
         array $formOptions = []
     ) {
@@ -92,11 +92,11 @@ class RequestFlyerBase extends RequestBaseController {
     /**
      * @param Application $app
      * @param $id
-     * @return null|Realtor
+     * @return null|QueueRealtor
      */
     protected function getRealtorById(Application $app, $id){
         return $app->getEntityManager()
-            ->getRepository(Realtor::class)
+            ->getRepository(QueueRealtor::class)
             ->find($id);
     }
 }
