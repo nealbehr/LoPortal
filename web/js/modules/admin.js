@@ -259,6 +259,12 @@
                     new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
                     new Tab({path: '/admin/queue', title: "Request Management"}),
                     new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"}),
+                    new Tab({
+                        path       : '/admin/realtor',
+                        title      : 'Realtor',
+                        button_text: 'Add Realtor',
+                        button_href: '/admin/realtor/new'
+                    }),
                     new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"}),
                     new Tab({
                         path       : '/admin/salesdirector',

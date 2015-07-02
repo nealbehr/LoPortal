@@ -5,22 +5,22 @@ use Symfony\Component\HttpFoundation\Request;
 use LO\Traits\GetFormErrors;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use LO\Form\SalesDirectorType;
-use LO\Model\Entity\SalesDirector;
+use LO\Form\RealtorType;
+use LO\Model\Entity\Realtor;
 
-class SalesDirectorController extends Base
+class RealtorController extends Base
 {
     use GetFormErrors;
 
     const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION  = 'asc';
 
-    private $orderCols            = ['id', 'name', 'email', 'created_at'];
+    private $orderCols            = ['id', 'first_name', 'last_name', 'email', 'created_at'];
 
     public function getListAction(Application $app, Request $request)
     {
         $pagination = $app->getPaginator()->paginate(
-            $this->getSalesDirectorList($app, $request),
+            $this->getList($app, $request),
             (int)$request->get(self::KEY_PAGE, 1),
             self::LIMIT,
             [
@@ -39,20 +39,20 @@ class SalesDirectorController extends Base
         }
 
         return $app->json([
-            'pagination'     => $pagination->getPaginationData(),
-            'keySearch'      => self::KEY_SEARCH,
-            'keySort'        => self::KEY_SORT,
-            'keyDirection'   => self::KEY_DIRECTION,
-            'salesDirectors' => $items,
-            'defDirection'   => self::DEFAULT_SORT_DIRECTION,
-            'defField'       => self::DEFAULT_SORT_FIELD_NAME,
+            'pagination'   => $pagination->getPaginationData(),
+            'keySearch'    => self::KEY_SEARCH,
+            'keySort'      => self::KEY_SORT,
+            'keyDirection' => self::KEY_DIRECTION,
+            'realtors'     => $items,
+            'defDirection' => self::DEFAULT_SORT_DIRECTION,
+            'defField'     => self::DEFAULT_SORT_FIELD_NAME,
         ]);
     }
 
     public function getByIdAction(Application $app, $id)
     {
         try {
-            return $app->json($this->getSalesDirectorById($app, $id)->toArray());
+            return $app->json($this->getById($app, $id)->toArray());
         }
         catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);
@@ -64,7 +64,7 @@ class SalesDirectorController extends Base
     {
         try {
             $app->getEntityManager()->beginTransaction();
-            $model = new SalesDirector();
+            $model = new Realtor();
 
             $this->createForm($app, $request, $model);
 
@@ -86,8 +86,7 @@ class SalesDirectorController extends Base
     public function updateAction(Application $app, Request $request, $id)
     {
         try{
-            $model = $this->getSalesDirectorById($app, $id);
-            $model->setUpdatedAt($model->getCurrentDate());
+            $model = $this->getById($app, $id);
 
             $this->createForm($app, $request, $model);
 
@@ -107,7 +106,7 @@ class SalesDirectorController extends Base
     public function deleteAction(Application $app, $id)
     {
         try {
-            $model = $this->getSalesDirectorById($app, $id);
+            $model = $this->getById($app, $id);
             $model->setDeleted('1')->setEmail($model->getEmail().'-'.strtotime('now').'-deleted');
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -122,16 +121,16 @@ class SalesDirectorController extends Base
         }
     }
 
-    private function createForm(Application $app, Request $request, SalesDirector $model)
+    private function createForm(Application $app, Request $request, Realtor $model)
     {
         $formOptions = ['validation_groups' => ['Default']];
-        $data        = $request->request->get('salesDirector');
+        $data        = $request->request->get('realtor');
 
         if (isset($data['email']) && $model->getEmail() !== $data['email']) {
             $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ['New']);
         }
 
-        $form = $app->getFormFactory()->create(new SalesDirectorType($app->getS3()), $model, $formOptions);
+        $form = $app->getFormFactory()->create(new RealtorType($app->getS3()), $model, $formOptions);
         $form->submit($data);
 
         if (!$form->isValid()) {
@@ -143,12 +142,12 @@ class SalesDirectorController extends Base
         return $form;
     }
 
-    private function getSalesDirectorList(Application $app, Request $request)
+    private function getList(Application $app, Request $request)
     {
-        $alias = 'sd';
+        $alias = 'r';
         $query = $app->getEntityManager()->createQueryBuilder()
             ->select($alias)
-            ->from(SalesDirector::class, $alias)
+            ->from(Realtor::class, $alias)
             ->where("$alias.deleted = '0'")
             ->setMaxResults(self::LIMIT)
             ->orderBy(
@@ -157,7 +156,7 @@ class SalesDirectorController extends Base
             );
 
         if ($request->get(self::KEY_SEARCH)) {
-            if (in_array($request->get(self::KEY_SEARCH_BY), ['name', 'email', 'phone'], true)) {
+            if (in_array($request->get(self::KEY_SEARCH_BY), ['email', 'phone'], true)) {
                 $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
                     $app->getEntityManager()->createQueryBuilder()->expr()->like(
                         "LOWER($alias.".$request->get(self::KEY_SEARCH_BY).")",
@@ -167,7 +166,9 @@ class SalesDirectorController extends Base
             }
             else {
                 $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.name)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.first_name)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.last_name)", ':param'),
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.bre_number)", ':param'),
                     $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.email)", ':param'),
                     $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.phone)", ':param')
                 );
@@ -183,11 +184,11 @@ class SalesDirectorController extends Base
         return in_array($col, $this->orderCols, true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
     }
 
-    private function getSalesDirectorById(Application $app, $id)
+    private function getById(Application $app, $id)
     {
-        $model = $app->getEntityManager()->getRepository(SalesDirector::class)->find((int)$id);
+        $model = $app->getEntityManager()->getRepository(Realtor::class)->find((int)$id);
         if (!$model || $model->getDeleted() !== '0') {
-            throw new BadRequestHttpException('Sales director not found.');
+            throw new BadRequestHttpException('Realtor not found.');
         }
 
         return $model;
