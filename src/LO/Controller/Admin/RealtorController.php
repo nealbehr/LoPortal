@@ -174,7 +174,7 @@ class RealtorController extends Base
                     $app->getEntityManager()->createQueryBuilder()->expr()->like("LOWER($alias.phone)", ':param')
                 );
             }
-            $query->andWhere($where)->setParameter('param', '%'.strtolower($request->get(self::KEY_SEARCH)).'%');
+            $query->andWhere($where)->setParameter('param', strtolower($request->get(self::KEY_SEARCH)).'%');
         }
 
         return $query->getQuery();
