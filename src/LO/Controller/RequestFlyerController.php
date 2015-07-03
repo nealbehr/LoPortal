@@ -18,10 +18,12 @@ use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\QueueRealtor;
 use LO\Model\Entity\User;
+use LO\Model\Entity\Realtor;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Snappy\Pdf;
+use \Doctrine\ORM\Query;
 
 
 class RequestFlyerController extends RequestFlyerBase {
@@ -388,5 +390,33 @@ class RequestFlyerController extends RequestFlyerBase {
         }
 
         return $app->json("success");
+    }
+
+    public function getRealtorListAction(Application $app, Request $request)
+    {
+        $alias = 'r';
+        $query = $app->getEntityManager()->createQueryBuilder()
+            ->select($alias)
+            ->from(Realtor::class, $alias)
+            ->where("$alias.deleted = '0'")
+            ->setMaxResults(Admin\RealtorController::LIMIT)
+            ->orderBy("$alias.first_name", 'asc');
+
+        if ($request->get(Admin\RealtorController::KEY_SEARCH)) {
+            if (in_array($request->get(Admin\RealtorController::KEY_SEARCH_BY), ['first_name', 'last_name'], true)) {
+                $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like(
+                        "LOWER($alias.".$request->get(Admin\RealtorController::KEY_SEARCH_BY).")",
+                        ':param'
+                    )
+                );
+            }
+            $query->andWhere($where)->setParameter(
+                'param',
+                '%'.strtolower($request->get(Admin\RealtorController::KEY_SEARCH)).'%'
+            );
+        }
+
+        return $app->json(['realtors' => $query->getQuery()->getResult(Query::HYDRATE_ARRAY)]);
     }
 }

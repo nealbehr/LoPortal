@@ -16,6 +16,7 @@ class RealtorController extends Base
     const DEFAULT_SORT_DIRECTION  = 'asc';
 
     private $orderCols            = ['id', 'first_name', 'last_name', 'email', 'created_at'];
+    private $autoCompleteCols     = ['first_name', 'last_name'];
 
     public function getListAction(Application $app, Request $request)
     {
@@ -156,7 +157,7 @@ class RealtorController extends Base
             );
 
         if ($request->get(self::KEY_SEARCH)) {
-            if (in_array($request->get(self::KEY_SEARCH_BY), ['email', 'phone'], true)) {
+            if (in_array($request->get(self::KEY_SEARCH_BY), $this->autoCompleteCols, true)) {
                 $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
                     $app->getEntityManager()->createQueryBuilder()->expr()->like(
                         "LOWER($alias.".$request->get(self::KEY_SEARCH_BY).")",
