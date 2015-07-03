@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use LO\Validator\Unique;
 use Aws\S3\S3Client;
 
 class RealtorType extends AbstractType
@@ -24,13 +25,56 @@ class RealtorType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('last_name', 'text')
-            ->add('first_name', 'text')
+        $builder->add('last_name', 'text', [
+               'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => "/^([A-Za-z-_\s]+)$/",
+                        'message' => 'Name is invalid.'
+                    ]),
+                    new Assert\Length([
+                        'max'        => 50,
+                        'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
+                    ]),
+                    new Unique([
+                        'groups'           => ['New'],
+                        'field'            => ['last_name','first_name'],
+                        'entity'           => 'LO\\Model\\Entity\\Realtor',
+                        'notUniqueMessage' => 'Realtor with the first name and last name is already registered.'
+                    ])
+               ]
+            ])->add('first_name', 'text', [
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => "/^([A-Za-z-_\s]+)$/",
+                        'message' => 'Name is invalid.'
+                    ]),
+                    new Assert\Length([
+                        'max'        => 50,
+                        'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
+                    ])
+                ]
+            ])
             //->add('realty_company_id ', 'text')
             ->add('photo', new S3Photo($this->s3, '1rex/realtor'))
-            ->add('email', 'text')
-            ->add('phone', 'text')
-            ->add('bre_number', 'text');
+            ->add('email', 'text', [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Email should not be blank.']),
+                    new Assert\Email()
+                ]
+            ])
+            ->add('phone', 'text', [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Phone should not be blank.']),
+                    new Assert\Length([
+                        'max'        => 100,
+                        'maxMessage' => 'Sales director phone must be shorter than {{ limit }} chars.',
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/^[0-9+\(\)#\.\s\/ext-]+$/',
+                        'message' => 'Please input a valid US phone number including 3 digit area code and 7 digit number.'
+                    ])
+                ]
+            ])->add('bre_number', 'text');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
