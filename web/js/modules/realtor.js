@@ -278,17 +278,18 @@
 
     realtorModule.directive(
         'loAdminRealtorForm',
-        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', 'pictureObject',
-            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, pictureObject)
+        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', 'pictureObject', '$http',
+            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, pictureObject, $http)
             {
                 return {
                     restrict   : 'EA',
                     templateUrl: '/partials/admin.realtor.form',
                     scope      : { realtor: '=loRealtor' },
                     link       : function(scope, element, attrs, controllers) {
-                        scope.container      = angular.element('#realtorMessage');
-                        scope.realtorPicture = {};
-                        scope.hideErrors     = true;
+                        scope.container       = angular.element('#realtorMessage');
+                        scope.realtorPicture  = {};
+                        scope.realtyCompanies = [];
+                        scope.hideErrors      = true;
 
                         scope.$watch('realtor.id', function(newVal, oldVal) {
                             scope.title = newVal? 'Edit Realtor': 'Add Realtor';
@@ -383,6 +384,13 @@
                                 waitingScreen.hide();
                             });
                         };
+
+                        $http.get('/admin/realty').success(function(data) {
+                            if (scope.realtor.realty_company_id) {
+                                scope.realtor.realty_company_id += '';
+                            }
+                            scope.realtyCompanies = data.companies;
+                        });
                     }
                 }
             }

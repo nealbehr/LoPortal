@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Form\RealtorType;
 use LO\Model\Entity\Realtor;
+use LO\Model\Entity\RealtyCompany;
 
 class RealtorController extends Base
 {
@@ -69,6 +70,8 @@ class RealtorController extends Base
 
             $this->createForm($app, $request, $model);
 
+            $this->realtyCompanyExist($app, $model->getRealtyCompanyId());
+
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
             $app->getEntityManager()->commit();
@@ -90,6 +93,8 @@ class RealtorController extends Base
             $model = $this->getById($app, $id);
 
             $this->createForm($app, $request, $model);
+
+            $this->realtyCompanyExist($app, $model->getRealtyCompanyId());
 
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -183,6 +188,15 @@ class RealtorController extends Base
     private function getOrderKey($col)
     {
         return in_array($col, $this->orderCols, true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
+    }
+
+    private function realtyCompanyExist(Application $app, $id)
+    {
+        if (!($app->getEntityManager()->getRepository(RealtyCompany::class)->find((int)$id))) {
+            throw new BadRequestHttpException('Realty company not found.');
+        }
+
+        return true;
     }
 
     private function getById(Application $app, $id)
