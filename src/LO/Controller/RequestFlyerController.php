@@ -396,8 +396,9 @@ class RequestFlyerController extends RequestFlyerBase {
     {
         $alias = 'r';
         $query = $app->getEntityManager()->createQueryBuilder()
-            ->select($alias)
+            ->select($alias, 'c')
             ->from(Realtor::class, $alias)
+            ->join($alias.'.company', 'c')
             ->where("$alias.deleted = '0'")
             ->setMaxResults(Admin\RealtorController::LIMIT)
             ->orderBy("$alias.first_name", 'asc');

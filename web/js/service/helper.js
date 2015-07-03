@@ -761,12 +761,14 @@
                         delay: 500,
                         select: function(event, ui) {
                             if (ui.item !== undefined) {
-                                scope.request.realtor.first_name =  ui.item.realtor.first_name;
-                                scope.request.realtor.last_name  =  ui.item.realtor.last_name;
-                                scope.request.realtor.photo      =  ui.item.realtor.photo;
-                                scope.request.realtor.phone      =  ui.item.realtor.phone;
-                                scope.request.realtor.email      =  ui.item.realtor.email;
-                                scope.request.realtor.bre_number =  ui.item.realtor.bre_number;
+                                scope.request.realtor.first_name  =  ui.item.realtor.first_name;
+                                scope.request.realtor.last_name   =  ui.item.realtor.last_name;
+                                scope.request.realtor.photo       =  ui.item.realtor.photo;
+                                scope.request.realtor.phone       =  ui.item.realtor.phone;
+                                scope.request.realtor.email       =  ui.item.realtor.email;
+                                scope.request.realtor.bre_number  =  ui.item.realtor.bre_number;
+                                scope.request.realtor.realty.logo =  ui.item.realtor.company.logo;
+                                scope.request.realtor.realty.name =  ui.item.realtor.company.name;
                                 scope.$apply();
                             }
                             return false;

@@ -385,11 +385,11 @@
                             });
                         };
 
-                        $http.get('/admin/realty').success(function(data) {
+                        $http.get('/admin/realty/all').success(function(data) {
                             if (scope.realtor.realty_company_id) {
                                 scope.realtor.realty_company_id += '';
                             }
-                            scope.realtyCompanies = data.companies;
+                            scope.realtyCompanies = data;
                         });
                     }
                 }

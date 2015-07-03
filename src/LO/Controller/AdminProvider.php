@@ -81,6 +81,7 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->delete('/lender/{id}', "admin.lender.controller:deleteAction");
 
         $controllers->get('/realty', "admin.realty.controller:getAllAction");
+        $controllers->get('/realty/all', 'admin.realty.controller:getAllForSelect');
         $controllers->post('/realty', "admin.realty.controller:addCompanyAction");
         $controllers->get('/realty/{id}', "admin.realty.controller:getByIdAction");
         $controllers->put('/realty/{id}', "admin.realty.controller:updateCompanyAction");

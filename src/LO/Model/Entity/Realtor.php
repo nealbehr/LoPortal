@@ -86,6 +86,12 @@ class Realtor extends Base
      */
     protected $photo;
 
+    /**
+     * @OneToOne(targetEntity="RealtyCompany", fetch="LAZY")
+     * @JoinColumn(name="realty_company_id", referencedColumnName="id")
+     **/
+    private $company;
+
     public function getDeleted()
     {
         return $this->deleted;
@@ -178,6 +184,18 @@ class Realtor extends Base
     public function setPhoto($param)
     {
         $this->photo = $param;
+
+        return $this;
+    }
+
+    public function getCompany()
+    {
+        return $this->company;
+    }
+
+    public function setCompany($param)
+    {
+        $this->company = $param;
 
         return $this;
     }
