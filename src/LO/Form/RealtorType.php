@@ -35,12 +35,12 @@ class RealtorType extends AbstractType
                         'max'        => 50,
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                     ]),
-                    new Unique([
+                    /*new Unique([
                         'groups'           => ['New'],
-                        'field'            => ['last_name','first_name'],
+                        'field'            => 'last_name',
                         'entity'           => 'LO\\Model\\Entity\\Realtor',
                         'notUniqueMessage' => 'Realtor with the first name and last name is already registered.'
-                    ])
+                    ])*/
                ]
             ])->add('first_name', 'text', [
                 'constraints' => [
@@ -51,10 +51,20 @@ class RealtorType extends AbstractType
                     new Assert\Length([
                         'max'        => 50,
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
-                    ])
+                    ]),
+                    /*new Unique([
+                        'groups'           => ['New'],
+                        'field'            => 'first_name',
+                        'entity'           => 'LO\\Model\\Entity\\Realtor',
+                        'notUniqueMessage' => 'Realtor with the first name and last name is already registered.'
+                    ])*/
                 ]
             ])
-            //->add('realty_company_id ', 'text')
+            ->add('realty_company_id', 'number', [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Realty company should not be blank.']),
+                ]
+            ])
             ->add('photo', new S3Photo($this->s3, '1rex/realtor'))
             ->add('email', 'text', [
                 'constraints' => [
