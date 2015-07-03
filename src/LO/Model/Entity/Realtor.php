@@ -16,8 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @Entity
  * @Table(
  * name="realtor",
- * uniqueConstraints={@UniqueConstraint(name="first_last_name_unique",columns={"first_name", "last_name"})
- * ,@UniqueConstraint(name="email_unique",columns={"email"})})
+ * uniqueConstraints={@UniqueConstraint(name="first_last_name_unique",columns={"first_name", "last_name"})})
  */
 class Realtor extends Base
 {
