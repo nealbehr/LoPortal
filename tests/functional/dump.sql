@@ -221,3 +221,5 @@ CREATE TABLE `realtor` (
 
 INSERT INTO `realtor` (`id`, `deleted`, `realty_company_id`, `first_name`, `last_name`, `bre_number`, `phone`, `email`, `photo`, `created_at`, `updated_at`) VALUES
 (1,	'0',	36,	'Frank',	'Cheese',	'1934578',	'510.123.2458',	'joanna.umali@1rex.com',	'https://s3-us-west-1.amazonaws.com/1rex/realtor/14329273211593.JPEG',	NULL,	'2015-07-03 16:23:10');
+
+ALTER TABLE `queue` ADD `omit_realtor_info` enum('0','1') COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT '1' AFTER `state`;

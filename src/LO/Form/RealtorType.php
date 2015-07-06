@@ -8,6 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use LO\Validator\Unique;
 use Aws\S3\S3Client;
+use LO\Validator\UniqueEntityCustom;
 
 class RealtorType extends AbstractType
 {
@@ -25,6 +26,22 @@ class RealtorType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+        /*$a = new UniqueEntity([
+            'fields' => ['last_name', 'first_name'],
+            //'errorPath'=> 'page',
+            //'groups'=> ['New'],
+            'message'=> "Page already exists with that parent",
+            //'ignoreNull'=> false
+        ]);
+
+        $b = new Unique([
+            'groups'           => ['New'],
+            'field'            => 'last_name',
+            'entity'           => 'LO\\Model\\Entity\\Realtor',
+            'notUniqueMessage' => 'Realtor with the first name and last name is already registered.'
+        ]);*/
+
         $builder->add('last_name', 'text', [
                'constraints' => [
                     new Assert\Regex([
@@ -35,6 +52,14 @@ class RealtorType extends AbstractType
                         'max'        => 50,
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                     ]),
+
+            /*       new UniqueEntity([
+  'fields' => ['last_name', 'first_name'],
+  //'errorPath'=> 'page',
+  //'groups'=> ['New'],
+  'message'=> "Page already exists with that parent",
+  //'ignoreNull'=> false
+    ])*/
                     /*new Unique([
                         'groups'           => ['New'],
                         'field'            => 'last_name',
