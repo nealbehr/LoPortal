@@ -32,25 +32,15 @@ class Realtor extends Base
     protected $realty_company_id;
 
     /**
-     * @Column(type="string", length=255)
+     * @Column(type="string", length=50)
      * @Assert\NotBlank(message = "First name should not be blank.", groups = {"main"})
-     * @Assert\Regex(
-     *               pattern = "/^([A-Za-z_\s]+)$/",
-     *               message = "First name is invalid.",
-     *               groups = {"main"}
-     * )
      * @FullName(groups = {"main"})
      */
     protected $first_name;
 
     /**
-     * @Column(type="string", length=255)
+     * @Column(type="string", length=50)
      * @Assert\NotBlank(message = "Last name should not be blank.", groups = {"main"})
-     * @Assert\Regex(
-     *               pattern = "/^([A-Za-z_\s]+)$/",
-     *               message = "Last name is invalid.",
-     *               groups = {"main"}
-     * )
      * @FullName(groups = {"main"})
      */
     protected $last_name;

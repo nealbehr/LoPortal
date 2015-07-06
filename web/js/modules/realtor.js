@@ -386,7 +386,9 @@
                         };
 
                         $http.get('/admin/realty/all').success(function(data) {
-                            if (scope.realtor.realty_company_id) {
+                            if (scope.realtor.hasOwnProperty('realty_company_id')
+                                && scope.realtor.realty_company_id !== null
+                            ) {
                                 scope.realtor.realty_company_id += '';
                             }
                             scope.realtyCompanies = data;
