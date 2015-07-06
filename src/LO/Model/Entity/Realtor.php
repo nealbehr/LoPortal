@@ -183,7 +183,7 @@ class Realtor extends Base
         return $this->company;
     }
 
-    public function setCompany($param)
+    public function setCompany(RealtyCompany $param)
     {
         $this->company = $param;
 

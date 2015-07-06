@@ -70,7 +70,7 @@ class RealtorController extends Base
 
             $this->createForm($app, $request, $model);
 
-            $this->realtyCompanyExist($app, $model->getRealtyCompanyId());
+            $model->setCompany($this->realtyCompanyExist($app, $model->getRealtyCompanyId()));
 
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -94,7 +94,7 @@ class RealtorController extends Base
 
             $this->createForm($app, $request, $model);
 
-            $this->realtyCompanyExist($app, $model->getRealtyCompanyId());
+            $model->setCompany($this->realtyCompanyExist($app, $model->getRealtyCompanyId()));
 
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -192,11 +192,11 @@ class RealtorController extends Base
 
     private function realtyCompanyExist(Application $app, $id)
     {
-        if (!($app->getEntityManager()->getRepository(RealtyCompany::class)->find((int)$id))) {
+        if (!($model = $app->getEntityManager()->getRepository(RealtyCompany::class)->find((int)$id))) {
             throw new BadRequestHttpException('Realty company not found.');
         }
 
-        return true;
+        return $model;
     }
 
     private function getById(Application $app, $id)
