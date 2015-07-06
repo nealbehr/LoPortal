@@ -5,7 +5,7 @@ use \LO\Model\Entity\User;
 use \LO\Model\Entity\Address;
 use Symfony\Component\HttpFoundation\Request;
 
-class AdminUserControllerTest extends WebTestCase
+class UserControllerTest extends WebTestCase
 {
     private $user;
 
