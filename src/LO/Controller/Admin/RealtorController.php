@@ -132,7 +132,10 @@ class RealtorController extends Base
         $formOptions = ['validation_groups' => ['Default']];
         $data        = $request->request->get('realtor');
 
-        if (isset($data['email']) && $model->getEmail() !== $data['email']) {
+        if (isset($data['first_name'], $data['last_name'])
+            && $model->getFirstName() !== $data['first_name']
+            && $model->getLastName() !== $data['last_name']
+        ) {
             $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ['New']);
         }
 
@@ -143,6 +146,24 @@ class RealtorController extends Base
             $app->getMonolog()->addError($form->getErrors(true));
             $this->errors = $this->getFormErrors($form);
             throw new BadRequestHttpException(implode(' ', $this->errors));
+        }
+        else {
+            $realtor = $app->getEntityManager()->getRepository(Realtor::class)
+                ->createQueryBuilder('r')
+                ->where('r.first_name = :firstName')
+                ->andWhere('r.last_name = :lastName')
+                ->setParameter('firstName', $data['first_name'])
+                ->setParameter('lastName', $data['last_name'])
+                ->getQuery()
+                ->getOneOrNullResult();
+            if (!empty($realtor) && $model->getId() !== $realtor->getId()) {
+                throw new BadRequestHttpException(
+                    sprintf(
+                        'Realtor with the full name "%s" is already registered.',
+                        $realtor->getFirstName().' '.$model->getLastName()
+                    )
+                );
+            }
         }
 
         return $form;
