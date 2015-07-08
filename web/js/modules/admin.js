@@ -164,20 +164,19 @@
     /**
      * Get statuses for approve/decline forms
      */
-    admin.factory('getStatuses', ['$q', '$http', function($q, $http) {
-        var data = [];
-
-        return function(params, needReload) {
+    admin.factory('getStatusesByType', ['$q', '$http', function($q, $http) {
+        return function(type, cacheable) {
             var deferred = $q.defer();
-            if (data.length !== 0 && !needReload) {
-                return $q.when(data);
-            }
-
-            $http.get('/admin/status/all', params).success(function(response) {
-                data = response;
-                deferred.resolve(response);
-            }).error(function(response) {
-                deferred.reject(response);
+            $http.get('/admin/status/all', {
+                cache :  cacheable || true,
+                params: {
+                    filterValue: type,
+                    searchBy   : 'type'
+                }
+            }).success(function(data) {
+                deferred.resolve(data)
+            }).error(function(data) {
+                deferred.reject(data);
             });
 
             return deferred.promise;
@@ -186,20 +185,15 @@
 
     admin.controller(
         'adminDiscardCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatuses',
-            function($scope, $http, redirect, $compile, waitingScreen, getStatuses)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatusesByType',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatusesByType)
         {
         $scope.reason;
         $scope.statusId;
         $scope.statuses = [];
 
         waitingScreen.show();
-        getStatuses({
-            params: {
-                filterValue: 'decline',
-                searchBy   : 'type'
-            }
-        }).then(function(data) {
+        getStatusesByType('decline').then(function(data) {
             // Set status id
             if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
                 $scope.statusId = data[0].id;
@@ -233,8 +227,8 @@
 
     admin.controller(
         'adminApproveFlyerCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatuses',
-            function($scope, $http, redirect, $compile, waitingScreen, getStatuses)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatusesByType',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatusesByType)
         {
         $scope.reason;
         $scope.marketingCollateral;
@@ -244,12 +238,7 @@
         $scope.statuses = [];
 
         waitingScreen.show();
-        getStatuses({
-            params: {
-                filterValue: 'approve',
-                searchBy   : 'type'
-            }
-        }).then(function(data) {
+        getStatusesByType('approve').then(function(data) {
             // Set status id
             if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
                 $scope.statusId = data[0].id;
@@ -265,8 +254,7 @@
                 '/admin/queue/approve/flyer/'+$scope.ngDialogData.request.id,
                 {
                     file    : this.marketingCollateral,
-                    reason  : this.reason,
-                    note    : this.note,
+                    reason  : this.note,
                     statusId: this.statusId
                 }
             )
@@ -295,20 +283,15 @@
 
     admin.controller(
         'adminApproveCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatuses',
-            function($scope, $http, redirect, $compile, waitingScreen, getStatuses)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatusesByType',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatusesByType)
         {
         $scope.note;
         $scope.statusId;
         $scope.statuses = [];
 
         waitingScreen.show();
-        getStatuses({
-            params: {
-                filterValue: 'approve',
-                searchBy   : 'type'
-            }
-        }).then(function(data) {
+        getStatusesByType('approve').then(function(data) {
             // Set status id
             if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
                 $scope.statusId = data[0].id;
@@ -323,7 +306,7 @@
             $http.patch(
                 '/admin/queue/approve/'+$scope.ngDialogData.request.id,
                 {
-                    note    : this.note,
+                    reason  : this.note,
                     statusId: this.statusId
                 }
             ).success(function(data){

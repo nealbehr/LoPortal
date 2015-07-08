@@ -18,6 +18,7 @@ use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerDenial;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\QueueRealtor;
+use LO\Model\Entity\Status;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
@@ -88,7 +89,9 @@ class QueueController extends Base
             }
 
             $denialReason = $request->request->get('reason');
-            $queue->setState(Queue::STATE_DECLINED)->setReason($denialReason);
+            $queue->setState(Queue::STATE_DECLINED)
+                ->setReason($denialReason)
+                ->setStatus($this->statusExist($app, $request->request->get('statusId')));
             $em->persist($queue);
             $em->flush();
 
@@ -117,8 +120,9 @@ class QueueController extends Base
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(Queue::STATE_APPROVED);
-            $queue->setReason($request->request->get('reason'));
+            $queue->setState(Queue::STATE_APPROVED)
+                ->setReason($request->request->get('reason'))
+                ->setStatus($this->statusExist($app, $request->request->get('statusId')));
 
             $errors = $app->getValidator()->validate($queue);
 
@@ -172,7 +176,8 @@ class QueueController extends Base
             }
 
             $queue->setState(Queue::STATE_APPROVED)
-                ->setReason($request->request->get('reason'));
+                ->setReason($request->request->get('reason'))
+                ->setStatus($this->statusExist($app, $request->request->get('statusId')));
             $errors = $app->getValidator()->validate($queue);
 
             if (count($errors) > 0) {
@@ -265,5 +270,14 @@ class QueueController extends Base
         $allowFields = ['id', 'user_id', 'address', 'mls_number', 'created_at', 'request_type', 'state'];
 
         return 'q1.' . (in_array($id, $allowFields) ? $id : self::DEFAULT_SORT_FIELD_NAME);
+    }
+
+    private function statusExist(Application $app, $id)
+    {
+        if (!($model = $app->getEntityManager()->getRepository(Status::class)->find((int)$id))) {
+                throw new BadRequestHttpException('Status not exist.');
+        }
+
+        return $model;
     }
 } 

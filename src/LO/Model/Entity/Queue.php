@@ -71,6 +71,11 @@ class Queue extends Base {
     protected $user_id;
 
     /**
+     * @Column(type="integer")
+     */
+    protected $status_id;
+
+    /**
      * @Column(type="string")
      */
     protected $reason;
@@ -122,8 +127,14 @@ class Queue extends Base {
     /**
      * @OneToOne(targetEntity="QueueRealtor", fetch="LAZY")
      * @JoinColumn(name="realtor_id", referencedColumnName="id")
-     **/
+     */
     private $realtor;
+
+    /**
+     * @OneToOne(targetEntity="Status", fetch="LAZY")
+     * @JoinColumn(name="status_id", referencedColumnName="id")
+     */
+    private $status;
 
     public function __construct(){
         parent::__construct();
@@ -170,6 +181,18 @@ class Queue extends Base {
 
     public function setUserId($param){
         $this->user_id = $param;
+
+        return $this;
+    }
+
+    public function getStatusId()
+    {
+        return $this->status_id;
+    }
+
+    public function setStatusId($param)
+    {
+        $this->status_id = $param;
 
         return $this;
     }
@@ -309,6 +332,18 @@ class Queue extends Base {
     public function setRealtor($realtor)
     {
         $this->realtor = $realtor;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus(Status $param)
+    {
+        $this->status = $param;
+
+        return $this;
     }
 
     /**
