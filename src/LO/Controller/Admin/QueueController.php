@@ -89,13 +89,18 @@ class QueueController extends Base
             }
 
             $denialReason = $request->request->get('reason');
+            $statusModel  = $this->statusExist($app, $request->request->get('statusId'));
             $queue->setState(Queue::STATE_DECLINED)
                 ->setReason($denialReason)
-                ->setStatus($this->statusExist($app, $request->request->get('statusId')));
+                ->setStatus($statusModel);
             $em->persist($queue);
             $em->flush();
 
-            $requestInterface = $this->getEmailObject($app, $queue, ['note' => $request->request->get('reason')]);
+            $requestInterface = $this->getEmailObject($app, $queue, [
+                'note'       => $request->request->get('reason'),
+                'statusText' => $statusModel->getText()
+
+            ]);
             $requestChangeStatus = new RequestChangeStatus($app, $queue, $requestInterface);
             $requestChangeStatus->send();
             $em->commit();
@@ -120,10 +125,10 @@ class QueueController extends Base
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
+            $statusModel = $this->statusExist($app, $request->request->get('statusId'));
             $queue->setState(Queue::STATE_APPROVED)
                 ->setReason($request->request->get('reason'))
-                ->setStatus($this->statusExist($app, $request->request->get('statusId')));
-
+                ->setStatus($statusModel);
             $errors = $app->getValidator()->validate($queue);
 
             if (count($errors) > 0) {
@@ -149,7 +154,10 @@ class QueueController extends Base
                     $realtor,
                     $queue,
                     $request->getSchemeAndHttpHost(),
-                    ['note' => $request->request->get('note')]
+                    [
+                        'note'       => $request->request->get('note'),
+                        'statusText' => $statusModel->getText()
+                    ]
                 )
             ))->send();
 
@@ -175,9 +183,10 @@ class QueueController extends Base
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
+            $statusModel = $this->statusExist($app, $request->request->get('statusId'));
             $queue->setState(Queue::STATE_APPROVED)
                 ->setReason($request->request->get('reason'))
-                ->setStatus($this->statusExist($app, $request->request->get('statusId')));
+                ->setStatus($statusModel);
             $errors = $app->getValidator()->validate($queue);
 
             if (count($errors) > 0) {
@@ -191,7 +200,10 @@ class QueueController extends Base
 
             $request = new PropertyApprovalAccept(
                 $request->getSchemeAndHttpHost(),
-                ['note' => $request->request->get('note')]
+                [
+                    'note'       => $request->request->get('note'),
+                    'statusText' => $statusModel->getText()
+                ]
             );
             $changeStatusRequest = new RequestChangeStatus($app, $queue, $request);
             $changeStatusRequest->send();

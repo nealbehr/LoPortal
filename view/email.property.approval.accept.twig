@@ -1,4 +1,4 @@
-Your Property Approval Request has been approved. Visit FirstREX portal to view your property approvals or to request a listing flyer: {{ url }}
+{{(data.statusText is defined) ? data.statusText : ''}} Visit FirstREX portal to view your property approvals or to request a listing flyer: {{ url }}
 
 {% include 'email.note.twig' with {data: data} %}
 {% include 'email.loan.officer.twig' with {user: queue.getUser()} %}

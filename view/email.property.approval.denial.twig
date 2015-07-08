@@ -1,4 +1,4 @@
-Your Property Approval has been declined. For more details regarding the reasons behind the denial, please contact {{ email }}.
+{{(data.statusText is defined) ? data.statusText : ''}} For more details regarding the reasons behind the denial, please contact {{ email }}.
 
 {% include 'email.note.twig' with {data: data} %}
 {% include 'email.loan.officer.twig' with {user: queue.getUser()} %}
