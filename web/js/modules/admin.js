@@ -162,7 +162,7 @@
     }]);
 
     /**
-     * Get statuses
+     * Get statuses for approve/decline forms
      */
     admin.factory('getStatuses', ['$q', '$http', function($q, $http) {
         var data = [];
@@ -193,9 +193,6 @@
         $scope.statusId;
         $scope.statuses = [];
 
-        /**
-         * Get statuses
-         */
         waitingScreen.show();
         getStatuses({
             params: {
@@ -246,9 +243,6 @@
         $scope.statusId;
         $scope.statuses = [];
 
-        /**
-         * Get statuses
-         */
         waitingScreen.show();
         getStatuses({
             params: {
@@ -308,9 +302,6 @@
         $scope.statusId;
         $scope.statuses = [];
 
-        /**
-         * Get statuses
-         */
         waitingScreen.show();
         getStatuses({
             params: {
