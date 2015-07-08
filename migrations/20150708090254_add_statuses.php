@@ -22,7 +22,7 @@ class AddStatuses extends AbstractMigration
      */
     public function up()
     {
-        $table = 'statys';
+        $table = 'status';
         $data  = [[
             'type' => 'approve',
             'name' => 'Approved',

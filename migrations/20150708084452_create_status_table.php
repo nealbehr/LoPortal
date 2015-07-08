@@ -22,7 +22,7 @@ class CreateStatusTable extends AbstractMigration
      */
     public function up()
     {
-        $this->execute("CREATE TABLE `statys` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `type` enum('approve',"
+        $this->execute("CREATE TABLE `status` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `type` enum('approve',"
             ."'decline') DEFAULT NULL, `name` varchar(50) DEFAULT NULL, `text` text, PRIMARY KEY (`id`)) ENGINE=InnoDB "
             ."DEFAULT CHARSET=utf8;");
     }
@@ -32,6 +32,6 @@ class CreateStatusTable extends AbstractMigration
      */
     public function down()
     {
-        $this->dropTable('statys');
+        $this->dropTable('status');
     }
 }
