@@ -47,6 +47,10 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\RealtorController();
         });
 
+        $app['admin.status.controller'] = $app->share(function() use ($app) {
+            return new Admin\StatusController();
+        });
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
@@ -111,6 +115,11 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->post('/realtor', 'admin.realtor.controller:addAction');
         $controllers->put('/realtor/{id}', 'admin.realtor.controller:updateAction');
         $controllers->delete('/realtor/{id}', 'admin.realtor.controller:deleteAction');
+
+        /**
+         * Routes for StatysController
+         */
+        $controllers->get('/status/all', 'admin.status.controller:getAllByTypeAction');
         
         return $controllers;
     }

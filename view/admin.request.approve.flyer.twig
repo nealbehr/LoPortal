@@ -6,6 +6,10 @@
                 <h4 class="modal-title">Approve the request</h4>
             </div>
             <div class="modal-body">
+                <div class="input" ng-repeat="val in statuses">
+                    <input type="radio" name="status_id" ng-model="statusId" value="[[val.id]]">
+                    [[val.name]]
+                </div>
                 <textarea cols="30" rows="3" class="form-control" placeholder="Notes" ng-model="note"></textarea>
             </div>
             <div class="modal-footer">

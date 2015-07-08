@@ -161,12 +161,66 @@
 
     }]);
 
-    admin.controller('adminDiscardCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+    /**
+     * Get statuses
+     */
+    admin.factory('getStatuses', ['$q', '$http', function($q, $http) {
+        var data = [];
+
+        return function(params, needReload) {
+            var deferred = $q.defer();
+            if (data.length !== 0 && !needReload) {
+                return $q.when(data);
+            }
+
+            $http.get('/admin/status/all', params).success(function(response) {
+                data = response;
+                deferred.resolve(response);
+            }).error(function(response) {
+                deferred.reject(response);
+            });
+
+            return deferred.promise;
+        }
+    }]);
+
+    admin.controller(
+        'adminDiscardCtrl',
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatuses',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatuses)
+        {
         $scope.reason;
-//        $scope.ngDialogData;
+        $scope.statusId;
+        $scope.statuses = [];
+
+        /**
+         * Get statuses
+         */
+        waitingScreen.show();
+        getStatuses({
+            params: {
+                filterValue: 'decline',
+                searchBy   : 'type'
+            }
+        }).then(function(data) {
+            // Set status id
+            if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
+                $scope.statusId = data[0].id;
+            }
+            $scope.statuses = data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
+
         $scope.decline = function(){
             waitingScreen.show();
-            $http.patch("/admin/queue/decline/" + $scope.ngDialogData.request.id, {reason: this.reason})
+            $http.patch(
+                '/admin/queue/decline/'+$scope.ngDialogData.request.id,
+                {
+                    reason  : this.reason,
+                    statusId: this.statusId
+                }
+            )
                 .success(function(data){
                     $scope.closeThisDialog({state: "success"});
                 })
@@ -182,22 +236,44 @@
 
     admin.controller(
         'adminApproveFlyerCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
-            function($scope, $http, redirect, $compile, waitingScreen)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatuses',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatuses)
         {
         $scope.reason;
         $scope.marketingCollateral;
         $scope.filename;
         $scope.note;
+        $scope.statusId;
+        $scope.statuses = [];
+
+        /**
+         * Get statuses
+         */
+        waitingScreen.show();
+        getStatuses({
+            params: {
+                filterValue: 'approve',
+                searchBy   : 'type'
+            }
+        }).then(function(data) {
+            // Set status id
+            if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
+                $scope.statusId = data[0].id;
+            }
+            $scope.statuses = data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
+
         $scope.approve = function(){
             waitingScreen.show();
-            console.log($scope.ngDialogData.request);
             $http.patch(
                 '/admin/queue/approve/flyer/'+$scope.ngDialogData.request.id,
                 {
-                    file  : this.marketingCollateral,
-                    reason: this.reason,
-                    note  : this.note
+                    file    : this.marketingCollateral,
+                    reason  : this.reason,
+                    note    : this.note,
+                    statusId: this.statusId
                 }
             )
                 .success(function(data){
@@ -225,14 +301,41 @@
 
     admin.controller(
         'adminApproveCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
-            function($scope, $http, redirect, $compile, waitingScreen)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatuses',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatuses)
         {
         $scope.note;
+        $scope.statusId;
+        $scope.statuses = [];
+
+        /**
+         * Get statuses
+         */
+        waitingScreen.show();
+        getStatuses({
+            params: {
+                filterValue: 'approve',
+                searchBy   : 'type'
+            }
+        }).then(function(data) {
+            // Set status id
+            if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
+                $scope.statusId = data[0].id;
+            }
+            $scope.statuses = data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
+
         $scope.approve = function(){
             waitingScreen.show();
-            $http.patch('/admin/queue/approve/'+$scope.ngDialogData.request.id, {note: this.note})
-                .success(function(data){
+            $http.patch(
+                '/admin/queue/approve/'+$scope.ngDialogData.request.id,
+                {
+                    note    : this.note,
+                    statusId: this.statusId
+                }
+            ).success(function(data){
                     $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
                 .error(function(data, code){
