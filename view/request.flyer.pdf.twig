@@ -188,23 +188,23 @@
             <ul>
                 <li>
                     <em>Listing Price ...........................................................................................</em>
-                    <span {% if discuont|length > 8 %}style="font-size: 18px;"{% endif %}>{{listingPrice}}</span>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{listingPrice}}</span>
                 </li>
                 <li>
                     <em>Available Loan (@{{maxiumLoanAmount}}% LTV) ....................................................</em>
-                    <span {% if discuont|length > 8 %}style="font-size: 18px;"{% endif %}>{{availableLoan}}</span>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{availableLoan}}</span>
                 </li>
                 <li>
                     <em>Required Down Payment ........................................................</em>
-                    <span {% if discuont|length > 8 %}style="font-size: 18px;"{% endif %}>{{requiredDownPayment}}</span>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{requiredDownPayment}}</span>
                 </li>
                 <li>
                     <em>Our Down Payment Funding* ....................................................</em>
-                    <span {% if discuont|length > 8 %}style="font-size: 18px;"{% endif %}>{{ourDownPayment}}</span>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{requiredDownPayment}}</span>
                 </li>
                 <li>
                     <em>Your Down Payment ............................................................</em>
-                    <span {% if discuont|length > 8 %}style="font-size: 18px;"{% endif %}>{{yourDownPayment}}</span>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{yourDownPayment}}</span>
                 </li>
             </ul>
         </div>
