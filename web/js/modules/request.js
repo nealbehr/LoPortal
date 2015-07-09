@@ -147,14 +147,13 @@
         }
     }]);
 
-
     request.controller('ResourcesController', ['$scope', function($scope) {
         $scope.titles    = {
             header: 'Resources'
         };
         $scope.resources = [
             {
-                link : 'docs/resources/quick_reference_v7.pdf',
+                link : '/docs/resources/quick_reference_v7.pdf',
                 title: 'Quick Reference Guide'
             }
         ]
