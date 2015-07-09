@@ -155,7 +155,7 @@ class QueueController extends Base
                     $queue,
                     $request->getSchemeAndHttpHost(),
                     [
-                        'note'       => $request->request->get('note'),
+                        'note'       => $request->request->get('reason'),
                         'statusText' => $statusModel->getText()
                     ]
                 )
@@ -201,7 +201,7 @@ class QueueController extends Base
             $request = new PropertyApprovalAccept(
                 $request->getSchemeAndHttpHost(),
                 [
-                    'note'       => $request->request->get('note'),
+                    'note'       => $request->request->get('reason'),
                     'statusText' => $statusModel->getText()
                 ]
             );
