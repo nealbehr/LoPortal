@@ -6,6 +6,12 @@
                 <h4 class="modal-title">Decline the request</h4>
             </div>
             <div class="modal-body">
+                <div class="input radio" ng-repeat="val in statuses">
+                    <label>
+                        <input type="radio" name="status_id" ng-model="$parent.statusId" ng-value="val.id">
+                        [[val.name]]
+                    </label>
+                </div>
                 <textarea cols="30" rows="3" class="form-control" placeholder="Reason" ng-model="reason"></textarea>
             </div>
             <div class="modal-footer">

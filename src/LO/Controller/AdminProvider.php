@@ -43,6 +43,14 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\SalesDirectorController();
         });
 
+        $app['admin.realtor.controller'] = $app->share(function() use ($app) {
+            return new Admin\RealtorController();
+        });
+
+        $app['admin.status.controller'] = $app->share(function() use ($app) {
+            return new Admin\StatusController();
+        });
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
@@ -77,6 +85,7 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->delete('/lender/{id}', "admin.lender.controller:deleteAction");
 
         $controllers->get('/realty', "admin.realty.controller:getAllAction");
+        $controllers->get('/realty/all', 'admin.realty.controller:getAllForSelect');
         $controllers->post('/realty', "admin.realty.controller:addCompanyAction");
         $controllers->get('/realty/{id}', "admin.realty.controller:getByIdAction");
         $controllers->put('/realty/{id}', "admin.realty.controller:updateCompanyAction");
@@ -97,6 +106,20 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->post('/salesdirector', 'admin.sales.director.controller:addAction');
         $controllers->put('/salesdirector/{id}', 'admin.sales.director.controller:updateAction');
         $controllers->delete('/salesdirector/{id}', 'admin.sales.director.controller:deleteAction');
+
+        /**
+         * Routes for RealtorController
+         */
+        $controllers->get('/realtor', 'admin.realtor.controller:getListAction');
+        $controllers->get('/realtor/{id}', 'admin.realtor.controller:getByIdAction');
+        $controllers->post('/realtor', 'admin.realtor.controller:addAction');
+        $controllers->put('/realtor/{id}', 'admin.realtor.controller:updateAction');
+        $controllers->delete('/realtor/{id}', 'admin.realtor.controller:deleteAction');
+
+        /**
+         * Routes for StatysController
+         */
+        $controllers->get('/status/all', 'admin.status.controller:getAllByTypeAction');
         
         return $controllers;
     }

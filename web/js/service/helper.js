@@ -623,7 +623,16 @@
         };
     }]);
 
-    helperService.directive('loRequestFlyerEdit', ["$location", "createRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "loadImage", "$q", "$rootScope", "sessionMessages", "pictureObject", "createFromPropertyApproval", "loadGoogleMapsApi", "createDraftRequestFlyer", "$anchorScroll", "renderMessage", "createProfileUser", "createDraftFromPropertyApproval", function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, $anchorScroll, renderMessage, createProfileUser, createDraftFromPropertyApproval){
+    helperService.directive(
+        'loRequestFlyerEdit', 
+        ['$location', 'createRequestFlyer', '$routeParams', 'parseGoogleAddressComponents', 'loadFile', '$timeout', 
+            'redirect', 'waitingScreen', 'getInfoFromGeocoder', 'loadImage', '$q', '$rootScope', 'sessionMessages', 
+            'pictureObject', 'createFromPropertyApproval', 'loadGoogleMapsApi', 'createDraftRequestFlyer', 
+            '$anchorScroll', 'renderMessage', 'createProfileUser', 'createDraftFromPropertyApproval', '$http', 
+            function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, 
+                     redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, 
+                     pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, 
+                     $anchorScroll, renderMessage, createProfileUser, createDraftFromPropertyApproval, $http) {
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.flyer.form',
@@ -693,6 +702,10 @@
                 scope.saveDraftOrApproved = function(e) {
                     e.preventDefault();
 
+                    if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
+                        return false;
+                    }
+
                     if(scope.request.property.state != settings.queue.state.approved) {
                         scope.request.property.state = settings.queue.state.draft;
                     }
@@ -718,6 +731,51 @@
                     this.saveRequest(scope.requestDraft);
                 };
 
+                scope.autoComplete = function(event, searchBy) {
+                    var element = $(event.target);
+
+                    element.autocomplete({
+                        source: function(request, response) {
+                            $http.get(
+                                '/request/flyer/realtor',
+                                {
+                                    params: {
+                                        'filterValue': element.val().toLowerCase(),
+                                        'searchBy'   : searchBy
+                                    },
+                                    cache : true
+                                }
+                            ).then(function(resp) {
+                                response($.map(resp.data.realtors, function(item) {
+                                    if (item.first_name && item.last_name) {
+                                        return {
+                                            label  : item.first_name+' '+item.last_name,
+                                            value  : item[searchBy],
+                                            realtor: item
+                                        };
+                                    }
+                                }));
+                            });
+                        },
+                        minLength: 0,
+                        delay: 500,
+                        select: function(event, ui) {
+                            if (ui.item !== undefined) {
+                                scope.request.realtor.first_name  =  ui.item.realtor.first_name;
+                                scope.request.realtor.last_name   =  ui.item.realtor.last_name;
+                                scope.request.realtor.photo       =  ui.item.realtor.photo;
+                                scope.request.realtor.phone       =  ui.item.realtor.phone;
+                                scope.request.realtor.email       =  ui.item.realtor.email;
+                                scope.request.realtor.bre_number  =  ui.item.realtor.bre_number;
+                                scope.request.realtor.realty.logo =  ui.item.realtor.company.logo;
+                                scope.request.realtor.realty.name =  ui.item.realtor.company.name;
+                                scope.$apply();
+                            }
+                            return false;
+                        }
+                    }).autocomplete('search', element.val().toLowerCase());
+                };
+
                 scope.showErrors = function(e){
                     e.preventDefault();
 
@@ -728,14 +786,16 @@
                     $anchorScroll(scope.container.attr("id"));
                 };
 
-                scope.save = function(form){
-                    console.log("save");
-                    if(!form.$valid){
+                scope.save = function(form) {
+                    if (!form.$valid) {
                         this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
                     }
 
+                    if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
+                        return false;
+                    }
 
                     scope.request.afterSave(function(){
                         scope.oldRequest = angular.copy(scope.request);

@@ -161,12 +161,57 @@
 
     }]);
 
-    admin.controller('adminDiscardCtrl', ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', function($scope, $http, redirect, $compile, waitingScreen){
+    /**
+     * Get statuses for approve/decline forms
+     */
+    admin.factory('getStatusesByType', ['$q', '$http', function($q, $http) {
+        return function(type, cacheable) {
+            var deferred = $q.defer();
+            $http.get('/admin/status/all', {
+                cache :  cacheable || true,
+                params: {
+                    filterValue: type,
+                    searchBy   : 'type'
+                }
+            }).success(function(data) {
+                deferred.resolve(data)
+            }).error(function(data) {
+                deferred.reject(data);
+            });
+
+            return deferred.promise;
+        }
+    }]);
+
+    admin.controller(
+        'adminDiscardCtrl',
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatusesByType',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatusesByType)
+        {
         $scope.reason;
-//        $scope.ngDialogData;
+        $scope.statusId;
+        $scope.statuses = [];
+
+        waitingScreen.show();
+        getStatusesByType('decline').then(function(data) {
+            // Set status id
+            if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
+                $scope.statusId = data[0].id;
+            }
+            $scope.statuses = data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
+
         $scope.decline = function(){
             waitingScreen.show();
-            $http.patch("/admin/queue/decline/" + $scope.ngDialogData.request.id, {reason: this.reason})
+            $http.patch(
+                '/admin/queue/decline/'+$scope.ngDialogData.request.id,
+                {
+                    reason  : this.reason,
+                    statusId: this.statusId
+                }
+            )
                 .success(function(data){
                     $scope.closeThisDialog({state: "success"});
                 })
@@ -182,22 +227,35 @@
 
     admin.controller(
         'adminApproveFlyerCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
-            function($scope, $http, redirect, $compile, waitingScreen)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatusesByType',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatusesByType)
         {
         $scope.reason;
         $scope.marketingCollateral;
         $scope.filename;
         $scope.note;
+        $scope.statusId;
+        $scope.statuses = [];
+
+        waitingScreen.show();
+        getStatusesByType('approve').then(function(data) {
+            // Set status id
+            if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
+                $scope.statusId = data[0].id;
+            }
+            $scope.statuses = data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
+
         $scope.approve = function(){
             waitingScreen.show();
-            console.log($scope.ngDialogData.request);
             $http.patch(
                 '/admin/queue/approve/flyer/'+$scope.ngDialogData.request.id,
                 {
-                    file  : this.marketingCollateral,
-                    reason: this.reason,
-                    note  : this.note
+                    file    : this.marketingCollateral,
+                    reason  : this.note,
+                    statusId: this.statusId
                 }
             )
                 .success(function(data){
@@ -225,14 +283,33 @@
 
     admin.controller(
         'adminApproveCtrl',
-        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen',
-            function($scope, $http, redirect, $compile, waitingScreen)
+        ['$scope', '$http', 'redirect', '$compile', 'waitingScreen', 'getStatusesByType',
+            function($scope, $http, redirect, $compile, waitingScreen, getStatusesByType)
         {
         $scope.note;
+        $scope.statusId;
+        $scope.statuses = [];
+
+        waitingScreen.show();
+        getStatusesByType('approve').then(function(data) {
+            // Set status id
+            if (typeof data[0] !== 'undefined' && data[0].hasOwnProperty('id')) {
+                $scope.statusId = data[0].id;
+            }
+            $scope.statuses = data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
+
         $scope.approve = function(){
             waitingScreen.show();
-            $http.patch('/admin/queue/approve/'+$scope.ngDialogData.request.id, {note: this.note})
-                .success(function(data){
+            $http.patch(
+                '/admin/queue/approve/'+$scope.ngDialogData.request.id,
+                {
+                    reason  : this.note,
+                    statusId: this.statusId
+                }
+            ).success(function(data){
                     $scope.closeThisDialog({state: "success", requestState: settings.queue.state.approved});
                 })
                 .error(function(data, code){
@@ -259,6 +336,12 @@
                     new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
                     new Tab({path: '/admin/queue', title: "Request Management"}),
                     new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"}),
+                    new Tab({
+                        path       : '/admin/realtor',
+                        title      : 'Realtor',
+                        button_text: 'Add Realtor',
+                        button_href: '/admin/realtor/new'
+                    }),
                     new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"}),
                     new Tab({
                         path       : '/admin/salesdirector',

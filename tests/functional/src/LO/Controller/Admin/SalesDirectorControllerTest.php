@@ -4,7 +4,7 @@ use Silex\WebTestCase;
 use \LO\Model\Entity\SalesDirector;
 use Symfony\Component\HttpFoundation\Request;
 
-class AdminUserControllerTest extends WebTestCase
+class SalesDirectorControllerTest extends WebTestCase
 {
     private $showDeprecated = false;
 

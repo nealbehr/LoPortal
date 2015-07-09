@@ -186,11 +186,26 @@
             <p class="promo">REX HomeBuyer provides a new source of down payment funding. FirstREX will typically provide up to half the down payment you need to buy a home in exchange for a share of the profit or loss when you decide to sell. Ask your mortgage professional for an introduction.</p>
             <h1>Buy this home with<br>only {{discuontPart}}% down: <span {% if discuont|length > 8 %}style="font-size: 68px;"{% endif %}>${{discuont}}</span></h1>
             <ul>
-                <li><em>Listing Price ...........................................................................................</em><span>{{listingPrice}}</span></li>
-                <li><em>Available Loan (@{{maxiumLoanAmount}}% LTV) ....................................................</em> <span>{{availableLoan}}</span></li>
-                <li><em>Required Down Payment ........................................................</em> <span>{{requiredDownPayment}}</span></li>
-                <li><em>Our Down Payment Funding* ....................................................</em> <span>{{ourDownPayment}}</span></li>
-                <li><em>Your Down Payment ............................................................</em> <span>{{yourDownPayment}}</span></li>
+                <li>
+                    <em>Listing Price ...........................................................................................</em>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{listingPrice}}</span>
+                </li>
+                <li>
+                    <em>Available Loan (@{{maxiumLoanAmount}}% LTV) ....................................................</em>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{availableLoan}}</span>
+                </li>
+                <li>
+                    <em>Required Down Payment ........................................................</em>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{requiredDownPayment}}</span>
+                </li>
+                <li>
+                    <em>Our Down Payment Funding* ....................................................</em>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{ourDownPayment}}</span>
+                </li>
+                <li>
+                    <em>Your Down Payment ............................................................</em>
+                    <span {% if listingPrice|length > 8 %}style="font-size: 17px;"{% endif %}>{{yourDownPayment}}</span>
+                </li>
             </ul>
         </div>
     </div>
@@ -216,6 +231,7 @@
             </div>
             <img class="brand" src="{{agencyCard1}}" alt="">
         </div>
+        {% if omitRealtorInfo %}
         <div class="card">
             <div class="wrap">
                 <img class="photo" src="{{photoCard2}}" alt="">
@@ -224,6 +240,7 @@
             </div>
             <img class="brand" src="{{agencyCard2}}" alt="">
         </div>
+        {% endif %}
     </div>
     <div id="footer">
         <div class="badge"><img src="https://s3-us-west-1.amazonaws.com/1rex/assets/equal_housing_opportunity.gif" alt=""></div>

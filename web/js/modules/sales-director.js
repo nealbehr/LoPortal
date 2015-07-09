@@ -2,18 +2,20 @@
     'use strict';
     settings = settings || {};
 
+    var PATH = '/admin/salesdirector';
+
     var salesDirectorModule = angular.module('salesDirectorModule', ['adminModule']);
 
     salesDirectorModule.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/admin/salesdirector', {
+        $routeProvider.when(PATH, {
             templateUrl: '/partials/admin.sales.director.tab',
             controller : 'salesDirectorCtrl',
             access     : { isFree: false }
-        }).when('/admin/salesdirector/new', {
+        }).when(PATH+'/new', {
             templateUrl: '/partials/admin.sales.director',
             controller :  'salesDirectorCtrl',
             access     : { isFree: false }
-        }).when('/admin/salesdirector/:id/edit', {
+        }).when(PATH+'/:id/edit', {
             templateUrl: '/partials/admin.sales.director',
             controller :  'salesDirectorEditCtrl',
             access     : { isFree: false }
@@ -29,7 +31,7 @@
                 return $q.when(salesDirectors);
             }
 
-            $http.get('/admin/salesdirector').success(function(data) {
+            $http.get(PATH).success(function(data) {
                 salesDirectors = data;
                 deferred.resolve(data);
             }).error(function(data) {
@@ -45,8 +47,7 @@
         ['$q', '$http', 'createSalesDirectorBase', 'getSalesDirectors',
             function($q, $http, createSalesDirectorBase, getSalesDirectors) {
         return function() {
-            var salesDirector = new createSalesDirectorBase(),
-                path          = '/admin/salesdirector';
+            var salesDirector = new createSalesDirectorBase();
 
             salesDirector.getList = function(needReload) {
                 return getSalesDirectors(needReload)
@@ -58,7 +59,7 @@
                 }
 
                 var deferred = $q.defer();
-                $http.delete(path+'/'+this.id, {}).success(function(data) {
+                $http.delete(PATH+'/'+this.id, {}).success(function(data) {
                     deferred.resolve(data);
                 }).error(function(data){
                     deferred.reject(data);
@@ -73,7 +74,7 @@
 
             salesDirector.update = function() {
                 var deferred = $q.defer();
-                $http.put(path+'/'+this.id, {salesDirector: this.getFields4Save()}).success(function(data){
+                $http.put(PATH+'/'+this.id, {salesDirector: this.getFields4Save()}).success(function(data){
                     deferred.resolve(data);
                 }).error(function(data){
                     deferred.reject(data);
@@ -84,7 +85,7 @@
 
             salesDirector.add = function() {
                 var deferred = $q.defer();
-                $http.post(path, {salesDirector: this.getFields4Save()}).success(function(data) {
+                $http.post(PATH, {salesDirector: this.getFields4Save()}).success(function(data) {
                     salesDirector.id = data.id;
                     deferred.resolve(data);
                 }).error(function(data){
@@ -131,7 +132,7 @@
 
             this.get = function(id) {
                 var deferred = $q.defer();
-                $http.get('/admin/salesdirector/'+id).success(function(data) {
+                $http.get(PATH+'/'+id).success(function(data) {
                     self.fill(data);
                     deferred.resolve(self)
                 }).error(function(data) {
@@ -222,7 +223,7 @@
 
                     waitingScreen.show();
 
-                    $http.get('admin/salesdirector', {params: $location.search()}).success(function(data) {
+                    $http.get(PATH, {params: $location.search()}).success(function(data) {
                         for (var i in data.salesDirectors) {
                             scope.salesDirectors.push(createSalesDirector().fill(data.salesDirectors[i]));
                         }

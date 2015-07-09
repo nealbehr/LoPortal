@@ -1,0 +1,19 @@
+<h2>Property Info</h2>
+<table border="0">
+    <tr>
+        <td>Property address:</td>
+        <td>{{ queue.getAddress() }}</td>
+    </tr>
+    {% if queue.getMlsNumber() is not empty %}
+    <tr>
+        <td>MLS Number:</td>
+        <td>{{ queue.getMlsNumber() }}</td>
+    </tr>
+    {% endif %}
+    {% if queue.getListingPrice() is not empty and queue.getListingPrice() > 0 %}
+    <tr>
+        <td>Listing Price:</td>
+        <td>{{ queue.getListingPrice() }}</td>
+    </tr>
+    {% endif %}
+</table>

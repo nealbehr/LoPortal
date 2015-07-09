@@ -1,26 +1,49 @@
-<?php
-/**
- * Created by IntelliJ IDEA.
- * User: samoilenko
- * Date: 3/22/15
- * Time: 5:04 PM
- */
+<?php namespace LO\Model\Entity;
 
-namespace LO\Model\Entity;
-
-
-use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\OneToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use LO\Validator\FullName;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @Entity
- * @Table(name="realtor")
+ * @Table(
+ * name="realtor",
+ * uniqueConstraints={@UniqueConstraint(name="first_last_name_unique",columns={"first_name", "last_name"})})
  */
 class Realtor extends Base
 {
+    /**
+     * @Column(type="string")
+     */
+    protected $deleted = '0';
+
+    /**
+     * @Column(type="integer")
+     * @Assert\Type(type="numeric")
+     */
+    protected $realty_company_id;
+
+    /**
+     * @Column(type="string", length=50)
+     * @Assert\NotBlank(message = "First name should not be blank.", groups = {"main"})
+     * @FullName(groups = {"main"})
+     */
+    protected $first_name;
+
+    /**
+     * @Column(type="string", length=50)
+     * @Assert\NotBlank(message = "Last name should not be blank.", groups = {"main"})
+     * @FullName(groups = {"main"})
+     */
+    protected $last_name;
 
     /**
      * @Column(type="string", length=255)
@@ -28,7 +51,7 @@ class Realtor extends Base
     protected $bre_number;
 
     /**
-     * @Column(type="string", length=255)
+     * @Column(type="string", length=100)
      * @Assert\NotBlank(message = "Phone should not be blank.", groups = {"main"})
      * @Assert\Regex(
      *               pattern = "/^[0-9+\(\)#\.\s\/ext-]+$/",
@@ -39,7 +62,7 @@ class Realtor extends Base
     protected $phone;
 
     /**
-     * @Column(type="string", length=255)
+     * @Column(type="string", length=50)
      * @Assert\Email();
      */
     protected $email;
@@ -54,83 +77,43 @@ class Realtor extends Base
     protected $photo;
 
     /**
-     * @Column(type="string", length=50)
-     * @Assert\Length(
-     *              max = 50,
-     *              maxMessage = "Realty name cannot be longer than {{ limit }} characters"
-     * )
-     */
-    protected $realty_name;
+     * @OneToOne(targetEntity="RealtyCompany", fetch="LAZY")
+     * @JoinColumn(name="realty_company_id", referencedColumnName="id")
+     **/
+    private $company;
 
-    /**
-     * @Column(type="string", length=255)
-     * @Assert\Length(
-     *              max = 255,
-     *              maxMessage = "Realty logo cannot be longer than {{ limit }} characters"
-     * )
-     */
-    protected $realty_logo;
-
-    /**
-     * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "First name should not be blank.", groups = {"main"})
-     * @Assert\Regex(
-     *               pattern = "/^([A-Za-z_\s]+)$/",
-     *               message = "First name is invalid.",
-     *               groups = {"main"}
-     * )
-     * @FullName(groups = {"main"})
-     */
-    protected $first_name;
-
-    /**
-     * @Column(type="string", length=255)
-     * @Assert\NotBlank(message = "Last name should not be blank.", groups = {"main"})
-     * @Assert\Regex(
-     *               pattern = "/^([A-Za-z_\s]+)$/",
-     *               message = "Last name is invalid.",
-     *               groups = {"main"}
-     * )
-     * @FullName(groups = {"main"})
-     */
-    protected $last_name;
-
-    public function setLastName($param)
+    public function getDeleted()
     {
-        $this->last_name = $param;
+        return $this->deleted;
+    }
+
+    public function setDeleted($param)
+    {
+        $this->deleted = $param;
 
         return $this;
+    }
+
+    public function getRealtyCompanyId()
+    {
+        return $this->realty_company_id;
+    }
+
+    public function setRealtyCompanyId($param)
+    {
+        $this->realty_company_id = $param;
+
+        return $this;
+    }
+
+    public function getFirstName()
+    {
+        return $this->first_name;
     }
 
     public function setFirstName($param)
     {
         $this->first_name = $param;
-    }
-
-    public function setBreNumber($param)
-    {
-        $this->bre_number = $param;
-
-        return $this;
-    }
-
-    public function setPhone($param)
-    {
-        $this->phone = $param;
-
-        return $this;
-    }
-
-    public function setEmail($param)
-    {
-        $this->email = $param;
-
-        return $this;
-    }
-
-    public function setPhoto($param)
-    {
-        $this->photo = $param;
 
         return $this;
     }
@@ -140,24 +123,11 @@ class Realtor extends Base
         return $this->last_name;
     }
 
-    public function getFirstName()
+    public function setLastName($param)
     {
-        return $this->first_name;
-    }
+        $this->last_name = $param;
 
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    public function getPhone()
-    {
-        return $this->phone;
+        return $this;
     }
 
     public function getBreNumber()
@@ -165,69 +135,58 @@ class Realtor extends Base
         return $this->bre_number;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRealtyName()
+    public function setBreNumber($param)
     {
-        return $this->realty_name;
+        $this->bre_number = $param;
+
+        return $this;
     }
 
-    /**
-     * @param mixed $realty_name
-     */
-    public function setRealtyName($realty_name)
+    public function getPhone()
     {
-        $this->realty_name = $realty_name;
+        return $this->phone;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRealtyLogo()
+    public function setPhone($param)
     {
-        return $this->realty_logo;
+        $this->phone = $param;
+
+        return $this;
     }
 
-    /**
-     * @param mixed $realty_logo
-     */
-    public function setRealtyLogo($realty_logo)
+    public function getEmail()
     {
-        $this->realty_logo = $realty_logo;
+        return $this->email;
     }
 
-    public function getRealty()
+    public function setEmail($param)
     {
-        $realtyCompany = new RealtyCompany();
-        $realtyCompany->setName($this->realty_name);
-        $realtyCompany->setLogo($this->realty_logo);
-        return $realtyCompany;
+        $this->email = $param;
+
+        return $this;
     }
 
-    public function setRealty(RealtyCompany $realty)
+    public function getPhoto()
     {
-        $this->realty_name = $realty->getName();
-        $this->realty_logo = $realty->getLogo();
+        return $this->photo;
     }
 
-    public function getPublicInfo()
+    public function setPhoto($param)
     {
-        $result = $this->toArray();
-        unset($result['realty_logo'], $result['realty_name'], $result['created_at'], $result['updated_at']);
-        $realtyCompany = new RealtyCompany();
-        $realtyCompany->setName($this->realty_name);
-        $realtyCompany->setLogo($this->realty_logo);
-        $result['realty'] = $realtyCompany->toArray();
+        $this->photo = $param;
 
-        return $result;
+        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function getCompany()
     {
-        return $this->first_name . " " . $this->last_name;
+        return $this->company;
+    }
+
+    public function setCompany(RealtyCompany $param)
+    {
+        $this->company = $param;
+
+        return $this;
     }
 }

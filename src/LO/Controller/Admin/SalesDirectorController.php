@@ -12,10 +12,10 @@ class SalesDirectorController extends Base
 {
     use GetFormErrors;
 
-    const LIMIT                   = 20;
-    const KEY_SEARCH_BY           = 'searchBy';
     const DEFAULT_SORT_FIELD_NAME = 'id';
     const DEFAULT_SORT_DIRECTION  = 'asc';
+
+    private $orderCols            = ['id', 'name', 'email', 'created_at'];
 
     public function getListAction(Application $app, Request $request)
     {
@@ -180,7 +180,7 @@ class SalesDirectorController extends Base
 
     private function getOrderKey($col)
     {
-        return in_array($col, ['id', 'name', 'email', 'created_at'], true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
+        return in_array($col, $this->orderCols, true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
     }
 
     private function getSalesDirectorById(Application $app, $id)

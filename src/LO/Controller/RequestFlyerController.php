@@ -16,12 +16,14 @@ use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\Realtor;
+use LO\Model\Entity\QueueRealtor;
 use LO\Model\Entity\User;
+use LO\Model\Entity\Realtor;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Snappy\Pdf;
+use \Doctrine\ORM\Query;
 
 
 class RequestFlyerController extends RequestFlyerBase {
@@ -106,8 +108,7 @@ class RequestFlyerController extends RequestFlyerBase {
         $discount = ((1 - $queue->getMaximumLoan()/100) - $queue->getFundedPercentage()/100) * $queue->getListingPrice();
         $address = preg_replace('/,/', '<br>', $queue->getAddress(), 1);
         $address = str_replace(', USA', '', $address);
-        $data = array(
-
+        $data = [
             'homeAddress' =>  $address,
             'homeImage' => $propertyPhoto,
             'discuontPart' => $discountPart,
@@ -135,8 +136,9 @@ class RequestFlyerController extends RequestFlyerBase {
                 ' . $realtor->getPhone()  .'<br />
                 ' . $realtor->getEmail() .'<br />
                 CA BRE #' . $realtor->getBreNumber(),
-            'agencyCard2' => $realtor->getRealtyLogo()
-        );
+            'agencyCard2' => $realtor->getRealtyLogo(),
+            'omitRealtorInfo' => ($queue->getOmitRealtorInfo() === '0')
+        ];
         return $data;
     }
 
@@ -154,7 +156,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
 
-            $realtor      = new Realtor();
+            $realtor      = new QueueRealtor();
             $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
 
             $this->saveFlyer(
@@ -232,7 +234,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->saveFlyer(
                 $app,
                 $request,
-                new Realtor(),
+                new QueueRealtor(),
                 (new Queue())->setState(Queue::STATE_DRAFT)->setAdditionalInfo($firstRexForm->getData()),
                 ['validation_groups' => ["Default", "draft"]]
             );
@@ -330,7 +332,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->saveFlyer(
                 $app,
                 $request,
-                new Realtor(),
+                new QueueRealtor(),
                 $queue,
                 [
                     'validation_groups' => ["Default", "draft"],
@@ -366,7 +368,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_REQUESTED);
 
-            $realtor = new Realtor();
+            $realtor = new QueueRealtor();
 
             $this->saveFlyer(
                 $app,
@@ -388,5 +390,34 @@ class RequestFlyerController extends RequestFlyerBase {
         }
 
         return $app->json("success");
+    }
+
+    public function getRealtorListAction(Application $app, Request $request)
+    {
+        $alias = 'r';
+        $query = $app->getEntityManager()->createQueryBuilder()
+            ->select($alias, 'c')
+            ->from(Realtor::class, $alias)
+            ->join($alias.'.company', 'c')
+            ->where("$alias.deleted = '0'")
+            ->setMaxResults(Admin\RealtorController::LIMIT)
+            ->orderBy("$alias.first_name", 'asc');
+
+        if ($request->get(Admin\RealtorController::KEY_SEARCH)) {
+            if (in_array($request->get(Admin\RealtorController::KEY_SEARCH_BY), ['first_name', 'last_name'], true)) {
+                $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
+                    $app->getEntityManager()->createQueryBuilder()->expr()->like(
+                        "LOWER($alias.".$request->get(Admin\RealtorController::KEY_SEARCH_BY).")",
+                        ':param'
+                    )
+                );
+            }
+            $query->andWhere($where)->setParameter(
+                'param',
+                '%'.strtolower($request->get(Admin\RealtorController::KEY_SEARCH)).'%'
+            );
+        }
+
+        return $app->json(['realtors' => $query->getQuery()->getResult(Query::HYDRATE_ARRAY)]);
     }
 }

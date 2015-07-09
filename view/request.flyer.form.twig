@@ -115,58 +115,103 @@
 
                 </div>
                 <hr>
-                <h2>Realtor Info</h2>
-                <div class="main-info">
-                    <div class="user-photo">
-                        <div class="realtor realtor-photo">
-                            <img ng-src="[[ request.realtor.photo | defaultImage:'/images/empty-user.png' ]]" alt="" ng-click="realtorPicture.choosePhoto()">
-                        </div>
-                        <span class="upload">
-                            Upload Photo
-                            <div>
-                                <input id="realtorImage"
-                                       type="file"
-                                       valid-file
-                                       name="realtorfileimage"
-                                       ng-model="request.realtor.photo">
+                <div class="check-holder">
+                    <input type="checkbox"
+                           name="omit_realtor_info"
+                           ng-true-value="'1'"
+                           ng-false-value="'0'"
+                           ng-change="string"
+                           ng-model="request.property.omit_realtor_info"
+                           id="omit"/>
+                    <label for="omit">Omit realtor information?</label>
+                </div>
+                <div ng-show="request.property.omit_realtor_info == 0">
+                    <h2>Realtor Info</h2>
+                    <div class="main-info">
+                        <div class="user-photo">
+                            <div class="realtor realtor-photo">
+                                <img ng-src="[[ request.realtor.photo | defaultImage:'/images/empty-user.png' ]]"
+                                     alt=""
+                                     ng-click="realtorPicture.choosePhoto()">
                             </div>
-                        </span>
+                            <span class="upload">
+                                Upload Photo
+                                <div>
+                                    <input id="realtorImage"
+                                           type="file"
+                                           valid-file
+                                           name="realtorfileimage"
+                                           ng-model="request.realtor.photo">
+                                </div>
+                            </span>
+                        </div>
+                        <div class="inputs-holder">
+                            <div class="input">
+                                <input class="input-lg"
+                                       type="text"
+                                       placeholder="First name"
+                                       ng-pattern="/^[A-Za-z\s]+$/"
+                                       ng-model="request.realtor.first_name"
+                                       ng-required="request.property.omit_realtor_info == 0"
+                                       name="first_name"
+                                       ng-click="autoComplete($event, 'first_name')">
+                            </div>
+                            <div class="input">
+                                <input class="input-lg"
+                                       type="text"
+                                       ng-pattern="/^[A-Za-z\s]+$/"
+                                       placeholder="Last name"
+                                       ng-model="request.realtor.last_name"
+                                       ng-required="request.property.omit_realtor_info == 0"
+                                       name="last_name"
+                                       ng-click="autoComplete($event, 'last_name')">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="inputs-holder">
+                        <div ng-class="{'input':true, 'error':newFlyer.phone.$dirty && newFlyer.phone.$invalid}">
+                            <input class="input-lg"
+                                   type="text"
+                                   placeholder="Phone number"
+                                   usa-phone ng-model="request.realtor.phone"
+                                   ng-required="request.property.omit_realtor_info == 0"
+                                   name="phone">
+                        </div>
+                        <div ng-class="{'input':true, 'error':newFlyer.email.$dirty && newFlyer.email.$invalid}">
+                            <input class="input-lg"
+                                   type="email"
+                                   placeholder="Email address"
+                                   ng-model="request.realtor.email"
+                                   ng-required="request.property.omit_realtor_info == 0"
+                                   name="email">
+                        </div>
+                        <div class="input">
+                            <input class="input-lg" type="text" placeholder="BRE number" ng-model="request.realtor.bre_number" name="bre">
+                        </div>
+                    </div>
+                    <div class="thumbnail">
+                        <div class="realtor-photo"  style="text-align: center; height: 130px;overflow: hidden;">
+                            <img id="realtyLogoImage" data-ng-src="[[ request.realtor.realty.logo | defaultImage:'/images/empty-company-150x525.png' ]]">
+                        </div>
+                        <div class="caption">
+                            <span class="upload">Upload Company Logo
+                                <div>
+                                    <input class="upload"
+                                           id="realtyLogo"
+                                           type="file"
+                                           valid-file
+                                           name="fileimage"
+                                           ng-required="request.property.omit_realtor_info == 0"
+                                           ng-model="request.realtor.realty.logo">
+                                </div>
+                            </span>
+                            <span class="upload" style="background-position: -21px 0;margin-left: 40px;" data-toggle="modal" data-target="#chooseRealtyCompanyLogo">Select Company Logo</span>
+                        </div>
                     </div>
                     <div class="inputs-holder">
                         <div class="input">
-                            <input class="input-lg" type="text" placeholder="First name" ng-pattern="/^[A-Za-z\s]+$/" ng-model="request.realtor.first_name" required="" name="first_name">
+                            <input class="input-lg" type="text" placeholder="Realtor company" ng-model="request.realtor.realty.name" ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9\.\-#&\s]*$/">
                         </div>
-                        <div class="input">
-                            <input class="input-lg" type="text" ng-pattern="/^[A-Za-z\s]+$/" placeholder="Last name" ng-model="request.realtor.last_name" required="" name="last_name">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="inputs-holder">
-                    <div ng-class="{'input':true, 'error':newFlyer.phone.$dirty && newFlyer.phone.$invalid}">
-                        <input class="input-lg" type="text" placeholder="Phone number" usa-phone ng-model="request.realtor.phone" required="" name="phone">
-                    </div>
-                    <div ng-class="{'input':true, 'error':newFlyer.email.$dirty && newFlyer.email.$invalid}">
-                        <input class="input-lg" type="email" placeholder="Email address" ng-model="request.realtor.email" required="" name="email">
-                    </div>
-                    <div class="input">
-                        <input class="input-lg" type="text" placeholder="BRE number" ng-model="request.realtor.bre_number" name="bre">
-                    </div>
-                </div>
-
-                <div class="thumbnail">
-                    <div class="realtor-photo"  style="text-align: center; height: 130px;overflow: hidden;">
-                        <img id="realtyLogoImage" data-ng-src="[[ request.realtor.realty.logo | defaultImage:'/images/empty-company-150x525.png' ]]">
-                    </div>
-                    <div class="caption">
-                        <span class="upload">Upload Company Logo<div><input class="upload" id="realtyLogo" type="file" valid-file name="fileimage" required="" ng-model="request.realtor.realty.logo"></div></span>
-                        <span class="upload" style="background-position: -21px 0;margin-left: 40px;" data-toggle="modal" data-target="#chooseRealtyCompanyLogo">Select Company Logo</span>
-                    </div>
-                </div>
-
-                <div class="inputs-holder">
-                    <div class="input">
-                        <input class="input-lg" type="text" placeholder="Realtor company" ng-model="request.realtor.realty.name" ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9\.\-#&\s]*$/">
                     </div>
                 </div>
 

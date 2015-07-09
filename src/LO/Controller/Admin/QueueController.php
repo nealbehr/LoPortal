@@ -17,7 +17,8 @@ use LO\Common\Email\Request\RequestChangeStatus;
 use LO\Common\Email\Request\RequestFlyerApproval;
 use LO\Common\Email\Request\RequestFlyerDenial;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\Realtor;
+use LO\Model\Entity\QueueRealtor;
+use LO\Model\Entity\Status;
 use LO\Traits\GetEntityErrors;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\Query\Expr;
@@ -88,11 +89,18 @@ class QueueController extends Base
             }
 
             $denialReason = $request->request->get('reason');
-            $queue->setState(Queue::STATE_DECLINED)->setReason($denialReason);
+            $statusModel  = $this->statusExist($app, $request->request->get('statusId'));
+            $queue->setState(Queue::STATE_DECLINED)
+                ->setReason($denialReason)
+                ->setStatus($statusModel);
             $em->persist($queue);
             $em->flush();
 
-            $requestInterface = $this->getEmailObject($app, $queue, ['note' => $request->request->get('reason')]);
+            $requestInterface = $this->getEmailObject($app, $queue, [
+                'note'       => $request->request->get('reason'),
+                'statusText' => $statusModel->getText()
+
+            ]);
             $requestChangeStatus = new RequestChangeStatus($app, $queue, $requestInterface);
             $requestChangeStatus->send();
             $em->commit();
@@ -117,9 +125,10 @@ class QueueController extends Base
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $queue->setState(Queue::STATE_APPROVED);
-            $queue->setReason($request->request->get('reason'));
-
+            $statusModel = $this->statusExist($app, $request->request->get('statusId'));
+            $queue->setState(Queue::STATE_APPROVED)
+                ->setReason($request->request->get('reason'))
+                ->setStatus($statusModel);
             $errors = $app->getValidator()->validate($queue);
 
             if (count($errors) > 0) {
@@ -145,7 +154,10 @@ class QueueController extends Base
                     $realtor,
                     $queue,
                     $request->getSchemeAndHttpHost(),
-                    ['note' => $request->request->get('note')]
+                    [
+                        'note'       => $request->request->get('reason'),
+                        'statusText' => $statusModel->getText()
+                    ]
                 )
             ))->send();
 
@@ -171,8 +183,10 @@ class QueueController extends Base
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
+            $statusModel = $this->statusExist($app, $request->request->get('statusId'));
             $queue->setState(Queue::STATE_APPROVED)
-                ->setReason($request->request->get('reason'));
+                ->setReason($request->request->get('reason'))
+                ->setStatus($statusModel);
             $errors = $app->getValidator()->validate($queue);
 
             if (count($errors) > 0) {
@@ -186,7 +200,10 @@ class QueueController extends Base
 
             $request = new PropertyApprovalAccept(
                 $request->getSchemeAndHttpHost(),
-                ['note' => $request->request->get('note')]
+                [
+                    'note'       => $request->request->get('reason'),
+                    'statusText' => $statusModel->getText()
+                ]
             );
             $changeStatusRequest = new RequestChangeStatus($app, $queue, $request);
             $changeStatusRequest->send();
@@ -265,5 +282,14 @@ class QueueController extends Base
         $allowFields = ['id', 'user_id', 'address', 'mls_number', 'created_at', 'request_type', 'state'];
 
         return 'q1.' . (in_array($id, $allowFields) ? $id : self::DEFAULT_SORT_FIELD_NAME);
+    }
+
+    private function statusExist(Application $app, $id)
+    {
+        if (!($model = $app->getEntityManager()->getRepository(Status::class)->find((int)$id))) {
+                throw new BadRequestHttpException('Status not exist.');
+        }
+
+        return $model;
     }
 } 

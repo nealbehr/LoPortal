@@ -39,6 +39,10 @@ class QueueType extends AbstractType {
                     'empty_data' => '0',
                 ]
             )
+            ->add('omit_realtor_info', 'number', [
+                'precision'  => 0,
+                'empty_data' => '1'
+            ])
             ->add('funded_percentage', 'percent', array(
                 'precision' => 2,
                 'type' => 'integer',

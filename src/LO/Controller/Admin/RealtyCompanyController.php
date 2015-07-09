@@ -40,6 +40,8 @@ class RealtyCompanyController extends Base {
                 /* @var RealtyCompany $company */
                 $result[] = $company->toArray();
             }
+
+            return $app->json($result);
         } catch (\Exception $ex) {
             $app->getMonolog()->addWarning($ex);
         }
