@@ -88,18 +88,26 @@ class QueueController extends Base
                 throw new BadRequestHttpException(sprintf("Request '%s' not found.", $id));
             }
 
-            $denialReason = $request->request->get('reason');
-            $statusModel  = $this->statusExist($app, $request->request->get('statusId'));
-            $queue->setState(Queue::STATE_DECLINED)
-                ->setReason($denialReason)
-                ->setStatus($statusModel);
+            $queue->setState(Queue::STATE_DECLINED)->setReason($request->request->get('reason'));
+
+            // Set status_other_text or status_id
+            $statusId = $request->request->get('statusId');
+            if ($statusId === StatusController::DECLINE_OTHER) {
+                $statusText  = $request->request->get('other');
+                $queue->setStatusOtherText($statusText);
+            }
+            else {
+                $statusModel = $this->statusExist($app, $statusId);
+                $statusText  = $statusModel->getText();
+                $queue->setStatus($statusModel);
+            }
+
             $em->persist($queue);
             $em->flush();
 
             $requestInterface = $this->getEmailObject($app, $queue, [
                 'note'       => $request->request->get('reason'),
-                'statusText' => $statusModel->getText()
-
+                'statusText' => $statusText
             ]);
             $requestChangeStatus = new RequestChangeStatus($app, $queue, $requestInterface);
             $requestChangeStatus->send();
