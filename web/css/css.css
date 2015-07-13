@@ -76,10 +76,15 @@
     height: 50px;
     width: 175px;
     cursor: pointer;
+    position: relative;
 }
 
 .logo-box ul li a {
     height: 50px;
+}
+
+.logo-box ul li img {
+    width: 100%;
 }
 
 .user-menu img {
