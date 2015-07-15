@@ -49,7 +49,7 @@ class RealtorControllerTest extends WebTestCase
             true
         );
 
-        $this->assertEquals('2', $data['id']);
+        $this->assertEquals(true, (isset($data['id']) && is_numeric($data['id'])));
     }
 
 
