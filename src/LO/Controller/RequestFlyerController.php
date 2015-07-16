@@ -132,13 +132,13 @@ class RequestFlyerController extends RequestFlyerBase {
             'lenderDisclosure' => $lender->getDisclosureForState($loanOfficer->getAddress()->getState()),
             'photoCard2' => $realtorPhoto,
             'nameCard2' => $realtor->getFirstName() . ' ' . $realtor->getLastName(),
-            'infoCard2' => 'Realtor<sup>®</sup><br />
-                ' . $realtor->getPhone()  .'<br />
-                ' . $realtor->getEmail() .'<br />
-                CA BRE #' . $realtor->getBreNumber(),
             'agencyCard2' => $realtor->getRealtyLogo(),
             'omitRealtorInfo' => ($queue->getOmitRealtorInfo() === '0')
         ];
+
+        $data['infoCard2'] = sprintf('Realtor<sup>®</sup><br/>%s<br/>%s', $realtor->getPhone(), $realtor->getEmail())
+            .((empty($realtor->getBreNumber())) ?: sprintf('<br/>CA BRE #%s', $realtor->getBreNumber()));
+
         return $data;
     }
 
