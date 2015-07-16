@@ -12,6 +12,12 @@
                         [[val.name]]
                     </label>
                 </div>
+                <textarea ng-show="statusId === 'decline_other'"
+                          ng-model="other"
+                          cols="30"
+                          rows="3"
+                          class="form-control"
+                          placeholder="Other"></textarea>
                 <textarea cols="30" rows="3" class="form-control" placeholder="Reason" ng-model="reason"></textarea>
             </div>
             <div class="modal-footer">

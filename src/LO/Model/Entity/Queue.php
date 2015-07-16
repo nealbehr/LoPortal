@@ -78,6 +78,11 @@ class Queue extends Base {
     /**
      * @Column(type="string")
      */
+    protected $status_other_text;
+
+    /**
+     * @Column(type="string")
+     */
     protected $reason;
 
     /**
@@ -193,6 +198,18 @@ class Queue extends Base {
     public function setStatusId($param)
     {
         $this->status_id = $param;
+
+        return $this;
+    }
+
+    public function getStatusOtherText()
+    {
+        return $this->status_other_text;
+    }
+
+    public function setStatusOtherText($param)
+    {
+        $this->status_other_text = $param;
 
         return $this;
     }

@@ -190,6 +190,7 @@
         {
         $scope.reason;
         $scope.statusId;
+        $scope.other;
         $scope.statuses = [];
 
         waitingScreen.show();
@@ -209,6 +210,7 @@
                 '/admin/queue/decline/'+$scope.ngDialogData.request.id,
                 {
                     reason  : this.reason,
+                    other   : this.other,
                     statusId: this.statusId
                 }
             )
