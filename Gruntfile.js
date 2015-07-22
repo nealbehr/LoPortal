@@ -121,7 +121,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
     // Задача по умолчанию
-    grunt.registerTask('default', ['concat', 'uglify', 'string-replace', 'processhtml', 'imagemin', 'cssmin']);
+    grunt.registerTask('default', [
+        'concat',
+        'uglify',
+        'string-replace',
+        'processhtml',
+//        'imagemin',
+        'cssmin']
+    );
 };
 
 //"grunt-contrib-imagemin": "^0.9.2",
