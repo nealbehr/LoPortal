@@ -70,12 +70,6 @@ module.exports = function(grunt) {
                 }, {
                     expand: true,
                     dot: true,
-                    cwd: 'puppet',
-                    dest: '<%= yeoman.dist %>/puppet',
-                    src: '**'
-                }, {
-                    expand: true,
-                    dot: true,
                     cwd: 'src',
                     dest: '<%= yeoman.dist %>/src',
                     src: '**'
@@ -255,7 +249,7 @@ module.exports = function(grunt) {
         'uglify',
         'string-replace',
         'processhtml',
-//       'imagemin',
+        //'imagemin',
         'cssmin'
     ]);
 
@@ -270,8 +264,13 @@ module.exports = function(grunt) {
         'cssmin'
     ]);
 
-    grunt.registerTask('deploy', [
+    grunt.registerTask('deploy-stage', [
         'build',
-        'ebDeploy'
+        'ebDeploy:dev'
+    ]);
+
+    grunt.registerTask('deploy-prod', [
+        'build',
+        'ebDeploy:prod'
     ]);
 };
