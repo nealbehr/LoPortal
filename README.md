@@ -1,5 +1,3 @@
-Deploy
-
 # Info
 
 ## Deploy
