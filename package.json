@@ -14,7 +14,7 @@
     "grunt-processhtml": "^0.3.3",
     "grunt-string-replace": "^1.0.0",
     "grunt-contrib-imagemin": "^0.9.3",
-
+    "grunt-contrib-copy": "^0.7.0",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-eb-deploy": "^0.1.3"
   },

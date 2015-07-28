@@ -31,14 +31,102 @@ module.exports = function(grunt) {
             server: '.tmp'
         },
 
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '.ebextensions',
+                    dest: '<%= yeoman.dist %>/.ebextensions',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'config',
+                    dest: '<%= yeoman.dist %>/config',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'html',
+                    dest: '<%= yeoman.dist %>/html',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'locales',
+                    dest: '<%= yeoman.dist %>/locales',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dest: '<%= yeoman.dist %>',
+                    src: 'logs/.gitignore'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'migrations',
+                    dest: '<%= yeoman.dist %>/migrations',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'puppet',
+                    dest: '<%= yeoman.dist %>/puppet',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'src',
+                    dest: '<%= yeoman.dist %>/src',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'tests',
+                    dest: '<%= yeoman.dist %>/tests',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'view',
+                    dest: '<%= yeoman.dist %>/view',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'web',
+                    dest: '<%= yeoman.dist %>/web',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dest: '<%= yeoman.dist %>',
+                    src: '*',
+                    filter: 'isFile'
+                }]
+            }
+        },
+
         ebDeploy: {
             options: {
-                region: 'us-west-1',
+                region     : 'us-west-1',
                 application: 'first-rex-lo-portal',
-                environment: 'firstRexLoPortal-stage',
-                profile: 'eb-cli-client'
+
             },
-            stage: {
+            dev: {
+                options: {
+                    environment: 'firstRexLoPortal-stage',
+                    profile    : 'profile eb-cli-client'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true }
+                ]
+            },
+            prod: {
+                options: {
+                    profile    : 'profile eb-cli-client',
+                    environment: 'firstRexLoPortal'
+                },
                 files: [
                     { src: ['.ebextensions/*'] },
                     { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true }
@@ -151,6 +239,7 @@ module.exports = function(grunt) {
     //'<%= cssmin.target.files[0].dest %>/all.min.css',
                             //src: ['*.css', '!*.min.css'],
     // Загрузка плагинов, установленных с помощью npm install
+    grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-eb-deploy');
     grunt.loadNpmTasks('grunt-contrib-concat');
@@ -170,9 +259,9 @@ module.exports = function(grunt) {
         'cssmin'
     ]);
 
-
     grunt.registerTask('build', [
         'clean:dist',
+        'copy:dist',
         'concat',
         'uglify',
         'string-replace',
@@ -181,11 +270,8 @@ module.exports = function(grunt) {
         'cssmin'
     ]);
 
-
     grunt.registerTask('deploy', [
         'build',
         'ebDeploy'
     ]);
 };
-
-//"grunt-contrib-imagemin": "^0.9.2",

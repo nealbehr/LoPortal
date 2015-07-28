@@ -5,6 +5,7 @@ composer.phar
 vendor/
 cache/
 bin/
+.tmp/
 dist/
 node_modules/
 # Elastic Beanstalk Files to ignore
