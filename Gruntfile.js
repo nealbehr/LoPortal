@@ -109,13 +109,13 @@ module.exports = function(grunt) {
         ebDeploy: {
             options: {
                 region     : 'us-west-1',
-                application: 'first-rex-lo-portal',
+                application: 'first-rex-lo-portal'
 
             },
             dev: {
                 options: {
-                    environment: 'firstRexLoPortal-stage',
-                    profile    : 'profile eb-cli-client'
+                    profile    : 'eb-cli-client',
+                    environment: 'firstRexLoPortal-stage'
                 },
                 files: [
                     { src: ['.ebextensions/*'] },
@@ -124,7 +124,7 @@ module.exports = function(grunt) {
             },
             prod: {
                 options: {
-                    profile    : 'profile eb-cli-client',
+                    profile    : 'eb-cli',
                     environment: 'firstRexLoPortal'
                 },
                 files: [
