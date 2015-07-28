@@ -67,7 +67,13 @@ module.exports = function(grunt) {
                     cwd: 'migrations',
                     dest: '<%= yeoman.dist %>/migrations',
                     src: '**'
-                }, {
+                },/* {
+                    expand: true,
+                    dot: true,
+                    cwd: 'puppet',
+                    dest: '<%= yeoman.dist %>/puppet',
+                    src: '**'
+                },*/ {
                     expand: true,
                     dot: true,
                     cwd: 'src',
