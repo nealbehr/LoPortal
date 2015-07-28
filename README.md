@@ -1,9 +1,4 @@
-# Info
-
 ## Deploy
+* Prod: `grunt deploy-prod`
 
-### Prod
-* `grunt deploy-prod`
-
-### Stage
-* `grunt deploy-stage`
+* Stage: `grunt deploy-stage`
