@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Create build and deploy in amazon elastic beanstalk
+ * Create build and deploy on amazon elastic beanstalk
  */
 module.exports = function(grunt) {
     grunt.versionFiles   = grunt.template.today("m-d-yyyy");
