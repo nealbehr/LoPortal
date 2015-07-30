@@ -4,8 +4,8 @@
  * Create build and deploy on amazon elastic beanstalk
  */
 module.exports = function(grunt) {
-    grunt.versionFiles   = grunt.template.today("m-d-yyyy");
-    grunt.nameJsMinFile  = 'build/scripts.min.'+grunt.versionFiles +'.js';
+    grunt.versionFiles   = grunt.template.today('m-d-yyyy');
+    grunt.nameJsMinFile  = 'build/scripts.min.'+grunt.versionFiles+'.js';
     grunt.nameCSSMinFile = 'build/css.min.'+grunt.versionFiles+'.css';
 
     // Tasks
@@ -174,11 +174,10 @@ module.exports = function(grunt) {
                     replacements: [{
                         pattern: /< JS_FILENAME >/g,
                         replacement: '<%= grunt.nameJsMinFile %>'
-                    },{
+                    }, {
                         pattern: /< CSS_FILENAME >/g,
                         replacement: '<%= grunt.nameCSSMinFile %>'
-                    }
-                    ]
+                    }]
                 }
             }
         },
