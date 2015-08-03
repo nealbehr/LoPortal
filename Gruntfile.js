@@ -158,10 +158,6 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     '<%= yeoman.dist %>/view/index.twig': ['<%= yeoman.dist %>/view/index.twig']
-                },
-                options: {
-                    data: {
-                    }
                 }
             }
         },
@@ -195,7 +191,7 @@ module.exports = function(grunt) {
             }
         },
         cssmin: {
-            options:{
+            options: {
                 advanced: false
             },
             target: {
@@ -205,8 +201,7 @@ module.exports = function(grunt) {
                     src: ['*.css', '!*.min.css'],
                     dest: '<%= yeoman.dist %>/web/build/css',
                     ext: '.min.css'
-                },
-                {
+                }, {
                     '<%= yeoman.dist %>/web/<%= grunt.nameCSSMinFile %>': [
                         'web/css/jquery-ui.structure.min.css',
                         'web/css/jquery-ui.min.css',
@@ -216,8 +211,7 @@ module.exports = function(grunt) {
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
                         '<%= cssmin.target.files[0].dest %>/cropper.min.css'
                     ]
-                }
-                ]
+                }]
             }
         }
     });

@@ -66,6 +66,11 @@ class Queue extends Base {
     protected $address;
 
     /**
+     * @Column(type="string", length=50)
+     */
+    protected $apartment;
+
+    /**
      * @Column(type="integer")
      */
     protected $user_id;
@@ -152,6 +157,18 @@ class Queue extends Base {
 
     public function getAddress(){
         return $this->address;
+    }
+
+    public function getApartment()
+    {
+        return $this->apartment;
+    }
+
+    public function setApartment($param)
+    {
+        $this->apartment = $param;
+
+        return $this;
     }
 
     public function getMlsNumber(){

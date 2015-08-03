@@ -111,6 +111,7 @@
 
             this.property = {
                 address: null,
+                apartment : null,
                 mls_number: null,
                 state: null,
                 omit_realtor_info: '1',
