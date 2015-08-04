@@ -10,7 +10,7 @@
 * `http://lo.portal.1rex.com/adminer.php`
 
 ## Deploy
-Switch to the branch, that you want deploy on instance.
+### Switch to the branch, that you want deploy on instance.
 * Prod: `grunt deploy-prod`
 AWS environment variables
 PARAM1=prod
