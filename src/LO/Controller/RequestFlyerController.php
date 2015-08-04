@@ -106,10 +106,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
         $discountPart = ((1 - $queue->getMaximumLoan()/100) - $queue->getFundedPercentage()/100) * 100;
         $discount = ((1 - $queue->getMaximumLoan()/100) - $queue->getFundedPercentage()/100) * $queue->getListingPrice();
-        $address = preg_replace('/,/', '<br>', $queue->getAddress(), 1);
-        $address = str_replace(', USA', '', $address);
         $data = [
-            'homeAddress' =>  $address,
             'homeImage' => $propertyPhoto,
             'discuontPart' => $discountPart,
             'maxiumLoanAmount' => $queue->getMaximumLoan(),
@@ -119,7 +116,6 @@ class RequestFlyerController extends RequestFlyerBase {
             'requiredDownPayment' => number_format($queue->getListingPrice() * (1 - $queue->getMaximumLoan() / 100), 0, '.', ','),
             'ourDownPayment' => number_format($queue->getListingPrice() * $queue->getFundedPercentage()/100, 0, '.', ','),
             'yourDownPayment' => number_format($discount, 0, '.', ','),
-
             'photoCard1' => $loanOfficer->getPicture(),
             'nameCard1' => $loanOfficer->getFirstName() . ' '. $loanOfficer->getLastName(),
             'infoCard1' => $loanOfficer->getTitle() . '<br />
@@ -135,6 +131,12 @@ class RequestFlyerController extends RequestFlyerBase {
             'agencyCard2' => $realtor->getRealtyLogo(),
             'omitRealtorInfo' => ($queue->getOmitRealtorInfo() === '0')
         ];
+
+        $data['homeAddress'] = str_replace(
+            ', USA',
+            '',
+            preg_replace('/,/', sprintf(' %s<br/>', $queue->getApartment()), $queue->getAddress(), 1)
+        );
 
         $data['infoCard2'] = sprintf('Realtor<sup>®</sup><br/>%s<br/>%s', $realtor->getPhone(), $realtor->getEmail())
             .((empty($realtor->getBreNumber())) ?: sprintf('<br/>CA BRE #%s', $realtor->getBreNumber()));

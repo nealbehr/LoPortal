@@ -1,23 +1,142 @@
-//var mozjpeg = require('imagemin-mozjpeg');
+'use strict';
 
-// Обязательная обёртка
+/**
+ * Create build and deploy on amazon elastic beanstalk
+ */
 module.exports = function(grunt) {
-    grunt.versionFiles  = grunt.template.today("m-d-yyyy");
-    grunt.nameJsMinFile = 'build/scripts.min.' + grunt.versionFiles + '.js';
-    grunt.nameCSSMinFile = 'build/css.min.' + grunt.versionFiles + '.css';
+    grunt.versionFiles   = grunt.template.today('m-d-yyyy');
+    grunt.nameJsMinFile  = 'build/scripts.min.'+grunt.versionFiles+'.js';
+    grunt.nameCSSMinFile = 'build/css.min.'+grunt.versionFiles+'.css';
 
-    // Задачи
+    // Tasks
     grunt.initConfig({
-        concat: {// Склеиваем
+        // Project settings
+        yeoman: {
+            dist: 'dist'
+        },
+        clean: {
+            before: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '.tmp',
+                        '<%= yeoman.dist %>/{,*/}*',
+                        '!<%= yeoman.dist %>/.git{,*/}*'
+                    ]
+                }]
+            },
+            after: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '<%= yeoman.dist %>/config/config.yml',
+                        '<%= yeoman.dist %>/web/.DS_Store'
+                    ]
+                }]
+            }
+        },
+        // Copy the directories for prepare to deploy
+        copy: {
+            dist: {
+                files: [{
+                    expand: true,
+                    dot: true,
+                    cwd: '.ebextensions',
+                    dest: '<%= yeoman.dist %>/.ebextensions',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'config',
+                    dest: '<%= yeoman.dist %>/config',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'html',
+                    dest: '<%= yeoman.dist %>/html',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'locales',
+                    dest: '<%= yeoman.dist %>/locales',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'migrations',
+                    dest: '<%= yeoman.dist %>/migrations',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'src',
+                    dest: '<%= yeoman.dist %>/src',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'tests',
+                    dest: '<%= yeoman.dist %>/tests',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'view',
+                    dest: '<%= yeoman.dist %>/view',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
+                    cwd: 'web',
+                    dest: '<%= yeoman.dist %>/web',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dest: '<%= yeoman.dist %>',
+                    src: 'web/.htaccess'
+                }, {
+                    expand: true,
+                    dest: '<%= yeoman.dist %>',
+                    src: '*',
+                    filter: 'isFile'
+                }]
+            }
+        },
+        // Deploy on elastic beanstalk
+        ebDeploy: {
+            options: {
+                region     : 'us-west-1',
+                application: 'first-rex-portal'
+
+            },
+            dev: {
+                options: {
+                    profile    : 'eb-client-stage',
+                    environment: 'firstRexPortal-stage'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true},
+                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
+                ]
+            },
+            prod: {
+                options: {
+                    profile    : 'eb-cli',
+                    environment: 'firstRexLoPortal'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true },
+                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
+                ]
+            }
+        },
+        concat: {
             options: {
                 separator: ';'
-                //,
-                // Replace all 'use strict' statements in the code with a single one at the top
-//                banner: "'use strict';\n",
-//                process: function(src, filepath) {
-//                    return '// Source: ' + filepath + '\n' +
-//                        src.replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1');
-//                }
             },
             main: {
                 src: [
@@ -25,46 +144,36 @@ module.exports = function(grunt) {
                     'web/js/service/*.js',
                     'web/js/*.js'
                 ],
-                dest: 'web/build/scripts.js'
+                dest: '<%= yeoman.dist %>/web/build/scripts.js'
             }
         },
-        uglify: {// Сжимаем
-//            options: {
-//                mangle: false
-//            },
+        uglify: {
             main: {
                 files: {
-                    // Результат задачи concat
-                    //'web/build/scripts.min.js': '<%= concat.main.dest %>'
-                    'web/<%= grunt.nameJsMinFile %>': '<%= concat.main.dest %>'
+                    '<%= yeoman.dist %>/web/<%= grunt.nameJsMinFile %>': '<%= concat.main.dest %>'
                 }
             }
         },
         processhtml:{
             dist: {
                 files: {
-                    'view/index.twig': ['view/index.twig']
-                },
-                options: {
-                    data: {
-                    }
+                    '<%= yeoman.dist %>/view/index.twig': ['<%= yeoman.dist %>/view/index.twig']
                 }
             }
         },
         'string-replace': {
             version: {
                 files: {
-                    'view/index.twig': ['view/index.twig']
+                    '<%= yeoman.dist %>/view/index.twig': ['view/index.twig']
                 },
                 options: {
                     replacements: [{
                         pattern: /< JS_FILENAME >/g,
                         replacement: '<%= grunt.nameJsMinFile %>'
-                    },{
+                    }, {
                         pattern: /< CSS_FILENAME >/g,
                         replacement: '<%= grunt.nameCSSMinFile %>'
-                    }
-                    ]
+                    }]
                 }
             }
         },
@@ -77,12 +186,12 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'web/images/',
                     src: ['**/*.{png,jpg,gif,svg}'],
-                    dest: 'web/images/'
+                    dest: '<%= yeoman.dist %>/web/images/'
                 }]
             }
         },
         cssmin: {
-            options:{
+            options: {
                 advanced: false
             },
             target: {
@@ -90,11 +199,10 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'web/css',
                     src: ['*.css', '!*.min.css'],
-                    dest: 'web/build/css',
+                    dest: '<%= yeoman.dist %>/web/build/css',
                     ext: '.min.css'
-                },
-                {
-                    'web/<%= grunt.nameCSSMinFile %>': [
+                }, {
+                    '<%= yeoman.dist %>/web/<%= grunt.nameCSSMinFile %>': [
                         'web/css/jquery-ui.structure.min.css',
                         'web/css/jquery-ui.min.css',
                         'web/css/bootstrap.min.css',
@@ -103,16 +211,15 @@ module.exports = function(grunt) {
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
                         '<%= cssmin.target.files[0].dest %>/cropper.min.css'
                     ]
-                }
-                ]
+                }]
             }
         }
     });
-    //'web/css/*.min.css',
-    //'web/css/bootstrap.min.css',
-    //'<%= cssmin.target.files[0].dest %>/all.min.css',
-                            //src: ['*.css', '!*.min.css'],
-    // Загрузка плагинов, установленных с помощью npm install
+
+    // Loading grunt plugins
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-eb-deploy');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-processhtml');
@@ -120,8 +227,30 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-imagemin');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
 
-    // Задача по умолчанию
-    grunt.registerTask('default', ['concat', 'uglify', 'string-replace', 'processhtml', 'imagemin', 'cssmin']);
-};
+    // Register tasks
+    grunt.registerTask('build', [
+        'clean:before',
+        'copy:dist',
+        'concat',
+        'uglify',
+        'string-replace',
+        'processhtml',
+        'imagemin',
+        'cssmin',
+        'clean:after'
+    ]);
 
-//"grunt-contrib-imagemin": "^0.9.2",
+    grunt.registerTask('default', [
+        'build'
+    ]);
+
+    grunt.registerTask('deploy-stage', [
+        'build',
+        'ebDeploy:dev'
+    ]);
+
+    grunt.registerTask('deploy-prod', [
+        'build',
+        'ebDeploy:prod'
+    ]);
+};

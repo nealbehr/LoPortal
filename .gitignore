@@ -5,8 +5,10 @@ composer.phar
 vendor/
 cache/
 bin/
+.tmp/
+dist/
 node_modules/
-# Elastic Beanstalk Files
+# Elastic Beanstalk Files to ignore
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
