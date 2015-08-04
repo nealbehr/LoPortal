@@ -118,7 +118,7 @@ module.exports = function(grunt) {
                 },
                 files: [
                     { src: ['.ebextensions/*'] },
-                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true},
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true },
                     { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
                 ]
             },

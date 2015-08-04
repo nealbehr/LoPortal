@@ -8,6 +8,9 @@
 1. `cd /vagrant`
 1. `php bin/phinx migrate -e dev`
 
+## Database administration
+* `http://lo.portal.1rex.com/adminer.php`
+
 ## Deploy
 * Prod: `grunt deploy-prod`
 AWS environment variables
