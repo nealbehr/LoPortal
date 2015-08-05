@@ -34,6 +34,11 @@ class Address extends Base {
     protected $street_number;
 
     /**
+     * @Column(type="string", length=50)
+     */
+    protected $apartment;
+
+    /**
      * @Column(type="string", length=64)
      */
     protected $street;
@@ -165,6 +170,18 @@ class Address extends Base {
         $this->street_number = $street_number;
     }
 
+    public function getApartment()
+    {
+        return $this->apartment;
+    }
+
+    public function setApartment($param)
+    {
+        $this->apartment = $param;
+
+        return $this;
+    }
+
     public function toArray() {
         return array(
             'id' => $this->id,
@@ -175,6 +192,7 @@ class Address extends Base {
             'street' => $this->street,
             'place_id' => $this->place_id,
             'street_number' => $this->street_number,
+            'apartment'     => $this->apartment
         );
     }
 } 

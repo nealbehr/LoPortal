@@ -135,6 +135,7 @@
             this.switched = false;
             this.address = {
             };
+            this.apartment = null;
             this.addressOptions = {
                 types: ['geocode'],
                 componentRestrictions: { country: 'US' }
