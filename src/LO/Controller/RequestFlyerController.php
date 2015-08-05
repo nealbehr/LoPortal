@@ -133,7 +133,7 @@ class RequestFlyerController extends RequestFlyerBase {
         );
 
         $data['infoCard1']   = sprintf(
-            '%s<br/>Ph:%s<br/>%s<br/>%s<br/>%s<br/>NMLS #%s',
+            '%s<br/>Ph: %s<br/>%s<br/>%s<br/>%s<br/>NMLS #%s',
             $loanOfficer->getTitle(),
             $loanOfficer->getPhone(),
             $loanOfficer->getEmail(),
