@@ -89,6 +89,15 @@ class AddressType extends AbstractType {
                 ])
             ]
         ]);
+
+        $builder->add('apartment', 'text', [
+            'constraints' => [
+                new Assert\Length([
+                    'max'        => 50,
+                    'maxMessage' => 'Postal Code must be shorter than {{ limit }} chars.',
+                ])
+            ]
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver){

@@ -99,6 +99,14 @@
                            vs-place-id="officer.address.place_id"
                            vs-state="officer.address.state">
                 </div>
+                <div class="input">
+                    <input class="input-lg"
+                           type="text"
+                           name="apartment"
+                           placeholder="Apt/Ste#"
+                           ng-model="officer.address.apartment"
+                           ng-model-options="{ updateOn: 'blur' }">
+                </div>
                 <div id="map-canvas"></div>
                 <div class="input">
                     <input class="input-lg" type="email" placeholder="Email" ng-model="officer.email" required="" name="email">

@@ -107,13 +107,12 @@ module.exports = function(grunt) {
         // Deploy on elastic beanstalk
         ebDeploy: {
             options: {
-                region     : 'us-west-1',
-                application: 'first-rex-portal'
-
+                region: 'us-west-1'
             },
-            dev: {
+            stage: {
                 options: {
-                    profile    : 'eb-client-stage',
+                    profile    : 'eb-client',
+                    application: 'first-rex-portal',
                     environment: 'firstRexPortal-stage'
                 },
                 files: [
@@ -124,7 +123,8 @@ module.exports = function(grunt) {
             },
             prod: {
                 options: {
-                    profile    : 'eb-cli',
+                    profile    : 'eb-client',
+                    application: 'first-rex-lo-portal',
                     environment: 'firstRexLoPortal'
                 },
                 files: [
@@ -246,7 +246,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask('deploy-stage', [
         'build',
-        'ebDeploy:dev'
+        'ebDeploy:stage'
     ]);
 
     grunt.registerTask('deploy-prod', [

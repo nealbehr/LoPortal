@@ -118,12 +118,6 @@ class RequestFlyerController extends RequestFlyerBase {
             'yourDownPayment' => number_format($discount, 0, '.', ','),
             'photoCard1' => $loanOfficer->getPicture(),
             'nameCard1' => $loanOfficer->getFirstName() . ' '. $loanOfficer->getLastName(),
-            'infoCard1' => $loanOfficer->getTitle() . '<br />
-                Ph: ' . $loanOfficer->getPhone() . '<br />
-                ' . $loanOfficer->getEmail() . '<br />
-                ' . $lender->getName() . '<br />
-                ' . preg_replace('/,/', '<br>', $loanOfficer->getAddress()->getFormattedAddress(), 1) . '<br />
-                NMLS #' . $loanOfficer->getNmls(),
             'agencyCard1' => $lender->getPicture(),
             'lenderDisclosure' => $lender->getDisclosureForState($loanOfficer->getAddress()->getState()),
             'photoCard2' => $realtorPhoto,
@@ -138,7 +132,22 @@ class RequestFlyerController extends RequestFlyerBase {
             preg_replace('/,/', sprintf(' %s<br/>', $queue->getApartment()), $queue->getAddress(), 1)
         );
 
-        $data['infoCard2'] = sprintf('Realtor<sup>®</sup><br/>%s<br/>%s', $realtor->getPhone(), $realtor->getEmail())
+        $data['infoCard1']   = sprintf(
+            '%s<br/>Ph: %s<br/>%s<br/>%s<br/>%s<br/>NMLS #%s',
+            $loanOfficer->getTitle(),
+            $loanOfficer->getPhone(),
+            $loanOfficer->getEmail(),
+            $lender->getName(),
+            preg_replace(
+                ['/,/', '/,/'],
+                ['<br/>', sprintf(' %s<br/>', $loanOfficer->getAddress()->getApartment())],
+                $loanOfficer->getAddress()->getFormattedAddress(),
+                1
+            ),
+            $loanOfficer->getNmls()
+        );
+
+        $data['infoCard2']   = sprintf('Realtor<sup>®</sup><br/>%s<br/>%s', $realtor->getPhone(), $realtor->getEmail())
             .((empty($realtor->getBreNumber())) ?: sprintf('<br/>CA BRE #%s', $realtor->getBreNumber()));
 
         return $data;
