@@ -73,6 +73,7 @@
                     <div ng-show="newFlyer.email.$error.required">The Email is required.</div>
                     <div ng-show="newFlyer.email.$error.email">The Email is invalid.</div>
 
+                    <div ng-show="newFlyer.realtor_company.$error.pattern">The Realtor company is invalid.</div>
                 </div>
 
                 <h2>Property Info</h2>
@@ -217,7 +218,12 @@
                     </div>
                     <div class="inputs-holder">
                         <div class="input">
-                            <input class="input-lg" type="text" placeholder="Realtor company" ng-model="request.realtor.realty.name" ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9\.\-#&\s]*$/">
+                            <input class="input-lg"
+                                   type="text"
+                                   placeholder="Realtor company"
+                                   name="realtor_company"
+                                   ng-model="request.realtor.realty.name"
+                                   ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9()\.\-#&\s]*$/">
                         </div>
                     </div>
                 </div>
