@@ -153,6 +153,10 @@
         };
         $scope.resources = [
             {
+                link : '/docs/resources/Brochure.pdf',
+                title: 'Brochure'
+            },
+            {
                 link : '/docs/resources/quick_reference_v7.pdf',
                 title: 'Quick Reference Guide'
             },
