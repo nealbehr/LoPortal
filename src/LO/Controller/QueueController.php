@@ -13,6 +13,8 @@ use LO\Exception\Http;
 use LO\Model\Entity\Queue;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class QueueController {
 
@@ -69,5 +71,24 @@ class QueueController {
             return $app->json('error');
         }
         return $app->json('success');
+    }
+
+    public function updateAction(Application $app, Request $request)
+    {
+        $em = $app->getEntityManager();
+        try {
+            $queue = $em->find(Queue::class, (int)$request->get('id'));
+
+            $queue->setStatusId((int)$request->get('status_id'));
+            $queue->setStatusOtherText(filter_var($request->get('status_other_text'), FILTER_SANITIZE_STRING));
+
+            $em->persist($queue);
+            $em->flush();
+
+            return $app->json('success');
+        }
+        catch (HttpException $e) {
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
     }
 }
