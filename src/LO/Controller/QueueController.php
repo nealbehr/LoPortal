@@ -73,7 +73,7 @@ class QueueController {
         return $app->json('success');
     }
 
-    public function updateAction(Application $app, Request $request)
+    public function updateStatusAction(Application $app, Request $request)
     {
         $em = $app->getEntityManager();
         try {

@@ -18,7 +18,7 @@ class PublicProvider implements ControllerProviderInterface
         /**
          * Routes for StatysController
          */
-        $controllers->post('responsecatch', 'queue.controller:updateAction');
+        $controllers->post('responsecatch', 'queue.controller:updateStatusAction');
 
         return $controllers;
     }
