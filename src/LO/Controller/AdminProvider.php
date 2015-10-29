@@ -115,11 +115,6 @@ class AdminProvider implements ControllerProviderInterface {
         $controllers->post('/realtor', 'admin.realtor.controller:addAction');
         $controllers->put('/realtor/{id}', 'admin.realtor.controller:updateAction');
         $controllers->delete('/realtor/{id}', 'admin.realtor.controller:deleteAction');
-
-        /**
-         * Routes for StatysController
-         */
-        $controllers->get('/status/all', 'admin.status.controller:getAllByTypeAction');
         
         return $controllers;
     }

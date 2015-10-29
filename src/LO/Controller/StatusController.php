@@ -1,4 +1,4 @@
-<?php namespace LO\Controller\Admin;
+<?php namespace LO\Controller;
 
 use LO\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -7,10 +7,15 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\Status;
 use \Doctrine\ORM\Query;
 
-class StatusController extends Base
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use LO\Model\Entity\Queue;
+
+class StatusController
 {
     use GetFormErrors;
 
+    const KEY_SEARCH_BY           = 'searchBy';
+    const KEY_SEARCH              = 'filterValue';
     const DEFAULT_SORT_FIELD_NAME = 'name';
     const DEFAULT_SORT_DIRECTION  = 'asc';
     const DECLINE_OTHER           = 'decline_other';
@@ -24,7 +29,8 @@ class StatusController extends Base
         ]
     ];
 
-    public function getAllByTypeAction(Application $app, Request $request) {
+    public function getAllByTypeAction(Application $app, Request $request)
+    {
         try {
             $alias = 's';
             $col   = $request->get(self::KEY_SEARCH_BY);
@@ -46,6 +52,25 @@ class StatusController extends Base
         }
         catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);
+        }
+    }
+
+    public function postUpdateAction(Application $app, Request $request)
+    {
+        $em = $app->getEntityManager();
+        try {
+            $queue = $em->find(Queue::class, ($id = $request->get('id')));
+
+            $queue->setStatusId(filter_var($request->get('status_id'), FILTER_SANITIZE_NUMBER_INT));
+            $queue->setStatusOtherText(filter_var($request->get('status_other_text'), FILTER_SANITIZE_STRING));
+
+            $em->persist($queue);
+            $em->flush();
+
+            return $app->json(sprintf('success'));
+        }
+        catch (HttpException $e) {
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
     }
 }

@@ -167,7 +167,7 @@
     admin.factory('getStatusesByType', ['$q', '$http', function($q, $http) {
         return function(type, cacheable) {
             var deferred = $q.defer();
-            $http.get('/admin/status/all', {
+            $http.get('/request/status/all', {
                 cache :  cacheable || true,
                 params: {
                     filterValue: type,

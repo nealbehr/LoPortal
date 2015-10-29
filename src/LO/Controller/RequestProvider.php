@@ -27,6 +27,10 @@ class RequestProvider implements ControllerProviderInterface{
             return new UserRealtyCompanyController();
         });
 
+        $app['status.controller'] = $app->share(function() use ($app) {
+            return new StatusController;
+        });
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
@@ -73,6 +77,11 @@ class RequestProvider implements ControllerProviderInterface{
             ->delete("/draft/{id}", "request.flyer.controller:deleteDraftAction");
 
         $controllers->get("/realty-company", "request.realty.controller:getAction");
+
+        /**
+         * Routes for StatysController
+         */
+        $controllers->get('/status/all', 'status.controller:getAllByTypeAction');
 
         return $controllers;
     }
