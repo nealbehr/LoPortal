@@ -155,6 +155,10 @@
             {
                 link : '/docs/resources/quick_reference_v7.pdf',
                 title: 'Quick Reference Guide'
+            },
+            {
+                link : '/docs/resources/RHB_at_a_glance.pdf',
+                title: 'REX HomeBuyer Argeement'
             }
         ]
     }]);
