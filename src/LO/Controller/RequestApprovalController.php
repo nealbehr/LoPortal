@@ -20,35 +20,29 @@ use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
+use LO\Common\RequestTo1Rex;
 
-class RequestApprovalController extends RequestApprovalBase{
-    public function AddAction(Application $app, Request $request){
+class RequestApprovalController extends RequestApprovalBase
+{
+    public function AddAction(Application $app, Request $request)
+    {
         $data = [];
+        $em   = $app->getEntityManager();
         try{
-            $app->getEntityManager()->beginTransaction();
+            $em->beginTransaction();
 
-            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
-            $firstRexForm->handleRequest($request);
+            // Create queue
+            $queue = new Queue();
+            $queue->setType(Queue::TYPE_PROPERTY_APPROVAL);
+            $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
 
-            if(!$firstRexForm->isValid()){
-                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
 
-                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
-            }
-
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
-
-            $queue = (new Queue())
-                ->set1RexId($id)
-                ->setType(Queue::TYPE_PROPERTY_APPROVAL)
-                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
-                ->setAdditionalInfo($firstRexForm->getData())
-            ;
+            // Validate queue data
             $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
             $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
             $queue->setState(Queue::STATE_REQUESTED);
 
-            if(!$queueForm->isValid()) {
+            if (!$queueForm->isValid()) {
                 $errors = $queueForm->getErrorsAsString();
                 $app->getMonolog()->addInfo($errors);
                 $data = array_merge($data, ['property' => $this->getFormErrors($queueForm)]);
@@ -56,15 +50,42 @@ class RequestApprovalController extends RequestApprovalBase{
                 throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $app->getEntityManager()->persist($queue);
-            $app->getEntityManager()->flush();
+            $em->persist($queue);
+            $em->flush();
 
-            (new RequestChangeStatus($app, $queue, new PropertyApprovalSubmission()))
+            // Get first rex id
+            $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
+            $firstRexForm->handleRequest($request);
+
+            if (!$firstRexForm->isValid()) {
+                $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
+                throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            $rexId = (new RequestTo1Rex($app))
+                ->setAddress($firstRexForm->getData())
+                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
+                ->setQueue($queue)
                 ->send();
 
-            $app->getEntityManager()->commit();
-        }catch (\Exception $e){
-            $app->getEntityManager()->rollback();
+//            $rexId = $this->sendRequestTo1Rex(
+//                $app,
+//                $firstRexForm->getData(),
+//                $app->getSecurityTokenStorage()->getToken()->getUser()
+//            );
+
+            // Setting rex id and update this queue
+            $queue->setAdditionalInfo($firstRexForm->getData());
+            $queue->set1RexId($rexId);
+            $em->persist($queue);
+            $em->flush();
+
+            (new RequestChangeStatus($app, $queue, new PropertyApprovalSubmission()))->send();
+
+            $em->commit();
+        }
+        catch (\Exception $e) {
+            $em->rollback();
             $app->getMonolog()->addError($e);
             $data['message'] = $e instanceof Http? $e->getMessage(): 'We have some problems. Please try later.';
             return $app->json($data, $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
