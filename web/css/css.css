@@ -125,6 +125,10 @@ input[type=number] {
     z-index: 100;
 }
 
+#progress-bar-screen  .progress-bar {
+    background-color: #4279e7;
+}
+
 #progress-bar-screen .text {
     position: absolute;
     width: 100%;
@@ -132,7 +136,7 @@ input[type=number] {
     bottom: 50%;
     text-align: center;
     display: block;
-    font: italic 23px "PT serif";
+    font: italic 35px "PT serif";
     word-spacing: -1px;
 }
 /* Preloader end */

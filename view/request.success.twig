@@ -21,7 +21,7 @@
                 <strong>What do you want to do next?</strong>
                 <div class="btn-holder">
                     <p>
-                        <a ng-href="/#/" class="btn btn-default" href="/#/">Back to Dashboard</a>
+                        <a ng-href="/#/" class="btn btn-default">Back to Dashboard</a>
                         <a ng-href="/docs/resources/RHB_at_a_glance.pdf" class="btn btn-default ng-binding">REX HomeBuyer at a glance</a>
                     </p>
                     <p>(Will this make the output two lines of two boxes each, because that’s what we want. I’m not familiar with btn-holder and I don’t think it’s standard bootstrap)</p>
@@ -36,13 +36,15 @@
             <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
                 <p>Can use fontawesome’s check-circle, not sure what you’re currently using</p>
                 <h1>Your property requires additional due diligence</h1>
-                <em>You should receive an email notification shortly with a prequalification decision. </em>
+                <em>You should receive an email notification shortly with a prequalification decision.</em>
                 <em>In the meanwhile, please reach out to Mike Lyon, your Regional Sales Manager, with any other questions.</em>
                 <hr>
                 <strong>What do you want to do next?</strong>
                 <div class="btn-holder">
                     <a ng-href="/#/" class="btn btn-default">Back to Dashboard</a>
-                    <a ng-href="/#/request/approval" class="btn btn-default">Request another property approval</a>
+                    <a ng-href="/#/request/approval" class="btn btn-default" style="min-width: 262px">
+                        Request another property approval
+                    </a>
                 </div>
             </div>
         </div>

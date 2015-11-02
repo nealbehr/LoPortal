@@ -1257,7 +1257,7 @@
 
         return {
             progress   : 0,
-            text       : '',
+            text       : null,
             setProgress: function(param) {
                 this.progress = param;
                 angular.element('.progress-bar', element).css('width', this.progress+'%').text(this.progress+'%');
