@@ -113,7 +113,7 @@ input[type=number] {
 }
 
 .thanks-box img {
-    margin: 30px;
+    margin-bottom: 30px;
 }
 
 .thanks-box:before {

@@ -1,4 +1,5 @@
 <lo-navbar-head></lo-navbar-head>
+
 <section class="container ng-hide" ng-show="endProcessing && user.id == 673">
     <div class="row">
         <div class="row ng-hide" ng-show="statusId == 1 || statusId == 2 || statusId == 3">
@@ -8,14 +9,11 @@
                     <h1>Congratulations.  This property has been prequalified.</h1>
                     <em>For next steps please see the resources below or reach out to Mike Lyon, your Regional Sales Manager.</em>
                 </div>
-
                 <div class="ng-hide" ng-show="statusId == 2">
                     <h1>This property has been prequalified, but special pricing may be required.</h1>
                     <em>You should contact Mike Lyon, your Regional Sales Manager, at 925-548-5157 to discuss the special pricing before conveying this approval to your client.</em>
                 </div>
-
                 <hr>
-
                 <strong>What do you want to do next?</strong>
                 <div class="btn-holder">
                     <p>
@@ -47,9 +45,11 @@
         </div>
     </div>
 </section>
+
 <section class="container ng-hide" ng-show="user.id && user.id != 673">
     <div class="row">
         <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+            <img ng-src="/images/sprite.png">
             <h1>Thank You for submitting the Property Info!</h1>
             <em>We will notify you by email when the request is approved.</em>
             <hr>
