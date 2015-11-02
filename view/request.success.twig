@@ -1,5 +1,54 @@
 <lo-navbar-head></lo-navbar-head>
-<section class="container">
+<section class="container ng-hide" ng-show="user.id == 673">
+    <div class="row ng">
+        <div class="row ng-hide" ng-show="statusId == 1 || statusId == 2 || statusId == 3">
+            <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+                <p>Can use fontawesome’s check-circle, not sure what you’re currently using</p>
+
+                <div class="ng-hide" ng-show="statusId == 1 || statusId == 3">
+                    <h1>Congratulations.  This property has been prequalified.</h1>
+                    <em>For next steps please see the resources below or reach out to Mike Lyon, your Regional Sales Manager.</em>
+                </div>
+
+
+                <div class="ng-hide" ng-show="statusId == 2">
+                    <h1>This property has been prequalified, but special pricing may be required.</h1>
+                    <em>You should contact Mike Lyon, your Regional Sales Manager, at 925-548-5157 to discuss the special pricing before conveying this approval to your client.</em>
+                </div>
+
+                <hr>
+
+                <strong>What do you want to do next?</strong>
+                <div class="btn-holder">
+                    <p>
+                        <a ng-href="/#/" class="btn btn-default" href="/#/">Back to Dashboard</a>
+                        <a ng-href="/docs/resources/RHB_at_a_glance.pdf" class="btn btn-default ng-binding">REX HomeBuyer at a glance</a>
+                    </p>
+                    <p>(Will this make the output two lines of two boxes each, because that’s what we want. I’m not familiar with btn-holder and I don’t think it’s standard bootstrap)</p>
+                    <p>
+                        <a ng-href="/docs/resources/quick_reference_v7.pdf" class="btn btn-default">Quick reference guide</a>
+                        <a ng-href="/docs/resources/Brochure.pdf" class="btn btn-default">REX HomeBuyer Brochure</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="row ng-hide" ng-show="statusId != 1 || statusId != 2 || statusId != 3">
+            <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+                <p>Can use fontawesome’s check-circle, not sure what you’re currently using</p>
+                <h1>Your property requires additional due diligence</h1>
+                <em>You should receive an email notification shortly with a prequalification decision. </em>
+                <em>In the meanwhile, please reach out to Mike Lyon, your Regional Sales Manager, with any other questions.</em>
+                <hr>
+                <strong>What do you want to do next?</strong>
+                <div class="btn-holder">
+                    <a ng-href="/#/" class="btn btn-default">Back to Dashboard</a>
+                    <a ng-href="/#/request/approval" class="btn btn-default">Request another property approval</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container ng-hide" ng-show="user.id && user.id != 673">
     <div class="row">
         <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
             <h1>Thank You for submitting the Property Info!</h1>

@@ -29,6 +29,8 @@ class QueueProvider implements ControllerProviderInterface {
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
+        $controllers->get('/{id}', 'queue.controller:getAction');
+
         $controllers
             ->patch("/cancel/{id}", "queue.controller:cancelAction");
 

@@ -1249,4 +1249,33 @@
         }
     });
 
+    /**
+     * Global progress bar
+     */
+    helperService.factory('progressBar', function() {
+        var element = angular.element('#progress-bar-screen');
+
+        return {
+            progress   : 0,
+            text       : '',
+            setProgress: function(param) {
+                this.progress = param;
+                angular.element('.progress-bar', element).css('width', this.progress+'%').text(this.progress+'%');
+                return this;
+            },
+            setText: function(param) {
+                this.text = param;
+                angular.element('.text', element).text(this.text);
+                return this;
+            },
+            show: function() {
+                this.setProgress(1);
+                element.removeClass('hide');
+            },
+            hide: function() {
+                this.setProgress(0);
+                element.addClass('hide');
+            }
+        };
+    });
 })(settings);

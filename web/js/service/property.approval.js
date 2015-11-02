@@ -190,8 +190,9 @@
                     }
 
                     scope.request.save()
-                        .success(function(data){//success save on backend
-                            $rootScope.$broadcast('propertyApprovalSaved');
+                        // Save on backend
+                        .success(function(data) {
+                            $rootScope.$broadcast('propertyApprovalSaved', data);
                         })
                         .error(function(e){
                             message.addDanger(typeof e == "object" && 'message' in e ? e.message: e)
