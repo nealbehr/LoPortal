@@ -107,6 +107,20 @@ input[type=number] {
     -moz-appearance:textfield;
 }
 
+/* Thanks box start */
+.thanks-box {
+    padding-top: 0;
+}
+
+.thanks-box img {
+    margin: 30px;
+}
+
+.thanks-box:before {
+    background: none;
+}
+/* Thanks box end */
+
 /* NG classes start */
 .ng-hide {
     display: none;

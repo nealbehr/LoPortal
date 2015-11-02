@@ -154,14 +154,15 @@
         ['redirect', '$scope', '$routeParams', '$http', '$timeout', 'progressBar',
         function(redirect, $scope, $routeParams, $http, $timeout, progressBar)
     {
-        $scope.statusId = null;
-        $scope.request  = getRequestByType($routeParams.type);
+        $scope.statusId      = null;
+        $scope.endProcessing = false;
+        $scope.request       = getRequestByType($routeParams.type);
 
-        var interval    = 500,
-            endTime     = 7000,
-            timeCounter = 0,
+        var interval         = 500,
+            endTime          = 7000,
+            timeCounter      = 0,
             // Starts with “identifying property details” holds for 0.5 seconds
-            text        = 'identifying property details';
+            text             = 'identifying property details';
 
 
         if ($routeParams.id) {
@@ -193,6 +194,7 @@
                 $timeout(handleQueue, interval);
             }
             else {
+                $scope.endProcessing = true;
                 progressBar.setProgress(100).hide();
             }
         }
