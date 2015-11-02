@@ -161,8 +161,7 @@
         var interval         = 500,
             endTime          = 7000,
             timeCounter      = 0,
-            // Starts with “identifying property details” holds for 0.5 seconds
-            text             = 'identifying property details';
+            text             = '';
 
 
         if ($routeParams.id) {
@@ -175,16 +174,20 @@
                 $scope.statusId = data.status_id;
             });
 
+            // Starts with “identifying property details” holds for 0.5 seconds
+            if (timeCounter < 500) {
+                text = 'identifying property details';
+            }
             // Then changes to “generating demand metrics” holds for 1.5 seconds
-            if (timeCounter > 500 && timeCounter < 1500) {
+            else if (timeCounter < 2000) {
                 text = 'generating demand metrics';
             }
             // Then changes to “evaluating supply metrics” holds for 1.5 seconds
-            else if(timeCounter < 3000) {
+            else if (timeCounter < 3500) {
                 text = 'evaluating supply metrics';
             }
             // Then changes to “developing projections” holds for the remaining 3.5 seconds or until a response is
-            else if (timeCounter < 3500) {
+            else if (timeCounter < 5000) {
                 text = 'developing projections';
             }
 
