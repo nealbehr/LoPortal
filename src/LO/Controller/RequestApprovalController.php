@@ -36,7 +36,6 @@ class RequestApprovalController extends RequestApprovalBase
             $queue->setType(Queue::TYPE_PROPERTY_APPROVAL);
             $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
 
-
             // Validate queue data
             $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
             $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
@@ -49,14 +48,12 @@ class RequestApprovalController extends RequestApprovalBase
 
                 throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
             }
-
             $em->persist($queue);
             $em->flush();
 
             // Get first rex id
             $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
             $firstRexForm->handleRequest($request);
-
             if (!$firstRexForm->isValid()) {
                 $data = array_merge($data, ['address' => $this->getFormErrors($firstRexForm)]);
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
@@ -67,12 +64,6 @@ class RequestApprovalController extends RequestApprovalBase
                 ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
                 ->setQueue($queue)
                 ->send();
-
-//            $rexId = $this->sendRequestTo1Rex(
-//                $app,
-//                $firstRexForm->getData(),
-//                $app->getSecurityTokenStorage()->getToken()->getUser()
-//            );
 
             // Setting rex id and update this queue
             $queue->setAdditionalInfo($firstRexForm->getData());
@@ -91,7 +82,7 @@ class RequestApprovalController extends RequestApprovalBase
             return $app->json($data, $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $app->json("success");
+        return $app->json($queue->toArray());
     }
 
     public function getAction(Application $app, $id){

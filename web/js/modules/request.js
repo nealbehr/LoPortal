@@ -19,6 +19,13 @@
                     isFree: false
                 }
             })
+            .when('/request-success/:type/:id',{
+                templateUrl: '/partials/request.success',
+                controller:  'RequestSuccessController',
+                access: {
+                    isFree: false
+                }
+            })
             .when('/request/approval', {
                 templateUrl: '/partials/request.property.approval',
                 controller:  'RequestPropertyApprovalController',
@@ -117,24 +124,84 @@
         $scope.request = createRequestFlyer();
     }]);
 
-    request.controller('RequestPropertyApprovalController', ['redirect', '$scope', "createPropertyApproval", function(redirect, $scope, createPropertyApproval){
+    request.controller(
+        'RequestPropertyApprovalController',
+        ['redirect', '$scope', 'createPropertyApproval', 'userService',
+        function(redirect, $scope, createPropertyApproval, userService)
+    {
         $scope.request = createPropertyApproval();
-        $scope.lat = 37.7749295;
-        $scope.lng = -122.41941550000001;
-        $scope.titles = {
+        $scope.lat     = 37.7749295;
+        $scope.lng     = -122.41941550000001;
+        $scope.titles  = {
             button: "Submit",
             header: "Property Approval Request Form"
         };
 
-        $scope.$on('propertyApprovalSaved', function () {
-            redirect('/request/success/approval');
+        userService.get().then(function(user) {
+            $scope.$on('propertyApprovalSaved', function(event, data) {
+                if (typeof data === 'object' && data.hasOwnProperty('id') && user.id === '673') {
+                    redirect('/request-success/approval/'+data.id);
+                }
+                else {
+                    redirect('/request/success/approval');
+                }
+            });
         });
     }]);
 
-    request.controller('RequestSuccessController', ['redirect', '$scope', '$routeParams', function(redirect, $scope, $routeParams){
-        $scope.request = getRequestByType($routeParams.type);
+    request.controller(
+        'RequestSuccessController',
+        ['redirect', '$scope', '$routeParams', '$http', '$timeout', 'progressBar',
+        function(redirect, $scope, $routeParams, $http, $timeout, progressBar)
+    {
+        $scope.statusId      = null;
+        $scope.endProcessing = false;
+        $scope.request       = getRequestByType($routeParams.type);
 
-        function getRequestByType(type){
+        var interval         = 500,
+            endTime          = 7000,
+            timeCounter      = 0,
+            text             = '';
+
+        if ($routeParams.id) {
+            progressBar.setText(text).show();
+            handleQueue();
+        }
+
+        function handleQueue() {
+            $http.get('/queue/'+$routeParams.id).success(function(data) {
+                $scope.statusId = data.status_id;
+            });
+
+            // Starts with “identifying property details” holds for 0.5 seconds
+            if (timeCounter < 500) {
+                text = 'identifying property details';
+            }
+            // Then changes to “generating demand metrics” holds for 1.5 seconds
+            else if (timeCounter < 2000) {
+                text = 'generating demand metrics';
+            }
+            // Then changes to “evaluating supply metrics” holds for 1.5 seconds
+            else if (timeCounter < 3500) {
+                text = 'evaluating supply metrics';
+            }
+            // Then changes to “developing projections” holds for the remaining 3.5 seconds or until a response is
+            else if (timeCounter < 5000) {
+                text = 'developing projections';
+            }
+
+            progressBar.setProgress(Math.round(100/(endTime/timeCounter))).setText(text);
+
+            if ($.isNumeric($scope.statusId) === false && ((timeCounter += interval) < endTime)) {
+                $timeout(handleQueue, interval);
+            }
+            else {
+                $scope.endProcessing = true;
+                progressBar.setProgress(100).hide();
+            }
+        }
+
+        function getRequestByType(type) {
             return type == 'approval'
                         ? new RequestBase('Request property approval', 'request/approval')
                         : new RequestBase('Request Another Flyer', 'flyer/new')

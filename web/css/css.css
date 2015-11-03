@@ -106,3 +106,51 @@ input[type=number]::-webkit-inner-spin-button {
 input[type=number] {
     -moz-appearance:textfield;
 }
+
+/* Thanks box start */
+.thanks-box {
+    padding-top: 0;
+}
+
+.thanks-box img {
+    margin-bottom: 30px;
+}
+
+.thanks-box:before {
+    background: none;
+}
+/* Thanks box end */
+
+/* NG classes start */
+.ng-hide {
+    display: none;
+}
+/* NG classes end */
+
+/* Preloader start */
+#progress-bar-screen {
+    display: block;
+    background: rgba(0,0,0,.7);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
+}
+
+#progress-bar-screen  .progress-bar {
+    background-color: #4279e7;
+}
+
+#progress-bar-screen .text {
+    position: absolute;
+    width: 100%;
+    color: #fff;
+    bottom: 50%;
+    text-align: center;
+    display: block;
+    font: italic 35px "PT serif";
+    word-spacing: -1px;
+}
+/* Preloader end */

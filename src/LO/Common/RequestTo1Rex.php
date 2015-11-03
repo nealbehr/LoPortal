@@ -2,7 +2,6 @@
 
 use Curl\Curl;
 use LO\Application;
-use LO\Common\Message;
 use LO\Model\Entity\User;
 use LO\Model\Entity\Queue;
 
