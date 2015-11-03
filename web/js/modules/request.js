@@ -163,7 +163,6 @@
             timeCounter      = 0,
             text             = '';
 
-
         if ($routeParams.id) {
             progressBar.setText(text).show();
             handleQueue();
