@@ -194,7 +194,7 @@ class Application extends \Silex\Application{
 
         $this['security.firewalls'] = [
             'root' => [
-                'pattern' => '^/$',
+                'pattern' => '^/($|public/)',
             ],
             'login' => [
                 'pattern' => '^/(partials|authorize/)',
@@ -224,6 +224,7 @@ class Application extends \Silex\Application{
     }
 
     public function initRoutes(){
+        $this->mount('/public',     new Controller\PublicProvider());
         $this->mount('/authorize',  new Controller\AuthorizeProvider());
         $this->mount('/partials',   new Controller\PartialProvider());
         $this->mount('/dashboard',  new Controller\DashboardProvider());

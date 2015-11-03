@@ -13,19 +13,24 @@ use LO\Exception\Http;
 use LO\Model\Entity\Queue;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class QueueController {
-
-    public function cancelAction(Application $app, $id){
-        /** @var Queue $queue */
-        $queue = $app->getEntityManager()->getRepository(Queue::class)->findOneBy(['id' => $id, 'user_id' => $app->getSecurityTokenStorage()->getToken()->getUser()->getId()]);
-
-        if(!$queue){
-            throw new Http(sprintf('Queue \'%s\' not found', $id), Response::HTTP_BAD_REQUEST);
+class QueueController
+{
+    public function getAction(Application $app, $id)
+    {
+        try {
+            return $app->json($this->getById($app, $id)->toArray());
         }
-        $queue->setState(Queue::STATE_DECLINED);
+        catch (HttpException $e) {
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
 
-        $app->getEntityManager()->persist($queue);
+    public function cancelAction(Application $app, $id)
+    {
+        $app->getEntityManager()->persist($this->getById($app, $id)->setState(Queue::STATE_DECLINED));
         $app->getEntityManager()->flush();
 
         return $app->json('success');
@@ -69,5 +74,39 @@ class QueueController {
             return $app->json('error');
         }
         return $app->json('success');
+    }
+
+    public function updateStatusAction(Application $app, Request $request)
+    {
+        $em = $app->getEntityManager();
+        try {
+            $queue = $em->find(Queue::class, (int)$request->get('id'));
+
+            $queue->setStatusId((int)$request->get('status_id'));
+            $queue->setStatusOtherText(filter_var($request->get('status_other_text'), FILTER_SANITIZE_STRING));
+
+            $em->persist($queue);
+            $em->flush();
+
+            return $app->json('success');
+        }
+        catch (HttpException $e) {
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
+    private function getById(Application $app, $id)
+    {
+        $qModel = $app->getEntityManager()->getRepository(Queue::class)
+            ->findOneBy([
+                'id'      => $id,
+                'user_id' => $app->getSecurityTokenStorage()->getToken()->getUser()->getId()
+            ]);
+
+        if (!$qModel) {
+            throw new Http(sprintf('Queue \'%s\' not found', $id), Response::HTTP_BAD_REQUEST);
+        }
+
+        return $qModel;
     }
 }
