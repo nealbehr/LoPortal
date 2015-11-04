@@ -136,8 +136,8 @@
                         return this;
                     };
 
-                    this.show = function(){
-                        this.rootScope.$broadcast('showSessionMessage');
+                    this.show = function() {
+                        this.rootScope.$broadcast('renderSessionMesages');
                     }
                 }
 
