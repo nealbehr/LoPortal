@@ -94,7 +94,14 @@
         }
     }]);
 
-    propertyApproval.directive('loPropertyApprovalEdit', ["$location", "createAdminRequestFlyer", "$routeParams", "parseGoogleAddressComponents", "loadFile", "$timeout", "redirect", "waitingScreen", "getInfoFromGeocoder", "$q", "loadGoogleMapsApi", "$rootScope", "sessionMessages", function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, redirect, waitingScreen, getInfoFromGeocoder, $q, loadGoogleMapsApi, $rootScope, sessionMessages){
+    propertyApproval.directive(
+        'loPropertyApprovalEdit',
+        ['$location', 'createAdminRequestFlyer', '$routeParams', 'parseGoogleAddressComponents', 'loadFile', '$timeout', 
+            'redirect', 'waitingScreen', 'getInfoFromGeocoder', '$q', 'loadGoogleMapsApi', '$rootScope', 
+            'sessionMessages', 
+        function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, 
+                 redirect, waitingScreen, getInfoFromGeocoder, $q, loadGoogleMapsApi, $rootScope, sessionMessages)
+        {
         return {
             restrict: 'EA',
             templateUrl: '/partials/request.property.approval.form',
@@ -136,8 +143,8 @@
                         return this;
                     };
 
-                    this.show = function(){
-                        this.rootScope.$broadcast('showSessionMessage');
+                    this.show = function() {
+                        this.rootScope.$broadcast('renderSessionMesages');
                     }
                 }
 

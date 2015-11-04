@@ -1215,12 +1215,12 @@
                         messages = [];
                     }
                 }
-            }
+            };
 
             this.render = function(){
                 $rootScope.$broadcast('renderSessionMesages');
-            }
-        }
+            };
+        };
     }]);
 
     helperService.filter('ucFirst', function(){
