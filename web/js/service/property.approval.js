@@ -111,8 +111,9 @@
                 lng:     "=loLng"
             },
             link: function(scope, element, attrs, controllers) {
-                scope.isValid = false;
-                scope.request = {};
+                scope.isValid  = false;
+                scope.request  = {};
+                scope.userType = settings.queue.userType;
 
                 scope.$watch('requestIn', function(newVal, oldVal){
 //                    if(newVal != oldVal){
@@ -190,7 +191,6 @@
 
                 scope.save = function(e) {
                     e.preventDefault();
-                    console.log(settings);
 
                     waitingScreen.show();
                     if(this.isValid == false){
