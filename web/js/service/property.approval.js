@@ -333,12 +333,18 @@
                             bounds.extend(place.geometry.location);
                         }
 
-                        if(markers.length < 1){
+                        if (markers.length < 1) {
                             setDefaultMarker();
                             map.setCenter(centerLatLng);
                             map.setZoom(mapProp.zoom);
-                        }else{
-                            map.fitBounds(bounds);
+                        }
+                        else {
+                            // Zoom control
+                            map.setZoom(mapProp.zoom);
+                            map.setCenter(marker.getPosition());
+
+                            // Zoom default
+                            // map.fitBounds(bounds);
                         }
                     });
 
