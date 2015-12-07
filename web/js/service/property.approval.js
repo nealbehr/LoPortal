@@ -215,15 +215,18 @@
                 };
 
                 function initialize(lat, lng) {
-                    var markers = [];
-                    var centerLatLng = new google.maps.LatLng(lat, lng);
-                    var mapProp = {
-                        center: centerLatLng,
-                        zoom: 13,
-                        disableDefaultUI:true,
-                        mapTypeId:google.maps.MapTypeId.ROADMAP
-                    };
-                    var map=new google.maps.Map(document.getElementById("location"), mapProp);
+                    var mapConfig    = {
+                            zoom:         13,
+                            zoomProperty: 18
+                        },
+                        markers      = [],
+                        centerLatLng = new google.maps.LatLng(lat, lng),
+                        map          = new google.maps.Map(document.getElementById('location'), {
+                            center:           centerLatLng,
+                            zoom:             mapConfig.zoom,
+                            disableDefaultUI: true,
+                            mapTypeId:        google.maps.MapTypeId.ROADMAP
+                        });
 
                     function setDefaultMarker(){
                         var marker = new google.maps.Marker({
@@ -336,14 +339,14 @@
                         if (markers.length < 1) {
                             setDefaultMarker();
                             map.setCenter(centerLatLng);
-                            map.setZoom(mapProp.zoom);
+                            map.setZoom(mapConfig.zoom);
                         }
                         else {
-                            // Zoom control
-                            map.setZoom(mapProp.zoom);
+                            // Zoom control for search property
+                            map.setZoom(mapConfig.zoomProperty);
                             map.setCenter(marker.getPosition());
 
-                            // Zoom default
+                            // Zoom control default
                             // map.fitBounds(bounds);
                         }
                     });
