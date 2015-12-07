@@ -134,7 +134,7 @@
         $scope.lng     = -122.41941550000001;
         $scope.titles  = {
             button: "Submit",
-            header: "Property Approval Request Form"
+            header: "Property Prequalification Request Form"
         };
 
         userService.get().then(function(user) {

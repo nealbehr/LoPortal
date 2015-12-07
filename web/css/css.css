@@ -154,3 +154,9 @@ input[type=number] {
     word-spacing: -1px;
 }
 /* Preloader end */
+
+/* Property page start */
+.property-back-box .back {
+    margin: 0;
+}
+/* Property page end */
