@@ -217,7 +217,7 @@
                     var centerLatLng = new google.maps.LatLng(lat, lng);
                     var mapProp = {
                         center: centerLatLng,
-                        zoom:10,
+                        zoom: 13,
                         disableDefaultUI:true,
                         mapTypeId:google.maps.MapTypeId.ROADMAP
                     };
@@ -334,7 +334,7 @@
                         if(markers.length < 1){
                             setDefaultMarker();
                             map.setCenter(centerLatLng);
-                            map.setZoom(10);
+                            map.setZoom(mapProp.zoom);
                         }else{
                             map.fitBounds(bounds);
                         }
