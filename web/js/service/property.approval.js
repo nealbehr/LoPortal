@@ -59,15 +59,14 @@
     }]);
 
     propertyApproval.service("createPropertyApprovalBase", [function(){
-        return function(){
-            this.id = null;
-
+        return function() {
+            this.id       = null;
             this.property = {
-                 address: '',
-                state: null
+                address:   '',
+                state:     null,
+                user_type: settings.queue.userType.seller
             };
-
-            this.address = null;
+            this.address  = null;
 
             this.fill = function(data){
                 for(var i in data){
@@ -189,7 +188,10 @@
                     ;
                 };
 
-                scope.save = function(){
+                scope.save = function(e) {
+                    e.preventDefault();
+                    console.log(settings);
+
                     waitingScreen.show();
                     if(this.isValid == false){
                         this.checkAddress();

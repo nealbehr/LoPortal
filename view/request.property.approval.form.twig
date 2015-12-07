@@ -34,8 +34,16 @@
                    required="">
         </div>
         <div class="col-sm-6 text-center">
+            [[console.log(setings)]]
             <label class="control-label" for="">Submit for a:</label>
-            <button type="button" ng-click="save()" class="btn btn-default btn-lg">[[ isValid? titles.button: "Check" ]]</button>
+            <div class="btn-holder">
+                <a ng-click="request.property.user_type = 1;save($event)" href="#" class="btn btn-default btn-lg">
+                    Buyer
+                </a>
+                <a ng-click="request.property.user_type = 0;save($event)" href="#" class="btn btn-default btn-lg">
+                    Seller
+                </a>
+            </div>
         </div>
     </div>
     <div id="location"></div>

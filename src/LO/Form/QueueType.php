@@ -39,6 +39,10 @@ class QueueType extends AbstractType {
                     'empty_data' => '0',
                 ]
             )
+            ->add('user_type', 'number', [
+                'precision'  => 0,
+                'empty_data' => '0'
+            ])
             ->add('omit_realtor_info', 'number', [
                 'precision'  => 0,
                 'empty_data' => '1'

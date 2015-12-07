@@ -13,18 +13,24 @@ use Symfony\Component\Validator\ExecutionContextInterface;
  * @Entity
  * @Table(name="queue")
  */
-class Queue extends Base {
-
+class Queue extends Base
+{
     const DEFAULT_FUNDED_PERCENTAGE = 10;
-    const DEFAULT_MAXIMUM_LOAN = 80;
+    const DEFAULT_MAXIMUM_LOAN      = 80;
 
-    const STATE_REQUESTED   = 2;
-    const STATE_APPROVED    = 3;
-    const STATE_DECLINED    = 4;
-    const STATE_DRAFT       = 5;
+    const STATE_REQUESTED  = 2;
+    const STATE_APPROVED   = 3;
+    const STATE_DECLINED   = 4;
+    const STATE_DRAFT      = 5;
 
     const TYPE_FLYER             = 1;
     const TYPE_PROPERTY_APPROVAL = 2;
+
+    /**
+     * Users types
+     */
+    const TYPE_USER_SELLER = 0;
+    const TYPE_USER_BUYER  = 1;
 
     /**
      * @Column(type="integer")
@@ -74,6 +80,11 @@ class Queue extends Base {
      * @Column(type="integer")
      */
     protected $user_id;
+
+    /**
+     * @Column(type="integer")
+     */
+    protected $user_type;
 
     /**
      * @Column(type="integer")
@@ -205,6 +216,18 @@ class Queue extends Base {
         $this->user_id = $param;
 
         return $this;
+    }
+
+    public function setUserType($param)
+    {
+        $this->user_type = $param;
+
+        return $this;
+    }
+
+    public function getUserType()
+    {
+        return $this->user_type;
     }
 
     public function getStatusId()
@@ -471,4 +494,4 @@ class Queue extends Base {
             Queue::STATE_DECLINED
         ];
     }
-} 
+}
