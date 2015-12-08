@@ -217,7 +217,7 @@
                 function initialize(lat, lng) {
                     var mapConfig    = {
                             zoom:         13,
-                            zoomProperty: 18
+                            zoomProperty: 16
                         },
                         markers      = [],
                         centerLatLng = new google.maps.LatLng(lat, lng),
