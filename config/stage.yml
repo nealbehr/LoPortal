@@ -28,7 +28,7 @@ amazon:
 firstrex:
   doSend: true
   api:
-    url:  http://stage.1rex.com/inquiries.json
+    url: http://stage.1rex.com/inquiries.json
   additional.emails:
     - serhii.samoilenko@appsorama.com
     - dmitry@appsorama.com
