@@ -11,6 +11,11 @@ class RequestTo1Rex
 
     protected $data = [];
 
+    private $inQuiryText = [
+        Queue::TYPE_USER_SELLER => 'Seller of home',
+        Queue::TYPE_USER_BUYER  => 'Buyer of home'
+    ];
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -39,7 +44,10 @@ class RequestTo1Rex
 
     public function setQueue(Queue $queue)
     {
-        $this->data = array_merge($this->data, ['external_id' => $queue->getId()]);
+        $this->data = array_merge($this->data, [
+            'external_id'  => $queue->getId(),
+            'inquiry_type' => $this->inQuiryText[$queue->getUserType()]
+        ]);
 
         return $this;
     }
@@ -93,9 +101,8 @@ class RequestTo1Rex
         return array_merge(
             $this->data,
             [
-                'inquiry_type' => 'Seller of home',
                 'product_type' => 'HB',
-                'source' => self::BILLBOARD_SOURCE
+                'source'       => self::BILLBOARD_SOURCE
             ]
         );
     }
