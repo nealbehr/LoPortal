@@ -33,6 +33,14 @@ module.exports = function(grunt) {
                         '<%= yeoman.dist %>/web/.DS_Store'
                     ]
                 }]
+            },
+            distFolder: {
+                files: [{
+                    dot: true,
+                    src: [
+                        '<%= yeoman.dist %>'
+                    ]
+                }]
             }
         },
         // Copy the directories for prepare to deploy
@@ -246,11 +254,13 @@ module.exports = function(grunt) {
 
     grunt.registerTask('deploy-stage', [
         'build',
-        'ebDeploy:stage'
+        'ebDeploy:stage',
+        'clean:distFolder'
     ]);
 
     grunt.registerTask('deploy-prod', [
         'build',
-        'ebDeploy:prod'
+        'ebDeploy:prod',
+        'clean:distFolder'
     ]);
 };
