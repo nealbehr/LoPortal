@@ -167,6 +167,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $formOptions = ['validation_groups' => ["Default", "main"]];
             $app->getEntityManager()->beginTransaction();
 
+            $user         = $app->getSecurityTokenStorage()->getToken()->getUser();
             $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
             $firstRexForm->handleRequest($request);
 
@@ -174,7 +175,9 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
+//          Uncommented $rexId
+//            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $user);
+            $id = 44;
 
             $realtor      = new QueueRealtor();
             $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
@@ -189,6 +192,13 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $changeStatusEmail = new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $queue));
             $changeStatusEmail->send();
+
+            // Mixpanel analytics
+            if ($user !== null) {
+                $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+                $mp->identify($user->getId());
+                $mp->track('Flyer Request');
+            }
 
             $app->getEntityManager()->commit();
         }catch (\Exception $e){

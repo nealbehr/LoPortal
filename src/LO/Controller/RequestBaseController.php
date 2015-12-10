@@ -30,6 +30,10 @@ class RequestBaseController
         return $this->message;
     }
 
+    /**
+     * Use class LO\Common\RequestTo1Rex
+     * @deprecated
+     */
     protected function sendRequestTo1Rex(Application $app, array $address, User $user)
     {
         $curl = new Curl();

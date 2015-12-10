@@ -62,6 +62,8 @@ class RequestApprovalController extends RequestApprovalBase
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
+
+//            Uncommented $rexId
 //            $rexId = (new RequestTo1Rex($app))
 //                ->setAddress($firstRexForm->getData())
 //                ->setUser($user)
