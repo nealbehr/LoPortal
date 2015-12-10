@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
 use LO\Common\RequestTo1Rex;
+use Mixpanel;
 
 class RequestApprovalController extends RequestApprovalBase
 {
@@ -31,10 +32,12 @@ class RequestApprovalController extends RequestApprovalBase
         try{
             $em->beginTransaction();
 
+            $user = $app->getSecurityTokenStorage()->getToken()->getUser();
+
             // Create queue
             $queue = new Queue();
             $queue->setType(Queue::TYPE_PROPERTY_APPROVAL);
-            $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
+            $queue->setUser($user);
 
             // Validate queue data
             $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
@@ -59,11 +62,12 @@ class RequestApprovalController extends RequestApprovalBase
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $rexId = (new RequestTo1Rex($app))
-                ->setAddress($firstRexForm->getData())
-                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
-                ->setQueue($queue)
-                ->send();
+//            $rexId = (new RequestTo1Rex($app))
+//                ->setAddress($firstRexForm->getData())
+//                ->setUser($user)
+//                ->setQueue($queue)
+//                ->send();
+            $rexId = 44;
 
             // Setting rex id and update this queue
             $queue->setAdditionalInfo($firstRexForm->getData());
@@ -72,6 +76,13 @@ class RequestApprovalController extends RequestApprovalBase
             $em->flush();
 
             (new RequestChangeStatus($app, $queue, new PropertyApprovalSubmission()))->send();
+
+            // Mixpanel analytics
+            if ($user !== null) {
+                $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+                $mp->identify($user->getId());
+                $mp->track('Property Request');
+            }
 
             $em->commit();
         }

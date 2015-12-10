@@ -59,3 +59,7 @@ knp_paginator:
     template:
         pagination: pagination.twig,
         sortable:   Pagination/sortable_link.html.twig
+mixpanel:
+  token: 99c782fcf128d5e0d6498f003c406d4c
+  api_key: 47afda250711194435962149b3b01528
+  api_secret: 7a850e0337002267e4c412d8ca8f1659

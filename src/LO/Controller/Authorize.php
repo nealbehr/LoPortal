@@ -12,11 +12,22 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use LO\Common\Email;
 use LO\Model\Entity\RecoveryPassword;
+use \Mixpanel;
 
-class Authorize {
+class Authorize
+{
     const MAX_EMAILS = 5;
-    public function signinAction(Application $app, Request $request){
+
+    public function signinAction(Application $app, Request $request)
+    {
         $user = $app->getUserManager()->findByEmail($request->get('email'));
+
+        // Mixpanel analytics
+        if ($user !== null) {
+            $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+            $mp->identify($user->getId());
+            $mp->track('Log In');
+        }
 
         if(!$user){
             return $app->json(['message' => 'Your email address is not recognized'], Response::HTTP_BAD_REQUEST);
