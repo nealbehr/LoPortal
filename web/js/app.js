@@ -21,7 +21,8 @@
             'ngDialog',
             'requestFlyerModule',
             'approvalModule',
-            'googleAutoCompleteModule'
+            'googleAutoCompleteModule',
+            'resourcesModule'
         ]
     );
 

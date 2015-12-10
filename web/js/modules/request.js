@@ -47,13 +47,6 @@
                     isFree: false
                 }
             })
-            .when('/resources', {
-                templateUrl: '/partials/request.resources',
-                controller:  'ResourcesController',
-                access: {
-                    isFree: false
-                }
-            })
         ;
     }]);
 
@@ -212,35 +205,5 @@
             this.title = title;
             this.url   = url;
         }
-    }]);
-
-    request.controller('ResourcesController', ['$scope', 'userService', function($scope, userService) {
-        userService.get().then(function(data) {
-            $scope.user = data;
-        });
-
-        // Mixpanel analytics
-        $scope.logMixpanel = function() {
-            mixpanel.identify($scope.user.id);
-            mixpanel.track('Document Download');
-        };
-
-        $scope.titles    = {
-            header: 'Resources'
-        };
-        $scope.resources = [
-            {
-                link : '/docs/resources/Brochure.pdf',
-                title: 'Brochure'
-            },
-            {
-                link : '/docs/resources/quick_reference_v7.pdf',
-                title: 'Quick Reference Guide'
-            },
-            {
-                link : '/docs/resources/RHB_at_a_glance.pdf',
-                title: 'REX HomeBuyer Argeement'
-            }
-        ]
     }]);
 })();
