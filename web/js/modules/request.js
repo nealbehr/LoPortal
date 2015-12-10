@@ -214,7 +214,17 @@
         }
     }]);
 
-    request.controller('ResourcesController', ['$scope', function($scope) {
+    request.controller('ResourcesController', ['$scope', 'userService', function($scope, userService) {
+        userService.get().then(function(data) {
+            $scope.user = data;
+        });
+
+        // Mixpanel analytics
+        $scope.logMixpanel = function() {
+            mixpanel.identify($scope.user.id);
+            mixpanel.track('Document Download');
+        };
+
         $scope.titles    = {
             header: 'Resources'
         };
