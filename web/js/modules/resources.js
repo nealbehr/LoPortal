@@ -4,9 +4,9 @@
 (function(){
     'use strict';
 
-    var module1 = angular.module('resourcesModule', []);
+    var module = angular.module('resourcesModule', []);
 
-    module1.config(['$routeProvider', function($routeProvider) {
+    module.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/resources', {
             templateUrl: '/partials/resources.list',
             controller:  'ResourcesController',
@@ -16,7 +16,7 @@
         });
     }]);
 
-    module1.controller('ResourcesController', ['$scope', 'userService', function($scope, userService) {
+    module.controller('ResourcesController', ['$scope', 'userService', function($scope, userService) {
         userService.get().then(function(data) {
             $scope.user = data;
         });
