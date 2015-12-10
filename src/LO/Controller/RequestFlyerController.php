@@ -54,7 +54,7 @@ class RequestFlyerController extends RequestFlyerBase {
         if (null !== ($user = $app->getSecurityTokenStorage()->getToken()->getUser())) {
             $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
             $mp->identify($user->getId());
-            $mp->track('Log In');
+            $mp->track('Flyer Download');
         }
 
         $queue = $this->getQueueById($app, $id);
