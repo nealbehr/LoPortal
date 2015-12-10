@@ -28,6 +28,8 @@ amazon:
 firstrex:
   doSend: true
   api:
+    user: FirstREX
+    pass: Admin007
     url: http://stage.1rex.com/inquiries.json
   additional.emails:
     - serhii.samoilenko@appsorama.com
