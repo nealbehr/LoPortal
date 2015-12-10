@@ -102,7 +102,8 @@ class RequestTo1Rex
             $this->data,
             [
                 'product_type' => 'HB',
-                'source'       => self::BILLBOARD_SOURCE
+                'source'       => self::BILLBOARD_SOURCE,
+                'request_type' => 'Listing Flyer / prequal'
             ]
         );
     }
