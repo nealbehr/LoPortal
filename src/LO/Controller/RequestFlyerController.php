@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Snappy\Pdf;
 use \Doctrine\ORM\Query;
+use \Mixpanel;
 
 
 class RequestFlyerController extends RequestFlyerBase {
@@ -47,7 +48,15 @@ class RequestFlyerController extends RequestFlyerBase {
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function download(Application $app, $id) {
+    public function download(Application $app, $id)
+    {
+        // Mixpanel analytics
+        if (null !== ($user = $app->getSecurityTokenStorage()->getToken()->getUser())) {
+            $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+            $mp->identify($user->getId());
+            $mp->track('Log In');
+        }
+
         $queue = $this->getQueueById($app, $id);
         if($queue) {
 
