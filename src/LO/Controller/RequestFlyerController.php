@@ -180,9 +180,10 @@ class RequestFlyerController extends RequestFlyerBase {
                 ->setListingPrice(0)
                 ->setAdditionalInfo($firstRexForm->getData())
                 ->setUserType(Queue::TYPE_USER_SELLER);
+
             // Do not change queue user when edited by admin
             if ($queue->getUser() == null) {
-                $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
+                $queue->setUser($user);
             }
 
             $app->getEntityManager()->persist($queue);
@@ -198,7 +199,6 @@ class RequestFlyerController extends RequestFlyerBase {
             $queue->set1RexId($rexId);
 
             $realtor = new QueueRealtor();
-
 
             $this->saveFlyer(
                 $app,
