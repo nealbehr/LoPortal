@@ -63,3 +63,6 @@ mixpanel:
   token: 99c782fcf128d5e0d6498f003c406d4c
   api_key: 47afda250711194435962149b3b01528
   api_secret: 7a850e0337002267e4c412d8ca8f1659
+basecrm:
+  accessToken: 0fa7e03e63b3e3042226029420a973d32003219dc172bb40df96023c2c64c0b8
+  devicesUuid: lo-portal-prod

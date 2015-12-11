@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "4446a36552089175bae4b5c7c4903b68",
-    "content-hash": "19d92a788ea89131d1aaa2f81fc19e94",
+    "hash": "0580ff03026652015f55dac5954446ae",
+    "content-hash": "074e7183aaf7662a9ce3a14eb69b40be",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -69,6 +69,55 @@
                 "sdk"
             ],
             "time": "2015-06-11 23:48:44"
+        },
+        {
+            "name": "basecrm/basecrm-php",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/basecrm/basecrm-php.git",
+                "reference": "48b68f08019a9f2bb77a7db89611f2e89e8d5933"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/basecrm/basecrm-php/zipball/48b68f08019a9f2bb77a7db89611f2e89e8d5933",
+                "reference": "48b68f08019a9f2bb77a7db89611f2e89e8d5933",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BaseCRM\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "BaseCRM developers",
+                    "email": "developers@getbase.com",
+                    "homepage": "https://github.com/basecrm/basecrm-php/graphs/contributors"
+                }
+            ],
+            "description": "BaseCRM Official API V2 library client for PHP",
+            "homepage": "http://developers.getbase.com/",
+            "keywords": [
+                "api",
+                "base crm",
+                "client",
+                "http",
+                "http client",
+                "v2"
+            ],
+            "time": "2015-11-03 13:29:46"
         },
         {
             "name": "dflydev/doctrine-orm-service-provider",

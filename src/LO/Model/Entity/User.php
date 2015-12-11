@@ -43,6 +43,13 @@ class User extends Base implements UserInterface{
     protected $id;
 
     /**
+     * Used to sync from BaseCRM
+     *
+     * @Column(type="string")
+     */
+    protected $base_id;
+
+    /**
      * @Column(type="string")
      */
     protected $deleted = '0';
@@ -144,6 +151,17 @@ class User extends Base implements UserInterface{
         parent::__construct();
         $this->salt   = $this->generateSalt();
         $this->state  = self::STATE_ACTIVE;
+    }
+
+    public function setBaseId($param)
+    {
+        $this->base_id = $param;
+        return $this;
+    }
+
+    public function getBaseId()
+    {
+        return $this->base_id;
     }
 
     public function getDeleted() {
