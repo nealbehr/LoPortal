@@ -326,9 +326,10 @@ class Queue extends Base
     /**
      * @param mixed $listing_price
      */
-    public function setListingPrice($listing_price)
+    public function setListingPrice($param)
     {
-        $this->listing_price = $listing_price;
+        $this->listing_price = $param;
+        return $this;
     }
 
     /**

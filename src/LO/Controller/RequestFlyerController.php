@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Snappy\Pdf;
 use \Doctrine\ORM\Query;
+use LO\Common\RequestTo1Rex;
 use \Mixpanel;
 
 
@@ -175,12 +176,29 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-//          Uncommented $rexId
-//            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $user);
-            $id = 44;
+            $queue = (new Queue())
+                ->setListingPrice(0)
+                ->setAdditionalInfo($firstRexForm->getData())
+                ->setUserType(Queue::TYPE_USER_SELLER);
+            // Do not change queue user when edited by admin
+            if ($queue->getUser() == null) {
+                $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
+            }
 
-            $realtor      = new QueueRealtor();
-            $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+            // Get first rex id
+            $rexId = (new RequestTo1Rex($app))
+                ->setAddress($firstRexForm->getData())
+                ->setUser($user)
+                ->setQueue($queue)
+                ->setType(1)
+                ->send();
+            $queue->set1RexId($rexId);
+
+            $realtor = new QueueRealtor();
+
 
             $this->saveFlyer(
                 $app,

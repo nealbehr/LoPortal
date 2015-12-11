@@ -1,4 +1,11 @@
-<?php namespace LO\Common;
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Eugene Lysenko
+ * Date: 12/11/15
+ * Time: 11:14
+ */
+namespace LO\Common;
 
 use Curl\Curl;
 use LO\Application;
@@ -7,18 +14,37 @@ use LO\Model\Entity\Queue;
 
 class RequestTo1Rex
 {
+    const PRODUCT_TYPE     = 'HB';
     const BILLBOARD_SOURCE = 'LO Portal';
 
-    protected $data = [];
+    protected $data        = [];
 
-    private $inQuiryText = [
+    private $inQuiryText   = [
         Queue::TYPE_USER_SELLER => 'Seller of home',
         Queue::TYPE_USER_BUYER  => 'Buyer of home'
+    ];
+
+    private $requestTypeText = [
+        0 => 'Prequal',
+        1 => 'Listing Flyer'
     ];
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setType($param)
+    {
+        $this->data = array_merge($this->data, [
+            'request_type' => $this->requestTypeText[$param]
+        ]);
+
+        return $this;
     }
 
     public function setAddress(array $address)
@@ -101,9 +127,8 @@ class RequestTo1Rex
         return array_merge(
             $this->data,
             [
-                'product_type' => 'HB',
+                'product_type' => self::PRODUCT_TYPE,
                 'source'       => self::BILLBOARD_SOURCE,
-                'request_type' => 'Listing Flyer / prequal'
             ]
         );
     }
