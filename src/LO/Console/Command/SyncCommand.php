@@ -14,8 +14,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use LO\Model\Entity\User;
+use LO\Model\Entity\Lender;
 use \BaseCRM\Client;
 use \BaseCRM\Sync;
+use Doctrine\ORM\NoResultException;
 
 class SyncCommand extends Command
 {
@@ -49,27 +51,64 @@ class SyncCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $repository = $this->entityManager->getRepository(User::class);
-        $query      = $repository->createQueryBuilder('u')->where('u.email = :email');
+        $qUser = $this->entityManager
+            ->getRepository(User::class)
+            ->createQueryBuilder('u')
+            ->where('u.base_id = :id');
 
-        $this->sync->fetch(function($meta, $data) use ($query) {
-            $options = [
-                'table'      => $meta['type'],
-                'statement'  => $meta['sync']['event_type'],
-                'properties' => $data
-            ];
-            $a = 1;
+        $qLender = $this->entityManager
+            ->getRepository(Lender::class)
+            ->createQueryBuilder('l')
+            ->where('l.name = :name');
+
+        $notLender = $qLender->setParameter('name', 'Not Lender')->getQuery()->getSingleResult();
+
+        $this->sync->fetch(function($meta, $data) use ($qUser, $qLender, $notLender) {
+            if ($meta['type'] === 'contact' && isset($data['id'], $data['email'])) {
+                if (isset($data['custom_fields']['Sub-Company Name (DBA)'])) {
+                    try {
+                        $lender = $qLender->setParameter('name', $data['custom_fields']['Sub-Company Name (DBA)'])
+                            ->getQuery()
+                            ->getSingleResult();
+                    }
+                    catch (NoResultException $e) {
+                        $lender = $notLender;
+                    }
+                }
+                else {
+                    $lender = $notLender;
+                }
+
+                if (isset($lender)) {
+                    // Update user
+                    try {
+                        $user = $qUser->setParameter('id', $data['id'])->getQuery()->getSingleResult();
+                    }
+                        // New user
+                    catch (NoResultException $e) {
+                        $user = new User;
+                        $user->setPassword(self::DEFAULT_PASSWORD);
+                    }
+                    $user->setBaseId($data['id']);
+                    $user->setEmail($data['email']);
+                    $user->setPhone($data['phone']);
+                    $user->setMobile($data['mobile']);
+                    if (isset($data['custom_fields']['NMLS'])) {
+                        $user->setNmls($data['custom_fields']['NMLS']);
+                    }
+                    if (isset($data['custom_fields']['Sales Director'])) {
+                        $user->setSalesDirector($data['custom_fields']['Sales Director']);
+                    }
+                    $user->setTitle($data['title']);
+                    $user->setFirstName($data['first_name']);
+                    $user->setLastName($data['last_name']);
+                    $user->setLender($lender);
+                    $this->entityManager->persist($user);
+                    $this->entityManager->flush();
+                }
+            }
         });
 
-
-        $name = $input->getArgument('name');
-        if ($name) {
-            $text = 'Hello '.$name;
-        }
-        else {
-            $text = 'Hello';
-        }
-
-        $output->writeln($text);
+        $output->writeln('Finished sync');
     }
 }

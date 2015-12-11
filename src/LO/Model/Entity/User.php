@@ -45,7 +45,7 @@ class User extends Base implements UserInterface{
     /**
      * Used to sync from BaseCRM
      *
-     * @Column(type="string")
+     * @Column(type="integer")
      */
     protected $base_id;
 
