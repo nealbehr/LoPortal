@@ -18,3 +18,6 @@ PARAM1=prod
 * Stage: `grunt deploy-stage`
 AWS environment variables
 PARAM1=stage
+
+## Console commands
+Sync from BaseCRM: `/vagrant/bin/console portal:sync`
