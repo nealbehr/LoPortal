@@ -80,7 +80,6 @@ class SyncCommand extends Command
                     $lender = $notLender;
                 }
 
-
                 // Update user
                 try {
                     $user    = $qUser->setParameter('id', $data['id'])->getQuery()->getSingleResult();
@@ -116,9 +115,9 @@ class SyncCommand extends Command
                             $address->setPostalCode($component->long_name);
                         }
                     }
+                    $this->entityManager->persist($address);
+                    $this->entityManager->flush();
                 }
-                $this->entityManager->persist($address);
-                $this->entityManager->flush();
 
                 // Set user data
                 $user->setAddress($address);
