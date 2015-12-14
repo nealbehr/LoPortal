@@ -104,6 +104,7 @@ class Address extends Base {
     public function setFormattedAddress($formatted_address)
     {
         $this->formatted_address = $formatted_address;
+        return $this;
     }
 
     /**
