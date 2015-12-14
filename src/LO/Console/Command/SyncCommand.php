@@ -89,7 +89,7 @@ class SyncCommand extends Command
                 // Create user
                 catch (NoResultException $e) {
                     $user    = new User;
-                    $address = $user->getAddress;
+                    $address = new Address;
                     $user->setPassword(self::DEFAULT_PASSWORD);
                     $this->countUpdate++;
                 }
