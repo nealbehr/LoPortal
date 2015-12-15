@@ -652,6 +652,23 @@
                 scope.hideErrors = true;
                 scope.container = angular.element("#errors");
 
+                // Select realtor
+                scope.realtorSelect  = 'omit';
+                scope.realtorOptions = [
+                    { value: 'omit', name: 'Omit realtor information', type: 'Options' },
+                    { value: 'add', name: 'Add realtor', type: 'Options' }
+                ];
+                $http.get('/request/flyer/realtor').then(function(response) {
+                    scope.realtorOptions = scope.realtorOptions.concat(
+                        $.map(response.data.realtors, function(item) {
+                            return {
+                                name : item.first_name+' '+item.last_name,
+                                value: item.id,
+                                type : 'Select from existing realtors'
+                        };
+                    }));
+                });
+
                 scope.$watch('request', function(newVal){
                     if(undefined == newVal || !("id" in newVal)){
                         return;

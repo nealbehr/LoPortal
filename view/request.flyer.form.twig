@@ -124,6 +124,13 @@
 
                 </div>
                 <hr>
+
+                <div class="check-holder">
+                    <select class="form-control input-lg"
+                             ng-model="realtorSelect"
+                             ng-options="option.value as option.name group by option.type for option in realtorOptions"></select>
+                </div>
+
                 <div class="check-holder">
                     <input type="checkbox"
                            name="omit_realtor_info"
