@@ -658,6 +658,7 @@
                     { value: 'omit', name: 'Omit realtor information', type: 'Options' },
                     { value: 'add', name: 'Add realtor', type: 'Options' }
                 ];
+                waitingScreen.show();
                 $http.get('/request/flyer/realtor').then(function(response) {
                     scope.realtorOptions = scope.realtorOptions.concat(
                         $.map(response.data.realtors, function(item) {
@@ -667,6 +668,7 @@
                                 type : 'Select from existing realtors'
                         };
                     }));
+                    waitingScreen.hide();
                 });
 
                 scope.$watch('request', function(newVal){
