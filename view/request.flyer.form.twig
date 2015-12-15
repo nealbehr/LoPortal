@@ -127,8 +127,8 @@
 
                 <div class="check-holder">
                     <select class="form-control input-lg"
-                             ng-model="realtorSelect"
-                             ng-options="option.value as option.name group by option.type for option in realtorOptions"></select>
+                            ng-model="realtorSelect"
+                            ng-options="option.value as option.name group by option.type for option in realtorOptions"></select>
                 </div>
 
                 <div class="check-holder">
@@ -169,8 +169,7 @@
                                        ng-pattern="/^[A-Za-z\s]+$/"
                                        ng-model="request.realtor.first_name"
                                        ng-required="request.property.omit_realtor_info == 0"
-                                       name="first_name"
-                                       ng-click="autoComplete($event, 'first_name')">
+                                       name="first_name">
                             </div>
                             <div class="input">
                                 <input class="input-lg"
@@ -179,8 +178,7 @@
                                        placeholder="Last name"
                                        ng-model="request.realtor.last_name"
                                        ng-required="request.property.omit_realtor_info == 0"
-                                       name="last_name"
-                                       ng-click="autoComplete($event, 'last_name')">
+                                       name="last_name">
                             </div>
                         </div>
                     </div>

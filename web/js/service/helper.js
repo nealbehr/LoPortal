@@ -130,44 +130,6 @@
                     history.back();
                 };
 
-                scope.autoComplete = function(event) {
-                    var element = $(event.target);
-
-                    element.autocomplete({
-                        source: function(request, response) {
-                            $http.get(
-                                '/admin/salesdirector',
-                                {
-                                    params: {
-                                        'filterValue': element.val().toLowerCase(),
-                                        'searchBy'   : 'name'
-                                    },
-                                    cache : true
-                                }
-                            ).then(function(resp) {
-                                response($.map(resp.data.salesDirectors, function(item) {
-                                    return {
-                                        label        : item.name,
-                                        value        : item.name,
-                                        salesDirector: item
-                                    };
-                                }));
-                            });
-                        },
-                        minLength: 0,
-                        delay: 500,
-                        select: function(event, ui) {
-                            if (ui.item !== undefined) {
-                                scope.officer.sales_director       = ui.item.value;
-                                scope.officer.sales_director_phone = ui.item.salesDirector.phone;
-                                scope.officer.sales_director_email = ui.item.salesDirector.email;
-                                scope.$apply();
-                            }
-                            return false;
-                        }
-                    }).autocomplete('search', element.val().toLowerCase());
-                };
-
                 userService.get()
                     .then(function(user){
                         scope.masterUserData = angular.copy(user);
