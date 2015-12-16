@@ -45,7 +45,7 @@ class RequestFlyerBase extends RequestBaseController {
         }
         // Create realtor
         else {
-            $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptionsCopy);
+            $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), new QueueRealtor, $formOptionsCopy);
             $form->handleRequest($request);
             if (!$form->isValid()) {
                 $this->getMessage()->replace('realtor', $this->getFormErrors($form));
