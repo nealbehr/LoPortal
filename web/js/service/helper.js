@@ -654,6 +654,7 @@
                 scope.realtorSelect = 'omit';
 
                 // Select realtor
+                scope.realtorSelect  = 'omit';
                 scope.realtorOptions = [
                     { value: 'omit', name: 'Omit realtor information', type: 'Options' },
                     { value: 'add', name: 'Add realtor', type: 'Options' }
@@ -670,11 +671,20 @@
                     }));
                     waitingScreen.hide();
                 });
+                scope.setRealtorData = function() {
+                    scope.request.realtor_id = (isNaN(scope.realtorSelect)) ? null : scope.realtorSelect;
+                    scope.request.property.omit_realtor_info = (scope.realtorSelect === 'add') ? '0' : '1';
+                };
 
                 scope.$watch('request', function(newVal){
                     if(undefined == newVal || !("id" in newVal)){
                         return;
                     }
+
+                    if (newVal.realtor_id !== null && !isNaN(newVal.realtor_id)) {
+                        scope.realtorSelect = newVal.realtor_id;
+                    }
+
                     scope.realtorPicture = new pictureObject(
                         angular.element("#realtorImage"),
                         {container: $(".realtor.realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
@@ -718,15 +728,15 @@
                     history.back();
                 };
 
-                scope.saveDraftOrApproved = function(e) {
+                scope.saveDraftOrApproved = function(e, form) {
                     e.preventDefault();
 
-                    if (scope.realtorSelect === 'add') {
-                        scope.request.property.omit_realtor_info = '0';
+                    if (!form.$valid) {
+                        this.gotoErrorMessage();
+                        return false;
                     }
-                    else {
-                        scope.request.property.omit_realtor_info = '1';
-                    }
+
+
 
                     if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
                         return false;
@@ -763,22 +773,15 @@
                     this.hideErrors = true;
                 };
 
-                scope.gotoErrorMessage = function(){
+                scope.gotoErrorMessage = function() {
+                    scope.hideErrors = false;
                     $anchorScroll(scope.container.attr("id"));
                 };
 
                 scope.save = function(form) {
                     if (!form.$valid) {
-                        this.hideErrors = false;
                         this.gotoErrorMessage();
                         return false;
-                    }
-
-                    if (scope.realtorSelect === 'add') {
-                        scope.request.property.omit_realtor_info = '0';
-                    }
-                    else {
-                        scope.request.property.omit_realtor_info = '1';
                     }
 
                     if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {

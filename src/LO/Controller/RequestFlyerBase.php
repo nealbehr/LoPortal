@@ -39,18 +39,30 @@ class RequestFlyerBase extends RequestBaseController {
             $formOptionsCopy['validation_groups'] = ['Default', 'draft'];
         }
 
-        $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptionsCopy);
-        $form->handleRequest($request);
-        if(!$form->isValid()){
-            $this->getMessage()->replace('realtor', $this->getFormErrors($form));
+        // Get realtor
+        if (!empty($request->get('realtor_id'))) {
+            $realtor = $this->getRealtorById($app, $request->get('realtor_id'));
+        }
+        // Create realtor
+        else {
+            $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptionsCopy);
+            $form->handleRequest($request);
+            if (!$form->isValid()) {
+                $this->getMessage()->replace('realtor', $this->getFormErrors($form));
 
-            throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
+                throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
+            }
+            $realtor->setUserId($app->getSecurityTokenStorage()->getToken()->getUser()->getId());
+            $app->getEntityManager()->persist($realtor);
+            $app->getEntityManager()->flush();
         }
 
-        $app->getEntityManager()->persist($realtor);
-        $app->getEntityManager()->flush();
-        $queue->setType(Queue::TYPE_FLYER);
+        // Set realtor
+        if ($realtor instanceof QueueRealtor) {
+            $queue->setRealtor($realtor);
+        }
 
+        $queue->setType(Queue::TYPE_FLYER);
         if($queue->getUser() == null) {
             // do not change queue user when edited by admin
             $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
@@ -64,7 +76,7 @@ class RequestFlyerBase extends RequestBaseController {
 
             throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
         }
-        $queue->setRealtor($realtor);
+
         $app->getEntityManager()->persist($queue);
         $app->getEntityManager()->flush();
     }
@@ -94,9 +106,10 @@ class RequestFlyerBase extends RequestBaseController {
      * @param $id
      * @return null|QueueRealtor
      */
-    protected function getRealtorById(Application $app, $id){
+    protected function getRealtorById(Application $app, $id)
+    {
         return $app->getEntityManager()
             ->getRepository(QueueRealtor::class)
-            ->find($id);
+            ->findOneBy(['id' => $id, 'user_id' => $app->getSecurityTokenStorage()->getToken()->getUser()->getId()]);
     }
 }

@@ -107,7 +107,8 @@
         return function flyerBase(){
             var self = this;
 
-            this.id = null;
+            this.id         = null;
+            this.realtor_id = null;
 
             this.property = {
                 address: null,

@@ -28,18 +28,20 @@ use LO\Common\RequestTo1Rex;
 use \Mixpanel;
 
 
-class RequestFlyerController extends RequestFlyerBase {
-
-    public function getAction(Application $app, $id){
-        $queue = $this->getQueueById($app, $id);
+class RequestFlyerController extends RequestFlyerBase
+{
+    public function getAction(Application $app, $id)
+    {
+        $queue     = $this->getQueueById($app, $id);
         $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
-        $realtor = $queue->getRealtor();
+        $realtor   = $queue->getRealtor();
 
         return $app->json([
-            'property' => array_merge($this->getFormFieldsAsArray($queueForm), ['state' => $queue->getState()]),
-            'realtor'  => $realtor->getPublicInfo(),
-            'address'  => $queue->getAdditionalInfo(),
-            'user'     => $queue->getUser()->getPublicInfo(),
+            'realtor_id' => $realtor->getId(),
+            'property'   => array_merge($this->getFormFieldsAsArray($queueForm), ['state' => $queue->getState()]),
+            //'realtor'    => $realtor->getPublicInfo(),
+            'address'    => $queue->getAdditionalInfo(),
+            'user'       => $queue->getUser()->getPublicInfo(),
         ]);
     }
 
@@ -440,31 +442,14 @@ class RequestFlyerController extends RequestFlyerBase {
         return $app->json("success");
     }
 
-    public function getRealtorListAction(Application $app, Request $request)
+    public function getRealtorListAction(Application $app)
     {
-        $alias = 'r';
+        $id    = $app->getSecurityTokenStorage()->getToken()->getUser()->getId();
         $query = $app->getEntityManager()->createQueryBuilder()
-            ->select($alias, 'c')
-            ->from(Realtor::class, $alias)
-            ->join($alias.'.company', 'c')
-            ->where("$alias.deleted = '0'")
-            ->setMaxResults(Admin\RealtorController::LIMIT)
-            ->orderBy("$alias.first_name", 'asc');
-
-        if ($request->get(Admin\RealtorController::KEY_SEARCH)) {
-            if (in_array($request->get(Admin\RealtorController::KEY_SEARCH_BY), ['first_name', 'last_name'], true)) {
-                $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like(
-                        "LOWER($alias.".$request->get(Admin\RealtorController::KEY_SEARCH_BY).")",
-                        ':param'
-                    )
-                );
-            }
-            $query->andWhere($where)->setParameter(
-                'param',
-                '%'.strtolower($request->get(Admin\RealtorController::KEY_SEARCH)).'%'
-            );
-        }
+            ->select('r')
+            ->from(QueueRealtor::class, 'r')
+            ->where("r.user_id = $id")
+            ->orderBy('r.first_name', 'asc');
 
         return $app->json(['realtors' => $query->getQuery()->getResult(Query::HYDRATE_ARRAY)]);
     }

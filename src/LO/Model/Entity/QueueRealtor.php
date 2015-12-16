@@ -21,6 +21,10 @@ use LO\Validator\FullName;
  */
 class QueueRealtor extends Base
 {
+    /**
+     * @Column(type="integer")
+     */
+    private $user_id;
 
     /**
      * @Column(type="string", length=255)
@@ -94,6 +98,17 @@ class QueueRealtor extends Base
      * @FullName(groups = {"main"})
      */
     protected $last_name;
+
+    public function getUserId()
+    {
+        $this->user_id;
+    }
+
+    public function setUserId($param)
+    {
+        $this->user_id = $param;
+        return $this;
+    }
 
     public function setLastName($param)
     {
