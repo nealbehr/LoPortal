@@ -673,7 +673,7 @@
                 });
                 scope.setRealtorData = function() {
                     scope.request.realtor_id = (isNaN(scope.realtorSelect)) ? null : scope.realtorSelect;
-                    scope.request.property.omit_realtor_info = (scope.realtorSelect === 'add') ? '0' : '1';
+                    scope.request.property.omit_realtor_info = (scope.realtorSelect === 'omit') ? '1' : '0';
                 };
 
                 scope.$watch('request', function(newVal){
@@ -735,8 +735,6 @@
                         this.gotoErrorMessage();
                         return false;
                     }
-
-
 
                     if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
                         return false;
