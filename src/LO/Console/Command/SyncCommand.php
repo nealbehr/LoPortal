@@ -130,9 +130,12 @@ class SyncCommand extends Command
                     )
                 ) {
                     // Set address data
+                    $originalAddress = implode(', ', $data['address']);
                     if ($this->syncAddress
-                        && ($googleAddress = $this->getAddressViaTextSearch(implode(', ', $data['address'])))
+                        && $address->getBaseOriginalAddress() !== $originalAddress
+                        && ($googleAddress = $this->getAddressViaTextSearch($originalAddress))
                     ) {
+                        $address->setBaseOriginalAddress($originalAddress);
                         $address->setFormattedAddress($googleAddress->formatted_address);
                         $address->setPlaceId($googleAddress->place_id);
                         foreach ($googleAddress->address_components as $component) {
