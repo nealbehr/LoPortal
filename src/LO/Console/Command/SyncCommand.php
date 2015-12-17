@@ -115,14 +115,8 @@ class SyncCommand extends Command
                 // Create/update full user data
                 if (
                     (
-                        isset(
-                            $data['custom_fields']['Active PMP'],
-                            $data['custom_fields']['Signed PMP'],
-                            $data['custom_fields']['Loan Officer']
-                        )
+                        isset($data['custom_fields']['Active PMP'])
                         && 'yes' === strtolower($data['custom_fields']['Active PMP'])
-                        && 'yes' === strtolower($data['custom_fields']['Signed PMP'])
-                        && 'yes' === strtolower($data['custom_fields']['Loan Officer'])
                     )
                     || (
                         isset($data['custom_fields']['Sub-Company Name (DBA)'])
