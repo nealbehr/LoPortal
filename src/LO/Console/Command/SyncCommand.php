@@ -94,6 +94,7 @@ class SyncCommand extends Command
                     $user->setPassword(self::DEFAULT_PASSWORD);
                     $this->countCreate++;
                 }
+                $address->setBaseOriginalAddress(implode(', ', $data['address']));
 
                 // Set lender data
                 if (isset($data['custom_fields']['Sub-Company Name (DBA)'])) {
@@ -153,8 +154,8 @@ class SyncCommand extends Command
                         }
                         $this->entityManager->persist($address);
                         $this->entityManager->flush();
-                        $user->setAddress($address);
                     }
+                    $user->setAddress($address);
 
                     // Set user data
                     $user->setEmail($data['email']);

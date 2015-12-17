@@ -26,6 +26,11 @@ class Address extends Base {
     /**
      * @Column(type="string", length=255)
      */
+    protected $base_original_address;
+
+    /**
+     * @Column(type="string", length=255)
+     */
     protected $formatted_address;
 
     /**
@@ -72,6 +77,17 @@ class Address extends Base {
     public function setPlaceId($place_id)
     {
         $this->place_id = $place_id;
+    }
+
+    public function getBaseOriginalAddress()
+    {
+        return $this->base_original_address;
+    }
+
+    public function setBaseOriginalAddress($param)
+    {
+        $this->base_original_address = $param;
+        return $this;
     }
 
     /**
