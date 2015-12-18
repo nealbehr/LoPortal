@@ -444,12 +444,17 @@ class RequestFlyerController extends RequestFlyerBase
 
     public function getRealtorListAction(Application $app)
     {
-        $id    = $app->getSecurityTokenStorage()->getToken()->getUser()->getId();
-        $query = $app->getEntityManager()->createQueryBuilder()
+        $user  = $app->getSecurityTokenStorage()->getToken()->getUser();
+        $query = $app->getEntityManager()
+            ->createQueryBuilder()
             ->select('r')
             ->from(QueueRealtor::class, 'r')
-            ->where("r.user_id = $id")
             ->orderBy('r.first_name', 'asc');
+
+        // if = admin, show all realtors
+        if (!$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)) {
+            $query->where('r.user_id = :id')->setParameter('id', $user->getId());
+        }
 
         return $app->json(['realtors' => $query->getQuery()->getResult(Query::HYDRATE_ARRAY)]);
     }

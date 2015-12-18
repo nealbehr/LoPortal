@@ -45,7 +45,7 @@ class RequestProvider implements ControllerProviderInterface{
         $controllers
             ->get("/flyer/{id}/download", "request.flyer.controller:download");
 
-        $controllers->get('/flyer/realtor', 'request.flyer.controller:getRealtorListAction');
+        $controllers->get('/flyer/realtors', 'request.flyer.controller:getRealtorListAction');
 
         $controllers
             ->get("/flyer/{id}/html", "request.flyer.controller:contentForPDF")

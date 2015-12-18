@@ -660,7 +660,7 @@
                     { value: 'add', name: 'Add realtor', type: 'Options' }
                 ];
                 waitingScreen.show();
-                $http.get('/request/flyer/realtor').then(function(response) {
+                $http.get('/request/flyer/realtors').then(function(response) {
                     scope.realtorOptions = scope.realtorOptions.concat(
                         $.map(response.data.realtors, function(item) {
                             return {

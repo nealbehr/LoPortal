@@ -108,8 +108,12 @@ class RequestFlyerBase extends RequestBaseController {
      */
     protected function getRealtorById(Application $app, $id)
     {
-        return $app->getEntityManager()
-            ->getRepository(QueueRealtor::class)
-            ->findOneBy(['id' => $id, 'user_id' => $app->getSecurityTokenStorage()->getToken()->getUser()->getId()]);
+        $realtor = $app->getEntityManager()->getRepository(QueueRealtor::class);
+
+        return $app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)
+            ? $realtor->find($id)
+            : $realtor->findOneBy(
+                ['id' => $id, 'user_id' => $app->getSecurityTokenStorage()->getToken()->getUser()->getId()]
+            );
     }
 }
