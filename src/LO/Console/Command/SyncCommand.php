@@ -79,7 +79,7 @@ class SyncCommand extends Command
 
         $this->sync->fetch(function($meta, $data) use ($qUser, $qLender, $notLender) {
             // Sync contacts
-            if ($meta['type'] === 'contact' && isset($data['id'], $data['email'])) {
+            if ($meta['type'] === 'contact' && isset($data['id']) && !empty($data['email'])) {
                 // Update user
                 try {
                     $user    = $qUser->setParameter('id', $data['id'])->getQuery()->getSingleResult();
