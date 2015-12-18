@@ -103,7 +103,7 @@ class RequestFlyerBase extends RequestBaseController {
 
     /**
      * @param Application $app
-     * @param $id
+     * @param integer $id
      * @return null|QueueRealtor
      */
     protected function getRealtorById(Application $app, $id)
