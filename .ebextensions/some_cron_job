@@ -1,2 +1,3 @@
 # Sync from BaseCRM
 00 8 * * * root /usr/bin/php /var/app/current/src/LO/Console/Command/console.php portal:sync
+00 19 * * * root /usr/bin/php /var/app/current/src/LO/Console/Command/console.php portal:sync
