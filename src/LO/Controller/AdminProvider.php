@@ -5,16 +5,16 @@
  * Date: 4/1/15
  * Time: 2:46 PM
  */
-
 namespace LO\Controller;
 
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 
-class AdminProvider implements ControllerProviderInterface {
-    public function connect(Application $app) {
-
+class AdminProvider implements ControllerProviderInterface
+{
+    public function connect(Application $app)
+    {
         $app['admin.controller'] = $app->share(function() use ($app) {
             return new Admin\AdminUserController();
         });
@@ -49,6 +49,10 @@ class AdminProvider implements ControllerProviderInterface {
 
         $app['admin.status.controller'] = $app->share(function() use ($app) {
             return new Admin\StatusController();
+        });
+
+        $app['admin.template.controller'] = $app->share(function() use ($app) {
+            return new Admin\TemplateController();
         });
 
         /** @var ControllerCollection $controllers */
@@ -120,6 +124,15 @@ class AdminProvider implements ControllerProviderInterface {
          * Routes for StatysController
          */
         $controllers->get('/status/all', 'admin.status.controller:getAllByTypeAction');
+
+        /**
+         * Routes for TemplateController
+         */
+        $controllers->get('/template', 'admin.template.controller:getListAction');
+        $controllers->get('/template/{id}', 'admin.template.controller:getAction');
+        $controllers->post('/template', 'admin.template.controller:addAction');
+        $controllers->put('/template/{id}', 'admin.template.controller:updateAction');
+        $controllers->delete('/template/{id}', 'admin.template.controller:deleteAction');
         
         return $controllers;
     }

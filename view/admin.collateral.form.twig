@@ -1,0 +1,57 @@
+<form ng-submit="submit(formRealtor, $event)" class="css-form" novalidate name="formRealtor">
+    <div class="row edit-user">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+            <div id="message-box"></div>
+            <h2>[[title]]</h2>
+            <div class="thumbnail">
+                <div class="realty-logo-photo"  style="text-align: center; height: 150px;overflow: hidden;">
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        Crop photo by dragging the edges and corners of the light blue box over the photo. You can also enlarge or reduce the photo by using two finger gestures on your trackpad or the scrollwheel on your mouse.
+                    </div>
+                    <img id="realtyLogoImage" style="max-width: 100%;max-height: 100%;" ng-src="[[ company.logo | defaultImage:'/images/empty-company-150x525.png' ]]" alt="realty company" ng-click="realtyLogo.choosePhoto()">
+                </div>
+                <div class="caption">
+                   <span class="upload">
+                        Upload<br>
+                        <div>
+                            <input class="upload" id="realtyLogo" type="file" valid-file name="fileimage" ng-model="company.logo">
+                        </div>
+                    </span>
+                </div>
+            </div>
+            <span class="label-controls">Document Name</span>
+            <div class="inputs-holder">
+                <input class="input-lg" type="text" required="">
+            </div>
+            <span class="label-controls">Document Description</span>
+            <div class="inputs-holder">
+                <textarea cols="30" rows="3" class="form-control"></textarea>
+            </div>
+            <span class="label-controls">Category</span>
+            <select class="form-control input-lg" name="" required="">
+                <option value="">Consumer</option>
+                <option value="">Real Estate</option>
+                <option value="">Affinity</option>
+                <option value="">Program Reference</option>
+            </select>
+            <span class="label-controls">Format</span>
+            <select class="form-control input-lg" name="" required="">
+                <option value="">Flaer</option>
+                <option value="">Brochure</option>
+                <option value="">Other</option>
+            </select>
+            <div class="checkholder">
+                <input type="checkbox" name="" id="co-branded"/>
+                <label for="co-branded">Co Branded?</label>
+            </div>
+            <button type="submit" class="btn btn-default btn-lg">Save</button>
+            <div class="bottom-nav">
+                <a ng-if="collateral.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete</a>
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>

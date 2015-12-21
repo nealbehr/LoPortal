@@ -11,8 +11,10 @@ namespace LO\Controller;
 use LO\Application;
 use Symfony\Component\HttpFoundation\Response;
 
-class Partial {
-    public function getAction(Application $app, $filename){
+class Partial
+{
+    public function getAction(Application $app, $filename)
+    {
         try{
             return new Response($app->getTwig()->render($filename.'.twig'));
         }catch (\Twig_Error_Loader $e){
@@ -22,4 +24,4 @@ class Partial {
 
         return (new Response(sprintf('Template \'%s\' not found.', $filename)))->setCache([]);
     }
-} 
+}

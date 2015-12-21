@@ -22,7 +22,8 @@
             'requestFlyerModule',
             'approvalModule',
             'googleAutoCompleteModule',
-            'resourcesModule'
+            'resourcesModule',
+            'collateralModule'
         ]
     );
 
