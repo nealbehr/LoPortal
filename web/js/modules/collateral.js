@@ -118,6 +118,12 @@
             this.name        = null;
             this.description = null;
             this.picture     = null;
+            this.category    = {
+                id: null
+            };
+            this.format      = {
+                id: null
+            };
 
             this.getPicture = function() {
                 return this.picture;
@@ -200,29 +206,22 @@
                     templateUrl: '/partials/admin.collateral.form',
                     scope      : { template: '=loTemplate' },
                     link       : function(scope, element, attrs, controllers) {
-                        scope.container       = angular.element('#message-box');
-                        scope.templatePicture = {};
+                        scope.message = angular.element('#message-box');
 
                         scope.$watch('template.id', function(newVal, oldVal) {
                             scope.title = newVal? 'Edit Template': 'Add Template';
                         });
 
-                        scope.$watch('template', function(newVal, oldVal) {
-                            if (newVal == undefined || !('id' in newVal)){
-                                return;
-                            }
-
-                            angular.element('#picture-input').on('change',function(e) {
-                                loadFile(e).then(function(base64){
-                                    scope.template.setPicture(base64);
-                                });
+                        angular.element('#picture-input').on('change', function(e) {
+                            loadFile(e).then(function(base64) {
+                                scope.template.setPicture(base64);
                             });
                         });
 
-                        scope.submit = function(form, $event) {
+                        scope.submit = function() {
                             waitingScreen.show();
 
-                            scope.template.save().then(function(data) {
+                            scope.template.save().then(function() {
                                 sessionMessages.addSuccess('Successfully saved.');
                                 history.back();
                             }).catch(function(data) {
@@ -235,7 +234,7 @@
                                     errors += data.form_errors.join(' ');
                                 }
 
-                                renderMessage(errors, 'danger', scope.container, scope);
+                                renderMessage(errors, 'danger', scope.message, scope);
                                 scope.gotoErrorMessage();
                             }).finally(function() {
                                 waitingScreen.hide();

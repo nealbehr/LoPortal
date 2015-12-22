@@ -1239,7 +1239,7 @@
     });
 
     /**
-     * Global progress bar
+     * Show progress bar
      */
     helperService.factory('progressBar', function() {
         var element = angular.element('#progress-bar-screen');

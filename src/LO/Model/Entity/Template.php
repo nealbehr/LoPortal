@@ -30,9 +30,9 @@ class Template extends Base
     protected $deleted = '0';
 
     /**
-     * @OneToOne(targetEntity="TemplateFormat", fetch="LAZY")
+     * @OneToOne(targetEntity="TemplateCategory", fetch="LAZY")
      * @JoinColumn(name="category_id", referencedColumnName="id")
-     **/
+     */
     private $category;
 
     /**

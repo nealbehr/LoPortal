@@ -13,6 +13,8 @@ use LO\Traits\GetFormErrors;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\Template;
+use LO\Model\Entity\TemplateCategory;
+use LO\Model\Entity\TemplateFormat;
 use LO\Form\TemplateType;
 
 class CollateralController extends Base
@@ -35,7 +37,7 @@ class CollateralController extends Base
             $app->getEntityManager()->beginTransaction();
             $model = new Template;
 
-            $this->createForm($app, $request, $model);
+            $this->validation($app, $request, $model);
 
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -62,12 +64,26 @@ class CollateralController extends Base
 
     }
 
-    private function createForm(Application $app, Request $request, Template $model)
+    public function getCategoriesAction(Application $app, Request $request)
     {
-        $formOptions = ['validation_groups' => ['Default']];
-        $data        = $request->request->get('template');
 
-        $form = $app->getFormFactory()->create(new TemplateType($app->getS3()), $model, $formOptions);
+    }
+
+    public function getFormatsAction(Application $app, Request $request)
+    {
+
+    }
+
+    private function validation(Application $app, Request $request, Template $model)
+    {
+        $data = $request->request->get('template');
+
+        // Set template data
+        $form = $app->getFormFactory()->create(
+            new TemplateType($app->getS3()),
+            $model,
+            ['validation_groups' => ['Default']]
+        );
         $form->submit($data);
 
         if (!$form->isValid()) {
@@ -76,6 +92,28 @@ class CollateralController extends Base
             throw new BadRequestHttpException(implode(' ', $this->errors));
         }
 
-        return $form;
+        // Set category
+        if (
+            !empty($data['category']['id'])
+            && $cat = $app->getEntityManager()->getRepository(TemplateCategory::class)->find($data['category']['id'])
+        ) {
+            $model->setCategory($cat);
+        }
+        else {
+            throw new BadRequestHttpException('Category not exist.');
+        }
+
+        // Set format
+        if (
+            !empty($data['format']['id'])
+            && $format = $app->getEntityManager()->getRepository(TemplateFormat::class)->find($data['format']['id'])
+        ) {
+            $model->setFormat($format);
+        }
+        else {
+            throw new BadRequestHttpException('Format not exist.');
+        }
+
+        return $model;
     }
 }

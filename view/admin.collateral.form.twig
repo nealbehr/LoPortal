@@ -1,21 +1,19 @@
-<form ng-submit="submit(formRealtor, $event)" class="css-form" novalidate name="formRealtor">
-    <div class="row edit-user">
+<form ng-submit="submit(formTemplate, $event)" class="css-form" novalidate name="formTemplate">
+    <div class="row">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
             <div id="message-box"></div>
             <h2>[[title]]</h2>
             <div class="thumbnail">
                 <div class="picture-box">
-                    <img ng-src="[[template.picture|defaultImage:'/images/empty-company-150x525.png']]"
-                         alt=""
-                         ng-click="templatePicture.choosePhoto()">
+                    <img ng-src="[[template.picture|defaultImage:'/images/empty-company-150x525.png']]" alt="">
                 </div>
                 <span class="upload">
-                    Upload Picture
+                    Upload File
                     <div>
                         <input id="picture-input"
                                type="file"
                                valid-file
-                               name="templatefileimage"
+                               name="picture"
                                ng-model="template.picture">
                     </div>
                 </span>
@@ -26,20 +24,24 @@
             </div>
             <span class="label-controls">Document Description</span>
             <div class="inputs-holder">
-                <textarea cols="30" rows="3" name="description" ng-model="template.description" class="form-control"></textarea>
+                <textarea ng-model="template.description"
+                          name="description"
+                          class="form-control"
+                          cols="30"
+                          rows="3"></textarea>
             </div>
             <span class="label-controls">Category</span>
-            <select class="form-control input-lg" name="" required="">
-                <option value="">Consumer</option>
-                <option value="">Real Estate</option>
-                <option value="">Affinity</option>
-                <option value="">Program Reference</option>
+            <select class="form-control input-lg" name="category" ng-model="template.category.id">
+                <option value="1">Consumer</option>
+                <option value="2">Real Estate</option>
+                <option value="3">Affinity</option>
+                <option value="4">Program Reference</option>
             </select>
             <span class="label-controls">Format</span>
-            <select class="form-control input-lg" name="" required="">
-                <option value="">Flaer</option>
-                <option value="">Brochure</option>
-                <option value="">Other</option>
+            <select class="form-control input-lg" name="format" ng-model="template.format.id">
+                <option value="1">Flaer</option>
+                <option value="2">Brochure</option>
+                <option value="3">Other</option>
             </select>
             <div class="checkholder">
                 <input type="checkbox" name="" id="co-branded"/>
