@@ -1,6 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: Eugene Lysenko
  * Date: 12/21/15
  * Time: 15:15
@@ -31,12 +30,24 @@ class Template extends Base
     protected $deleted = '0';
 
     /**
+     * @OneToOne(targetEntity="TemplateFormat", fetch="LAZY")
+     * @JoinColumn(name="category_id", referencedColumnName="id")
+     **/
+    private $category;
+
+    /**
+     * @OneToOne(targetEntity="TemplateFormat", fetch="LAZY")
+     * @JoinColumn(name="format_id", referencedColumnName="id")
+     */
+    private $format;
+
+    /**
      * @Column(type="string", length=50)
      * @Assert\NotBlank(message="Name should not be blank.", groups = {"main"})
      * @Assert\Length(
      *              max = 50,
-     *              maxMessage = "Name cannot be longer than {{ limit }} characters" )
-     *
+     *              maxMessage = "Name cannot be longer than {{ limit }} characters"
+     * )
      */
     protected $name;
 
@@ -62,6 +73,28 @@ class Template extends Base
     public function setDeleted($param)
     {
         $this->deleted = $param;
+        return $this;
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    public function setCategory($param)
+    {
+        $this->category = $param;
+        return $this;
+    }
+
+    public function getFormat()
+    {
+        return $this->format;
+    }
+
+    public function setFormat($param)
+    {
+        $this->format = $param;
         return $this;
     }
 
