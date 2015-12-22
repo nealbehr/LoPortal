@@ -1,6 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: Eugene Lysenko
  * Date: 12/11/15
  * Time: 11:14
@@ -71,7 +70,7 @@ class SyncCommand extends Command
             $notLender = $qLender->setParameter('name', $notLenderName)->getQuery()->getSingleResult();
         }
         catch (NoResultException $e) {
-            $notLender = new Lender();
+            $notLender = new Lender;
             $notLender->setName($notLenderName);
             $this->entityManager->persist($notLender);
             $this->entityManager->flush();
@@ -84,6 +83,8 @@ class SyncCommand extends Command
                 try {
                     $user    = $qUser->setParameter('id', $data['id'])->getQuery()->getSingleResult();
                     $address = $user->getAddress();
+                    $user->setDeleted('0');
+                    $user->setUpdatedAt(null);
                     $this->countUpdate++;
                 }
                 // Create user
@@ -94,7 +95,8 @@ class SyncCommand extends Command
                     $user->setPassword(self::DEFAULT_PASSWORD);
                     $this->countCreate++;
                 }
-                $address->setBaseOriginalAddress(implode(', ', $data['address']));
+                $originalAddress = implode(', ', $data['address']);
+                $address->setBaseOriginalAddress($originalAddress);
 
                 // Set lender data
                 if (isset($data['custom_fields']['Sub-Company Name (DBA)'])) {
@@ -124,7 +126,6 @@ class SyncCommand extends Command
                     )
                 ) {
                     // Set address data
-                    $originalAddress = implode(', ', $data['address']);
                     if ($this->syncAddress
                         && $address->getBaseOriginalAddress() !== $originalAddress
                         && ($googleAddress = $this->getAddressViaTextSearch($originalAddress))
@@ -171,7 +172,8 @@ class SyncCommand extends Command
                 // Delete
                 else {
                     $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
-                    $user->setDeleted(1);
+                    $user->setUpdatedAt(null);
+                    $user->setDeleted('1');
                     $this->countDelete++;
                 }
 
@@ -182,7 +184,7 @@ class SyncCommand extends Command
 
         $output->writeln(
             sprintf(
-                'Finished sync. Created: %s. Updated: %s. Deleted %s.',
+                'Finished sync. (Created: %s | Updated: %s | Deleted %s)',
                 $this->countCreate,
                 $this->countUpdate,
                 $this->countDelete
