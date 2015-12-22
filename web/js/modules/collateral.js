@@ -192,8 +192,8 @@
      */
     module.directive(
         'loAdminCollateralForm',
-        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', 'pictureObject', '$http',
-            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, pictureObject, $http)
+        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', '$http', 'loadFile',
+            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, $http, loadFile)
             {
                 return {
                     restrict   : 'EA',
@@ -212,22 +212,17 @@
                                 return;
                             }
 
-                            scope.templatePicture = new pictureObject(
-                                angular.element('#picture-input'),
-                                {
-                                    container: $('.picture-box > img'),
-                                    options  : { autoCrop: false }
-                                },
-                                scope.template
-                            );
+                            angular.element('#picture-input').on('change',function(e) {
+                                loadFile(e).then(function(base64){
+                                    scope.template.setPicture(base64);
+                                });
+                            });
                         });
 
                         scope.submit = function(form, $event) {
                             waitingScreen.show();
 
                             scope.template.save().then(function(data) {
-                                console.log(data);
-
                                 sessionMessages.addSuccess('Successfully saved.');
                                 history.back();
                             }).catch(function(data) {

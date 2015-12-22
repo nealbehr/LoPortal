@@ -33,7 +33,7 @@ class TemplateType extends AbstractType
         $builder
             ->add('picture', new S3Photo($this->s3, '1rex/tamplate'), [
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Last name should not be blank.']),
+                    new Assert\NotBlank(['message' => 'Picture should not be blank.']),
                     new Assert\Length([
                         'max'        => 255,
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
@@ -42,13 +42,14 @@ class TemplateType extends AbstractType
             ])
             ->add('name', 'text', [
                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Last name should not be blank.']),
+                    new Assert\NotBlank(['message' => 'Name should not be blank.']),
                     new Assert\Length([
                         'max'        => 50,
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                     ])
                ]
-            ])->add('description', 'text');
+            ])
+            ->add('description', 'text');
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
