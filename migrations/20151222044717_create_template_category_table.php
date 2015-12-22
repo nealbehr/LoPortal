@@ -37,6 +37,6 @@ EOL
      */
     public function down()
     {
-
+        $this->execute('DROP TABLE `template_category`');
     }
 }

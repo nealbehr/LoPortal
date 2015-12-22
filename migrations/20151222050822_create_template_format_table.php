@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateTemplateTable extends AbstractMigration
+class CreateTemplateFormatTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -23,17 +23,11 @@ class CreateTemplateTable extends AbstractMigration
     public function up()
     {
         $this->execute(<<<EOL
-CREATE TABLE `template` (
+CREATE TABLE `template_format` (
 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-`deleted` enum('0','1') NOT NULL DEFAULT '0',
-`category_id` INT(11),
-`format_id` INT(11),
 `name` varchar(50) DEFAULT NULL,
-`description` text DEFAULT NULL,
-`picture` varchar(255) default null,
-`created_at` datetime DEFAULT NULL,
-`updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+INSERT INTO `template_format` (`name`) VALUES ('Flaer'), ('Brochure'), ('Other');
 EOL
         );
     }
@@ -43,6 +37,6 @@ EOL
      */
     public function down()
     {
-        $this->execute('DROP TABLE `template`');
+        $this->execute('DROP TABLE `template_format`');
     }
 }
