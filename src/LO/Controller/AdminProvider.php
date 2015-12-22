@@ -51,8 +51,8 @@ class AdminProvider implements ControllerProviderInterface
             return new Admin\StatusController();
         });
 
-        $app['admin.template.controller'] = $app->share(function() use ($app) {
-            return new Admin\TemplateController();
+        $app['admin.collateral.controller'] = $app->share(function() use ($app) {
+            return new Admin\CollateralController();
         });
 
         /** @var ControllerCollection $controllers */
@@ -126,13 +126,13 @@ class AdminProvider implements ControllerProviderInterface
         $controllers->get('/status/all', 'admin.status.controller:getAllByTypeAction');
 
         /**
-         * Routes for TemplateController
+         * Routes for CollateralController
          */
-        $controllers->get('/template', 'admin.template.controller:getListAction');
-        $controllers->get('/template/{id}', 'admin.template.controller:getAction');
-        $controllers->post('/template', 'admin.template.controller:addAction');
-        $controllers->put('/template/{id}', 'admin.template.controller:updateAction');
-        $controllers->delete('/template/{id}', 'admin.template.controller:deleteAction');
+        $controllers->get('/collateral', 'admin.collateral.controller:getListAction');
+        $controllers->get('/collateral/{id}', 'admin.collateral.controller:getAction');
+        $controllers->post('/collateral', 'admin.collateral.controller:addAction');
+        $controllers->put('/collateral/{id}', 'admin.collateral.controller:updateAction');
+        $controllers->delete('/collateral/{id}', 'admin.collateral.controller:deleteAction');
         
         return $controllers;
     }

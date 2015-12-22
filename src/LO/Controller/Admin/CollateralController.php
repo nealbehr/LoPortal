@@ -13,8 +13,9 @@ use LO\Traits\GetFormErrors;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\Template;
+use LO\Form\TemplateType;
 
-class TemplateController extends Base
+class CollateralController extends Base
 {
     use GetFormErrors;
 
@@ -35,11 +36,9 @@ class TemplateController extends Base
             $model = new Template;
 
             $this->createForm($app, $request, $model);
-//
-//            $model->setCompany($this->realtyCompanyExist($app, $model->getRealtyCompanyId()));
-//
-//            $app->getEntityManager()->persist($model);
-//            $app->getEntityManager()->flush();
+
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
             $app->getEntityManager()->commit();
 
             return $app->json(['id' => $model->getId()]);
@@ -65,6 +64,18 @@ class TemplateController extends Base
 
     private function createForm(Application $app, Request $request, Template $model)
     {
+        $formOptions = ['validation_groups' => ['Default']];
+        $data        = $request->request->get('template');
 
+        $form = $app->getFormFactory()->create(new TemplateType($app->getS3()), $model, $formOptions);
+        $form->submit($data);
+
+        if (!$form->isValid()) {
+            $app->getMonolog()->addError($form->getErrors(true));
+            $this->errors = $this->getFormErrors($form);
+            throw new BadRequestHttpException(implode(' ', $this->errors));
+        }
+
+        return $form;
     }
 }
