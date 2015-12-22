@@ -1,6 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
  * User: Eugene Lysenko
  * Date: 12/21/15
  * Time: 14:58
@@ -64,19 +63,20 @@ class CollateralController extends Base
 
     }
 
-    public function getCategoriesAction(Application $app, Request $request)
+    public function getCategoriesAction(Application $app)
     {
-
+        return $app->json($app->getEntityManager()->getRepository(TemplateCategory::class)->findAll());
     }
 
-    public function getFormatsAction(Application $app, Request $request)
+    public function getFormatsAction(Application $app)
     {
-
+        return $app->json($app->getEntityManager()->getRepository(TemplateFormat::class)->findAll());
     }
 
     private function validation(Application $app, Request $request, Template $model)
     {
         $data = $request->request->get('template');
+        $em   = $app->getEntityManager();
 
         // Set template data
         $form = $app->getFormFactory()->create(
@@ -92,21 +92,21 @@ class CollateralController extends Base
             throw new BadRequestHttpException(implode(' ', $this->errors));
         }
 
-        // Set category
+        // Set template category
         if (
             !empty($data['category']['id'])
-            && $cat = $app->getEntityManager()->getRepository(TemplateCategory::class)->find($data['category']['id'])
+            && $category = $em->getRepository(TemplateCategory::class)->find($data['category']['id'])
         ) {
-            $model->setCategory($cat);
+            $model->setCategory($category);
         }
         else {
             throw new BadRequestHttpException('Category not exist.');
         }
 
-        // Set format
+        // Set template format
         if (
             !empty($data['format']['id'])
-            && $format = $app->getEntityManager()->getRepository(TemplateFormat::class)->find($data['format']['id'])
+            && $format = $em->getRepository(TemplateFormat::class)->find($data['format']['id'])
         ) {
             $model->setFormat($format);
         }
