@@ -15,8 +15,6 @@ use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\UniqueConstraint;
-use DoctrineProxy\__CG__\LO\Model\Entity\TemplateCategory;
-use DoctrineProxy\__CG__\LO\Model\Entity\TemplateFormat;
 use LO\Validator\FullName;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -45,7 +43,7 @@ class Template extends Base
 
     /**
      * @Column(type="integer")
-     * @Assert\NotBlank(message="Category id should not be blank.", groups = {"main"})
+     * @Assert\NotBlank(message="Format id should not be blank.", groups = {"main"})
      */
     protected $format_id;
 
