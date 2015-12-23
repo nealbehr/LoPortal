@@ -97,6 +97,12 @@ module.exports = function(grunt) {
                 }, {
                     expand: true,
                     dot: true,
+                    cwd: 'web/fonts',
+                    dest: '<%= yeoman.dist %>/web/build/fonts',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
                     cwd: 'web',
                     dest: '<%= yeoman.dist %>/web',
                     src: '**'
@@ -214,6 +220,7 @@ module.exports = function(grunt) {
                         'web/css/jquery-ui.structure.min.css',
                         'web/css/jquery-ui.min.css',
                         'web/css/bootstrap.min.css',
+                        'web/css/font-awesome.min.css',
                         'web/css/all.min.css',
                         '<%= cssmin.target.files[0].dest %>/ng-dialog.min.css',
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
