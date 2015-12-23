@@ -43,15 +43,16 @@
         ['$scope', 'createTemplate', '$routeParams', 'waitingScreen', 'renderMessage',
             function($scope, createTemplate, $routeParams, waitingScreen, renderMessage) {
                 waitingScreen.show();
+
+                $scope.template = createTemplate();
+
                 createTemplate().get($routeParams.id).then(function(data) {
                     $scope.template = data;
                 }).catch(function(data) {
-                    $scope.template = createTemplate();
                     renderMessage(data.message, 'danger', angular.element('#message-box'), $scope);
                 }).finally(function() {
                     waitingScreen.hide();
                 });
-                $scope.PATH = PATH;
             }
         ]
     );
@@ -68,7 +69,7 @@
                     
                     model.delete = function() {
                         var deferred = $q.defer();
-                        $http.delete(PATH+'/'+this.id, {}).success(function(data) {
+                        $http.delete(PATH+'/'+this.id).success(function(data) {
                             deferred.resolve(data);
                         }).error(function(data){
                             deferred.reject(data);
@@ -119,10 +120,12 @@
             this.name        = null;
             this.description = null;
             this.picture     = null;
+            this.category_id = null;
             this.category    = {
                 id:   null,
                 name: null
             };
+            this.format_id   = null;
             this.format      = {
                 id:   null,
                 name: null
@@ -226,25 +229,23 @@
                         });
 
                         // Get categories options
-                        $http.get(PATH+'-categories', { cache: true }).success(function(data) {
+                        $http.get(PATH+'-categories', {cache: true}).success(function(data) {
                             // Set default option
-                            if (scope.template.hasOwnProperty('category')
-                                && null === scope.template.category.id
+                            if (null === scope.template.category_id
                                 && undefined !== data[0]
                             ) {
-                                scope.template.category.id = data[0].id;
+                                scope.template.category_id = data[0].id;
                             }
                             scope.categories = data;
                         });
 
                         // Get formats options
-                        $http.get(PATH+'-formats', { cache: true }).success(function(data) {
+                        $http.get(PATH+'-formats', {cache: true}).success(function(data) {
                             // Set default option
-                            if (scope.template.hasOwnProperty('format')
-                                && null === scope.template.format.id
+                            if (null === scope.template.format_id
                                 && undefined !== data[0]
                             ) {
-                                scope.template.format.id = data[0].id;
+                                scope.template.format_id = data[0].id;
                             }
                             scope.formats = data;
                         });

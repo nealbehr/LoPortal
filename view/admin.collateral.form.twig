@@ -40,18 +40,17 @@
                           rows="3"></textarea>
             </div>
             <span class="label-controls">Category</span>
-            <select ng-model="template.category.id"
+            <select ng-model="template.category_id"
                     ng-options="option.id as option.name for option in categories"
                     required=""
                     name="category"
                     class="form-control input-lg"></select>
             <span class="label-controls">Format</span>
-            <select ng-model="template.format.id"
+            <select ng-model="template.format_id"
                     ng-options="option.id as option.name for option in formats"
                     required=""
                     name="format"
-                    class="form-control
-                    input-lg"></select>
+                    class="form-control input-lg"></select>
             <div class="checkholder">
                 <input type="checkbox" name="" id="co-branded"/>
                 <label for="co-branded">Co Branded?</label>

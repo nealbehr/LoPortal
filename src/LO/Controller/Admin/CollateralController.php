@@ -62,7 +62,22 @@ class CollateralController extends Base
 
     public function updateAction(Application $app, Request $request, $id)
     {
+        try{
+            $model = $this->getById($app, $id);
 
+            $this->validation($app, $request, $model);
+
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
+
+            return $app->json('success');
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            $this->errors['message'] = $e->getMessage();
+
+            return $app->json($this->errors, $e->getStatusCode());
+        }
     }
 
     public function deleteAction(Application $app, $id)
@@ -116,8 +131,8 @@ class CollateralController extends Base
 
         // Set template category
         if (
-            !empty($data['category']['id'])
-            && $category = $em->getRepository(TemplateCategory::class)->find($data['category']['id'])
+            !empty($data['category_id'])
+            && $category = $em->getRepository(TemplateCategory::class)->find($data['category_id'])
         ) {
             $model->setCategory($category);
         }
@@ -127,8 +142,8 @@ class CollateralController extends Base
 
         // Set template format
         if (
-            !empty($data['format']['id'])
-            && $format = $em->getRepository(TemplateFormat::class)->find($data['format']['id'])
+            !empty($data['format_id'])
+            && $format = $em->getRepository(TemplateFormat::class)->find($data['format_id'])
         ) {
             $model->setFormat($format);
         }
