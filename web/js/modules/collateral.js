@@ -304,5 +304,21 @@
                     }
                 }
             }
-        ]);
+        ]
+    );
+
+    module.directive(
+        'loAdminCollateralList',
+        ['$http', '$location', 'tableHeadCol', 'waitingScreen', 'renderMessage',
+            function($http, $location, tableHeadCol, waitingScreen, renderMessage) {
+                return {
+                    restrict: 'EA',
+                    templateUrl: '/partials/admin.collateral.list',
+                    link: function (scope, element, attrs, controllers) {
+
+                    }
+                }
+            }
+        ]
+    );
 })(settings);
