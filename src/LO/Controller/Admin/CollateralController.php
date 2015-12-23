@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\Template;
 use LO\Model\Entity\TemplateCategory;
 use LO\Model\Entity\TemplateFormat;
+use Doctrine\ORM\Query;
 use LO\Form\TemplateType;
 
 class CollateralController extends Base
@@ -27,7 +28,13 @@ class CollateralController extends Base
 
     public function getAction(Application $app, $id)
     {
-
+        try {
+            return $app->json($this->getById($app, $id)->toArray());
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
     }
 
     public function addAction(Application $app, Request $request)
@@ -60,17 +67,32 @@ class CollateralController extends Base
 
     public function deleteAction(Application $app, $id)
     {
+        try {
+            $model = $this->getById($app, $id);
+            $model->setDeleted('1');
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
 
+            return $app->json('success');
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            $this->errors['message'] = $e->getMessage();
+
+            return $app->json($this->errors, $e->getStatusCode());
+        }
     }
 
     public function getCategoriesAction(Application $app)
     {
-        return $app->json($app->getEntityManager()->getRepository(TemplateCategory::class)->findAll());
+        $query = $app->getEntityManager()->createQueryBuilder()->select('c')->from(TemplateCategory::class, 'c');
+        return $app->json($query->getQuery()->getResult(Query::HYDRATE_ARRAY));
     }
 
     public function getFormatsAction(Application $app)
     {
-        return $app->json($app->getEntityManager()->getRepository(TemplateFormat::class)->findAll());
+        $query = $app->getEntityManager()->createQueryBuilder()->select('f')->from(TemplateFormat::class, 'f');
+        return $app->json($query->getQuery()->getResult(Query::HYDRATE_ARRAY));
     }
 
     private function validation(Application $app, Request $request, Template $model)
@@ -112,6 +134,17 @@ class CollateralController extends Base
         }
         else {
             throw new BadRequestHttpException('Format not exist.');
+        }
+
+        return $model;
+    }
+
+    private function getById(Application $app, $id)
+    {
+        if (!($model = $app->getEntityManager()->getRepository(Template::class)->find($id))
+            || $model->getDeleted() !== '0'
+        ) {
+            throw new BadRequestHttpException('Collateral not found.');
         }
 
         return $model;

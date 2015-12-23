@@ -2,6 +2,14 @@
     <div class="row">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
             <div id="message-box"></div>
+            <div ng-show="!hideErrors && formTemplate.$submitted && !formTemplate.$valid"
+                 class="alert alert-danger fade in">
+                <a ng-href="#" class="close" aria-label="Close" ng-click="showErrors($event)">close</a>
+                <div ng-show="formTemplate.picture.$error.required">Picture is required</div>
+                <div ng-show="formTemplate.name.$error.required">Document name is required</div>
+                <div ng-show="formTemplate.category.$error.required">Category is required</div>
+                <div ng-show="formTemplate.format.$error.required">Format is required</div>
+            </div>
             <h2>[[title]]</h2>
             <div class="thumbnail">
                 <div class="picture-box">
@@ -10,17 +18,18 @@
                 <span class="upload">
                     Upload File
                     <div>
-                        <input id="picture-input"
+                        <input ng-model="template.picture"
+                               required=""
+                               id="picture-input"
                                type="file"
                                valid-file
-                               name="picture"
-                               ng-model="template.picture">
+                               name="picture">
                     </div>
                 </span>
             </div>
             <span class="label-controls">Document Name</span>
             <div class="inputs-holder">
-                <input class="input-lg" type="text" name="name" ng-model="template.name" required="">
+                <input ng-model="template.name" required="" name="name" class="input-lg" type="text">
             </div>
             <span class="label-controls">Document Description</span>
             <div class="inputs-holder">
@@ -31,25 +40,25 @@
                           rows="3"></textarea>
             </div>
             <span class="label-controls">Category</span>
-            <select class="form-control input-lg" name="category" ng-model="template.category.id">
-                <option value="1">Consumer</option>
-                <option value="2">Real Estate</option>
-                <option value="3">Affinity</option>
-                <option value="4">Program Reference</option>
-            </select>
+            <select ng-model="template.category.id"
+                    ng-options="option.id as option.name for option in categories"
+                    required=""
+                    name="category"
+                    class="form-control input-lg"></select>
             <span class="label-controls">Format</span>
-            <select class="form-control input-lg" name="format" ng-model="template.format.id">
-                <option value="1">Flaer</option>
-                <option value="2">Brochure</option>
-                <option value="3">Other</option>
-            </select>
+            <select ng-model="template.format.id"
+                    ng-options="option.id as option.name for option in formats"
+                    required=""
+                    name="format"
+                    class="form-control
+                    input-lg"></select>
             <div class="checkholder">
                 <input type="checkbox" name="" id="co-branded"/>
                 <label for="co-branded">Co Branded?</label>
             </div>
             <button type="submit" class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">
-                <a ng-if="collateral.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete</a>
+                <a ng-if="template.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete</a>
                 <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>

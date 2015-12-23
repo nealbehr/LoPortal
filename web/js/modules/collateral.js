@@ -40,11 +40,16 @@
 
     module.controller(
         'collateralEditCtrl',
-        ['$scope', 'createTemplate', '$routeParams',
-            function($scope, createTemplate, $routeParams)
-            {
+        ['$scope', 'createTemplate', '$routeParams', 'waitingScreen', 'renderMessage',
+            function($scope, createTemplate, $routeParams, waitingScreen, renderMessage) {
+                waitingScreen.show();
                 createTemplate().get($routeParams.id).then(function(data) {
                     $scope.template = data;
+                }).catch(function(data) {
+                    $scope.template = createTemplate();
+                    renderMessage(data.message, 'danger', angular.element('#message-box'), $scope);
+                }).finally(function() {
+                    waitingScreen.hide();
                 });
                 $scope.PATH = PATH;
             }
@@ -62,10 +67,6 @@
                     var model = new createTemplateBase();
                     
                     model.delete = function() {
-                        if (!this.id) {
-                            alert('User id has not set.');
-                        }
-
                         var deferred = $q.defer();
                         $http.delete(PATH+'/'+this.id, {}).success(function(data) {
                             deferred.resolve(data);
@@ -119,10 +120,12 @@
             this.description = null;
             this.picture     = null;
             this.category    = {
-                id: null
+                id:   null,
+                name: null
             };
             this.format      = {
-                id: null
+                id:   null,
+                name: null
             };
 
             this.getPicture = function() {
@@ -206,7 +209,11 @@
                     templateUrl: '/partials/admin.collateral.form',
                     scope      : { template: '=loTemplate' },
                     link       : function(scope, element, attrs, controllers) {
-                        scope.message = angular.element('#message-box');
+                        // Variables
+                        scope.message    = angular.element('#message-box');
+                        scope.hideErrors = true;
+                        scope.formats    = [];
+                        scope.categories = [];
 
                         scope.$watch('template.id', function(newVal, oldVal) {
                             scope.title = newVal? 'Edit Template': 'Add Template';
@@ -218,7 +225,37 @@
                             });
                         });
 
-                        scope.submit = function() {
+                        // Get categories options
+                        $http.get(PATH+'-categories', { cache: true }).success(function(data) {
+                            // Set default option
+                            if (scope.template.hasOwnProperty('category')
+                                && null === scope.template.category.id
+                                && undefined !== data[0]
+                            ) {
+                                scope.template.category.id = data[0].id;
+                            }
+                            scope.categories = data;
+                        });
+
+                        // Get formats options
+                        $http.get(PATH+'-formats', { cache: true }).success(function(data) {
+                            // Set default option
+                            if (scope.template.hasOwnProperty('format')
+                                && null === scope.template.format.id
+                                && undefined !== data[0]
+                            ) {
+                                scope.template.format.id = data[0].id;
+                            }
+                            scope.formats = data;
+                        });
+
+                        scope.submit = function(form) {
+                            if (!form.$valid) {
+                                scope.hideErrors = false;
+                                $anchorScroll(scope.message.attr('id'));
+                                return false;
+                            }
+
                             waitingScreen.show();
 
                             scope.template.save().then(function() {
@@ -235,7 +272,8 @@
                                 }
 
                                 renderMessage(errors, 'danger', scope.message, scope);
-                                scope.gotoErrorMessage();
+                                scope.hideErrors = false;
+                                $anchorScroll(scope.message.attr('id'));
                             }).finally(function() {
                                 waitingScreen.hide();
                             });
@@ -245,6 +283,23 @@
                             e.preventDefault();
                             history.back();
                         };
+
+                        scope.showErrors = function(e) {
+                            e.preventDefault();
+                            scope.hideErrors = true;
+                        };
+
+                        scope.delete = function(e) {
+                            e.preventDefault();
+                            if (!confirm('Are you sure?')) {
+                                return false;
+                            }
+
+                            scope.template.delete();
+                            scope.template.clear();
+                            sessionMessages.addSuccess('Template was deleted');
+                            history.back();
+                        }
                     }
                 }
             }
