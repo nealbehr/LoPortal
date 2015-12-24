@@ -115,7 +115,7 @@ class Template extends Base
         return $this->format_id;
     }
 
-    public function setFormatId(TemplateFormat $param)
+    public function setFormatId($param)
     {
         $this->format_id = $param;
         return $this;
@@ -126,7 +126,7 @@ class Template extends Base
         return $this->format;
     }
 
-    public function setFormat($param)
+    public function setFormat(TemplateFormat $param)
     {
         $this->format = $param;
         return $this;
