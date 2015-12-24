@@ -1,30 +1,3 @@
-.item-control {
-    padding: 10px 15px 15px    ;
-    text-align: justify;
-    overflow: hidden;
-    font-size: 20px;
-}
-.item-control i {
-    float: left;
-    width: 33.3%;
-    text-align: center;
-}
-.item-control i span {
-    padding: 5px 0 0;
-    font-size: 12px;
-    display: block;
-}
-.thumbnail .picture-box > img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-.inputs-holder textarea {
-    display: block;
-    margin: 0 -10px;
-
-}
-
 .ui-autocomplete.ui-widget-content{
     background: white;
     border: 1px solid #cacaca;
@@ -187,3 +160,105 @@ input[type=number] {
     margin: 0;
 }
 /* Property page end */
+
+/* Collateral page start */
+.item-control{
+    padding: 10px 15px 15px    ;
+    text-align: justify;
+    overflow: hidden;
+    font-size: 20px;
+}
+.item-control i{
+    float: left;
+    width: 33.3%;
+    text-align: center;
+    font-style: 14px;
+}
+.item-control i span{
+    padding: 5px 0 0;
+    font-size: 12px;
+    display: block;
+}
+.add-template{
+    margin: 0 0 50px;
+}
+.add-template h2{
+    font: 700 20px/26px 'PT Sans',Helvetica,Arial,sans-serif;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.document-info{
+    overflow: hidden;
+    margin: 0 0 15px;
+}
+.document-info .thumbnail{
+    float: left;
+    overflow: hidden;
+    width: 123px;
+    margin: 0 15px 0 0;
+}
+.document-info .thumbnail .picture-box{
+    height: 130px;
+    overflow: hidden;
+}
+.document-info .thumbnail .picture-box>img{
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+.document-info .holder{
+    overflow: hidden;
+}
+.document-info .label-controls{
+    margin: 0 0 5px;
+}
+.document-info .upload{margin-left: 5px;}
+.document-info .inputs-holder{
+    margin: 0 0 10px;
+}
+.document-info .inputs-holder textarea{
+    box-shadow: none;
+    height: 90px;
+    display: block;
+    margin: 0 0 10px;
+    border: 0;
+    max-width: 100%;
+    background: none;
+}
+.add-template .checkholder{
+    margin: 0 0 15px;
+}
+.add-template .select-holder{
+    position: relative;
+    margin: 0 0 20px;
+}
+.add-template .select-holder.loading-options:after{
+    content: '';
+    background: rgba(0,0,0,0);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+.add-template .select-holder .preloader{
+    display: none;
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    margin-top: -16px;
+}
+.add-template .select-holder.loading-options .preloader{
+    display: block;
+}
+.add-template button{
+    min-width: 100%;
+}
+.add-template .bottom-nav{
+    padding: 22px 0 0;
+}
+.add-template .bottom-nav a{
+    margin: 0;
+}
+/* Collateral page end */
+
