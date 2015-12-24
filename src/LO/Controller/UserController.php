@@ -52,6 +52,27 @@ class UserController {
 
     /**
      * @param Application $app
+     * @param $param
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function searchAction(Application $app, $param)
+    {
+        try {
+            if (!($user = $app->getEntityManager()->getRepository(UserEntity::class)->findOneBy(['email' => $param]))) {
+                throw new BadRequestHttpException('User not found.');
+            }
+
+            return $app->json($user->getPublicInfo());
+        }
+        catch(HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
+    /**
+     * @param Application $app
      * @param Request $request
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
