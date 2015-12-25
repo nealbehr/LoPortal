@@ -5,7 +5,7 @@
     'use strict';
     settings   = settings || {};
 
-    var module = angular.module('collateralModule', ['adminModule']);
+    var module = angular.module('collateralModule', ['adminModule', 'checklist-model']);
 
     /**
      * Constants
@@ -117,15 +117,19 @@
             
             // Variables
             this.id          = null;
+            this.category_id = null;
+            this.format_id   = null;
+            this.lenders     = [];
+            this.lenders_all = 1;
+            this.states      = [];
+            this.states_all  = 1;
             this.name        = null;
             this.description = null;
             this.picture     = null;
-            this.category_id = null;
             this.category    = {
                 id:   null,
                 name: null
             };
-            this.format_id   = null;
             this.format      = {
                 id:   null,
                 name: null
@@ -204,19 +208,26 @@
      */
     module.directive(
         'loAdminCollateralForm',
-        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', '$http', 'loadFile',
-            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, $http, loadFile)
+        ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', '$http', 'loadFile', '$q', 'USA_STATES',
+            function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, $http, loadFile, $q, USA_STATES)
             {
                 return {
                     restrict   : 'EA',
                     templateUrl: '/partials/admin.collateral.form',
                     scope      : { template: '=loTemplate' },
                     link       : function(scope, element, attrs, controllers) {
+                        scope.$watch('template.id', function(newVal, oldVal) {
+                            scope.coBranded =
+                                scope.template.lenders_all == '0' || scope.template.states_all == '0' ? '1' : '0';
+                        });
+
                         // Variables
                         scope.message    = angular.element('#message-box');
                         scope.hideErrors = true;
                         scope.formats    = [];
                         scope.categories = [];
+                        scope.states     = USA_STATES;
+                        scope.coBranded  = '0';
 
                         scope.$watch('template.id', function(newVal, oldVal) {
                             scope.title = newVal? 'Edit Template': 'Add Template';
@@ -228,26 +239,24 @@
                             });
                         });
 
-                        // Get categories options
-                        $http.get(PATH+'-categories', {cache: true}).success(function(data) {
-                            // Set default option
-                            if (null === scope.template.category_id
-                                && undefined !== data[0]
-                            ) {
-                                scope.template.category_id = data[0].id;
+                        // Get options
+                        var categories = $http.get(PATH+'-categories', {cache: true}),
+                            formats    = $http.get(PATH+'-formats', {cache: true});
+                        $q.all([categories, formats]).then(function(response) {
+                            scope.categories = response[0].data;
+                            if (undefined !== scope.categories[0] && scope.categories[0].hasOwnProperty('id')) {
+                                scope.template.category_id = scope.categories[0].id;
                             }
-                            scope.categories = data;
-                        });
 
-                        // Get formats options
-                        $http.get(PATH+'-formats', {cache: true}).success(function(data) {
-                            // Set default option
-                            if (null === scope.template.format_id
-                                && undefined !== data[0]
-                            ) {
-                                scope.template.format_id = data[0].id;
+                            scope.formats = response[1].data;
+                            if (undefined !== scope.formats[0] && scope.formats[0].hasOwnProperty('id')) {
+                                scope.template.format_id = scope.formats[0].id;
                             }
-                            scope.formats = data;
+                        }).then(function() {
+                            // Get lenders
+                            $http.get('/admin/json/lenders', {cache: true}).success(function(data) {
+                                scope.lenders = data;
+                            });
                         });
 
                         scope.submit = function(form) {

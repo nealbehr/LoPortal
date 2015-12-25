@@ -60,7 +60,7 @@
                 <img class="preloader" src="images/waiting.gif" width="32" height="32" alt="">
             </div>
             <span class="label-controls">Format</span>
-            <div ng-class="categories.length === 0 ? 'loading-options' : ''" class="select-holder">
+            <div ng-class="formats.length === 0 ? 'loading-options' : ''" class="select-holder">
                 <select ng-model="template.format_id"
                         ng-options="option.id as option.name for option in formats"
                         required=""
@@ -69,8 +69,46 @@
                 <img class="preloader" src="images/waiting.gif" width="32" height="32" alt="">
             </div>
             <div class="checkholder">
-                <input type="checkbox" name="" id="co-branded"/>
+                <input type="checkbox" name="coBranded" id="co-branded" ng-model="coBranded" ng-true-value="'1'" ng-false-value="'0'"/>
                 <label for="co-branded">Co Branded?</label>
+            </div>
+            <div ng-show="coBranded === '1'">
+                <span class="label-controls">Lenders</span>
+                <div>
+                    <input ng-model="template.lenders_all" value="1" name="lendersAll" type="radio">
+                    <label for="all-lenders">All</label>
+                </div>
+                <div>
+                    <input ng-model="template.lenders_all" value="0" name="lendersAll" type="radio">
+                    <label for="custom-lenders">Custom select</label>
+                </div>
+                <div ng-if="template.lenders_all == 0" class="checkbox-area two-cols">
+                    <div class="block" ng-repeat="lender in lenders">
+                        <input checklist-model="template.lenders"
+                               checklist-value="lender.id"
+                               type="checkbox"
+                               id="lenders-check-[[$index]]">
+                        <label for="lenders-check-[[$index]]">[[lender.name]]</label>
+                    </div>
+                </div>
+                <span class="label-controls">Geography</span>
+                <div>
+                    <input ng-model="template.states_all" value="1" name="statesAll" type="radio">
+                    <label for="all-lenders">All</label>
+                </div>
+                <div>
+                    <input ng-model="template.states_all" value="0" name="statesAll" type="radio">
+                    <label for="custom-lenders">Custom select</label>
+                </div>
+                <div ng-if="template.states_all == 0" class="checkbox-area four-cols">
+                    <div class="block" ng-repeat="state in states">
+                        <input checklist-model="template.states"
+                               checklist-value="state.code"
+                               type="checkbox"
+                               id="state-[[state.code]]">
+                        <label for="state-[[state.code]]">[[state.code]]</label>
+                    </div>
+                </div>
             </div>
             <button type="submit" class="btn btn-default btn-lg">Save</button>
             <div class="bottom-nav">

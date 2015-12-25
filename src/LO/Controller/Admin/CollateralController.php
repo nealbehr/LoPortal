@@ -14,6 +14,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\Template;
 use LO\Model\Entity\TemplateCategory;
 use LO\Model\Entity\TemplateFormat;
+use LO\Model\Entity\Lender;
 use Doctrine\ORM\Query;
 use LO\Form\TemplateType;
 
@@ -149,6 +150,23 @@ class CollateralController extends Base
         }
         else {
             throw new BadRequestHttpException('Format not exist.');
+        }
+
+        // Set lenders
+        if (isset($data['lenders_all']) && !empty($data['lenders'] && $data['lenders_all'] === '0')) {
+            $query = $em->createQueryBuilder();
+            $query->select('l');
+            $query->from(Lender::class, 'l');
+            $query->where($query->expr()->in('l.id', $data['lenders']));
+
+            $model->getLenders()->clear();
+
+            $lenders = $query->getQuery()->getResult();
+            if (!empty($lenders)) {
+                foreach ($lenders as $lender) {
+                    $model->getLenders()->add($lender);
+                }
+            }
         }
 
         return $model;

@@ -31,6 +31,14 @@ class TemplateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('lenders_all', 'number', [
+                'precision'  => 0,
+                'empty_data' => '1'
+            ])
+            ->add('states_all', 'number', [
+                'precision'  => 0,
+                'empty_data' => '1'
+            ])
             ->add('picture', new S3Photo($this->s3, '1rex/tamplate'), [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Picture should not be blank.']),

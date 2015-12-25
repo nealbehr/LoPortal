@@ -10,12 +10,15 @@ use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
+use Doctrine\ORM\Mapping\JoinTable;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use LO\Validator\FullName;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -54,6 +57,16 @@ class Template extends Base
     protected $format;
 
     /**
+     * @Column(type="string")
+     */
+    protected $lenders_all = '1';
+
+    /**
+     * @Column(type="string")
+     */
+    protected $states_all = '1';
+
+    /**
      * @Column(type="string", length=50)
      * @Assert\NotBlank(message="Name should not be blank.", groups = {"main"})
      * @Assert\Length(
@@ -76,6 +89,23 @@ class Template extends Base
      * )
      */
     protected $picture;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @ManyToMany(targetEntity="Lender", inversedBy="template", cascade={"remove", "persist"})
+     * @JoinTable(name="template_lender")
+     */
+    private $lenders;
+
+    public function __construct()
+    {
+        $this->lenders = new ArrayCollection();
+    }
+
+    public function getLenders()
+    {
+        return $this->lenders;
+    }
 
     public function getDeleted()
     {
@@ -129,6 +159,28 @@ class Template extends Base
     public function setFormat(TemplateFormat $param)
     {
         $this->format = $param;
+        return $this;
+    }
+
+    public function getLendersAll()
+    {
+        return $this->lenders_all;
+    }
+
+    public function setLendersAll($param)
+    {
+        $this->lenders_all = $param;
+        return $this;
+    }
+
+    public function getStatesAll()
+    {
+        return $this->states_all;
+    }
+
+    public function setStatesAll($param)
+    {
+        $this->states_all = $param;
         return $this;
     }
 

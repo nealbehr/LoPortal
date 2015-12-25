@@ -183,7 +183,7 @@ input[type=number] {
     margin: 0 0 50px;
 }
 .add-template h2{
-    font: 700 20px/26px 'PT Sans',Helvetica,Arial,sans-serif;
+    font:700 20px/26px 'PT Sans',Helvetica,Arial,sans-serif;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -195,10 +195,11 @@ input[type=number] {
     float: left;
     overflow: hidden;
     width: 123px;
+    height: 163px;
     margin: 0 15px 0 0;
 }
 .document-info .thumbnail .picture-box{
-    height: 130px;
+    height: 128px;
     overflow: hidden;
 }
 .document-info .thumbnail .picture-box>img{
@@ -206,13 +207,41 @@ input[type=number] {
     max-width: 100%;
     height: auto;
 }
+.document-info .thumbnail .upload{
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    padding: 135px 0 0 35px;
+    margin: 0;
+
+}
+.document-info .thumbnail .upload:before{
+    position: static;
+    float: left;
+    margin: -1px 0 0 -27px;
+}
+.document-info .thumbnail .upload > div{
+    position: static;
+}
+.document-info .thumbnail .upload input{
+    position: absolute;
+    width: 100%;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+}
 .document-info .holder{
     overflow: hidden;
 }
 .document-info .label-controls{
     margin: 0 0 5px;
 }
-.document-info .upload{margin-left: 5px;}
 .document-info .inputs-holder{
     margin: 0 0 10px;
 }
@@ -248,17 +277,84 @@ input[type=number] {
     top: 50%;
     margin-top: -16px;
 }
-.add-template .select-holder.loading-options .preloader{
-    display: block;
-}
+.add-template .select-holder.loading-options .preloader{display: block;}
 .add-template button{
     min-width: 100%;
 }
 .add-template .bottom-nav{
     padding: 22px 0 0;
 }
-.add-template .bottom-nav a{
+.add-template .bottom-nav a{margin: 0;}
+.checkbox-area{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 0 0 25px;
+}
+.checkbox-area .block{
+    float: left;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+/* two cols style */
+.checkbox-area.two-cols .block{
+    width: 50%;
+    padding: 10px;
+}
+.checkbox-area.two-cols .block:nth-child(4n-2),
+.checkbox-area.two-cols .block:nth-child(4n-3){
+    background: #eee;
+}
+.checkbox-area.two-cols .block:last-child:nth-child(odd){
+    width: 100%;
+}
+/* three cols style */
+.checkbox-area.three-cols .block{
+    width: 33.333333%;
+    padding: 10px;
+}
+.checkbox-area.three-cols .block:nth-child(6n-3),
+.checkbox-area.three-cols .block:nth-child(6n-4),
+.checkbox-area.three-cols .block:nth-child(6n-5){
+    background: #eee;
+}
+.checkbox-area.three-cols .block:last-child:nth-child(3n-2){
+    width: 100%;
+}
+.checkbox-area.three-cols .block:last-child:nth-child(3n-1){
+    width: 66.6%;
+}
+/* four cols style */
+.checkbox-area.four-cols .block{
+    width: 25%;
+    padding: 10px;
+}
+.checkbox-area.four-cols .block:nth-child(8n-4),
+.checkbox-area.four-cols .block:nth-child(8n-5),
+.checkbox-area.four-cols .block:nth-child(8n-6),
+.checkbox-area.four-cols .block:nth-child(8n-7){
+    background: #eee;
+}
+.checkbox-area.four-cols .block:last-child:nth-child(4n-3){
+    width: 100%;
+}
+.checkbox-area.four-cols .block:last-child:nth-child(4n-2){
+    width: 75%;
+}
+.checkbox-area.four-cols .block:last-child:nth-child(4n-1){
+    width: 50%;
+}
+.checkbox-area input[type="radio"]{
+    float: left;
+}
+.checkbox-area label{
+    text-overflow: ellipsis;
+    font-size: 14px;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
     margin: 0;
 }
+.checkbox-area input[type=checkbox]+label:before{margin: -3px 10px 0 0;}
 /* Collateral page end */
 
