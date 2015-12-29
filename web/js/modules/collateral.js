@@ -34,8 +34,24 @@
     /**
      * Controllers
      */
-    module.controller('collateralCtrl', ['$scope', 'createTemplate', function($scope, createTemplate) {
-        $scope.template = createTemplate();
+    module.controller(
+        'collateralCtrl',
+        ['$scope', 'createTemplate', 'waitingScreen', '$http', '$q',
+        function($scope, createTemplate, waitingScreen, $http, $q) {
+        $scope.template   = createTemplate();
+        $scope.categories = {};
+        $scope.templates  = [];
+
+        waitingScreen.show();
+
+        var categories = $http.get(PATH+'-categories', {cache: true}),
+            template   = $http.get(PATH);
+        $q.all([categories, template]).then(function(response) {
+            $scope.categories = response[0].data;
+            $scope.templates  = response[1].data;
+        }).finally(function() {
+            waitingScreen.hide();
+        });
     }]);
 
     module.controller(
@@ -126,14 +142,6 @@
             this.name        = null;
             this.description = null;
             this.picture     = null;
-            this.category    = {
-                id:   null,
-                name: null
-            };
-            this.format      = {
-                id:   null,
-                name: null
-            };
 
             this.getPicture = function() {
                 return this.picture;
@@ -323,8 +331,13 @@
                 return {
                     restrict: 'EA',
                     templateUrl: '/partials/admin.collateral.list',
+                    scope      : {
+                        category: '=loCategory',
+                        templates : '=loTemplates'
+                    },
                     link: function (scope, element, attrs, controllers) {
-
+                        $scope.PATH = PATH;
+                        console.log(scope.category); console.log(scope.templates);
                     }
                 }
             }

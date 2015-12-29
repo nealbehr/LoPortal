@@ -1,121 +1,126 @@
 <form ng-submit="submit(formTemplate, $event)" class="css-form" novalidate name="formTemplate">
     <div class="add-template">
-    <div class="row">
-        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
-            <div id="message-box"></div>
-            <div ng-show="!hideErrors && formTemplate.$submitted && !formTemplate.$valid"
-                 class="alert alert-danger fade in">
-                <a ng-href="#" class="close" aria-label="Close" ng-click="showErrors($event)">close</a>
-                <div ng-show="formTemplate.picture.$error.required">Picture is required</div>
-                <div ng-show="formTemplate.name.$error.required">Document name is required</div>
-                <div ng-show="formTemplate.category.$error.required">Category is required</div>
-                <div ng-show="formTemplate.format.$error.required">Format is required</div>
-            </div>
-            <h2>[[title]]</h2>
-            <div class="document-info">
-                <div class="thumbnail">
-                    <div class="picture-box">
-                        <img ng-src="[[template.picture|defaultImage:'/images/empty-big.png']]" alt="">
-                    </div>
-                    <span class="upload">
-                        Upload File
-                        <div>
-                            <input ng-model="template.picture"
-                                   required=""
-                                   id="picture-input"
-                                   type="file"
-                                   valid-file
-                                   name="picture">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+                <div id="message-box"></div>
+                <div ng-show="!hideErrors && formTemplate.$submitted && !formTemplate.$valid"
+                     class="alert alert-danger fade in">
+                    <a ng-href="#" class="close" aria-label="Close" ng-click="showErrors($event)">close</a>
+                    <div ng-show="formTemplate.picture.$error.required">Picture is required</div>
+                    <div ng-show="formTemplate.name.$error.required">Document name is required</div>
+                    <div ng-show="formTemplate.category.$error.required">Category is required</div>
+                    <div ng-show="formTemplate.format.$error.required">Format is required</div>
+                </div>
+                <h2>[[title]]</h2>
+                <div class="document-info">
+                    <div class="thumbnail">
+                        <div class="picture-box">
+                            <img ng-src="[[template.picture|defaultImage:'/images/empty-big.png']]" alt="">
                         </div>
-                    </span>
-                </div>
-                <div class="holder">
-                    <div class="inputs-holder">
-                        <div class="input">
-                            <input ng-model="template.name"
-                                   required=""
-                                   placeholder="Document Name"
-                                   name="name"
-                                   class="input-lg"
-                                   type="text">
+                        <span class="upload">
+                            Upload File
+                            <div>
+                                <input ng-model="template.picture"
+                                       required=""
+                                       id="picture-input"
+                                       type="file"
+                                       valid-file
+                                       name="picture">
+                            </div>
+                        </span>
+                    </div>
+                    <div class="holder">
+                        <div class="inputs-holder">
+                            <div class="input">
+                                <input ng-model="template.name"
+                                       required=""
+                                       placeholder="Document Name"
+                                       name="name"
+                                       class="input-lg"
+                                       type="text">
+                            </div>
+                            <div class="input">
+                                <textarea ng-model="template.description"
+                                          placeholder="Document Description"
+                                          name="description"
+                                          class="form-control"
+                                          cols="30"
+                                          rows="3"></textarea>
+                            </div>
                         </div>
-                        <div class="input">
-                            <textarea ng-model="template.description"
-                                      placeholder="Document Description"
-                                      name="description"
-                                      class="form-control"
-                                      cols="30"
-                                      rows="3"></textarea>
+                    </div>
+                </div>
+                <span class="label-controls">Category</span>
+                <div ng-class="categories.length === 0 ? 'loading-options' : ''" class="select-holder">
+                    <select ng-model="template.category_id"
+                            ng-options="option.id as option.name for option in categories"
+                            required=""
+                            name="category"
+                            class="form-control input-lg"></select>
+                    <img class="preloader" src="images/waiting.gif" width="32" height="32" alt="">
+                </div>
+                <span class="label-controls">Format</span>
+                <div ng-class="formats.length === 0 ? 'loading-options' : ''" class="select-holder">
+                    <select ng-model="template.format_id"
+                            ng-options="option.id as option.name for option in formats"
+                            required=""
+                            name="format"
+                            class="form-control input-lg"></select>
+                    <img class="preloader" src="images/waiting.gif" width="32" height="32" alt="">
+                </div>
+                <div class="checkholder">
+                    <input ng-model="coBranded"
+                           ng-true-value="'1'"
+                           ng-false-value="'0'"
+                           type="checkbox"
+                           name="coBranded"
+                           id="co-branded"/>
+                    <label for="co-branded">Co Branded?</label>
+                </div>
+                <div ng-show="coBranded === '1'">
+                    <span class="label-controls">Lenders</span>
+                    <div>
+                        <input ng-model="template.lenders_all" value="1" name="lendersAll" type="radio">
+                        <label for="all-lenders">All</label>
+                    </div>
+                    <div>
+                        <input ng-model="template.lenders_all" value="0" name="lendersAll" type="radio">
+                        <label for="custom-lenders">Custom select</label>
+                    </div>
+                    <div ng-if="template.lenders_all == 0" class="checkbox-area two-cols">
+                        <div class="block" ng-repeat="lender in lenders">
+                            <input checklist-model="template.lenders"
+                                   checklist-value="lender.id"
+                                   type="checkbox"
+                                   id="lenders-check-[[$index]]">
+                            <label for="lenders-check-[[$index]]">[[lender.name]]</label>
+                        </div>
+                    </div>
+                    <span class="label-controls">Geography</span>
+                    <div>
+                        <input ng-model="template.states_all" value="1" name="statesAll" type="radio">
+                        <label for="all-lenders">All</label>
+                    </div>
+                    <div>
+                        <input ng-model="template.states_all" value="0" name="statesAll" type="radio">
+                        <label for="custom-lenders">Custom select</label>
+                    </div>
+                    <div ng-if="template.states_all == 0" class="checkbox-area four-cols">
+                        <div class="block" ng-repeat="state in states">
+                            <input checklist-model="template.states"
+                                   checklist-value="state.code"
+                                   type="checkbox"
+                                   id="state-[[state.code]]">
+                            <label for="state-[[state.code]]">[[state.code]]</label>
                         </div>
                     </div>
                 </div>
-            </div>
-            <span class="label-controls">Category</span>
-            <div ng-class="categories.length === 0 ? 'loading-options' : ''" class="select-holder">
-                <select ng-model="template.category_id"
-                        ng-options="option.id as option.name for option in categories"
-                        required=""
-                        name="category"
-                        class="form-control input-lg"></select>
-                <img class="preloader" src="images/waiting.gif" width="32" height="32" alt="">
-            </div>
-            <span class="label-controls">Format</span>
-            <div ng-class="formats.length === 0 ? 'loading-options' : ''" class="select-holder">
-                <select ng-model="template.format_id"
-                        ng-options="option.id as option.name for option in formats"
-                        required=""
-                        name="format"
-                        class="form-control input-lg"></select>
-                <img class="preloader" src="images/waiting.gif" width="32" height="32" alt="">
-            </div>
-            <div class="checkholder">
-                <input type="checkbox" name="coBranded" id="co-branded" ng-model="coBranded" ng-true-value="'1'" ng-false-value="'0'"/>
-                <label for="co-branded">Co Branded?</label>
-            </div>
-            <div ng-show="coBranded === '1'">
-                <span class="label-controls">Lenders</span>
-                <div>
-                    <input ng-model="template.lenders_all" value="1" name="lendersAll" type="radio">
-                    <label for="all-lenders">All</label>
+                <button type="submit" class="btn btn-default btn-lg">Save</button>
+                <div class="bottom-nav">
+                    <a ng-if="template.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete</a>
+                    <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
                 </div>
-                <div>
-                    <input ng-model="template.lenders_all" value="0" name="lendersAll" type="radio">
-                    <label for="custom-lenders">Custom select</label>
-                </div>
-                <div ng-if="template.lenders_all == 0" class="checkbox-area two-cols">
-                    <div class="block" ng-repeat="lender in lenders">
-                        <input checklist-model="template.lenders"
-                               checklist-value="lender.id"
-                               type="checkbox"
-                               id="lenders-check-[[$index]]">
-                        <label for="lenders-check-[[$index]]">[[lender.name]]</label>
-                    </div>
-                </div>
-                <span class="label-controls">Geography</span>
-                <div>
-                    <input ng-model="template.states_all" value="1" name="statesAll" type="radio">
-                    <label for="all-lenders">All</label>
-                </div>
-                <div>
-                    <input ng-model="template.states_all" value="0" name="statesAll" type="radio">
-                    <label for="custom-lenders">Custom select</label>
-                </div>
-                <div ng-if="template.states_all == 0" class="checkbox-area four-cols">
-                    <div class="block" ng-repeat="state in states">
-                        <input checklist-model="template.states"
-                               checklist-value="state.code"
-                               type="checkbox"
-                               id="state-[[state.code]]">
-                        <label for="state-[[state.code]]">[[state.code]]</label>
-                    </div>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-default btn-lg">Save</button>
-            <div class="bottom-nav">
-                <a ng-if="template.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete</a>
-                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
             </div>
         </div>
     </div>
-        </div>
 </form>

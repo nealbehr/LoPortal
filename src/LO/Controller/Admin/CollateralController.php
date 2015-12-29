@@ -14,23 +14,41 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\Template;
 use LO\Model\Entity\TemplateCategory;
 use LO\Model\Entity\TemplateFormat;
+use LO\Model\Entity\TemplateAddress;
 use LO\Model\Entity\Lender;
 use Doctrine\ORM\Query;
+use Doctrine\ORM\EntityManager;
 use LO\Form\TemplateType;
 
 class CollateralController extends Base
 {
     use GetFormErrors;
 
-    public function getListAction(Application $app, Request $request)
+    public function getListAction(Application $app)
     {
+        try {
+            $query = $app->getEntityManager()->createQueryBuilder()
+                ->select('t')
+                ->from(Template::class, 't')
+                ->where("t.deleted = '0'");
+            $templates = $query->getQuery()->getResult(Query::HYDRATE_ARRAY);
+            $data = [];
+            foreach ($templates as $template) {
+                $data[$template['category_id']][] = $template;
+            }
 
+            return $app->json($data);
+        }
+        catch (HttpException $e) {
+            $app->getMonolog()->addWarning($e);
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
     }
 
     public function getAction(Application $app, $id)
     {
         try {
-            return $app->json($this->getById($app, $id)->toArray());
+            return $app->json($this->getById($app, $id)->toFullArray());
         }
         catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);
@@ -40,20 +58,21 @@ class CollateralController extends Base
 
     public function addAction(Application $app, Request $request)
     {
+        $em = $app->getEntityManager();
         try {
-            $app->getEntityManager()->beginTransaction();
+            $em->beginTransaction();
             $model = new Template;
 
-            $this->validation($app, $request, $model);
+            $this->validation($em, $app, $request, $model);
 
-            $app->getEntityManager()->persist($model);
-            $app->getEntityManager()->flush();
-            $app->getEntityManager()->commit();
+            $em->persist($model);
+            $em->flush();
+            $em->commit();
 
             return $app->json(['id' => $model->getId()]);
         }
         catch (HttpException $e) {
-            $app->getEntityManager()->rollback();
+            $em->rollback();
             $app->getMonolog()->addError($e);
             $this->errors['message'] = $e->getMessage();
 
@@ -63,13 +82,16 @@ class CollateralController extends Base
 
     public function updateAction(Application $app, Request $request, $id)
     {
-        try{
+        $em = $app->getEntityManager();
+        try {
+            $em->beginTransaction();
             $model = $this->getById($app, $id);
 
-            $this->validation($app, $request, $model);
+            $this->validation($em, $app, $request, $model);
 
-            $app->getEntityManager()->persist($model);
-            $app->getEntityManager()->flush();
+            $em->persist($model);
+            $em->flush();
+            $em->commit();
 
             return $app->json('success');
         }
@@ -111,10 +133,9 @@ class CollateralController extends Base
         return $app->json($query->getQuery()->getResult(Query::HYDRATE_ARRAY));
     }
 
-    private function validation(Application $app, Request $request, Template $model)
+    private function validation(EntityManager $em, Application $app, Request $request, Template $model)
     {
         $data = $request->request->get('template');
-        $em   = $app->getEntityManager();
 
         // Set template data
         $form = $app->getFormFactory()->create(
@@ -153,18 +174,35 @@ class CollateralController extends Base
         }
 
         // Set lenders
-        if (isset($data['lenders_all']) && !empty($data['lenders'] && $data['lenders_all'] === '0')) {
-            $query = $em->createQueryBuilder();
-            $query->select('l');
-            $query->from(Lender::class, 'l');
-            $query->where($query->expr()->in('l.id', $data['lenders']));
-
+        if (isset($data['lenders_all']) && $data['lenders_all'] === '0') {
             $model->getLenders()->clear();
 
-            $lenders = $query->getQuery()->getResult();
-            if (!empty($lenders)) {
-                foreach ($lenders as $lender) {
-                    $model->getLenders()->add($lender);
+            if (!empty($data['lenders'])) {
+                $query = $em->createQueryBuilder();
+                $query->select('l');
+                $query->from(Lender::class, 'l');
+                $query->where($query->expr()->in('l.id', $data['lenders']));
+                $lenders = $query->getQuery()->getResult();
+                if (!empty($lenders)) {
+                    foreach ($lenders as $lender) {
+                        $model->getLenders()->add($lender);
+                    }
+                }
+            }
+        }
+
+        // Set states
+        if (isset($data['states_all']) && $data['states_all'] === '0') {
+            foreach ($model->getAddresses() as $address) {
+                $em->remove($address);
+            }
+            $em->flush();
+            if (!empty($data['states'])) {
+                foreach ($data['states'] as $state) {
+                    $address = new TemplateAddress();
+                    $address->setTemplate($model);
+                    $address->setState($state);
+                    $em->persist($address);
                 }
             }
         }

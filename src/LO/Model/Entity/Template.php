@@ -9,6 +9,7 @@ namespace LO\Model\Entity;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\ManyToMany;
 use Doctrine\ORM\Mapping\OneToOne;
@@ -91,20 +92,22 @@ class Template extends Base
     protected $picture;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      * @ManyToMany(targetEntity="Lender", inversedBy="template", cascade={"remove", "persist"})
      * @JoinTable(name="template_lender")
      */
     private $lenders;
 
+    /**
+     * @var ArrayCollection
+     * @OneToMany(targetEntity="TemplateAddress", mappedBy="template", cascade={"remove", "persist"})
+     */
+    private $addresses;
+
     public function __construct()
     {
-        $this->lenders = new ArrayCollection();
-    }
-
-    public function getLenders()
-    {
-        return $this->lenders;
+        $this->lenders   = new ArrayCollection();
+        $this->addresses = new ArrayCollection();
     }
 
     public function getDeleted()
@@ -215,5 +218,46 @@ class Template extends Base
     {
         $this->picture = $param;
         return $this;
+    }
+
+    public function getLenders()
+    {
+        return $this->lenders;
+    }
+
+    public function getAddresses()
+    {
+        return $this->addresses;
+    }
+
+    public function toFullArray()
+    {
+        $states = [];
+        if (($objects = $this->getAddresses()) !== null) {
+            foreach($objects as $object) {
+                $states[] = $object->getState();
+            }
+        }
+
+        $lenders = [];
+        if (($objects = $this->getLenders()) !== null) {
+            foreach($objects as $object) {
+                $lenders[] = $object->getId();
+            }
+        }
+
+        return array(
+            'id'          => $this->id,
+            'category_id' => $this->category_id,
+            'format_id'   => $this->format_id,
+            'lenders_all' => $this->lenders_all,
+            'states_all'  => $this->states_all,
+            'name'        => $this->name,
+            'description' => $this->description,
+            'picture'     => $this->picture,
+            'states'      => $states,
+            'lenders'     => $lenders
+        );
+
     }
 }

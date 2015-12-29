@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class CreateTemplateLenderTable extends AbstractMigration
+class CreateTemplateAddressTable extends AbstractMigration
 {
     /**
      * Change Method.
@@ -23,13 +23,15 @@ class CreateTemplateLenderTable extends AbstractMigration
     public function up()
     {
         $this->execute(<<<EOL
-CREATE TABLE template_lender (
-    template_id INT NOT NULL,
-    lender_id INT NOT NULL,
-    PRIMARY KEY(template_id, lender_id)
+CREATE TABLE template_address (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+    template_id int(11) unsigned NOT NULL,
+    state char(2) NOT NULL,
+    PRIMARY KEY(id),
+    UNIQUE KEY `template_id` (`template_id`,`state`),
+    CONSTRAINT `ltemplate_address_ibfk_1` FOREIGN KEY (`template_id`) REFERENCES `template` (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET=utf8;
-ALTER TABLE template_lender ADD FOREIGN KEY (template_id) REFERENCES template(id);
-ALTER TABLE template_lender ADD FOREIGN KEY (lender_id) REFERENCES lender(id);
+ALTER TABLE template_state ADD FOREIGN KEY (template_id) REFERENCES template(id);
 EOL
         );
     }
