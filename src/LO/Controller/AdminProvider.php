@@ -130,12 +130,13 @@ class AdminProvider implements ControllerProviderInterface
          */
         $controllers->get('/collateral', 'admin.collateral.controller:getListAction');
         $controllers->get('/collateral/{id}', 'admin.collateral.controller:getAction');
+        $controllers->get('/collateral/{id}/download', 'admin.collateral.controller:downloadAction');
         $controllers->get('/collateral-categories', 'admin.collateral.controller:getCategoriesAction');
         $controllers->get('/collateral-formats', 'admin.collateral.controller:getFormatsAction');
         $controllers->post('/collateral', 'admin.collateral.controller:addAction');
         $controllers->put('/collateral/{id}', 'admin.collateral.controller:updateAction');
         $controllers->delete('/collateral/{id}', 'admin.collateral.controller:deleteAction');
-        
+
         return $controllers;
     }
 }

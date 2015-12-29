@@ -9,20 +9,26 @@
             </a>
         </strong>
     </div>
-    <div id="category-[[category.id]]" class="panel-collapse collapse">
+    <div id="category-[[category.id]]" class="panel-collapse collapse in">
         <div class="row thumbnails">
             <div class="col-sm-4 col-lg-3" ng-repeat="template in templates">
                 <div class="thumbnail">
                     <div class="thumb-holder">
-                        <img src="[[template.picture]]" width="263" height="258" alt="[[template.name]]">
+                        <img ng-src="[[template.picture]]" width="263" height="258" alt="[[template.name]]">
                     </div>
                     <div class="caption">
                         [[template.name]]
                     </div>
                     <div class="item-control">
-                        <a href="images/xxx.jpg"><i class="fa fa-download"><span>Download</span></i></a>
-                        <a href="images/xxx.jpg"><i class="fa fa-pencil"><span>Edit</span></i></a>
-                        <a href="images/xxx.jpg"><i class="fa fa-archive"><span>Archives</span></i></a>
+                        <a target="_blank" href="[[PATH]]/[[template.id]]/download">
+                            <i class="fa fa-download"><span>Download</span></i>
+                        </a>
+                        <a href="/#[[PATH]]/[[template.id]]/edit">
+                            <i class="fa fa-pencil"><span>Edit</span></i>
+                        </a>
+                        <a ng-click="archives($event, template.id)" href="#">
+                            <i class="fa fa-archive"><span>Archives</span></i>
+                        </a>
                     </div>
                 </div>
             </div>

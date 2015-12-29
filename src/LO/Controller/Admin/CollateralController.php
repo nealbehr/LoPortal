@@ -19,6 +19,7 @@ use LO\Model\Entity\Lender;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
 use LO\Form\TemplateType;
+use Knp\Snappy\Pdf;
 
 class CollateralController extends Base
 {
@@ -54,6 +55,55 @@ class CollateralController extends Base
             $app->getMonolog()->addWarning($e);
             return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
+    }
+
+    public function downloadAction(Application $app, $id)
+    {
+        if ($template = $this->getById($app, $id)) {
+            $user    = $app->getSecurityTokenStorage()->getToken()->getUser();
+            $address = $user->getAddress();
+            $lender  = $user->getLender();
+            try {
+                $pdf = new Pdf();
+                $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
+                $pdf->setOption('dpi', 300);
+                $pdf->setOption('page-width', '8.5in');
+                $pdf->setOption('page-height', '11in');
+                $pdf->setOption('margin-left', 0);
+                $pdf->setOption('margin-right', 0);
+                $pdf->setOption('margin-top', 0);
+                $pdf->setOption('margin-bottom', 0);
+
+                $time = time();
+                $html = $app->getTwig()->render('admin.collateral.pdf.twig', [
+                    'template' => [
+                        'picture' => $template->getPicture()
+                    ],
+                    'user' => [
+                        'picture' => $user->getPicture(),
+                        'phone'   => $user->getPhone(),
+                        'email'   => $user->getEmail(),
+                        'nmls'    => $user->getNmls(),
+                        'address' => $address->getFormattedAddress()
+                    ],
+                    'lender' => [
+                        'picture' => $lender->getPicture()
+                    ]
+                ]);
+
+                header('Content-Type: application/pdf');
+                header("Content-Disposition: attachment; filename=\"document-$id-$time.pdf\"");
+
+                echo $pdf->getOutputFromHtml($html, [], true);
+            }
+            catch (\Exception $ex) {
+                header_remove('Content-Type');
+                header_remove('Content-Disposition');
+                return $app->json(['error' => '', 'message' => $ex->getMessage()]);
+            }
+        }
+
+        return $app->json('Error. Document not found');
     }
 
     public function addAction(Application $app, Request $request)
@@ -213,7 +263,7 @@ class CollateralController extends Base
     private function getById(Application $app, $id)
     {
         if (!($model = $app->getEntityManager()->getRepository(Template::class)->find($id))
-            || $model->getDeleted() !== '0'
+            || $model->getDeleted() === '1'
         ) {
             throw new BadRequestHttpException('Collateral not found.');
         }

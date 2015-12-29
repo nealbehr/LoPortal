@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        body{
+            font:12px/16px Arial, sans-serif;
+            background-color: #dddddd;
+            margin: 0;
+            padding: 0;
+
+        }
+        #container {
+            width: 828px;
+            background: #fff;
+            margin: 0 auto;
+            padding: 30px 53px 10px;
+        }
+        .content .img-holder img{
+            width: 100%;
+            height: auto;
+        }
+        #footer{
+            font-size: 11px;
+            line-height: 12px;
+            padding: 17px 0;
+            overflow: hidden;
+        }
+        #footer .user-info{
+            width: 39%;
+            float: left;
+        }
+        #footer .photo{
+            width: 91px;
+            float: left;
+            margin: 0 14px 0 0;
+        }
+        #footer .photo img{
+            width: 100%;
+            height: auto;
+        }
+        #footer .user-info .holder{
+            width: 210px;
+            padding: 5px 0 0;
+            overflow: hidden;
+        }
+        #footer .user-info strong{
+            font-size: 13px;
+            line-height: 18px;
+            color: #265594;
+            font-weight: normal;
+            display: block;
+        }
+        #footer .user-info a{
+            color: #191919;
+            text-decoration: none;
+        }
+        #footer .user-info address{
+            font-style: normal;
+        }
+        #footer .logo{
+            width:242px ;
+            float: right;
+            margin: 25px 0;
+        }
+        #footer .logo img{
+            width: 100%;
+            height: auto;
+        }
+        #footer .copyright{
+            font-size: 10px;
+            line-height: 11px;
+            float: right;
+            width: 30%;
+            margin-right: 1%;
+        }
+    </style>
+</head>
+<body>
+<section id="container">
+    <div class="content">
+        <div class="img-holder">
+            <img src="{{template.picture}}" alt="description">
+        </div>
+    </div>
+    <div id="footer">
+        <div class="user-info">
+            <div class="photo">
+                <img src="{{user.picture}}" alt="">
+            </div>
+            <div class="holder">
+                <strong>Moe House <br>Loan Officer</strong>
+                <span>Phone: {{user.phone}}</span><br>
+                <a href="mailto:{{user.email}}">{{user.email}}</a>
+                <a href="http://www.moehouse.guildmortgage.com">moehouse.guildmortgage.com</a>
+                <address>{{user.address}}</address>
+                <span>NMLS # {{user.nmls}}</span>
+            </div>
+        </div>
+        <div class="copyright">©2015 Banc of California, National Association, dba Banc Home Loans. All rights reserved. Not all applicants will qualify. Some prod- ucts offered by Banc Home Loans include modified documentation requirements and may have a higher interest rate, more points or more fees than other products requiring documentation. Minimum FICO, reserve, and other requirements apply. Contact your Loan Officer for additional program guidelines, restrictions, and eligibility requirements. Rates, points, APR’s and programs are subject to change at any time until locked-in. NMLS #530611</div>
+        <div class="logo">
+            <img src="{{lender.picture}}" alt="">
+        </div>
+    </div>
+</section>
+</body>
+</html>

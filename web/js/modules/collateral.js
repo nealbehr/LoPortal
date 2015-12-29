@@ -332,12 +332,15 @@
                     restrict: 'EA',
                     templateUrl: '/partials/admin.collateral.list',
                     scope      : {
-                        category: '=loCategory',
+                        category  : '=loCategory',
                         templates : '=loTemplates'
                     },
                     link: function (scope, element, attrs, controllers) {
-                        $scope.PATH = PATH;
-                        console.log(scope.category); console.log(scope.templates);
+                        scope.PATH     = PATH;
+                        scope.archives = function(e, id) {
+                            e.preventDefault();
+                            console.log(scope.templates);
+                        };
                     }
                 }
             }
