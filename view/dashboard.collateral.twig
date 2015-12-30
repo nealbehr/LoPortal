@@ -2,6 +2,10 @@
     <lo-navbar-head></lo-navbar-head>
     <section class="container">
         <lo-dashboard-head></lo-dashboard-head>
-        <dashboard-collateral lo-items="data"></dashboard-collateral>
+        <div class="panel-group queue">
+            <lo-dashboard-collateral-list lo-categories="categories"
+                                          lo-templates="templates"></lo-dashboard-collateral-list>
+            <dashboard-collateral lo-items="data"></dashboard-collateral>
+        </div>
     </section>
 </div>

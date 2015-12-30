@@ -30,12 +30,12 @@ class DashboardProvider implements ControllerProviderInterface {
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
-        $controllers
-            ->get("/", "dashboard.controller:indexAction")
-            ->bind("dashboard-index");
-
-        $controllers
-            ->get("/collateral", "dashboard.controller:getCollateralAction");
+        /**
+         * Routes for DashboardController
+         */
+        $controllers->get('/', 'dashboard.controller:indexAction')->bind('dashboard-index');
+        $controllers->get('/collateral', 'dashboard.controller:getCollateralAction');
+        $controllers->get('/templates', 'dashboard.controller:getTemplatesAction');
 
 
         return $controllers;

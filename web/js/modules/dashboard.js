@@ -2,6 +2,11 @@
     "use strict";
     settings = settings || {};
 
+    /**
+     * Constants
+     */
+    var PATH = '/dashboard';
+
     var dashboard = angular.module('dashboardModule', ['helperService']);
 
     dashboard.config(['$routeProvider', function($routeProvider) {
@@ -31,10 +36,9 @@
                                 return deferred.promise;
                             }]
                         }
-                    })
-                    .when('/dashboard/collateral', {
+                    }).when('/dashboard/collateral', {
                         templateUrl: '/partials/dashboard.collateral',
-                        controller:  'dashboardCustomCollateral',
+                        controller:  'dashboardCollateralCtrl',
                         access: {
                             isFree: false
                         }
@@ -42,21 +46,29 @@
                 ;
     }]);
 
-    dashboard.controller('dashboardCustomCollateral', ["$scope", "waitingScreen", "$http", function($scope, waitingScreen, $http){
-        $scope.data ={}
+    dashboard.controller(
+        'dashboardCollateralCtrl',
+        ['$scope', 'waitingScreen', '$http', '$q',
+            function($scope, waitingScreen, $http, $q) {
+                $scope.data       = [];
+                $scope.categories = [];
+                $scope.templates  = [];
 
-        waitingScreen.show();
+                waitingScreen.show();
 
-        $http.get("/dashboard/collateral")
-            .success(function(data){
-                $scope.data = data;
-            })
-            .finally(function(){
-                waitingScreen.hide();
-            })
-
-
-    }]);
+                var categories = $http.get('/request/template/categories', {cache: true}),
+                    templates  = $http.get('/dashboard/templates'),
+                    flyer      = $http.get('/dashboard/collateral');
+                $q.all([categories, templates, flyer]).then(function(response) {
+                    $scope.categories = response[0].data;
+                    $scope.templates  = response[1].data;
+                    $scope.data       = response[2].data;
+                }).finally(function() {
+                    waitingScreen.hide();
+                });
+            }
+        ]
+    );
 
     dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', 'createDraftRequestFlyer', 'waitingScreen', function($scope, redirect, $http, data, createDraftRequestFlyer, waitingScreen){
         $scope.dashboard    = data.dashboard;
@@ -139,4 +151,38 @@
             }
         });
     }]);
+
+    dashboard.directive(
+        'loDashboardCollateralList',
+        ['$http', '$location', 'waitingScreen', 'renderMessage', 'createTemplate',
+            function($http, $location, waitingScreen, renderMessage, createTemplate) {
+                return {
+                    restrict   : 'EA',
+                    templateUrl: '/partials/dashboard.template.list',
+                    scope      : {
+                        categories: '=loCategories',
+                        templates : '=loTemplates'
+                    },
+                    link: function (scope, element, attrs, controllers) {
+                        scope.PATH = PATH;
+                    }
+                }
+            }
+        ]
+    );
+
+    dashboard.directive('dashboardCollateral', function () {
+        return {
+            restrict   : 'EA',
+            templateUrl: '/partials/dashboard.collateral.row',
+            scope      : {
+                items: '=loItems'
+            },
+            link: function (scope, el, attrs, ngModel) {
+                scope.$watch('items', function(newValue){
+                    scope.items = newValue;
+                });
+            }
+        };
+    });
 })(settings);

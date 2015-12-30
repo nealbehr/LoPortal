@@ -24,6 +24,7 @@ class CreateTemplateLenderTable extends AbstractMigration
     {
         $this->execute(<<<EOL
 CREATE TABLE template_lender (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
     template_id INT NOT NULL,
     lender_id INT NOT NULL,
     PRIMARY KEY(template_id, lender_id)

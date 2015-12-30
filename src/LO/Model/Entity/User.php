@@ -101,6 +101,11 @@ class User extends Base implements UserInterface{
     protected $state;
 
     /**
+     * @Column(type="integer")
+     */
+    private $lender_id;
+
+    /**
      * @ManyToOne(targetEntity="Lender")
      * @JoinColumn(name="lender_id", referencedColumnName="id")
      **/
@@ -197,6 +202,17 @@ class User extends Base implements UserInterface{
     public function setState($sate){
         $this->state = $sate;
 
+        return $this;
+    }
+
+    public function getLenderId()
+    {
+        return $this->lender_id;
+    }
+
+    public function setLenderId($param)
+    {
+        $this->lender_id = $param;
         return $this;
     }
 

@@ -2,7 +2,9 @@
     background: white;
     border: 1px solid #cacaca;
 }
-
+.queue .panel:last-child {
+    border-bottom: 1px solid #ededed;
+}
 .ui-state-focus {
     border: 1px solid #cacaca;
 }

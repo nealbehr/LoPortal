@@ -24,15 +24,15 @@
     module.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when(PATH, {
             templateUrl: '/partials/admin.collateral.tab',
-            controller : 'collateralCtrl',
+            controller : 'adminCollateralListCtrl',
             access     : { isFree: false }
         }).when(PATH+'/new', {
             templateUrl: '/partials/admin.collateral',
-            controller :  'collateralCtrl',
+            controller :  'adminCollateralEditCtrl',
             access     : { isFree: false }
         }).when(PATH+'/:id/edit', {
             templateUrl: '/partials/admin.collateral',
-            controller :  'collateralEditCtrl',
+            controller :  'adminCollateralEditCtrl',
             access     : { isFree: false }
         });
     }]);
@@ -41,16 +41,15 @@
      * Controllers
      */
     module.controller(
-        'collateralCtrl',
+        'adminCollateralListCtrl',
         ['$scope', 'createTemplate', 'waitingScreen', '$http', '$q',
         function($scope, createTemplate, waitingScreen, $http, $q) {
-        $scope.template   = createTemplate();
         $scope.categories = {};
         $scope.templates  = [];
 
         waitingScreen.show();
 
-        var categories = $http.get(PATH+'-categories', {cache: true}),
+        var categories = $http.get('/request/template/categories', {cache: true}),
             templates  = $http.get(PATH);
         $q.all([categories, templates]).then(function(response) {
             $scope.categories = response[0].data;
@@ -62,20 +61,22 @@
     }]);
 
     module.controller(
-        'collateralEditCtrl',
+        'adminCollateralEditCtrl',
         ['$scope', 'createTemplate', '$routeParams', 'waitingScreen', 'renderMessage',
             function($scope, createTemplate, $routeParams, waitingScreen, renderMessage) {
-                waitingScreen.show();
-
                 $scope.template = createTemplate();
 
-                createTemplate().get($routeParams.id).then(function(data) {
-                    $scope.template = data;
-                }).catch(function(data) {
-                    renderMessage(data.message, 'danger', angular.element('#message-box'), $scope);
-                }).finally(function() {
-                    waitingScreen.hide();
-                });
+                if ($routeParams.id) {
+                    waitingScreen.show();
+
+                    createTemplate().get($routeParams.id).then(function(data) {
+                        $scope.template = data;
+                    }).catch(function(data) {
+                        renderMessage(data.message, 'danger', angular.element('#message-box'), $scope);
+                    }).finally(function() {
+                        waitingScreen.hide();
+                    });
+                }
             }
         ]
     );
@@ -256,8 +257,8 @@
                         });
 
                         // Get options
-                        var categories = $http.get(PATH+'-categories', {cache: true}),
-                            formats    = $http.get(PATH+'-formats', {cache: true});
+                        var categories = $http.get('/request/template/categories', {cache: true}),
+                            formats    = $http.get('/request/template/formats', {cache: true});
                         $q.all([categories, formats]).then(function(response) {
                             scope.categories = response[0].data;
                             if (undefined !== scope.categories[0] && scope.categories[0].hasOwnProperty('id')) {
@@ -347,6 +348,7 @@
                         scope.PATH    = PATH;
                         scope.archive = function(event, index, id) {
                             event.preventDefault();
+
                             waitingScreen.show();
 
                             createTemplate().get(id).then(function(data) {

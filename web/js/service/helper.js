@@ -399,21 +399,6 @@
         };
     });
 
-    helperService.directive('dashboardCollateral', function () {
-        return {
-            restrict: 'EA',
-            templateUrl: '/partials/dashboard.collateral.row',
-            scope: {
-                items: '=loItems'
-            },
-            link: function (scope, el, attrs, ngModel) {
-                scope.$watch('items', function(newValue){
-                    scope.items = newValue;
-                });
-            }
-        };
-    });
-
     helperService.directive('loDashboardHead', ['Tab', 'redirect', function(Tab, redirect){
         return {
             restrict: 'EA',

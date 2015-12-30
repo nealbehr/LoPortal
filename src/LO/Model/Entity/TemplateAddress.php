@@ -27,6 +27,12 @@ class TemplateAddress
     protected $id;
 
     /**
+     * @Column(type="integer")
+     * @Assert\NotBlank(message="Template id should not be blank.", groups = {"main"})
+     */
+    private $template_id;
+
+    /**
      * @ManyToOne(targetEntity="Template", inversedBy="addresses")
      * @JoinColumn(name="template_id", referencedColumnName="id")
      */
