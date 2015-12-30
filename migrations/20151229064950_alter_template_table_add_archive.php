@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class AlterTemplateTableAddArchives extends AbstractMigration
+class AlterTemplateTableAddArchive extends AbstractMigration
 {
     /**
      * Change Method.
@@ -23,7 +23,7 @@ class AlterTemplateTableAddArchives extends AbstractMigration
     public function up()
     {
         $this->execute(
-            "ALTER TABLE `template` ADD `archives` enum('0','1') COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT '0' "
+            "ALTER TABLE `template` ADD `archive` enum('0','1') COLLATE 'utf8_unicode_ci' NOT NULL DEFAULT '0' "
             ."AFTER `deleted`;"
         );
     }

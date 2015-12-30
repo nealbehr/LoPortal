@@ -25,7 +25,7 @@ class CollateralController extends Base
 {
     use GetFormErrors;
 
-    const ARCHIVES_CATEGORY = '0';
+    const ARCHIVE_CATEGORY = '0';
 
     public function getListAction(Application $app)
     {
@@ -39,11 +39,11 @@ class CollateralController extends Base
 
             $data = [];
             foreach ($templates as $template) {
-                if ('0' === $template['archives']) {
+                if ('0' === $template['archive']) {
                     $data[$template['category_id']][] = $template;
                 }
                 else {
-                    $data[self::ARCHIVES_CATEGORY][] = $template;
+                    $data[self::ARCHIVE_CATEGORY][] = $template;
                 }
             }
 

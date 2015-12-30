@@ -36,7 +36,7 @@ class Template extends Base
     /**
      * @Column(type="string")
      */
-    protected $archives = '0';
+    protected $archive = '0';
 
     /**
      * @Column(type="integer")
@@ -126,14 +126,14 @@ class Template extends Base
         return $this;
     }
 
-    public function getArchives()
+    public function getArchive()
     {
-        return $this->archives;
+        return $this->archive;
     }
 
-    public function setArchives($param)
+    public function setArchive($param)
     {
-        $this->archives = $param;
+        $this->archive = $param;
         return $this;
     }
 
@@ -264,7 +264,7 @@ class Template extends Base
 
         return array(
             'id'          => $this->id,
-            'archives'    => $this->archives,
+            'archive'     => $this->archive,
             'category_id' => $this->category_id,
             'format_id'   => $this->format_id,
             'lenders_all' => $this->lenders_all,

@@ -10,12 +10,12 @@
     /**
      * Constants
      */
-    var PATH     = '/admin/collateral',
-        ARCHIVES = {
+    var PATH    = '/admin/collateral',
+        ARCHIVE = {
             id        : 0,
-            name      : 'Archives',
-            admin_name: 'Archives',
-            user_name : 'Archives'
+            name      : 'Archive',
+            admin_name: 'Archive',
+            user_name : 'Archive'
         };
 
     /**
@@ -51,10 +51,10 @@
         waitingScreen.show();
 
         var categories = $http.get(PATH+'-categories', {cache: true}),
-            template   = $http.get(PATH);
-        $q.all([categories, template]).then(function(response) {
+            templates  = $http.get(PATH);
+        $q.all([categories, templates]).then(function(response) {
             $scope.categories = response[0].data;
-            $scope.categories.push(ARCHIVES);
+            $scope.categories.push(ARCHIVE);
             $scope.templates  = response[1].data;
         }).finally(function() {
             waitingScreen.hide();
@@ -140,7 +140,7 @@
             
             // Variables
             this.id          = null;
-            this.archives    = 0;
+            this.archive     = 0;
             this.category_id = null;
             this.format_id   = null;
             this.lenders     = [];
@@ -344,19 +344,19 @@
                         templates : '=loTemplates'
                     },
                     link: function (scope, element, attrs, controllers) {
-                        scope.PATH     = PATH;
-                        scope.archives = function(event, index, id) {
+                        scope.PATH    = PATH;
+                        scope.archive = function(event, index, id) {
                             event.preventDefault();
                             waitingScreen.show();
 
                             createTemplate().get(id).then(function(data) {
-                                data.archives = '1';
+                                data.archive = '1';
                                 data.update().then(function(data) {
                                     scope.templates[data.category_id].splice(index, 1);
-                                    if (undefined === scope.templates[ARCHIVES.id]) {
-                                        scope.templates[ARCHIVES.id] = [];
+                                    if (undefined === scope.templates[ARCHIVE.id]) {
+                                        scope.templates[ARCHIVE.id] = [];
                                     }
-                                    scope.templates[ARCHIVES.id].push(data);
+                                    scope.templates[ARCHIVE.id].push(data);
                                 }).finally(function() {
                                     waitingScreen.hide();
                                 });
