@@ -25,17 +25,26 @@ class CollateralController extends Base
 {
     use GetFormErrors;
 
+    const ARCHIVES_CATEGORY = '0';
+
     public function getListAction(Application $app)
     {
         try {
-            $query = $app->getEntityManager()->createQueryBuilder()
+            $query = $app->getEntityManager()
+                ->createQueryBuilder()
                 ->select('t')
                 ->from(Template::class, 't')
                 ->where("t.deleted = '0'");
             $templates = $query->getQuery()->getResult(Query::HYDRATE_ARRAY);
+
             $data = [];
             foreach ($templates as $template) {
-                $data[$template['category_id']][] = $template;
+                if ('0' === $template['archives']) {
+                    $data[$template['category_id']][] = $template;
+                }
+                else {
+                    $data[self::ARCHIVES_CATEGORY][] = $template;
+                }
             }
 
             return $app->json($data);
@@ -87,7 +96,8 @@ class CollateralController extends Base
                         'address' => $address->getFormattedAddress()
                     ],
                     'lender' => [
-                        'picture' => $lender->getPicture()
+                        'picture'    => $lender->getPicture(),
+                        'disclosure' => $lender->getDisclosureForState($user->getAddress()->getState())
                     ]
                 ]);
 
@@ -143,7 +153,7 @@ class CollateralController extends Base
             $em->flush();
             $em->commit();
 
-            return $app->json('success');
+            return $app->json($model->toFullArray());
         }
         catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);

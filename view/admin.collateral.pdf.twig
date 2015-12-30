@@ -93,12 +93,11 @@
                 <strong>Moe House <br>Loan Officer</strong>
                 <span>Phone: {{user.phone}}</span><br>
                 <a href="mailto:{{user.email}}">{{user.email}}</a>
-                <a href="http://www.moehouse.guildmortgage.com">moehouse.guildmortgage.com</a>
                 <address>{{user.address}}</address>
                 <span>NMLS # {{user.nmls}}</span>
             </div>
         </div>
-        <div class="copyright">©2015 Banc of California, National Association, dba Banc Home Loans. All rights reserved. Not all applicants will qualify. Some prod- ucts offered by Banc Home Loans include modified documentation requirements and may have a higher interest rate, more points or more fees than other products requiring documentation. Minimum FICO, reserve, and other requirements apply. Contact your Loan Officer for additional program guidelines, restrictions, and eligibility requirements. Rates, points, APR’s and programs are subject to change at any time until locked-in. NMLS #530611</div>
+        <div class="copyright">{{lender.disclosure}}</div>
         <div class="logo">
             <img src="{{lender.picture}}" alt="">
         </div>

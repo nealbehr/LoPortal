@@ -2,10 +2,5 @@
 
 <section class="container">
     <lo-admin-nav-bar></lo-admin-nav-bar>
-    <div class="panel-group queue">
-        <lo-admin-collateral-list ng-repeat="category in categories"
-                                  lo-category="category"
-                                  lo-templates="templates[category.id]"></lo-admin-collateral-list>
-
-    </div>
+    <lo-admin-collateral-list lo-categories="categories" lo-templates="templates"></lo-admin-collateral-list>
 </section>

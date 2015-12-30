@@ -31,7 +31,12 @@ class Template extends Base
     /**
      * @Column(type="string")
      */
-    private $deleted = '0';
+    private $deleted    = '0';
+
+    /**
+     * @Column(type="string")
+     */
+    protected $archives = '0';
 
     /**
      * @Column(type="integer")
@@ -118,6 +123,17 @@ class Template extends Base
     public function setDeleted($param)
     {
         $this->deleted = $param;
+        return $this;
+    }
+
+    public function getArchives()
+    {
+        return $this->archives;
+    }
+
+    public function setArchives($param)
+    {
+        $this->archives = $param;
         return $this;
     }
 
@@ -248,6 +264,7 @@ class Template extends Base
 
         return array(
             'id'          => $this->id,
+            'archives'    => $this->archives,
             'category_id' => $this->category_id,
             'format_id'   => $this->format_id,
             'lenders_all' => $this->lenders_all,

@@ -10,7 +10,13 @@
     /**
      * Constants
      */
-    var PATH   = '/admin/collateral';
+    var PATH     = '/admin/collateral',
+        ARCHIVES = {
+            id        : 0,
+            name      : 'Archives',
+            admin_name: 'Archives',
+            user_name : 'Archives'
+        };
 
     /**
      * Routes list
@@ -48,6 +54,7 @@
             template   = $http.get(PATH);
         $q.all([categories, template]).then(function(response) {
             $scope.categories = response[0].data;
+            $scope.categories.push(ARCHIVES);
             $scope.templates  = response[1].data;
         }).finally(function() {
             waitingScreen.hide();
@@ -133,6 +140,7 @@
             
             // Variables
             this.id          = null;
+            this.archives    = 0;
             this.category_id = null;
             this.format_id   = null;
             this.lenders     = [];
@@ -326,20 +334,33 @@
 
     module.directive(
         'loAdminCollateralList',
-        ['$http', '$location', 'tableHeadCol', 'waitingScreen', 'renderMessage',
-            function($http, $location, tableHeadCol, waitingScreen, renderMessage) {
+        ['$http', '$location', 'waitingScreen', 'renderMessage', 'createTemplate',
+            function($http, $location, waitingScreen, renderMessage, createTemplate) {
                 return {
-                    restrict: 'EA',
+                    restrict   : 'EA',
                     templateUrl: '/partials/admin.collateral.list',
                     scope      : {
-                        category  : '=loCategory',
+                        categories: '=loCategories',
                         templates : '=loTemplates'
                     },
                     link: function (scope, element, attrs, controllers) {
                         scope.PATH     = PATH;
-                        scope.archives = function(e, id) {
-                            e.preventDefault();
-                            console.log(scope.templates);
+                        scope.archives = function(event, index, id) {
+                            event.preventDefault();
+                            waitingScreen.show();
+
+                            createTemplate().get(id).then(function(data) {
+                                data.archives = '1';
+                                data.update().then(function(data) {
+                                    scope.templates[data.category_id].splice(index, 1);
+                                    if (undefined === scope.templates[ARCHIVES.id]) {
+                                        scope.templates[ARCHIVES.id] = [];
+                                    }
+                                    scope.templates[ARCHIVES.id].push(data);
+                                }).finally(function() {
+                                    waitingScreen.hide();
+                                });
+                            });
                         };
                     }
                 }

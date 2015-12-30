@@ -31,6 +31,10 @@ class TemplateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('archives', 'number', [
+                'precision'  => 0,
+                'empty_data' => '0'
+            ])
             ->add('lenders_all', 'number', [
                 'precision'  => 0,
                 'empty_data' => '1'

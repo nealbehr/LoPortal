@@ -24,6 +24,16 @@ class TemplateCategory
      */
     protected $name;
 
+    /**
+     * @Column(type="string")
+     */
+    protected $admin_name;
+
+    /**
+     * @Column(type="string")
+     */
+    protected $user_name;
+
     public function getId()
     {
         return $this->id;
@@ -43,6 +53,28 @@ class TemplateCategory
     public function setName($param)
     {
         $this->name = $param;
+        return $this;
+    }
+
+    public function getAdminName()
+    {
+        return $this->admin_name;
+    }
+
+    public function setAdminName($param)
+    {
+        $this->admin_name = $param;
+        return $this;
+    }
+
+    public function getUserName()
+    {
+        return $this->user_name;
+    }
+
+    public function setUserName($param)
+    {
+        $this->user_name = $param;
         return $this;
     }
 }
