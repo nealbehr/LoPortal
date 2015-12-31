@@ -108,7 +108,7 @@
                     waitingScreen.hide();
                 })
             ;
-        }
+        };
 
         $scope.moveToDeclined = function(target){
             $http.patch('/queue/cancel/' + target.data('id'), [])
@@ -122,7 +122,7 @@
                     console.log(data);
                 })
             ;
-        }
+        };
 
         angular.element('.queue').click(function(e) {
             var target = angular.element(e.target);
@@ -171,7 +171,10 @@
         ]
     );
 
-    dashboard.directive('dashboardCollateral', function () {
+    dashboard.directive(
+        'dashboardCollateral',
+        ['createRequestFlyer', 'createDraftRequestFlyer', 'waitingScreen', '$http',
+            function (createRequestFlyer, createDraftRequestFlyer, waitingScreen, $http) {
         return {
             restrict   : 'EA',
             templateUrl: '/partials/dashboard.collateral.row',
@@ -179,10 +182,50 @@
                 items: '=loItems'
             },
             link: function (scope, el, attrs, ngModel) {
+                scope.categories = [
+                    {
+                        id  : 0,
+                        name: 'Listing Flyers'
+                    },
+                    {
+                        id  : 1,
+                        name: 'Archive'
+                    }
+                ];
+                scope.flyers = [[],[]];
+
                 scope.$watch('items', function(newValue){
                     scope.items = newValue;
+                    for (var i in scope.items) {
+                        if (scope.items[i].archive === '0') {
+                            scope.flyers[0].push(scope.items[i]);
+                        }
+                        else {
+                            scope.flyers[1].push(scope.items[i]);
+                        }
+                    }
                 });
+
+                scope.archive = function(event, index, queue) {
+                    event.preventDefault();
+
+                    waitingScreen.show();
+                    $http.get('/request/'+queue.id).success(function(data) {
+                        var flaer = (new createDraftRequestFlyer(queue.id)).fill(data);
+                        flaer.property.archive = '1';
+                        flaer.update().finally(function() {
+                            scope.flyers[0].splice(index, 1);
+                            if (undefined === scope.flyers[1]) {
+                                scope.flyers[1] = [];
+                            }
+                            queue.archive = '1';
+                            scope.flyers[1].push(queue);
+
+                            waitingScreen.hide();
+                        });
+                    });
+                };
             }
         };
-    });
+    }]);
 })(settings);

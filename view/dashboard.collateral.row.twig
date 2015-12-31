@@ -1,17 +1,17 @@
-<div class="panel panel-default" ng-if="items.length > 0">
+<div class="panel panel-default" ng-repeat="category in categories" ng-if="flyers[category.id].length > 0">
     <div class="panel-heading">
         <strong class="panel-title">
             <a data-toggle="collapse"
-               href="#category-listing-flyers"
-               aria-controls="category-listing-flyers">
-                <span class="arrow"></span>Listing Flyers:
-                <span class="badge">[[items.length]]</span>
+               href="#category-listing-flyers-[[category.id]]"
+               aria-controls="category-listing-flyers-[[category.id]]">
+                <span class="arrow"></span>[[category.name]]:
+                <span class="badge">[[flyers[category.id].length]]</span>
             </a>
         </strong>
     </div>
     <div id="category-listing-flyers" class="panel-collapse collapse in">
         <div class="row thumbnails">
-            <div class="col-sm-4 col-lg-3" ng-repeat="queue in items">
+            <div class="col-sm-4 col-lg-3" ng-repeat="queue in flyers[category.id]">
                 <div class="thumbnail">
                     <div class="thumb-holder">
                         <img ng-src="[[ queue.photo ]]" style="width: 263px; height: 175px;" alt="">
@@ -26,7 +26,7 @@
                         <a href="/#/flyer/[[queue.id]]/edit">
                             <i class="fa fa-pencil"><span>Edit</span></i>
                         </a>
-                        <a href="#">
+                        <a ng-if="queue.archive == '0'" ng-click="archive($event, $index, queue)" href="#">
                             <i class="fa fa-archive"><span>Archive</span></i>
                         </a>
                     </div>

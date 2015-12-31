@@ -275,6 +275,5 @@ class Template extends Base
             'states'      => $states,
             'lenders'     => $lenders
         );
-
     }
 }

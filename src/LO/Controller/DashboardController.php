@@ -44,8 +44,8 @@ class DashboardController
                 ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
                 ->where("t.deleted = '0'")
                 ->andWhere("t.archive = '0'")
-                ->andWhere("(tl.lender_id = :lenderId OR t.lenders_all = '1')")
-                ->andWhere("(ta.state = :stateCode OR t.states_all = '1')");
+                ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
+                ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)");
 
             $query->setParameters([
                 'lenderId'  => $user->getLenderId(),

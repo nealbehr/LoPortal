@@ -47,8 +47,12 @@
     }]);
 
     flyerService.service("createDraftRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
-        return function(){
+        return function(id) {
             var flyer = new createRequestFlyerBase();
+
+            if (id) {
+                flyer.id = id;
+            }
 
             flyer.update = function() {
                 return $http.put('/request/flyer/' + this.id, this.getFields4Save());
@@ -111,8 +115,9 @@
             this.realtor_id = null;
 
             this.property = {
+                archive: '0',
                 address: null,
-                apartment : null,
+                apartment: null,
                 mls_number: null,
                 state: null,
                 omit_realtor_info: '1',
@@ -222,6 +227,18 @@
                 }
 
                 return result;
+            };
+
+            this.get = function(id) {
+                var deferred = $q.defer();
+                $http.get('/request/'+id).success(function(data) {
+                    self.fill(data);
+                    deferred.resolve(self)
+                }).error(function(data) {
+                    deferred.reject(data);
+                });
+
+                return deferred.promise;
             };
 
             this.save = function() {
