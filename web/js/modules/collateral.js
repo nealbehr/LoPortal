@@ -355,8 +355,9 @@
                             createTemplate().fill(template).update().then(function() {
                                 $http.get(PATH).then(function(response) {
                                     scope.templates = response.data;
+                                }).finally(function() {
+                                    waitingScreen.hide();
                                 });
-                                waitingScreen.hide();
                             });
                         };
                     }
