@@ -94,23 +94,23 @@ class UserAdapter
     public function toArray()
     {
         return [
-            'id'            => $this->getId(),
-            'first_name'    => $this->getFirstName(),
-            'last_name'     => $this->getLastName(),
-            'title'         => $this->getTitle(),
-            'email'         => $this->getEmail(),
-            'phone'         => $this->getPhone(),
-            'mobile'        => $this->getMobile(),
-            'address'       => [
+            'id'         => $this->getId(),
+            'first_name' => $this->getFirstName(),
+            'last_name'  => $this->getLastName(),
+            'title'      => $this->getTitle(),
+            'email'      => $this->getEmail(),
+            'phone'      => $this->getPhone(),
+            'mobile'     => $this->getMobile(),
+            'address'    => [
                 'city'        => $this->getCity(),
                 'line1'       => $this->getStreet(),
                 'postal_code' => $this->getPostalCode(),
                 'state'       => $this->getState()
             ],
             'custom_fields' => [
-                 'NMLS'                   => $this->getNmls(),
-                 'Sub-Company Name (DBA)' => $this->getSubCompanyName(),
-                 'ESC Password'           => $this->getPassword()
+                'NMLS'                   => $this->getNmls(),
+                'Sub-Company Name (DBA)' => $this->getSubCompanyName(),
+                'ESC Password'           => $this->getPassword()
             ]
         ];
     }
