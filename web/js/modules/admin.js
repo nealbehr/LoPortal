@@ -658,4 +658,17 @@
             }
         };
     });
+
+    admin.directive('loAdminSupportInfoFooter', ['userService', function(userService) {
+        return {
+            restrict   : 'EA',
+            templateUrl: '/partials/admin.sales.director.footer',
+            link       : function(scope, element, attrs, controllers) {
+                scope.user = {};
+                userService.get().then(function(user){
+                    scope.user = user;
+                });
+            }
+        }
+    }]);
 })(settings);
