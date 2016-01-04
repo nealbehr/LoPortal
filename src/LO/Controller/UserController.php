@@ -19,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 use LO\Model\Entity\User as UserEntity;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use BaseCRM\Client as BaseCrmClient;
+use LO\Common\BaseCrm\UserAdapter;
 
 class UserController {
     /** @var array  */
@@ -95,6 +97,9 @@ class UserController {
                 throw new BadRequestHttpException('User info is not valid.');
             }
 
+            // Update BaseCRM
+            $this->updateBaseCrm($app, $user);
+
             return $app->json('success');
 
         }catch(HttpException $e){
@@ -111,5 +116,18 @@ class UserController {
         }
 
         return $app->json('error');
+    }
+
+    /**
+     * @param Application $app
+     * @param User $model
+     * @return array
+     */
+    private function updateBaseCrm(Application $app, UserEntity $model)
+    {
+        $user   = new UserAdapter($model);
+        $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
+
+        return $client->contacts->update($user->getId(), $user->toArray());
     }
 }
