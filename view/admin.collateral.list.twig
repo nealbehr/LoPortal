@@ -29,11 +29,11 @@
                             <a target="_blank" href="/request/document/[[template.id]]/download">
                                 <i class="fa fa-download"><span>Download</span></i>
                             </a>
-                            <a href="/#[[PATH]]/[[template.id]]/edit">
+                            <a href="/#/admin/collateral/[[template.id]]/edit">
                                 <i class="fa fa-pencil"><span>Edit</span></i>
                             </a>
-                            <a ng-if="template.archive == '0'" ng-click="archive($event, $index, template.id)" href="#">
-                                <i class="fa fa-archive"><span>Archive</span></i>
+                            <a ng-click="archive($event, template)" href="#">
+                                <i class="fa fa-archive"><span>[[template.archive == '0' ? 'Archive' : 'Unarchive']]</span></i>
                             </a>
                         </div>
                     </div>

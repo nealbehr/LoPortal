@@ -184,42 +184,50 @@
             link: function (scope, el, attrs, ngModel) {
                 scope.categories = [
                     {
-                        id  : 0,
-                        name: 'Listing Flyers'
+                        id   : 0,
+                        name : 'Listing Flyers',
+                        items: []
                     },
                     {
-                        id  : 1,
-                        name: 'Archive'
+                        id   : 1,
+                        name : 'Archive',
+                        items: []
                     }
                 ];
-                scope.flyers = [[],[]];
 
                 scope.$watch('items', function(newValue){
                     scope.items = newValue;
                     for (var i in scope.items) {
                         if (scope.items[i].archive === '0') {
-                            scope.flyers[0].push(scope.items[i]);
+                            scope.categories[0].items.push(scope.items[i]);
                         }
                         else {
-                            scope.flyers[1].push(scope.items[i]);
+                            scope.categories[1].items.push(scope.items[i]);
                         }
                     }
                 });
 
-                scope.archive = function(event, index, queue) {
-                    event.preventDefault();
+                scope.archive = function(e, index, queue) {
+                    e.preventDefault();
 
                     waitingScreen.show();
+
                     $http.get('/request/'+queue.id).success(function(data) {
                         var flaer = (new createDraftRequestFlyer(queue.id)).fill(data);
-                        flaer.property.archive = '1';
+                        if (queue.archive == '0') {
+                            var to   = scope.categories[0].items,
+                                from = scope.categories[1].items;
+                            queue.archive = flaer.property.archive = '1';
+                        }
+                        else {
+                            var to   = scope.categories[1].items,
+                                from = scope.categories[0].items;
+                            queue.archive = flaer.property.archive = '0';
+                        }
+
                         flaer.update().finally(function() {
-                            scope.flyers[0].splice(index, 1);
-                            if (undefined === scope.flyers[1]) {
-                                scope.flyers[1] = [];
-                            }
-                            queue.archive = '1';
-                            scope.flyers[1].push(queue);
+                            (to || []).splice(index, 1);
+                            (from || []).push(queue);
 
                             waitingScreen.hide();
                         });

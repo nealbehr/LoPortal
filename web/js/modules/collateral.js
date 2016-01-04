@@ -345,23 +345,18 @@
                         templates : '=loTemplates'
                     },
                     link: function (scope, element, attrs, controllers) {
-                        scope.PATH    = PATH;
-                        scope.archive = function(event, index, id) {
-                            event.preventDefault();
+                        scope.archive = function(e, template) {
+                            e.preventDefault();
 
                             waitingScreen.show();
 
-                            createTemplate().get(id).then(function(data) {
-                                data.archive = '1';
-                                data.update().then(function(data) {
-                                    scope.templates[data.category_id].splice(index, 1);
-                                    if (undefined === scope.templates[ARCHIVE.id]) {
-                                        scope.templates[ARCHIVE.id] = [];
-                                    }
-                                    scope.templates[ARCHIVE.id].push(data);
-                                }).finally(function() {
-                                    waitingScreen.hide();
+                            template.archive = template.archive == '0' ? '1' : '0';
+
+                            createTemplate().fill(template).update().then(function() {
+                                $http.get(PATH).then(function(response) {
+                                    scope.templates = response.data;
                                 });
+                                waitingScreen.hide();
                             });
                         };
                     }
