@@ -1,3 +1,10 @@
+#footer {
+    height: 154px;
+    color: #818181;
+}
+#footer hr {
+    border-top: 1px solid #626262;
+}
 .ui-autocomplete.ui-widget-content{
     background: white;
     border: 1px solid #cacaca;
