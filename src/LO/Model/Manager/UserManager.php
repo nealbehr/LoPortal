@@ -13,6 +13,7 @@ use LO\Form\UserFormType;
 use LO\Model\Entity\Token;
 use LO\Model\Entity\User as EntityUser;
 use LO\Model\Entity\User;
+use LO\Model\Entity\Lender;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use LO\Traits\GetFormErrors;
@@ -55,6 +56,7 @@ class UserManager extends Base{
      * @return array|bool
      */
     public function validateAndSaveUser(Request $request, User $user, UserFormType $userFormType, $method = 'PUT'){
+        $em          = $this->getApp()->getEntityManager();
         $requestUser = $request->request->get('user');
         $formOptions = [
             'validation_groups' => ['Default'],
@@ -71,6 +73,13 @@ class UserManager extends Base{
 
         if(!$userForm->isValid()){
             return $this->getFormErrors($userForm);
+        }
+
+        if (
+            isset($requestUser['lender']['id'])
+            && ($model = $em->getRepository(Lender::class)->find($requestUser['lender']['id']))
+        ) {
+            $user->setLender($model);
         }
 
         $this->getApp()->getEntityManager()->persist($user);
