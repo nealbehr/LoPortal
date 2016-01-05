@@ -84,7 +84,7 @@ class RequestFlyerBase extends RequestBaseController {
         // Mixpanel analytics
         $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
         $mp->identify($app->getSecurityTokenStorage()->getToken()->getUser()->getId());
-        $mp->track('Flyer Request');
+        $mp->track('Flyer Request', ['id' => $queue->getId(), 'address' => $queue->getAddress()]);
     }
 
     /**

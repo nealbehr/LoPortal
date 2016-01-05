@@ -22,9 +22,9 @@
         });
 
         // Mixpanel analytics
-        $scope.logMixpanel = function() {
+        $scope.logMixpanel = function(name) {
             mixpanel.identify($scope.user.id);
-            mixpanel.track('Document Download');
+            mixpanel.track('Document Download', {'name': name});
         };
 
         $scope.titles = {

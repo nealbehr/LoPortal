@@ -81,7 +81,7 @@ class RequestApprovalController extends RequestApprovalBase
             if ($user !== null) {
                 $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
                 $mp->identify($user->getId());
-                $mp->track('Property Request');
+                $mp->track('Property Request', ['id' => $queue->getId(), 'address' => $queue->getAddress()]);
             }
 
             $em->commit();

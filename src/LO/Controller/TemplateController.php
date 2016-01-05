@@ -13,6 +13,7 @@ use LO\Model\Entity\TemplateCategory;
 use LO\Model\Entity\TemplateFormat;
 use Doctrine\ORM\Query;
 use Knp\Snappy\Pdf;
+use Mixpanel;
 
 class TemplateController
 {
@@ -50,6 +51,11 @@ class TemplateController
                         'disclosure' => $lender->getDisclosureForState($user->getAddress()->getState())
                     ]
                 ]);
+
+                // Mixpanel analytics
+                $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+                $mp->identify($user->getId());
+                $mp->track('Document Download', ['id' => $template->getId(), 'name' => $template->getName()]);
 
                 header('Content-Type: application/pdf');
                 header("Content-Disposition: attachment; filename=\"document-$id-$time.pdf\"");
