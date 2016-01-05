@@ -42,6 +42,7 @@ class TemplateController
                     'user' => [
                         'firstName' => $user->getFirstName(),
                         'lastName'  => $user->getLastName(),
+                        'title'     => $user->getTitle(),
                         'picture'   => $user->getPicture(),
                         'phone'     => $user->getPhone(),
                         'email'     => $user->getEmail(),
