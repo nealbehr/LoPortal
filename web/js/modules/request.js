@@ -132,7 +132,7 @@
 
         userService.get().then(function(user) {
             $scope.$on('propertyApprovalSaved', function(event, data) {
-                if (typeof data === 'object' && data.hasOwnProperty('id') && user.id === '673') {
+                if (typeof data === 'object' && data.hasOwnProperty('id')) {
                     redirect('/request-success/approval/'+data.id);
                 }
                 else {
@@ -151,8 +151,8 @@
         $scope.endProcessing = false;
         $scope.request       = getRequestByType($routeParams.type);
 
-        var interval         = 500,
-            endTime          = 7000,
+        var interval         = 1000,
+            endTime          = 10000,
             timeCounter      = 0,
             text             = '';
 
@@ -166,20 +166,20 @@
                 $scope.statusId = data.status_id;
             });
 
-            // Starts with "identifying property details" holds for 0.5 seconds
-            if (timeCounter < 500) {
+            // Starts with "identifying property details" holds for 1 seconds
+            if (timeCounter < 1000) {
                 text = 'identifying property details';
             }
-            // Then changes to "generating demand metrics" holds for 1.5 seconds
-            else if (timeCounter < 2000) {
+            // Then changes to "generating demand metrics" holds for 2 seconds
+            else if (timeCounter < 3000) {
                 text = 'generating demand metrics';
             }
-            // Then changes to "evaluating supply metrics" holds for 1.5 seconds
-            else if (timeCounter < 3500) {
+            // Then changes to "evaluating supply metrics" holds for 2 seconds
+            else if (timeCounter < 5000) {
                 text = 'evaluating supply metrics';
             }
-            // Then changes to "developing projections" holds for the remaining 3.5 seconds or until a response is
-            else if (timeCounter < 5000) {
+            // Then changes to "developing projections" holds for the remaining 3 seconds or until a response is
+            else if (timeCounter < 7000) {
                 text = 'developing projections';
             }
 
