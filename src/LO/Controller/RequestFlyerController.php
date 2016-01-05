@@ -213,13 +213,6 @@ class RequestFlyerController extends RequestFlyerBase
             $changeStatusEmail = new RequestChangeStatus($app,  $queue, new RequestFlyerSubmission($realtor, $queue));
             $changeStatusEmail->send();
 
-            // Mixpanel analytics
-            if ($user !== null) {
-                $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
-                $mp->identify($user->getId());
-                $mp->track('Flyer Request');
-            }
-
             $app->getEntityManager()->commit();
         }catch (\Exception $e){
             $app->getEntityManager()->rollback();

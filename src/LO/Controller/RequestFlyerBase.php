@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use \Mixpanel;
 
 class RequestFlyerBase extends RequestBaseController {
 
@@ -79,6 +80,11 @@ class RequestFlyerBase extends RequestBaseController {
 
         $app->getEntityManager()->persist($queue);
         $app->getEntityManager()->flush();
+
+        // Mixpanel analytics
+        $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+        $mp->identify($app->getSecurityTokenStorage()->getToken()->getUser()->getId());
+        $mp->track('Flyer Request');
     }
 
     /**
