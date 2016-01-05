@@ -285,6 +285,11 @@
 
                             waitingScreen.show();
 
+                            if (scope.coBranded  == '0') {
+                                scope.template.lenders_all = '1';
+                                scope.template.states_all  = '1';
+                            }
+
                             scope.template.save().then(function() {
                                 sessionMessages.addSuccess('Successfully saved.');
                                 history.back();
