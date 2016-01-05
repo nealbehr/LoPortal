@@ -27,7 +27,7 @@ CREATE TABLE `template_format` (
 `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
 `name` varchar(50) DEFAULT NULL,
 PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-INSERT INTO `template_format` (`name`) VALUES ('Flaer'), ('Brochure'), ('Other');
+INSERT INTO `template_format` (`name`) VALUES ('Flyer'), ('Brochure'), ('Other');
 EOL
         );
     }

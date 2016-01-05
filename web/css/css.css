@@ -263,6 +263,10 @@ input[type=number] {
     max-width: 100%;
     background: none;
 }
+.add-template #lenders-custom,
+.add-template #states-custom {
+    margin: 0 0 0 10px;
+}
 .add-template .checkholder{
     margin: 0 0 15px;
 }

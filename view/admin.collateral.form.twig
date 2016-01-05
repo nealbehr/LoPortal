@@ -75,17 +75,23 @@
                            type="checkbox"
                            name="coBranded"
                            id="co-branded"/>
-                    <label for="co-branded">Co Branded?</label>
+                    <label for="co-branded">Co-Branded</label>
                 </div>
                 <div ng-show="coBranded === '1'">
                     <span class="label-controls">Lenders</span>
-                    <div>
-                        <input ng-model="template.lenders_all" value="1" name="lendersAll" type="radio">
-                        <label for="all-lenders">All</label>
-                    </div>
-                    <div>
-                        <input ng-model="template.lenders_all" value="0" name="lendersAll" type="radio">
-                        <label for="custom-lenders">Custom select</label>
+                    <div class="select-holder">
+                        <input ng-model="template.lenders_all"
+                               value="1"
+                               name="lendersAll"
+                               type="radio"
+                               id="lenders-all">
+                        <label for="lenders-all">All</label>
+                        <input ng-model="template.lenders_all"
+                               value="0"
+                               name="lendersAll"
+                               type="radio"
+                               id="lenders-custom">
+                        <label for="lenders-custom">Custom select</label>
                     </div>
                     <div ng-if="template.lenders_all == 0" class="checkbox-area two-cols">
                         <div class="block" ng-repeat="lender in lenders">
@@ -97,13 +103,19 @@
                         </div>
                     </div>
                     <span class="label-controls">Geography</span>
-                    <div>
-                        <input ng-model="template.states_all" value="1" name="statesAll" type="radio">
-                        <label for="all-lenders">All</label>
-                    </div>
-                    <div>
-                        <input ng-model="template.states_all" value="0" name="statesAll" type="radio">
-                        <label for="custom-lenders">Custom select</label>
+                    <div class="select-holder">
+                        <input ng-model="template.states_all"
+                               value="1"
+                               name="statesAll"
+                               type="radio"
+                               id="states-all">
+                        <label for="states-all">All</label>
+                        <input ng-model="template.states_all"
+                               value="0"
+                               name="statesAll"
+                               type="radio"
+                               id="states-custom">
+                        <label for="states-custom">Custom select</label>
                     </div>
                     <div ng-if="template.states_all == 0" class="checkbox-area four-cols">
                         <div class="block" ng-repeat="state in states">
