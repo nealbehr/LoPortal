@@ -18,6 +18,7 @@
             padding: 30px 53px 10px;
         }
         .content .img-holder img{
+            display: block;
             width: 100%;
             height: auto;
         }
@@ -37,6 +38,7 @@
             margin: 0 14px 0 0;
         }
         #footer .photo img{
+            display: block;
             width: 100%;
             height: auto;
         }
@@ -60,13 +62,11 @@
             font-style: normal;
         }
         #footer .logo{
-            width:242px ;
-            float: right;
-            margin: 25px 0;
-        }
-        #footer .logo img{
-            width: 100%;
-            height: auto;
+            height: 125px;
+            white-space: nowrap;
+            width:222px;
+            margin: 0 10px;
+            float: left;
         }
         #footer .copyright{
             font-size: 10px;
@@ -99,10 +99,8 @@
                 <span>NMLS # {{user.nmls}}</span>
             </div>
         </div>
+        <div class="logo" style="background: url({{lender.picture}}) no-repeat 50% 50%;background-size: 100% auto;"></div>
         <div class="copyright">{{lender.disclosure}}</div>
-        <div class="logo">
-            <img src="{{lender.picture}}" alt="">
-        </div>
     </div>
 </section>
 </body>
