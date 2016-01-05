@@ -320,8 +320,7 @@
                 .finally(function(){
                     waitingScreen.hide();
                 });
-            ;
-        }
+        };
 
         $scope.remove = function(e){
             e.preventDefault();
@@ -335,7 +334,12 @@
             templateUrl: '/partials/admin.nav.bar',
             link: function(scope, element, attrs, controllers){
                 scope.tabs = [
-                    new Tab({path: '/admin', title: "User Management", button_text: "Add User", button_href: "/admin/user/new"}),
+                    new Tab({
+                        path : '/admin',
+                        title: 'User Management'
+                        //button_text: 'Add User',
+                        //button_href: '/admin/user/new'
+                    }),
                     new Tab({path: '/admin/queue', title: "Request Management"}),
                     new Tab({path: '/admin/lender', title: "Lender", button_text: "Add Lender", button_href: "/admin/lender/new"}),
                     // Refactoring code and uncomment
