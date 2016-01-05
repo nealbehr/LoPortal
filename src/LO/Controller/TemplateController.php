@@ -40,11 +40,13 @@ class TemplateController
                         'picture' => $template->getPicture()
                     ],
                     'user' => [
-                        'picture' => $user->getPicture(),
-                        'phone'   => $user->getPhone(),
-                        'email'   => $user->getEmail(),
-                        'nmls'    => $user->getNmls(),
-                        'address' => $address->getFormattedAddress()
+                        'firstName' => $user->getFirstName(),
+                        'lastName'  => $user->getLastName(),
+                        'picture'   => $user->getPicture(),
+                        'phone'     => $user->getPhone(),
+                        'email'     => $user->getEmail(),
+                        'nmls'      => $user->getNmls(),
+                        'address'   => $address->getFormattedAddress()
                     ],
                     'lender' => [
                         'picture'    => $lender->getPicture(),

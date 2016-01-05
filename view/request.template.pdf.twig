@@ -86,11 +86,13 @@
     </div>
     <div id="footer">
         <div class="user-info">
+            {% if user.picture %}
             <div class="photo">
                 <img src="{{user.picture}}" alt="">
             </div>
+            {% endif %}
             <div class="holder">
-                <strong>Moe House <br>Loan Officer</strong>
+                <strong>{{user.firstName}} {{user.lastName}}<br>Loan Officer</strong>
                 <span>Phone: {{user.phone}}</span><br>
                 <a href="mailto:{{user.email}}">{{user.email}}</a>
                 <address>{{user.address}}</address>
