@@ -45,7 +45,8 @@ class DashboardController
                 ->where("t.deleted = '0'")
                 ->andWhere("t.archive = '0'")
                 ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
-                ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)");
+                ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)")
+                ->groupBy('t.id');
 
             $query->setParameters([
                 'lenderId'  => $user->getLenderId(),
