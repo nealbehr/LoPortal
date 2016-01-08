@@ -151,7 +151,7 @@ class Queue extends Base
     protected $omit_realtor_info = '1';
 
     /**
-     * @OneToOne(targetEntity="QueueRealtor", fetch="LAZY")
+     * @OneToOne(targetEntity="Realtor", fetch="LAZY")
      * @JoinColumn(name="realtor_id", referencedColumnName="id")
      */
     private $realtor;

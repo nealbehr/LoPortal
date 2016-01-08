@@ -10,13 +10,13 @@ namespace LO\Common\Email\Request;
 
 
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\QueueRealtor;
+use LO\Model\Entity\Realtor;
 
 class RequestFlyerSubmission implements RequestInterface{
     private $realtor;
     private $queue;
 
-    public function __construct(QueueRealtor $realtor, Queue $queue) {
+    public function __construct(Realtor $realtor, Queue $queue) {
         $this->realtor = $realtor;
         $this->queue = $queue;
     }

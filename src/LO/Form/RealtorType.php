@@ -1,7 +1,7 @@
 <?php namespace LO\Form;
 
 use LO\Form\Extension\S3Photo;
-use LO\Model\Entity\QueueRealtor;
+use LO\Model\Entity\Realtor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -89,7 +89,7 @@ class RealtorType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'         => QueueRealtor::class,
+            'data_class'         => Realtor::class,
             'csrf_protection'    => false,
             'allow_extra_fields' => true,
             'validation_groups'  => ['Default'],

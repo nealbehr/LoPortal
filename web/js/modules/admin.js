@@ -350,7 +350,7 @@
                         button_href: '/admin/collateral/new'
                     }),
                     new Tab({
-                        path       : '/admin/queue-realtor',
+                        path       : '/admin/realtor',
                         title      : 'Realtor'
                     }),
                     new Tab({path: '/admin/realty', title: "Realty Company", button_text: "Add Company", button_href: "/admin/realty/new"}),

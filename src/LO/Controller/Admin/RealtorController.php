@@ -1,4 +1,10 @@
-<?php namespace LO\Controller\Admin;
+<?php
+/**
+ * User: Eugene Lysenko
+ * Date: 1/6/16
+ * Time: 16:55
+ */
+namespace LO\Controller\Admin;
 
 use LO\Application;
 use Symfony\Component\HttpFoundation\Request;
@@ -7,7 +13,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Form\RealtorType;
 use LO\Model\Entity\Realtor;
-use LO\Model\Entity\RealtyCompany;
 
 class RealtorController extends Base
 {
@@ -19,11 +24,16 @@ class RealtorController extends Base
     private $orderCols            = ['id', 'first_name', 'last_name', 'email', 'created_at'];
     private $autoCompleteCols     = ['first_name', 'last_name'];
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function getListAction(Application $app, Request $request)
     {
         $pagination = $app->getPaginator()->paginate(
             $this->getList($app, $request),
-            (int)$request->get(self::KEY_PAGE, 1),
+            $request->get(self::KEY_PAGE, 1),
             self::LIMIT,
             [
                 'pageParameterName'          => self::KEY_PAGE,
@@ -51,7 +61,12 @@ class RealtorController extends Base
         ]);
     }
 
-    public function getByIdAction(Application $app, $id)
+    /**
+     * @param Application $app
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getAction(Application $app, $id)
     {
         try {
             return $app->json($this->getById($app, $id)->toArray());
@@ -62,42 +77,25 @@ class RealtorController extends Base
         }
     }
 
-    public function addAction(Application $app, Request $request)
-    {
-        try {
-            $app->getEntityManager()->beginTransaction();
-            $model = new Realtor();
-
-            $this->createForm($app, $request, $model);
-
-            $model->setCompany($this->realtyCompanyExist($app, $model->getRealtyCompanyId()));
-
-            $app->getEntityManager()->persist($model);
-            $app->getEntityManager()->flush();
-            $app->getEntityManager()->commit();
-
-            return $app->json(['id' => $model->getId()]);
-        }
-        catch (HttpException $e) {
-            $app->getEntityManager()->rollback();
-            $app->getMonolog()->addError($e);
-            $this->errors['message'] = $e->getMessage();
-
-            return $app->json($this->errors, $e->getStatusCode());
-        }
-    }
-
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function updateAction(Application $app, Request $request, $id)
     {
         try{
+            $app->getEntityManager()->beginTransaction();
+
             $model = $this->getById($app, $id);
 
-            $this->createForm($app, $request, $model);
-
-            $model->setCompany($this->realtyCompanyExist($app, $model->getRealtyCompanyId()));
+            $this->createForm($app, $model, $request);
 
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
+
+            $app->getEntityManager()->commit();
 
             return $app->json('success');
         }
@@ -109,6 +107,11 @@ class RealtorController extends Base
         }
     }
 
+    /**
+     * @param Application $app
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function deleteAction(Application $app, $id)
     {
         try {
@@ -127,55 +130,42 @@ class RealtorController extends Base
         }
     }
 
-    private function createForm(Application $app, Request $request, Realtor $model)
+    /**
+     * @param Application $app
+     * @param Realtor $model
+     * @param Request $request
+     * @return \Symfony\Component\Form\Form|\Symfony\Component\Form\FormInterface
+     */
+    private function createForm(Application $app, Realtor $model, Request $request)
     {
-        $formOptions = ['validation_groups' => ['Default']];
-        $data        = $request->request->get('realtor');
+        $form = $app->getFormFactory()->create(
+            new RealtorType($app->getS3()),
+            $model,
+            ['validation_groups' => ['Default']]
+        );
 
-        if (isset($data['first_name'], $data['last_name'])
-            && $model->getFirstName() !== $data['first_name']
-            && $model->getLastName() !== $data['last_name']
-        ) {
-            $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ['New']);
-        }
-
-        $form = $app->getFormFactory()->create(new RealtorType($app->getS3()), $model, $formOptions);
-        $form->submit($data);
-
-        if (!$form->isValid()) {
+        if (!$form->submit($request)->isValid()) {
             $app->getMonolog()->addError($form->getErrors(true));
             $this->errors = $this->getFormErrors($form);
             throw new BadRequestHttpException(implode(' ', $this->errors));
-        }
-        else {
-            $realtor = $app->getEntityManager()->getRepository(Realtor::class)
-                ->createQueryBuilder('r')
-                ->where('r.first_name = :firstName')
-                ->andWhere('r.last_name = :lastName')
-                ->setParameter('firstName', $data['first_name'])
-                ->setParameter('lastName', $data['last_name'])
-                ->getQuery()
-                ->getOneOrNullResult();
-            if (!empty($realtor) && $model->getId() !== $realtor->getId()) {
-                throw new BadRequestHttpException(
-                    sprintf(
-                        'Realtor with the full name "%s" is already registered.',
-                        $realtor->getFirstName().' '.$model->getLastName()
-                    )
-                );
-            }
         }
 
         return $form;
     }
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return \Doctrine\ORM\Query
+     */
     private function getList(Application $app, Request $request)
     {
         $alias = 'r';
-        $query = $app->getEntityManager()->createQueryBuilder()
+        $query = $app->getEntityManager()
+            ->createQueryBuilder()
             ->select($alias)
             ->from(Realtor::class, $alias)
-            ->where("$alias.deleted = '0'")
+            //->where("$alias.deleted = '0'")
             ->setMaxResults(self::LIMIT)
             ->orderBy(
                 $alias.'.'.$this->getOrderKey($request->query->get(self::KEY_SORT)),
@@ -206,24 +196,26 @@ class RealtorController extends Base
         return $query->getQuery();
     }
 
+    /**
+     * @param $col
+     * @return string
+     */
     private function getOrderKey($col)
     {
         return in_array($col, $this->orderCols, true) ? $col : self::DEFAULT_SORT_FIELD_NAME;
     }
 
-    private function realtyCompanyExist(Application $app, $id)
-    {
-        if (!($model = $app->getEntityManager()->getRepository(RealtyCompany::class)->find((int)$id))) {
-            throw new BadRequestHttpException('Realty company not found.');
-        }
-
-        return $model;
-    }
-
+    /**
+     * @param Application $app
+     * @param $id
+     * @return null|object
+     */
     private function getById(Application $app, $id)
     {
-        $model = $app->getEntityManager()->getRepository(Realtor::class)->find((int)$id);
-        if (!$model || $model->getDeleted() !== '0') {
+        $model = $app->getEntityManager()->getRepository(Realtor::class)->find($id);
+        if (!$model
+            //|| $model->getDeleted() !== '0'
+        ) {
             throw new BadRequestHttpException('Realtor not found.');
         }
 

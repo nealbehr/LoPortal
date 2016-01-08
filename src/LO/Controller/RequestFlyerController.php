@@ -16,9 +16,8 @@ use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\QueueRealtor;
-use LO\Model\Entity\User;
 use LO\Model\Entity\Realtor;
+use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -200,7 +199,7 @@ class RequestFlyerController extends RequestFlyerBase
                 ->send();
             $queue->set1RexId($rexId);
 
-            $realtor = new QueueRealtor();
+            $realtor = new Realtor();
 
             $this->saveFlyer(
                 $app,
@@ -277,7 +276,7 @@ class RequestFlyerController extends RequestFlyerBase
             $this->saveFlyer(
                 $app,
                 $request,
-                new QueueRealtor(),
+                new Realtor(),
                 (new Queue())->setState(Queue::STATE_DRAFT)->setAdditionalInfo($firstRexForm->getData()),
                 ['validation_groups' => ["Default", "draft"]]
             );
@@ -375,7 +374,7 @@ class RequestFlyerController extends RequestFlyerBase
             $this->saveFlyer(
                 $app,
                 $request,
-                new QueueRealtor(),
+                new Realtor(),
                 $queue,
                 [
                     'validation_groups' => ["Default", "draft"],
@@ -411,7 +410,7 @@ class RequestFlyerController extends RequestFlyerBase
 
             $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_REQUESTED);
 
-            $realtor = new QueueRealtor();
+            $realtor = new Realtor();
 
             $this->saveFlyer(
                 $app,
@@ -441,7 +440,7 @@ class RequestFlyerController extends RequestFlyerBase
         $query = $app->getEntityManager()
             ->createQueryBuilder()
             ->select('r')
-            ->from(QueueRealtor::class, 'r')
+            ->from(Realtor::class, 'r')
             ->orderBy('r.first_name', 'asc');
 
         // if = admin, show all realtors

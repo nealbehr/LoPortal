@@ -15,7 +15,7 @@ use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
 use LO\Form\RealtorForm;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\QueueRealtor;
+use LO\Model\Entity\Realtor;
 use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,7 +31,7 @@ class RequestFlyerBase extends RequestBaseController {
     protected function saveFlyer(
         Application $app,
         Request $request,
-        QueueRealtor $realtor,
+        Realtor $realtor,
         Queue $queue,
         array $formOptions = []
     ) {
@@ -59,7 +59,7 @@ class RequestFlyerBase extends RequestBaseController {
         }
 
         // Set realtor
-        if ($realtor instanceof QueueRealtor) {
+        if ($realtor instanceof Realtor) {
             $queue->setRealtor($realtor);
         }
 
@@ -110,11 +110,11 @@ class RequestFlyerBase extends RequestBaseController {
     /**
      * @param Application $app
      * @param integer $id
-     * @return null|QueueRealtor
+     * @return null|Realtor
      */
     protected function getRealtorById(Application $app, $id)
     {
-        $realtor = $app->getEntityManager()->getRepository(QueueRealtor::class);
+        $realtor = $app->getEntityManager()->getRepository(Realtor::class);
 
         return $app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)
             ? $realtor->find($id)

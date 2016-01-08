@@ -2,7 +2,7 @@
     'use strict';
     settings = settings || {};
 
-    var PATH   = '/admin/queue-realtor';
+    var PATH   = '/admin/realtor';
 
     var module = angular.module('queueRealtorModule', ['adminModule']);
 
