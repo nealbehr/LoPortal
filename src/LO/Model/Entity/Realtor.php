@@ -17,7 +17,7 @@ use LO\Validator\FullName;
 
 /**
  * @Entity
- * @Table(name="queue_realtor")
+ * @Table(name="realtor")
  */
 class Realtor extends Base
 {
