@@ -43,9 +43,9 @@ class AdminProvider implements ControllerProviderInterface
             return new Admin\SalesDirectorController();
         });
 
-//        $app['admin.realtor.controller'] = $app->share(function() use ($app) {
-//            return new Admin\RealtorController();
-//        });
+        $app['admin.queue.realtor.controller'] = $app->share(function() use ($app) {
+            return new Admin\QueueRealtorController();
+        });
 
         $app['admin.status.controller'] = $app->share(function() use ($app) {
             return new Admin\StatusController();
@@ -112,13 +112,12 @@ class AdminProvider implements ControllerProviderInterface
         $controllers->delete('/salesdirector/{id}', 'admin.sales.director.controller:deleteAction');
 
         /**
-         * Routes for RealtorController
+         * Routes for QueueRealtorController
          */
-//        $controllers->get('/realtor', 'admin.realtor.controller:getListAction');
-//        $controllers->get('/realtor/{id}', 'admin.realtor.controller:getByIdAction');
-//        $controllers->post('/realtor', 'admin.realtor.controller:addAction');
-//        $controllers->put('/realtor/{id}', 'admin.realtor.controller:updateAction');
-//        $controllers->delete('/realtor/{id}', 'admin.realtor.controller:deleteAction');
+        $controllers->get('/queue-realtor', 'admin.queue.realtor.controller:getListAction');
+        $controllers->get('/queue-realtor/{id}', 'admin.queue.realtor.controller:getAction');
+        $controllers->put('/queue-realtor/{id}', 'admin.queue.realtor.controller:updateAction');
+        $controllers->delete('/queue-realtor/{id}', 'admin.queue.realtor.controller:deleteAction');
 
         /**
          * Routes for StatysController

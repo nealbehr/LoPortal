@@ -15,7 +15,7 @@
             'userProfileModule',
             'adminModule',
             'lenderModule',
-            'realtorModule',
+            'queueRealtorModule',
             'realtyCompanyModule',
             'salesDirectorModule',
             'ngDialog',

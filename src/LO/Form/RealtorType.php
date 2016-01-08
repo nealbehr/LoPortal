@@ -1,7 +1,7 @@
 <?php namespace LO\Form;
 
 use LO\Form\Extension\S3Photo;
-use LO\Model\Entity\Realtor;
+use LO\Model\Entity\QueueRealtor;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,7 +36,8 @@ class RealtorType extends AbstractType
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                     ])
                ]
-            ])->add('first_name', 'text', [
+            ])
+            ->add('first_name', 'text', [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'First name should not be blank.']),
                     new Assert\Regex([
@@ -47,11 +48,6 @@ class RealtorType extends AbstractType
                         'max'        => 50,
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                     ])
-                ]
-            ])
-            ->add('realty_company_id', 'number', [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Realty company should not be blank.']),
                 ]
             ])
             ->add('photo', new S3Photo($this->s3, '1rex/realtor'))
@@ -73,13 +69,27 @@ class RealtorType extends AbstractType
                         'message' => 'Please input a valid US phone number including 3 digit area code and 7 digit number.'
                     ])
                 ]
-            ])->add('bre_number', 'text');
+            ])
+            ->add('bre_number', 'text')
+            ->add('realty_logo', new S3Photo($this->s3, '1rex-realty'))
+            ->add('realty_name', 'text', [
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => "/^([A-Za-z-_\s]+)$/",
+                        'message' => 'Name is invalid.'
+                    ]),
+                    new Assert\Length([
+                        'max'        => 50,
+                        'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
+                    ])
+                ]
+            ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults([
-            'data_class'         => Realtor::class,
+            'data_class'         => QueueRealtor::class,
             'csrf_protection'    => false,
             'allow_extra_fields' => true,
             'validation_groups'  => ['Default'],

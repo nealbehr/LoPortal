@@ -2,27 +2,27 @@
     'use strict';
     settings = settings || {};
 
-    var PATH = '/admin/realtor';
+    var PATH   = '/admin/queue-realtor';
 
-    var realtorModule = angular.module('realtorModule', ['adminModule']);
+    var module = angular.module('queueRealtorModule', ['adminModule']);
 
-    realtorModule.config(['$routeProvider', function($routeProvider) {
+    module.config(['$routeProvider', function($routeProvider) {
         $routeProvider.when(PATH, {
             templateUrl: '/partials/admin.realtor.tab',
-            controller : 'realtorCtrl',
+            controller : 'queueRealtorCtrl',
             access     : { isFree: false }
         }).when(PATH+'/new', {
             templateUrl: '/partials/admin.realtor',
-            controller :  'realtorCtrl',
+            controller :  'queueRealtorCtrl',
             access     : { isFree: false }
         }).when(PATH+'/:id/edit', {
             templateUrl: '/partials/admin.realtor',
-            controller :  'realtorEditCtrl',
+            controller :  'queueRealtorEditCtrl',
             access     : { isFree: false }
         });
     }]);
 
-    realtorModule.factory('getRealtor', ['$q', '$http', function($q, $http) {
+    module.factory('getRealtor', ['$q', '$http', function($q, $http) {
         var realtors = [];
 
         return function(needReload) {
@@ -42,7 +42,7 @@
         }
     }]);
 
-    realtorModule.service(
+    module.service(
         'createRealtor',
         ['$q', '$http', 'createRealtorBase', 'getRealtor',
             function($q, $http, createRealtorBase, getRealtor) {
@@ -99,26 +99,35 @@
                 }
             }]);
 
-    realtorModule.service('createRealtorBase', ['$q', '$http', function($q, $http) {
+    module.service('createRealtorBase', ['$q', '$http', function($q, $http) {
         return function() {
             var self = this;
 
             this.id                = null;
-            this.realty_company_id = null;
             this.first_name        = null;
             this.last_name         = null;
             this.bre_number        = null;
             this.email             = null;
             this.phone             = null;
             this.photo             = null;
+            this.realty_logo       = null;
+            this.realty_name       = null;
 
-            this.getPicture = function() {
+            this.getPhoto = function() {
                 return this.photo;
             };
 
-            this.setPicture = function(param) {
+            this.setPhoto = function(param) {
                 this.photo = param;
+                return this;
+            };
 
+            this.getRealtyLogo = function() {
+                return this.realty_logo;
+            };
+
+            this.setRealtyLogo = function(param) {
+                this.realty_logo = param;
                 return this;
             };
 
@@ -181,24 +190,53 @@
         }
     }]);
 
-    realtorModule.controller('realtorCtrl', ['$scope', 'createRealtor', function($scope, createRealtor) {
+    module.controller('queueRealtorCtrl', ['$scope', 'createRealtor', function($scope, createRealtor) {
         $scope.realtor = createRealtor();
         $scope.PATH    = PATH;
     }]);
 
-    realtorModule.controller(
-        'realtorEditCtrl',
-        ['$scope', 'createRealtor', '$routeParams',
-            function($scope, createRealtor, $routeParams)
+    module.controller(
+        'queueRealtorEditCtrl',
+        ['$scope', 'createRealtor', '$routeParams', 'waitingScreen',
+            function($scope, createRealtor, $routeParams, waitingScreen)
         {
+            waitingScreen.show();
+
             createRealtor().get($routeParams.id).then(function(data) {
                 $scope.realtor = data;
+            }).finally(function() {
+                waitingScreen.hide();
             });
             $scope.PATH    = PATH;
         }
     ]);
 
-    realtorModule.directive(
+    module.controller('selectRealtyCompanyCtrl', ['$scope', 'realtyLogosFactory', function($scope, realtyLogosFactory) {
+        $scope.realtyCompanies = [];
+
+        getRealtyCompanies();
+
+        function getRealtyCompanies() {
+            realtyLogosFactory.getRealtyCompanies().success(function (companies) {
+                $scope.realtyCompanies = companies;
+            }).error(function (error) {
+                $scope.status = 'Unable to load realty companies data: '+error.message;
+            });
+        }
+
+        $scope.selectRealtyLogo = function(e, realtyCompany) {
+            e.preventDefault();
+
+            if($scope.realtyLogo) {
+                $scope.realtyLogo.cropperDestroy();
+            }
+            $scope.realtor.realty_name = realtyCompany.name;
+            $scope.realtor.realty_logo = realtyCompany.logo;
+            $('#chooseRealtyCompanyLogo').modal('hide');
+        };
+    }]);
+
+    module.directive(
         'loAdminRealtorList',
         ['$http', '$location', 'tableHeadCol', 'waitingScreen', 'renderMessage', 'createRealtor',
             function($http, $location, tableHeadCol, waitingScreen, renderMessage, createRealtor) {
@@ -276,7 +314,7 @@
         ]
     );
 
-    realtorModule.directive(
+    module.directive(
         'loAdminRealtorForm',
         ['waitingScreen', 'renderMessage', 'sessionMessages', '$anchorScroll', 'pictureObject', '$http',
             function(waitingScreen, renderMessage, sessionMessages, $anchorScroll, pictureObject, $http)
@@ -288,6 +326,7 @@
                     link       : function(scope, element, attrs, controllers) {
                         scope.container       = angular.element('#realtorMessage');
                         scope.realtorPicture  = {};
+                        scope.realtyLogo      = {};
                         scope.realtyCompanies = [];
                         scope.hideErrors      = true;
 
@@ -303,9 +342,25 @@
                                 angular.element('#realtorImage'),
                                 {
                                     container: $('.realtor.realtor-photo > img'),
-                                    options: {aspectRatio: 3 / 4, minContainerWidth: 100}
+                                    options  : {aspectRatio: 3 / 4, minContainerWidth: 100}
                                 },
-                                scope.realtor
+                                scope.realtor,
+                                'setPhoto'
+                            );
+
+                            scope.realtyLogo = new pictureObject(
+                                angular.element('#realtyLogo'),
+                                {
+                                    container: $('#realtyLogoImage'),
+                                    options  : {
+                                        minCropBoxWidth : 100,
+                                        minCropBoxHeight: 100,
+                                        maxCropBoxWidth : 350,
+                                        maxCropBoxHeight: 100
+                                    }
+                                },
+                                scope.realtor,
+                                'setRealtyLogo'
                             );
                         });
 
