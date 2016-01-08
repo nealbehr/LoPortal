@@ -75,7 +75,7 @@ class RealtorType extends AbstractType
             ->add('realty_name', 'text', [
                 'constraints' => [
                     new Assert\Regex([
-                        'pattern' => "/^([A-Za-z-_\s]+)$/",
+                        'pattern' => '/^[a-zA-Z0-9][a-zA-Z0-9()\.\-#&\s]*$/',
                         'message' => 'Name is invalid.'
                     ]),
                     new Assert\Length([
