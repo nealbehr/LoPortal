@@ -10,9 +10,6 @@ namespace LO\Controller;
 use LO\Application;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
-use LO\Model\Entity\Template;
-use LO\Model\Entity\TemplateAddress;
-use LO\Model\Entity\TemplateLender;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Doctrine\ORM\Query\Expr;
 
