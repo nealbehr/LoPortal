@@ -5,17 +5,21 @@
  * Date: 3/27/15
  * Time: 2:15 PM
  */
-
 namespace LO\Model\Manager;
-
 
 use Doctrine\ORM\Query;
 use LO\Model\Entity\Queue;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr;
+use LO\Model\Entity\User;
+use LO\Model\Entity\Template;
+use LO\Model\Entity\TemplateLender;
+use LO\Model\Entity\TemplateAddress;
 
-class DashboardManager extends Base{
-    public function getByUserId($userId, $withoutCanceled = true){
+class DashboardManager extends Base
+{
+    public function getByUserId($userId, $withoutCanceled = true)
+    {
         $q = $this->getApp()->getEntityManager()
             ->createQueryBuilder()
             ->select('q')
@@ -48,7 +52,8 @@ class DashboardManager extends Base{
         return $result;
     }
 
-    public function getCollateralByUserId($userId, $hydrate = AbstractQuery::HYDRATE_OBJECT){
+    public function getCollateralByUserId($userId, $hydrate = AbstractQuery::HYDRATE_OBJECT)
+    {
         return  $this->getApp()
             ->getEntityManager()
             ->createQueryBuilder()
@@ -64,5 +69,33 @@ class DashboardManager extends Base{
             ->getQuery()
             ->getResult($hydrate)
             ;
+    }
+
+    public function getTemplateList(User $model)
+    {
+        $query = $this->getApp()
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('t')
+            ->from(Template::class, 't')
+            ->leftJoin(TemplateLender::class, 'tl', Expr\Join::WITH, 't.id = tl.template_id')
+            ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
+            ->where("t.deleted = '0'")
+            ->andWhere("t.archive = '0'")
+            ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
+            ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)")
+            ->groupBy('t.id');
+
+        $query->setParameters([
+            'lenderId'  => $model->getLenderId(),
+            'stateCode' => $model->getAddress()->getState()
+        ]);
+
+        $data = [];
+        foreach ($query->getQuery()->getResult(Query::HYDRATE_ARRAY) as $template) {
+            $data[$template['category_id']][] = $template;
+        }
+
+        return $data;
     }
 }

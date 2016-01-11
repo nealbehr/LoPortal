@@ -34,7 +34,6 @@ class TemplateController
                 $pdf->setOption('margin-top', 0);
                 $pdf->setOption('margin-bottom', 0);
 
-                $time = time();
                 $html = $app->getTwig()->render('request.template.pdf.twig', [
                     'template' => [
                         'picture' => $template->getPicture()
@@ -60,15 +59,18 @@ class TemplateController
                 $mp->identify($user->getId());
                 $mp->track('Document Download', ['id' => $template->getId(), 'name' => $template->getName()]);
 
+                $name = strtolower(str_replace (' ', '-', $template->getName()));
+                $time = time();
+
                 header('Content-Type: application/pdf');
-                header("Content-Disposition: attachment; filename=\"document-$id-$time.pdf\"");
+                header("Content-Disposition: attachment; filename=\"$name-$time.pdf\"");
 
                 echo $pdf->getOutputFromHtml($html, [], true);
             }
-            catch (\Exception $ex) {
+            catch (\Exception $e) {
                 header_remove('Content-Type');
                 header_remove('Content-Disposition');
-                return $app->json(['error' => '', 'message' => $ex->getMessage()]);
+                return $app->json(['error' => '', 'message' => $e->getMessage()]);
             }
         }
 

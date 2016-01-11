@@ -35,32 +35,9 @@ class DashboardController
     public function getTemplatesAction(Application $app)
     {
         try {
-            $user  = $app->getSecurityTokenStorage()->getToken()->getUser();
-            $query = $app->getEntityManager()
-                ->createQueryBuilder()
-                ->select('t')
-                ->from(Template::class, 't')
-                ->leftJoin(TemplateLender::class, 'tl', Expr\Join::WITH, 't.id = tl.template_id')
-                ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
-                ->where("t.deleted = '0'")
-                ->andWhere("t.archive = '0'")
-                ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
-                ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)")
-                ->groupBy('t.id');
-
-            $query->setParameters([
-                'lenderId'  => $user->getLenderId(),
-                'stateCode' => $user->getAddress()->getState()
-            ]);
-
-            $templates = $query->getQuery()->getResult(Query::HYDRATE_ARRAY);
-
-            $data = [];
-            foreach ($templates as $template) {
-                $data[$template['category_id']][] = $template;
-            }
-
-            return $app->json($data);
+            return $app->json(
+                $app->getDashboardManager()->getTemplateList($app->getSecurityTokenStorage()->getToken()->getUser())
+            );
         }
         catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);
