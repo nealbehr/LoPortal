@@ -19,9 +19,11 @@ use Doctrine\ORM\Mapping\OneToMany;
  * @Entity
  * @Table(name="lender")
  */
-class Lender extends Base {
-
-    public function __construct() {
+class Lender extends Base
+{
+    public function __construct()
+    {
+        parent::__construct();
         $this->disclosures = new ArrayCollection();
     }
 

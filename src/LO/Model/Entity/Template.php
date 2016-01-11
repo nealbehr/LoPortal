@@ -111,6 +111,7 @@ class Template extends Base
 
     public function __construct()
     {
+        parent::__construct();
         $this->lenders   = new ArrayCollection();
         $this->addresses = new ArrayCollection();
     }

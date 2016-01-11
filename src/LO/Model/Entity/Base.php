@@ -13,7 +13,8 @@ use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\UniqueConstraint;
 use Doctrine\ORM\Mapping\Column;
 
-class Base {
+class Base
+{
     const DATE_FORMAT = 'Y-m-d H:i:s a';
 
     /**
