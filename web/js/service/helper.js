@@ -460,33 +460,6 @@
         };
     }]);
 
-    helperService.directive('validateGoogleAddress', ["parseGoogleAddressComponents", function(parseGoogleAddressComponents) {
-        return {
-            require: 'ngModel',
-            restrict: '',
-            link: function(scope, elm, attrs, ctrl) {
-                if (!ctrl) {
-                    return;
-                }
-
-                ctrl.$validators.address_components = function(modelValue) {
-                    if (ctrl.$isEmpty(modelValue)) {
-                        // consider empty models to be valid
-                        return true;
-                    }
-
-                    for(var i in scope.request.address){
-                        if(scope.request.address[i] == '' || scope.request.address[i] == null){
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-            }
-        };
-    }]);
-
     helperService.directive('usaPhone', [function(){
         var phoneFormat = /^[0-9+\(\)#\.\s\/ext-]+$/;
         return {
@@ -1252,4 +1225,73 @@
             }
         };
     });
+
+    /**
+     * Validate address
+     */
+    helperService.directive(
+        'validateGoogleAddress',
+        ['geoCode', 'parseGoogleAddressComponents', function(geoCode, parseGoogleAddressComponents) {
+        return {
+            require : 'ngModel',
+            restrict: 'A',
+            link    : function(scope, elm, attrs, ctrl) {
+                if (!ctrl) {
+                    return;
+                }
+
+                ctrl.$validators.address_components = function(address) {
+                    if (ctrl.$isEmpty(address)) {
+                        // consider empty models to be valid
+                        return true;
+                    }
+
+                    geoCode.isValid(address).then(function(data) {
+                        if (data.length > 0) {
+                            scope.request.property.address = address;
+                            scope.request.address.set(parseGoogleAddressComponents(data));
+                            ctrl.$setValidity('address_components', true);
+                            for (var i in scope.request.address) {
+                                if (scope.request.address[i] == '' || scope.request.address[i] == null) {
+                                    ctrl.$setValidity('address_components', false);
+                                }
+                            }
+                        }
+                        else {
+                            scope.request.address.clear();
+                            ctrl.$setValidity('address_components', false);
+                        }
+                    });
+                }
+            }
+        };
+    }]);
+
+    /**
+     * Checks address format
+     */
+    helperService.factory('geoCode', ['$q', function($q) {
+        return {
+            isValid: function(address) {
+                var geocoder = new google.maps.Geocoder(),
+                    deferred = $q.defer();
+
+                geocoder.geocode({ 'address': address }, function(results, status) {
+                    var data = [];
+
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        for (var i in results) {
+                            if (address === results[i].formatted_address) {
+                                data = results[i].address_components;
+                            }
+                        }
+                    }
+
+                    return deferred.resolve(data);
+                });
+
+                return deferred.promise;
+            }
+        };
+    }]);
 })(settings);
