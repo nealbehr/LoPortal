@@ -35,49 +35,47 @@ class RequestFlyerBase extends RequestBaseController {
         Queue $queue,
         array $formOptions = []
     ) {
-        $formOptionsCopy = $formOptions;
-        if ($queue->getOmitRealtorInfo() === '1') {
-            $formOptionsCopy['validation_groups'] = ['Default', 'draft'];
-        }
-
-        // Get realtor
-        if (!empty($request->get('realtor_id'))) {
-            $realtor = $this->getRealtorById($app, $request->get('realtor_id'));
-        }
-        // Create realtor
-        else {
-            $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptionsCopy);
-            $form->handleRequest($request);
-            if (!$form->isValid()) {
-                $this->getMessage()->replace('realtor', $this->getFormErrors($form));
-
-                throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
-            }
-            $realtor->setUserId($app->getSecurityTokenStorage()->getToken()->getUser()->getId());
-            $app->getEntityManager()->persist($realtor);
-            $app->getEntityManager()->flush();
-        }
-
-        // Set realtor
-        if ($realtor instanceof Realtor) {
-            $queue->setRealtor($realtor);
-        }
-
+        // Validation queue
         $queue->setType(Queue::TYPE_FLYER);
-        if($queue->getUser() == null) {
+        if ($queue->getUser() == null) {
             // do not change queue user when edited by admin
             $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
         }
         $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue, $formOptions);
         $queueForm->handleRequest($request);
-//        $queueForm->submit($this->removeExtraFields($request->request->get('property'), $queueForm));
-
-        if(!$queueForm->isValid()){
+        if (!$queueForm->isValid()) {
             $this->getMessage()->replace('property', $this->getFormErrors($queueForm));
 
             throw new Http('Property info is not valid', Response::HTTP_BAD_REQUEST);
         }
 
+        // Validation realtor
+        if ($queue->getOmitRealtorInfo() == '0') {
+            // Get realtor
+            if (!empty($request->get('realtor_id'))) {
+                $realtor = $this->getRealtorById($app, $request->get('realtor_id'));
+            }
+            // Create realtor
+            else {
+                $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptions);
+                $form->handleRequest($request);
+                if (!$form->isValid()) {
+                    $this->getMessage()->replace('realtor', $this->getFormErrors($form));
+
+                    throw new Http('Realtor info is not valid', Response::HTTP_BAD_REQUEST);
+                }
+                $realtor->setUserId($app->getSecurityTokenStorage()->getToken()->getUser()->getId());
+                $app->getEntityManager()->persist($realtor);
+                $app->getEntityManager()->flush();
+            }
+
+            // Set realtor
+            if ($realtor instanceof Realtor) {
+                $queue->setRealtor($realtor);
+            }
+        }
+
+        // Save queue
         $app->getEntityManager()->persist($queue);
         $app->getEntityManager()->flush();
 
