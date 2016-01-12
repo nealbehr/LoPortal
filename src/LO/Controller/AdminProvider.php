@@ -43,7 +43,7 @@ class AdminProvider implements ControllerProviderInterface
             return new Admin\SalesDirectorController();
         });
 
-        $app['admin.queue.realtor.controller'] = $app->share(function() use ($app) {
+        $app['admin.realtor.controller'] = $app->share(function() use ($app) {
             return new Admin\RealtorController();
         });
 
@@ -114,10 +114,10 @@ class AdminProvider implements ControllerProviderInterface
         /**
          * Routes for RealtorController
          */
-        $controllers->get('/realtor', 'admin.queue.realtor.controller:getListAction');
-        $controllers->get('/realtor/{id}', 'admin.queue.realtor.controller:getAction');
-        $controllers->put('/realtor/{id}', 'admin.queue.realtor.controller:updateAction');
-        $controllers->delete('/realtor/{id}', 'admin.queue.realtor.controller:deleteAction');
+        $controllers->get('/realtor', 'admin.realtor.controller:getListAction');
+        $controllers->get('/realtor/{id}', 'admin.realtor.controller:getAction');
+        $controllers->put('/realtor/{id}', 'admin.realtor.controller:updateAction');
+        $controllers->delete('/realtor/{id}', 'admin.realtor.controller:deleteAction');
 
         /**
          * Routes for StatysController
