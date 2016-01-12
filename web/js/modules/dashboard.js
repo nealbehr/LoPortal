@@ -179,8 +179,7 @@
             restrict   : 'EA',
             templateUrl: '/partials/dashboard.collateral.row',
             scope      : {
-                items: '=loItems',
-                user : '=loUser'
+                items: '=loItems'
             },
             link: function (scope, el, attrs, ngModel) {
                 scope.categories = [
