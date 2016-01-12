@@ -97,7 +97,16 @@
 
                 <div class="inputs-holder">
                     <div class="input">
-                        <input ng-readonly="isAddressReadOnly()" ng-keypress="clearAddress($event)" class="input-lg" id="pac-input" name="address" type="text" placeholder="Property Address" validate-google-address ng-model="request.property.address" required="">
+                        <input ng-readonly="isAddressReadOnly()"
+                               ng-keypress="clearAddress($event)"
+                               ng-model="request.property.address"
+                               validate-google-address
+                               name="address"
+                               type="text"
+                               class="input-lg"
+                               id="pac-input"
+                               placeholder="Property Address"
+                               required="">
                     </div>
                     <div class="input">
                         <input type="text"
@@ -179,7 +188,8 @@
                             <input class="input-lg"
                                    type="text"
                                    placeholder="Phone number"
-                                   usa-phone ng-model="request.realtor.phone"
+                                   usa-phone
+                                   ng-model="request.realtor.phone"
                                    ng-required="realtorSelect == 'add'"
                                    name="phone">
                         </div>
