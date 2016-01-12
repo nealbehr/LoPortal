@@ -154,6 +154,7 @@ module.exports = function(grunt) {
             },
             main: {
                 src: [
+                    'web/js/lib/*.js',
                     'web/js/modules/*.js',
                     'web/js/service/*.js',
                     'web/js/*.js'
