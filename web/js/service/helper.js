@@ -1240,27 +1240,27 @@
                     return;
                 }
 
+                var valid = true;
                 ctrl.$validators.address_components = function(address) {
                     if (ctrl.$isEmpty(address)) {
                         // consider empty models to be valid
-                        return true;
+                        return valid;
                     }
-
                     geoCode.isValid(address).then(function(data) {
                         if (data.length > 0) {
                             scope.request.property.address = address;
                             scope.request.address.set(parseGoogleAddressComponents(data));
-                            ctrl.$setValidity('address_components', true);
                             for (var i in scope.request.address) {
                                 if (scope.request.address[i] == '' || scope.request.address[i] == null) {
-                                    ctrl.$setValidity('address_components', false);
+                                    valid = false;
                                 }
                             }
                         }
                         else {
                             scope.request.address.clear();
-                            ctrl.$setValidity('address_components', false);
+                            valid = false;
                         }
+                        ctrl.$setValidity('address_components', valid);
                     });
                 }
             }
