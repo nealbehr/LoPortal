@@ -13,6 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use LO\Common\Email;
 use LO\Model\Entity\RecoveryPassword;
 use \Mixpanel;
+use BaseCRM\Client as BaseCrmClient;
 
 class Authorize
 {
@@ -35,10 +36,8 @@ class Authorize
         $app->getEntityManager()->persist($token);
         $app->getEntityManager()->flush();
 
-        // Mixpanel analytics
-        $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
-        $mp->identify($user->getId());
-        $mp->track('Log In');
+        // Log for Mixpanel and BaseCRM
+        $this->logInLog($app, $user);
 
         return $app->json($token->getHash());
     }
@@ -142,5 +141,23 @@ class Authorize
             $app->getMonolog()->addWarning($e);
             return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
+    }
+
+    private function logInLog(Application $app, User $model)
+    {
+        // Mixpanel analytics
+        $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+        $mp->identify($model->getId());
+        $mp->track('Log In');
+
+        // Base CRM
+        $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
+        $client->notes->create([
+            'resource_type' => 'contact',
+            'resource_id'   => $model->getBaseId(),
+            'content'       => sprintf('%s || Log In || %s', $app->getConfigByName('name'), $model->getEmail())
+        ]);
+
+        return true;
     }
 }
