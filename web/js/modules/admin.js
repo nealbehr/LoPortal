@@ -365,10 +365,16 @@
         }
     }]);
 
-    admin.directive('loAdminUsers', ['$http', "getRoles", "getLenders", "$location", "tableHeadCol", "waitingScreen", "createUser", "renderMessage", "$q", function($http, getRoles, getLenders, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q){
-        return { restrict: 'EA',
+    admin.directive(
+        'loAdminUsers', 
+        ['$http', 'getRoles', 'getLenders', '$location', 'tableHeadCol', 'waitingScreen', 'createUser', 'renderMessage', 
+            '$q', 
+            function($http, getRoles, getLenders, $location, tableHeadCol, waitingScreen, createUser, renderMessage, $q)
+        {
+        return {
+            restrict   : 'EA',
             templateUrl: '/partials/admin.panel.users',
-            link: function(scope, element, attrs, controllers){
+            link       : function(scope, element, attrs, controllers) {
                 scope.pagination = {};
                 scope.users = [];
                 scope.roles = {};
@@ -376,6 +382,37 @@
                 scope.searchingString;
                 scope.isLoaded = false;
                 scope.searchKey;
+
+                scope.syncWithBase = function(e) {
+                    e.preventDefault();
+
+                    waitingScreen.show();
+
+                    $http.get('/admin/user-sync').success(function(data) {
+                        var message = 'Up to date.';
+                        for (var i in data) {
+                            if (data[i] > 0) {
+
+                                // Get users
+                                scope.getUsers().then(function(data) {
+                                    scope.users = [];
+                                    for (var i in data.users) {
+                                        scope.users.push(createUser().fill(data.users[i]));
+                                    }
+                                });
+
+                                message = 'Finished sync. (Created: '+data.create+' | Updated: '+data.update
+                                    +' | Deleted '+data.delete+')';
+
+                                break;
+                            }
+                        }
+
+                        renderMessage(message, 'success', scope.container, scope);
+                    }).finally(function() {
+                        waitingScreen.hide();
+                    });
+                };
 
                 scope.getUsers = function() {
                     var deferred = $q.defer();

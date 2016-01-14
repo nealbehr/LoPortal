@@ -58,23 +58,16 @@ class AdminProvider implements ControllerProviderInterface
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
-        $controllers
-            ->get("/roles", "admin.controller:getRolesAction");
-
-        $controllers
-            ->get("/user", "admin.controller:getUsersAction");
-
-        $controllers
-            ->post("/user", "admin.controller:addUserAction");
-
-        $controllers
-            ->put("/user/{id}", "admin.controller:updateUserAction");
-
-        $controllers
-            ->patch("/user/{userId}", "admin.controller:resetPasswordAction");
-
-        $controllers
-            ->delete("/user/{id}", "admin.controller:deleteAction");
+        /**
+         * Routes for AdminUserController
+         */
+        $controllers->get('/user-sync', 'admin.controller:syncDbAction');
+        $controllers->get('/roles', 'admin.controller:getRolesAction');
+        $controllers->get('/user', 'admin.controller:getUsersAction');
+        $controllers->post('/user', 'admin.controller:addUserAction');
+        $controllers->put('/user/{id}', 'admin.controller:updateUserAction');
+        $controllers->patch('/user/{userId}', 'admin.controller:resetPasswordAction');
+        $controllers->delete('/user/{id}', 'admin.controller:deleteAction');
 
         $controllers->get('/queue', "admin.queue.controller:getAction");
         $controllers->patch('/queue/decline/{id}', "admin.queue.controller:declineAction");

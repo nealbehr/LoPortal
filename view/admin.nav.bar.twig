@@ -1,9 +1,9 @@
-<header class="page-title">
+<header class="admin-panel page-title">
     <h1>Admin Panel</h1>
     <ul class="tabset">
         <li ng-repeat="tab in tabs" ng-class="{active: tab.isActive()}"><a href="/#[[ tab.path ]]">[[ tab.title ]]</a></li>
     </ul>
-    <div class="btn-holder">
+    <div class="admin-panel btn-holder">
         <a ng-repeat="tab in tabs" ng-show="tab.isActive() && (tab.button_href !== undefined)" href="/#[[ tab.button_href ]]" class="btn btn-default">[[ tab.button_text ]]</a>
     </div>
 </header>

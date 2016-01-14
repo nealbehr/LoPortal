@@ -116,6 +116,30 @@ input[type=number] {
     -moz-appearance:textfield;
 }
 
+/* Header start */
+.admin-panel.page-title {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+.admin-panel.page-title .tabset {
+    border-bottom: 1px solid #ededed;
+    width: 100%;
+    padding: 13px 0;
+}
+.admin-panel.btn-holder {
+    width: 100%;
+    float: none;
+    overflow: hidden;
+}
+.admin-panel.btn-holder .btn {
+    float: right;
+}
+.admin-panel.btn-holder .btn:first-child {
+    margin: 0 0 10px 0;
+}
+/* Header end */
+
 /* Thanks box start */
 .thanks-box {
     padding-top: 0;

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\User as EntityUser;
+use LO\Common\BaseCrm\SyncDb;
 
 class AdminUserController extends Base {
     const USER_LIMIT    = 20;
@@ -162,6 +163,16 @@ class AdminUserController extends Base {
             return $app->json("success");
         }catch(HttpException $e){
             $app->getEntityManager()->rollback();
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
+    public function syncDbAction(Application $app)
+    {
+        try {
+            return $app->json((new SyncDb($app))->user());
+        }
+        catch(HttpException $e) {
             return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
     }
