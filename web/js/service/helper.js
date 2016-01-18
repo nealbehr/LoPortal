@@ -36,7 +36,10 @@
         }
     }]);
 
-    helperService.directive('loNavbarHead', ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', 'userService', function($http, $cookieStore, redirect, TOKEN_KEY, userService){
+    helperService.directive(
+        'loNavbarHead',
+        ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', 'userService', 'waitingScreen',
+            function($http, $cookieStore, redirect, TOKEN_KEY, userService, waitingScreen) {
         return { restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
@@ -54,20 +57,21 @@
                     }
                 });
 
-                scope.logout = function(e){
+                scope.logout = function(e) {
                     e.preventDefault();
-                    $http.delete('/logout')
-                        .success(function(data){
-                            $cookieStore.remove(TOKEN_KEY)
-                            userService.get().then(function(user){
-                                user.clear();
-                                redirect('/login');
-                            });
-                        })
-                        .finally(function(){
 
-                        })
-                    ;
+                    waitingScreen.show();
+
+                    $http.delete('/logout').success(function(data) {
+                        $cookieStore.remove(TOKEN_KEY);
+                        userService.get().then(function(user){
+                            user.clear();
+                            redirect('/login');
+                        });
+                    }).finally(function(){
+                        scope.isUserLoaded = false;
+                        waitingScreen.hide();
+                    });
 
                     return false;
                 }
