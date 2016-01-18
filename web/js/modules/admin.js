@@ -698,15 +698,15 @@
         };
     });
 
-    admin.directive('loAdminSupportInfoFooter', ['userService', function(userService) {
+    admin.directive('loFooter', ['userService', function(userService) {
         return {
             restrict   : 'EA',
-            templateUrl: '/partials/admin.support.info.footer',
+            templateUrl: '/partials/footer',
+            scope      : {
+                user: "=loUser"
+            },
             link       : function(scope, element, attrs, controllers) {
-                scope.user = {};
-                userService.get().then(function(user){
-                    scope.user = user;
-                });
+
             }
         }
     }]);

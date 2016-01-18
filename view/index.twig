@@ -17,22 +17,13 @@
     <!-- /build -->
 </head>
 <body>
-    <div id="wrapper" ng-view><!-- --></div>
+    <div ng-view><!-- --></div>
 
-    <footer id="footer">
-        <div class="container">
-            <lo-admin-support-info-footer></lo-admin-support-info-footer>
-            <a class="hidden-xs" href="/#/"><img src="images/logo-footer.png" width="77" height="40" alt="firstREX"></a>
-            <ul>
-                <li><a href="http://rexhomebuyer.com/privacy-security/" target="_blank">Privacy Policy</a></li>
-                <li><a href="http://rexhomebuyer.com/terms-of-use/" target="_blank">Terms of Use</a></li>
-                <li><a href="http://rexhomebuyer.com/disclosures-2/" target="_blank">Disclosure</a></li>
-            </ul>
-        </div>
-    </footer>
+    <!-- Waiting scrren start -->
     <div class="waiting" id="waiting"><img src="/images/waiting.gif" width="32" height="32" alt=""></div>
+    <!-- waiting scrren end -->
 
-    <!-- Progress bar -->
+    <!-- Progress bar start -->
     <div id="progress-bar-screen" class="hide">
         <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 1%;">
@@ -41,6 +32,7 @@
         </div>
         <div class="text"></div>
     </div>
+    <!-- Progress bar end -->
 
     <script>
         var settings = {

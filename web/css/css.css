@@ -1,4 +1,8 @@
+#wrapper {
+    padding-bottom: 154px;
+}
 #footer {
+    margin-top: -154px;
     height: 154px;
     color: #818181;
 }
