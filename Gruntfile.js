@@ -126,8 +126,8 @@ module.exports = function(grunt) {
             stage: {
                 options: {
                     profile    : 'eb-client',
-                    application: 'first-rex-portal',
-                    environment: 'firstRexPortal-stage'
+                    application: 'portal-1rex-com',
+                    environment: 'portal1rexcom-stage'
                 },
                 files: [
                     { src: ['.ebextensions/*'] },
