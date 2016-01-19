@@ -125,6 +125,10 @@ class UserController {
      */
     private function updateBaseCrm(Application $app, UserEntity $model)
     {
+        if (null === $model->getBaseId()) {
+            return false;
+        }
+
         $user   = new UserAdapter($model);
         $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
 

@@ -19,6 +19,8 @@ class SyncDb
     const DEFAULT_PASSWORD = '123456';
     const GOOGLE_API       = 'https://maps.googleapis.com/maps/api/place/';
 
+    const NOT_LENDER_NAME  = 'Not Lender';
+
     private $syncAddress   = true;
 
     private $app;
@@ -50,13 +52,12 @@ class SyncDb
         $qLender = $this->entityManager->getRepository(Lender::class)->createQueryBuilder('l')->where('l.name = :name');
 
         // Get or create "Not Lender" company
-        $notLenderName = 'Not Lender';
         try {
-            $notLender = $qLender->setParameter('name', $notLenderName)->getQuery()->getSingleResult();
+            $notLender = $qLender->setParameter('name', self::NOT_LENDER_NAME)->getQuery()->getSingleResult();
         }
         catch (NoResultException $e) {
             $notLender = new Lender;
-            $notLender->setName($notLenderName);
+            $notLender->setName(self::NOT_LENDER_NAME);
             $this->entityManager->persist($notLender);
             $this->entityManager->flush();
         }
@@ -72,7 +73,7 @@ class SyncDb
                     $user->setUpdatedAt(null);
                     $this->countUpdate++;
                 }
-                    // Create user
+                // Create user
                 catch (NoResultException $e) {
                     $user    = new User;
                     $address = new Address;
@@ -164,6 +165,8 @@ class SyncDb
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
+
+                return Sync::ACK;
             }
         });
 

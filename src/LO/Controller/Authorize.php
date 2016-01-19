@@ -151,12 +151,13 @@ class Authorize
         $mp->track('Log In');
 
         // Base CRM
-        $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
-        $client->notes->create([
-            'resource_type' => 'contact',
-            'resource_id'   => $model->getBaseId(),
-            'content'       => sprintf('%s || Log In || %s', $app->getConfigByName('name'), $model->getEmail())
-        ]);
+        if (null !== $model->getBaseId()) {
+            (new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]))->notes->create([
+                'resource_type' => 'contact',
+                'resource_id'   => $model->getBaseId(),
+                'content'       => sprintf('%s || Log In || %s', $app->getConfigByName('name'), $model->getEmail())
+            ]);
+        }
 
         return true;
     }
