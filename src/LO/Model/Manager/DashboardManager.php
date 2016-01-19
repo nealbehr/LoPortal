@@ -70,32 +70,4 @@ class DashboardManager extends Base
             ->getResult($hydrate)
             ;
     }
-
-    public function getTemplateList(User $model)
-    {
-        $query = $this->getApp()
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('t')
-            ->from(Template::class, 't')
-            ->leftJoin(TemplateLender::class, 'tl', Expr\Join::WITH, 't.id = tl.template_id')
-            ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
-            ->where("t.deleted = '0'")
-            ->andWhere("t.archive = '0'")
-            ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
-            ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)")
-            ->groupBy('t.id');
-
-        $query->setParameters([
-            'lenderId'  => $model->getLenderId(),
-            'stateCode' => $model->getAddress()->getState()
-        ]);
-
-        $data = [];
-        foreach ($query->getQuery()->getResult(Query::HYDRATE_ARRAY) as $template) {
-            $data[$template['category_id']][] = $template;
-        }
-
-        return $data;
-    }
 }

@@ -33,7 +33,7 @@ class DashboardController
     {
         try {
             return $app->json(
-                $app->getDashboardManager()->getTemplateList($app->getSecurityTokenStorage()->getToken()->getUser())
+                $app->getTemplateManager()->getList($app->getSecurityTokenStorage()->getToken()->getUser())
             );
         }
         catch (HttpException $e) {

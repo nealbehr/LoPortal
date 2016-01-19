@@ -287,6 +287,14 @@ class Application extends \Silex\Application{
     }
 
     /**
+     * @return TemplateManager
+     */
+    public function getTemplateManager()
+    {
+        return $this['manager.template'];
+    }
+
+    /**
      * @return CryptDigestPasswordEncoder
      */
     public function getEncoderDigest(){

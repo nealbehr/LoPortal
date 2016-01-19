@@ -19,7 +19,7 @@ class TemplateController
 {
     public function downloadAction(Application $app, $id)
     {
-        if ($template = $this->getById($app, $id)) {
+        if ($template = $app->getTemplateManager()->getById($id)) {
             $user    = $app->getSecurityTokenStorage()->getToken()->getUser();
             $address = $user->getAddress();
             $lender  = $user->getLender();
