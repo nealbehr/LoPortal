@@ -399,6 +399,25 @@ input[type=number] {
     overflow: hidden;
     margin: 0;
 }
-.checkbox-area input[type=checkbox]+label:before{margin: -3px 10px 0 0;}
-/* Collateral page end */
 
+.img-box {
+    margin: 10px;
+    padding: 0;
+    position: relative;
+    height:260px;
+    background: #d5d5d5;
+}
+
+.img-box img {
+    position: absolute;
+    left:50%;
+    top:50%;
+    transform: translate(-50%, -50%);
+    max-width:100%;
+    max-height: 100%;
+}
+
+.checkbox-area input[type=checkbox]+label:before {
+    margin: -3px 10px 0 0;
+}
+/* Collateral page end */

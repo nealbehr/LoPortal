@@ -150,7 +150,7 @@ class Authorize
         $mp->identify($model->getId());
         $mp->track('Log In');
 
-        // Base CRM
+        // Base CRM save event in note
         if (null !== $model->getBaseId()) {
             (new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]))->notes->create([
                 'resource_type' => 'contact',
