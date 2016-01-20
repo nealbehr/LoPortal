@@ -71,7 +71,7 @@ class RealtorType extends AbstractType
                 ]
             ])
             ->add('bre_number', 'text')
-            ->add('realty_logo', new S3Photo($this->s3, '1rex-realty'))
+            ->add('realty_logo', new S3Photo($this->s3, '1rex/realty'))
             ->add('realty_name', 'text', [
                 'constraints' => [
                     new Assert\Regex([
