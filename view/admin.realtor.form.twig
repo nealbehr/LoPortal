@@ -18,6 +18,9 @@
                     <span ng-show="formRealtor.email.$error.email">The entered email is invalid.</span>
                     <span ng-show="formRealtor.email.$error.required">Email is required.</span>
                 </div>
+                <div ng-show="formRealtor.$submitted && formRealtor.realty_name.$invalid">
+                    Realtor company name is invalid.
+                </div>
             </div>
 
             <h2>[[title]]</h2>
@@ -114,7 +117,7 @@
                     <input class="input-lg"
                            type="text"
                            placeholder="Realtor company"
-                           name="realtyName"
+                           name="realty_name"
                            ng-model="realtor.realty_name"
                            ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9()\.\-#&\s]*$/">
                 </div>

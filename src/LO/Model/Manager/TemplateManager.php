@@ -54,6 +54,7 @@ class TemplateManager extends Base
      */
     public function getById($id)
     {
+        // Role admin
         if ($this->getApp()->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)) {
             if (($model = $this->getApp()->getEntityManager()->getRepository(Template::class)->find($id))
                 && $model->getDeleted() === '0'
@@ -62,6 +63,7 @@ class TemplateManager extends Base
                 return $model;
             }
         }
+        // Role user
         else {
             $user  = $this->getApp()->getSecurityTokenStorage()->getToken()->getUser();
             $query = $this->getApp()
