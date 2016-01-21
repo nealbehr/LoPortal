@@ -79,7 +79,9 @@
                 </div>
                 <button ng-disabled="user.first_time == 0"
                         ng-click="signin($event)"
-                        class="btn btn-default"
+                        ng-class="user.first_time == 0 ? 'btn-danger' : 'btn-default'"
+                        class="btn center-block"
+                        style="min-width: 260px;"
                         type="submit">Continue</button>
             </div>
         </div>
