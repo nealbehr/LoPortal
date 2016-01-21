@@ -702,9 +702,6 @@
         return {
             restrict   : 'EA',
             templateUrl: '/partials/footer',
-            scope      : {
-                user: "=loUser"
-            },
             link       : function(scope, element, attrs, controllers) {
 
             }

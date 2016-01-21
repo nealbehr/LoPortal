@@ -38,16 +38,32 @@
 
     helperService.directive(
         'loNavbarHead',
-        ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', 'userService', 'waitingScreen',
-            function($http, $cookieStore, redirect, TOKEN_KEY, userService, waitingScreen) {
-        return { restrict: 'EA',
+        ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', 'userService', 'waitingScreen', 'Tab',
+            function($http, $cookieStore, redirect, TOKEN_KEY, userService, waitingScreen, Tab) {
+        return {
+            restrict: 'EA',
             templateUrl: '/partials/navbar.head',
             link: function(scope, element, attrs, controllers){
                 scope.user         = {};
                 scope.isUserLoaded = false;
-                userService.get().then(function(user){
+                scope.tabs1        = [];
+
+                userService.get().then(function(user) {
                     scope.user         = user;
                     scope.isUserLoaded = true;
+
+                    scope.tabs1 = [
+                        new Tab({path: '/dashboard/collateral', title: 'Custom Collateral'}),
+                        new Tab({path: '/resources', title: 'Program Resources'}),
+                        new Tab({path: '/request/approval', title: 'New Property Approval'}),
+                        new Tab({path: '/flyer/new', title: 'New Listing Flyer'}),
+                        new Tab({path: '/', title: 'Requests Queue'}),
+                        new Tab({path: '/user/'+user.id +'/edit', title: 'Edit profile'})
+                    ];
+
+                    if (user.isAdmin()) {
+                        scope.tabs1.push(new Tab({path: '/admin', title: 'Admin panel'}));
+                    }
                 });
 
                 angular.element('.dropdown-toggle').click(function(e){
@@ -403,25 +419,14 @@
         };
     });
 
-    helperService.directive('loDashboardHead', ['Tab', 'redirect', function(Tab, redirect){
+    helperService.directive('loDashboardHead', ['Tab', 'userService', function(Tab, userService) {
         return {
             restrict: 'EA',
             templateUrl: '/partials/dashboard.head',
             link: function (scope, el, attrs, ngModel) {
-                scope.tabs = [
-                    new Tab({path: '/', title: "Requests Queue"}),
-                    new Tab({path: '/dashboard/collateral', title: "Custom Collateral"})
-                ];
 
-                scope.createListingFlyerRequest = function(e){
-                    e.preventDefault();
-                    redirect("/flyer/new");
-                }
 
-                scope.createNewApproval = function(e){
-                    e.preventDefault();
-                    redirect('/request/approval');
-                }
+
             }
         };
     }]);

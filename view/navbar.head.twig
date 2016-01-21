@@ -10,16 +10,29 @@
                     <img ng-show="isUserLoaded" ng-src="[[ user.picture| defaultImage:'/images/empty-user.png' ]]" width="45" height="60" alt="ava">&nbsp; <span class="arrow-down"></span>
                 </span>
                 <ul class="dropdown-menu" role="menu">
-                    <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>
-                    <li><a ng-href="/#/user/[[ user.id ]]/edit">Edit profile</a></li>
-                    <li><a href="/#/">Requests Queue</a></li>
-                    <li><a href="/#/dashboard/collateral">Custom Collateral</a></li>
-                    <li><a href="/#/flyer/new">Request flyer</a></li>
-                    <li><a href="/#/resources">Resources</a></li>
-                    <li class="divider"></li>
                     <li><a href="#" class="logout" ng-click="logout($event)">Log out</a></li>
                 </ul>
             </div>
+        </div>
+    </div>
+</nav>
+<nav class="navbar navbar-default" style="border: none; margin: 0;">
+
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li ng-repeat="tab in tabs1" ng-class="{active: tab.isActive()}">
+                    <a style="color: #195ad1" href="/#[[ tab.path ]]">[[ tab.title ]]</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>
