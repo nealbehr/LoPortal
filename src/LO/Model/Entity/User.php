@@ -52,7 +52,12 @@ class User extends Base implements UserInterface{
     /**
      * @Column(type="string")
      */
-    protected $deleted = '0';
+    protected $deleted    = '0';
+
+    /**
+     * @Column(type="string")
+     */
+    protected $first_time = '0';
 
     /**
      * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})
@@ -169,13 +174,32 @@ class User extends Base implements UserInterface{
         return $this->base_id;
     }
 
-    public function getDeleted() {
+    public function getDeleted()
+    {
         return $this->deleted;
     }
 
-    public function setDeleted($param) {
+    public function setDeleted($param)
+    {
         $this->deleted = $param;
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getFirstTime()
+    {
+        return $this->first_time;
+    }
+
+    /**
+     * @param string $param '0' or '1'
+     * @return $this
+     */
+    public function setFirstTime($param)
+    {
+        $this->first_time = $param;
         return $this;
     }
 
@@ -564,4 +588,11 @@ class User extends Base implements UserInterface{
         $this->sales_director_phone = $sales_director_phone;
     }
 
+    /**
+     * @return bool
+     */
+    public function isFirstTime()
+    {
+        return (bool)$this->first_time;
+    }
 }

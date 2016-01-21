@@ -62,8 +62,9 @@
     cursor: pointer;
 }
 
-.waiting{
+.waiting {
     display: none;
+    z-index: 1060;
 }
 
 .admin-table .isSortable, .table-striped .isSortable{

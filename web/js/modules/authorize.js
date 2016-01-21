@@ -39,32 +39,42 @@
             });
     }]);
 
-    authorize.controller('authorizeCtrl', ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', '$compile', 'waitingScreen', function($scope, $http, redirect, $cookieStore, TOKEN_KEY, $compile, waitingScreen){
+    authorize.controller(
+        'authorizeCtrl',
+        ['$scope', '$http', 'redirect', '$cookieStore', 'TOKEN_KEY', 'HTTP_CODES', '$compile', 'waitingScreen',
+            function($scope, $http, redirect, $cookieStore, TOKEN_KEY, HTTP_CODES, $compile, waitingScreen) {
+
         if($cookieStore.get(TOKEN_KEY)){
             redirect('/');
         }
 
-        $scope.user = {email: "", password: ""};
+                $scope.first_time = '0';
+
+        $scope.user = {
+            email     : null,
+            password  : null,
+            first_time: '0'
+        };
         $scope.errorMessage          = null;
         $scope.emailForResetPassword = null;
 
-        $scope.isValidEmail = function(form){
+        $scope.isValidEmail = function(form) {
             if(!form.email){
                 return;
             }
 
             return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
-        }
+        };
 
-        $scope.isValidPassword = function(form){
+        $scope.isValidPassword = function(form) {
             if(!form.password){
                 return;
             }
 
             return (form.$submitted || form.password.$touched) && (form.password.$error.required);
-        }
+        };
 
-        $scope.complete = function($event){
+        $scope.complete = function($event) {
             angular.element($event.target).autocomplete({
                 source: function( request, response ) {
                     $http.get('/authorize/autocomplete/' + request.term)
@@ -78,24 +88,31 @@
                     $scope.user.email = ui.item.value;
                 }
             });
-        }
+        };
 
-        $scope.signin = function(){
+        $scope.signin = function(e) {
+            e.preventDefault();
+
             this.errorMessage = null;
+
             waitingScreen.show();
-            $http.post('/authorize/signin', this.user)
-                .success(function(data){
-                    $cookieStore.put(TOKEN_KEY, data);
-                    redirect('/');
-                })
-                .error(function(data){
-                    $scope.errorMessage = data.message;
-                })
-                .finally(function(){
-                    waitingScreen.hide();
-                });
-            ;
-        }
+
+            $http.post('/authorize/signin', this.user).success(function(data) {
+                $cookieStore.put(TOKEN_KEY, data);
+                redirect('/');
+            }).error(function(error, status) {
+                // Confirm the introduction
+                if ($scope.user.first_time == '0' && HTTP_CODES.BAD_REQUEST == status) {
+                    angular.element('#modal-introduction').modal('show');
+                }
+                // Show error
+                else {
+                    $scope.errorMessage = error.message;
+                }
+            }).finally(function() {
+                waitingScreen.hide();
+            });
+        };
 
         $scope.resetPassword = function(form){
             waitingScreen.show();

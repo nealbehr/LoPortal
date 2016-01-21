@@ -27,7 +27,10 @@
         ]
     );
 
-    app.constant('HTTP_CODES', {FORBIDDEN: 403});
+    app.constant('HTTP_CODES', {
+        FORBIDDEN  : 403,
+        BAD_REQUEST: 400
+    });
     app.constant('TOKEN_KEY', 'access_token');
     app.constant('USA_STATES', [
             { code: 'AL', name: 'Alabama'},

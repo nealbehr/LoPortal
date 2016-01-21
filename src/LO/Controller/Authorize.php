@@ -21,17 +21,33 @@ class Authorize
 
     public function signinAction(Application $app, Request $request)
     {
-        $user = $app->getUserManager()->findByEmail($request->get('email'));
-        if(!$user){
+        if (!($user = $app->getUserManager()->findByEmail($request->get('email')))) {
             return $app->json(['message' => 'Your email address is not recognized'], Response::HTTP_BAD_REQUEST);
         }
-        if(!$app->getEncoderFactory()->getEncoder($user)->isPasswordValid($user->getPassword(), $request->get('password'), $user->getSalt())){
+
+        if (
+            !$app->getEncoderFactory()->getEncoder($user)->isPasswordValid(
+                $user->getPassword(),
+                $request->get('password'),
+                $user->getSalt()
+            )
+        ) {
             return $app->json(['message' => 'Entered password is incorrect'], Response::HTTP_BAD_REQUEST);
         }
 
-        $token = $app->getFactory()->token()->setUserId($user->getId())
-                              ->setExpirationTime($app->getConfigByName('user', 'token.expire'))
-        ;
+        // Confirmed the agreement
+        if ((bool)$request->get('first_time')) {
+            $user->setFirstTime($request->get('first_time'));
+            $app->getEntityManager()->persist($user);
+            $app->getEntityManager()->flush();
+        }
+        if (!$user->isFirstTime()) {
+            return $app->json(['message' => 'Confirm the introduction'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $token = $app->getFactory()->token()->setUserId(
+            $user->getId())->setExpirationTime($app->getConfigByName('user', 'token.expire')
+        );
 
         $app->getEntityManager()->persist($token);
         $app->getEntityManager()->flush();

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="ligin-form col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
-            <form ng-submit="formLogin.$valid && signin()" class="css-form" novalidate name="formLogin">
+            <form ng-submit="formLogin.$valid && signin($event)" class="css-form" novalidate name="formLogin">
                 <div class="alert alert-danger fade in" role="alert" ng-show="errorMessage">
                     [[ errorMessage ]]
                 </div>
@@ -37,6 +37,55 @@
         </div>
     </div>
 </div>
+
+<!-- Introduction start -->
+<div class="modal fade" id="modal-introduction" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document" style="min-width: 665px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Introduction</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    I’d like to become a REX HomeBuyer Preferred Mortgage Professional and receive REX HomeBuyer
+                    collateral and other materials from FirstREX Agreement Corp. (“FirstREX”). When I sign up, FirstREX
+                    will provide me with a copy of the REX HomeBuyer Preferred Mortgage Professional Buying Guide.
+                </p>
+                <p>
+                    I will read the Buying Guide and comply with the process for introducing
+                    clients to FirstREX as explained within. I give FirstREX permission to send me emails and other
+                    informational materials about the REX HomeBuyer program from time to time at the mailing and email
+                    addresses listed above. I acknowledge that all materials I receive will have been prepared by
+                    FirstREX as its exclusive, approved general introductory information on the REX HomeBuyer program.
+                </p>
+                <p>
+                    As a REX HomeBuyer Preferred Mortgage Professional, I will not be
+                    authorized to provide additional information to prospective home buyers
+                    about the program, but I may introduce interested home buyers to FirstREX
+                    and/or its product specialists who can provide further information and answer additional questions.
+                    A REX HomeBuyer Preferred Mortgage Professional does not receive compensation from FirstREX and is
+                    not its employee, agent, partner or affiliate.
+                </p>
+                <hr>
+                <div class="checkholder">
+                    <input ng-model="user.first_time"
+                           ng-true-value="'1'"
+                           ng-false-value="'0'"
+                           type="checkbox"
+                           name="first_time"
+                           id="first_time">
+                    <label for="first_time">I Agree</label>
+                </div>
+                <button ng-disabled="user.first_time == 0"
+                        ng-click="signin($event)"
+                        class="btn btn-default"
+                        type="submit">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Introduction end -->
 
 <div class="modal fade" id="resetPass" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
