@@ -52,12 +52,12 @@ class User extends Base implements UserInterface{
     /**
      * @Column(type="string")
      */
-    protected $deleted    = '0';
+    protected $deleted  = '0';
 
     /**
      * @Column(type="string")
      */
-    protected $first_time = '0';
+    private $first_time = '0';
 
     /**
      * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})

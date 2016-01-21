@@ -36,7 +36,7 @@ class Authorize
         }
 
         // Confirmed the agreement
-        if ((bool)$request->get('first_time')) {
+        if (!$user->isFirstTime() && (bool)$request->get('first_time')) {
             $user->setFirstTime($request->get('first_time'));
             $app->getEntityManager()->persist($user);
             $app->getEntityManager()->flush();
