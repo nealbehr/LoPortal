@@ -537,7 +537,7 @@ ul.navbar-nav{
         text-align: left;
         padding: 10px 15px;
     }
-    .nav-separator:before{
+    .navseparator a:before{
         display: none;
     }
 }
