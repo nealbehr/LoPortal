@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header-menu-box">
     <nav class="navbar">
         <div class="container">
             <div class="navbar-header">
@@ -36,7 +36,7 @@
                     </span>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li ng-repeat="tab in tabs1" ng-class="{active: tab.isActive()}">
+                    <li ng-repeat="tab in headerTabs" ng-class="{active: tab.isActive(), navseparator: $index == 1 || $index == 4}">
                         <a href="/#[[ tab.path ]]">[[ tab.title ]]</a>
                     </li>
                 </ul>

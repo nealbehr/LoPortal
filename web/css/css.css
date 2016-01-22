@@ -422,15 +422,14 @@ input[type=number] {
     margin: -3px 10px 0 0;
 }
 /* Collateral page end */
-.header{
+.header-menu-box{
     padding: 5px 0 40px;
 }
-.header:after{
+.header-menu-box:after{
     content: '';
     display: block;
     border-bottom:1px solid #ccc;
     width: 100%;
-    max-width: 1170px;
     margin: 0 auto;
 }
 /* user menu */
@@ -488,7 +487,7 @@ ul.navbar-nav{
     float: left;
     margin: 0 10px 0 0;
 }
-.nav-separator a:before{
+.navseparator a:before{
     content: '';
     position: absolute;
     top: 50%;
@@ -507,10 +506,10 @@ ul.navbar-nav{
     }
 }
 @media (max-width: 768px){
-    .header{
+    .header-menu-box{
         padding: 0 0 40px;
     }
-    .header .navbar{
+    .header-menu-box .navbar{
         position: static;
         margin: 0;
     }
