@@ -421,3 +421,120 @@ input[type=number] {
     margin: -3px 10px 0 0;
 }
 /* Collateral page end */
+.header{
+    padding: 5px 0 40px;
+}
+.header:after{
+    content: '';
+    display: block;
+    border-bottom:1px solid #ccc;
+    width: 100%;
+    max-width: 1170px;
+    margin: 0 auto;
+}
+/* user menu */
+.user-menu{
+    padding: 3px 0;
+}
+.user-menu img{
+    margin: 0 0 0 10px;
+}
+.user-menu>span{
+    padding: 10px 0;
+    overflow: hidden;
+}
+.user-menu>span:after{
+    display: none;
+}
+.user-menu>span>span{
+    display: block;
+}
+.nav-container{
+    max-width: 1170px;
+    padding: 0;
+    margin: 0 auto;
+}
+.header .navbar{
+    min-height: 0;
+    margin: 0 0 15px;
+}
+.navbar.navbar-default{
+    border: 0;
+}
+ul.navbar-nav{
+    display: table;
+    width: 100%;
+}
+.navbar-nav>li{
+    float: none;
+    display: table-cell;
+}
+.navbar-default .navbar-nav>li>a{
+    position: relative;
+    color: #4c84ea;
+    display: block;
+    text-align: center;
+}
+.navbar-nav>li.active>a{
+    color: #626262;
+}
+.navbar-collapse .user-menu{
+    overflow: hidden;
+    float: none;
+    padding: 15px 0 0;
+}
+.navbar-collapse .user-menu img{
+    float: left;
+    margin: 0 10px 0 0;
+}
+.nav-separator a:before{
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -7px;
+    height: 14px;
+    float: right;
+    width: 1px;
+    background: #ccc;
+}
+@media (max-width: 1050px){
+    .navbar-default .navbar-nav>li>a{
+        font-size: 14px;
+        padding: 10px 8px;
+        text-align: center;
+    }
+}
+@media (max-width: 768px){
+    .header{
+        padding: 0 0 40px;
+    }
+    .header .navbar{
+        position: static;
+        margin: 0;
+    }
+    .navbar-brand{
+        position: relative;
+        z-index: 10;
+    }
+    .navbar + .navbar.navbar-default{
+        margin: -70px 0 0;
+    }
+    .navbar.navbar-default{
+        background: transparent;
+    }
+    ul.navbar-nav{
+        display: block;
+    }
+    .navbar-nav>li{
+        display: block;
+    }
+    .navbar-default .navbar-nav>li>a{
+        font-size: 16px;
+        text-align: left;
+        padding: 10px 15px;
+    }
+    .nav-separator:before{
+        display: none;
+    }
+}

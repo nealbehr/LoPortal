@@ -1,26 +1,47 @@
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/#/"><img src="/images/logo.png" width="94" height="49" alt="firstREX"></a>
-            <div class="dropdown user-menu">
-                <span class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                    <span ng-if="user.isSwitched()">You are logged in as </span>
-                    <span ng-show="isUserLoaded" class="hidden-xs">[[ user|fullName ]] </span>
-                    <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
-                    <img ng-show="isUserLoaded" ng-src="[[ user.picture| defaultImage:'/images/empty-user.png' ]]" width="45" height="60" alt="ava">&nbsp; <span class="arrow-down"></span>
-                </span>
-                <ul class="dropdown-menu" role="menu">
-                    <li ng-if="user.isAdmin()"><a href="/#/admin">Admin panel</a></li>
-                    <li><a ng-href="/#/user/[[ user.id ]]/edit">Edit profile</a></li>
-                    <li><a href="/#/">Requests Queue</a></li>
-                    <li><a href="/#/dashboard/collateral">Custom Collateral</a></li>
-                    <li><a href="/#/flyer/new">Request flyer</a></li>
-                    <li><a href="/#/resources">Resources</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#" class="logout" ng-click="logout($event)">Log out</a></li>
+<div class="header">
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/#/"><img src="/images/logo.png" width="94" height="49" alt="firstREX"></a>
+                <div class="hidden-xs user-menu">
+                    <img ng-show="isUserLoaded" ng-src="[[ user.picture| defaultImage:'/images/empty-user.png' ]]" width="45" height="60" alt="ava">
+                    <span>
+                        <span ng-if="user.isSwitched()">You are logged in as </span>
+                        <span ng-show="isUserLoaded" class="">[[ user|fullName ]] </span>
+                        <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
+                        <a href="#"  ng-click="logout($event)">Log out <span class="fa fa-sign-out"></span></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-default">
+        <div class="nav-container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+               <div class="user-menu hidden-sm hidden-md hidden-lg">
+                    <img ng-show="isUserLoaded" ng-src="[[ user.picture| defaultImage:'/images/empty-user.png' ]]" width="45" height="60" alt="ava">
+                    <span>
+                        <span ng-if="user.isSwitched()">You are logged in as </span>
+                        <span ng-show="isUserLoaded" class="">[[ user|fullName ]] </span>
+                        <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
+                        <a href="#"  ng-click="logout($event)">Log out <span class="fa fa-sign-out"></span></a>
+                    </span>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li ng-repeat="tab in tabs1" ng-class="{active: tab.isActive()}">
+                        <a href="/#[[ tab.path ]]">[[ tab.title ]]</a>
+                    </li>
                 </ul>
             </div>
         </div>
-    </div>
-</nav>
+    </nav>
+</div>
 <lo-message-container></lo-message-container>
