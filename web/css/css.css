@@ -425,6 +425,9 @@ input[type=number] {
 .header-menu-box{
     padding: 5px 0 40px;
 }
+.header-menu-box .navbar {
+    margin: 0;
+}
 .header-menu-box:after{
     content: '';
     display: block;
