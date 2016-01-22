@@ -1,15 +1,17 @@
 <div id="wrapper">
     <lo-navbar-head></lo-navbar-head>
     <section class="container">
+        <div class="page-title">
+            <h1>Requests Queue</h1>
+        </div>
         <div class="panel-group queue">
             <lo-dashboard-row ng-repeat="(k,v) in settingRows"
                               lo-items="dashboard[k]"
                               lo-id="[[ v.id ]]"
                               lo-title="[[ v.title ]]"
                               lo-is-expand="v.isExpand"
-                              lo-state="[[ k ]]"
-            ></lo-dashboard-row>
+                              lo-state="[[ k ]]"></lo-dashboard-row>
         </div>
     </section>
 </div>
-<lo-footer lo-user="user"></lo-footer>
+<lo-footer></lo-footer>
