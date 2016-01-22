@@ -4,7 +4,6 @@
             <h1>[[ titles.header ]]</h1>
         </div>
         <div class="col-sm-3 text-right property-back-box">
-            <a ng-if="!request.id" href="/#/" class="back">Back to dashboard</a>
             <a ng-if="request.id" ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
         </div>
     </header>
