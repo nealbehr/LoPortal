@@ -11,7 +11,7 @@
 
     dashboard.config(['$routeProvider', function($routeProvider) {
                 $routeProvider.
-                    when('/', {
+                    when(PATH+'/requests', {
                         templateUrl: '/partials/dashboard',
                         controller:  'dashboardCtrl',
                         access: {

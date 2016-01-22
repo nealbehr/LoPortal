@@ -55,9 +55,9 @@
                     scope.headerTabs = [
                         new Tab({path: '/dashboard/collateral', title: 'Custom Collateral'}),
                         new Tab({path: '/resources', title: 'Program Resources'}),
-                        new Tab({path: '/request/approval', title: 'New Property Approval'}),
+                        new Tab({path: '/', title: 'New Property Approval'}),
                         new Tab({path: '/flyer/new', title: 'New Listing Flyer'}),
-                        new Tab({class: 'nav-separator', path: '/', title: 'Requests Queue'}),
+                        new Tab({path: '/dashboard/requests', title: 'Requests Queue'}),
                         new Tab({path: '/user/'+user.id +'/edit', title: 'Edit profile'})
                     ];
 

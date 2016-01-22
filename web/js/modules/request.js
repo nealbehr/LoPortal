@@ -26,7 +26,7 @@
                     isFree: false
                 }
             })
-            .when('/request/approval', {
+            .when('/', {
                 templateUrl: '/partials/request.property.approval',
                 controller:  'RequestPropertyApprovalController',
                 access: {
@@ -196,7 +196,7 @@
 
         function getRequestByType(type) {
             return type == 'approval'
-                        ? new RequestBase('Request property approval', 'request/approval')
+                        ? new RequestBase('Request property approval', '/')
                         : new RequestBase('Request Another Flyer', 'flyer/new')
             ;
         }
