@@ -97,7 +97,7 @@
     request.controller('RequestController', ['$scope', 'redirect', '$http', '$q', '$timeout', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', "userService", "createRequestFlyer", function($scope, redirect, $http, $q, $timeout, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents, userService, createRequestFlyer){
         $scope.titles = {
             button: "Submit",
-            header: "Listing Flyer Request Form"
+            header: 'New Listing Flyer'
         };
 
         $scope.realtor = {};
@@ -127,7 +127,7 @@
         $scope.lng     = -122.41941550000001;
         $scope.titles  = {
             button: "Submit",
-            header: "Property Prequalification Request Form"
+            header: 'New Property Prequalification'
         };
 
         $scope.$on('propertyApprovalSaved', function(event, data) {
