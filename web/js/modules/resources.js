@@ -28,7 +28,7 @@
         };
 
         $scope.titles = {
-            header: 'Resources'
+            header: 'Program Resources'
         };
 
         // Resources list

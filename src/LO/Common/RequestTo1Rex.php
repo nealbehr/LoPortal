@@ -14,12 +14,15 @@ use LO\Model\Entity\Queue;
 
 class RequestTo1Rex
 {
-    const PRODUCT_TYPE     = 'HB';
-    const BILLBOARD_SOURCE = 'LO Portal';
+    const PRODUCT_TYPE       = 'HB';
+    const BILLBOARD_SOURCE   = 'LO Portal';
 
-    protected $data        = [];
+    const TYPE_PREQUAL       = 0;
+    const TYPE_LISTING_FLYER = 1;
 
-    private $inQuiryText   = [
+    protected $data          = [];
+
+    private $inQuiryText     = [
         Queue::TYPE_USER_SELLER => 'Seller of home',
         Queue::TYPE_USER_BUYER  => 'Buyer of home'
     ];

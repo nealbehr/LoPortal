@@ -35,8 +35,9 @@
                         <a href="#"  ng-click="logout($event)">Log out <span class="fa fa-sign-out"></span></a>
                     </span>
                 </div>
-                <ul class="nav navbar-nav">
-                    <li ng-repeat="tab in headerTabs" ng-class="{active: tab.isActive(), navseparator: $index == 1 || $index == 4}">
+                <ul ng-show="isUserLoaded" class="nav navbar-nav">
+                    <li ng-repeat="tab in headerTabs"
+                        ng-class="{active: tab.isActive(), navseparator: $index == 1 || $index == 4}">
                         <a href="/#[[ tab.path ]]">[[ tab.title ]]</a>
                     </li>
                 </ul>

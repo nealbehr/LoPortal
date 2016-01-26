@@ -94,7 +94,7 @@ class AddressType extends AbstractType {
             'constraints' => [
                 new Assert\Length([
                     'max'        => 50,
-                    'maxMessage' => 'Postal Code must be shorter than {{ limit }} chars.',
+                    'maxMessage' => 'Apartment must be shorter than {{ limit }} chars.',
                 ])
             ]
         ]);

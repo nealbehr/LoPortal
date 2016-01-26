@@ -119,8 +119,8 @@
 
     request.controller(
         'RequestPropertyApprovalController',
-        ['redirect', '$scope', 'createPropertyApproval', 'userService',
-        function(redirect, $scope, createPropertyApproval, userService)
+        ['redirect', '$scope', 'createPropertyApproval',
+        function(redirect, $scope, createPropertyApproval)
     {
         $scope.request = createPropertyApproval();
         $scope.lat     = 37.7749295;
@@ -130,15 +130,10 @@
             header: "Property Prequalification Request Form"
         };
 
-        userService.get().then(function(user) {
-            $scope.$on('propertyApprovalSaved', function(event, data) {
-                if (typeof data === 'object' && data.hasOwnProperty('id')) {
-                    redirect('/request-success/approval/'+data.id);
-                }
-                else {
-                    redirect('/request/success/approval');
-                }
-            });
+        $scope.$on('propertyApprovalSaved', function(event, data) {
+            if (typeof data === 'object' && data.hasOwnProperty('id')) {
+                redirect('/request-success/approval/'+data.id);
+            }
         });
     }]);
 

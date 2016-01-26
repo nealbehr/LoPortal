@@ -194,7 +194,7 @@ class RequestFlyerController extends RequestFlyerBase
                 ->setAddress($firstRexForm->getData())
                 ->setUser($user)
                 ->setQueue($queue)
-                ->setType(1)
+                ->setType(RequestTo1Rex::TYPE_LISTING_FLYER)
                 ->send();
             $queue->set1RexId($rexId);
 

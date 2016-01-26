@@ -46,21 +46,18 @@
             link: function(scope, element, attrs, controllers){
                 scope.user         = {};
                 scope.isUserLoaded = false;
-                scope.headerTabs   = [];
+                scope.headerTabs   = [
+                    new Tab({path: '/dashboard/collateral', title: 'Custom Collateral'}),
+                    new Tab({path: '/resources', title: 'Program Resources'}),
+                    new Tab({path: '/', title: 'New Property Approval'}),
+                    new Tab({path: '/flyer/new', title: 'New Listing Flyer'}),
+                    new Tab({path: '/dashboard/requests', title: 'Requests Queue'})
+                ];
 
                 userService.get().then(function(user) {
                     scope.user         = user;
                     scope.isUserLoaded = true;
-
-                    scope.headerTabs = [
-                        new Tab({path: '/dashboard/collateral', title: 'Custom Collateral'}),
-                        new Tab({path: '/resources', title: 'Program Resources'}),
-                        new Tab({path: '/', title: 'New Property Approval'}),
-                        new Tab({path: '/flyer/new', title: 'New Listing Flyer'}),
-                        new Tab({path: '/dashboard/requests', title: 'Requests Queue'}),
-                        new Tab({path: '/user/'+user.id +'/edit', title: 'Edit profile'})
-                    ];
-
+                    scope.headerTabs.push(new Tab({path: '/user/'+user.id+'/edit', title: 'Edit profile'}));
                     if (user.isAdmin()) {
                         scope.headerTabs.push(new Tab({path: '/admin', title: 'Admin panel'}));
                     }

@@ -66,7 +66,7 @@ class RequestApprovalController extends RequestApprovalBase
                 ->setAddress($firstRexForm->getData())
                 ->setUser($user)
                 ->setQueue($queue)
-                ->setType(0)
+                ->setType(RequestTo1Rex::TYPE_PREQUAL)
                 ->send();
 
             // Setting rex id and update this queue

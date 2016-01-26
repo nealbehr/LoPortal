@@ -62,11 +62,18 @@
         return function() {
             this.id       = null;
             this.property = {
-                address:   '',
-                state:     null,
+                address  : '',
+                apartment: null,
+                state    : null,
                 user_type: settings.queue.userType.seller
             };
-            this.address  = null;
+            this.address  = {
+                address  : null,
+                city     : null,
+                state    : null,
+                zip      : null,
+                apartment: null
+            };
 
             this.fill = function(data){
                 for(var i in data){
