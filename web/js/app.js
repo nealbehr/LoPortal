@@ -28,9 +28,10 @@
     );
 
     app.constant('HTTP_CODES', {
-        ACCEPTED   : 202,
-        FORBIDDEN  : 403,
-        BAD_REQUEST: 400
+        ACCEPTED    : 202,
+        UNAUTHORIZED: 401,
+        FORBIDDEN   : 403,
+        BAD_REQUEST : 400
     });
     app.constant('TOKEN_KEY', 'access_token');
     app.constant('USA_STATES', [

@@ -102,7 +102,7 @@
                 redirect('/');
             }).error(function(error, status) {
                 // Confirm the introduction
-                if ($scope.user.first_time == '0' && HTTP_CODES.ACCEPTED == status) {
+                if ($scope.user.first_time == '0' && HTTP_CODES.UNAUTHORIZED == status) {
                     angular.element('#modal-introduction').modal('show');
                 }
                 // Show error
