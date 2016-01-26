@@ -28,6 +28,7 @@
     );
 
     app.constant('HTTP_CODES', {
+        ACCEPTED   : 202,
         FORBIDDEN  : 403,
         BAD_REQUEST: 400
     });

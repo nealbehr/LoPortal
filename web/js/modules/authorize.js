@@ -102,7 +102,7 @@
                 redirect('/');
             }).error(function(error, status) {
                 // Confirm the introduction
-                if ($scope.user.first_time == '0' && HTTP_CODES.BAD_REQUEST == status) {
+                if ($scope.user.first_time == '0' && HTTP_CODES.ACCEPTED == status) {
                     angular.element('#modal-introduction').modal('show');
                 }
                 // Show error
@@ -128,8 +128,7 @@
                     waitingScreen.hide();
                     // 1) hide gray screen
                 });
-            ;
-        }
+        };
 
         $scope.renderMessage = function(message, type){
             var angularDomEl = angular.element('<div lo-message></div>')

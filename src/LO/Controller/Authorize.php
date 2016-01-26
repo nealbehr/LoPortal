@@ -42,7 +42,7 @@ class Authorize
             $app->getEntityManager()->flush();
         }
         if (!$user->isFirstTime()) {
-            return $app->json(['message' => 'Confirm the introduction'], Response::HTTP_BAD_REQUEST);
+            return $app->json(['message' => 'Confirm the introduction'], Response::HTTP_ACCEPTED);
         }
 
         $token = $app->getFactory()->token()->setUserId(
