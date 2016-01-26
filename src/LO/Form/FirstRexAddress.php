@@ -48,7 +48,7 @@ class FirstRexAddress extends AbstractType {
                     ]),
                 ]
             ])
-            ->add('apartment', 'text', [
+            ->add('apt', 'text', [
                 'constraints' => [
                     new Assert\Length([
                         'max'        => 50,

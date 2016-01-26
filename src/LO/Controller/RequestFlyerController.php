@@ -237,8 +237,14 @@ class RequestFlyerController extends RequestFlyerBase
             $firstRexForm->handleRequest($request);
             $queue->setAdditionalInfo($firstRexForm->getData());
 
-            $user = $app->getSecurityTokenStorage()->getToken()->getUser();
-            $billboardID = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $user);
+            // Get first rex id
+            $billboardID = (new RequestTo1Rex($app))
+                ->setAddress($firstRexForm->getData())
+                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
+                ->setQueue($queue)
+                ->setType(RequestTo1Rex::TYPE_LISTING_FLYER)
+                ->send();
+
             $app->getMonolog()->addInfo("billboard id: " . $billboardID);
             $queue->set1RexId($billboardID);
             $queue->setState(Queue::STATE_REQUESTED);

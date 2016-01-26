@@ -20,17 +20,17 @@ class RequestTo1Rex
     const TYPE_PREQUAL       = 0;
     const TYPE_LISTING_FLYER = 1;
 
-    protected $data          = [];
-
     private $inQuiryText     = [
         Queue::TYPE_USER_SELLER => 'Seller of home',
         Queue::TYPE_USER_BUYER  => 'Buyer of home'
     ];
 
     private $requestTypeText = [
-        0 => 'Prequal',
-        1 => 'Listing Flyer'
+        self::TYPE_PREQUAL       => 'Prequal',
+        self::TYPE_LISTING_FLYER => 'Listing Flyer'
     ];
+
+    protected $data          = [];
 
     public function __construct(Application $app)
     {
@@ -74,6 +74,7 @@ class RequestTo1Rex
     public function setQueue(Queue $queue)
     {
         $this->data = array_merge($this->data, [
+            'apt'          => $queue->getApartment(),
             'external_id'  => $queue->getId(),
             'inquiry_type' => $this->inQuiryText[$queue->getUserType()]
         ]);
@@ -88,7 +89,8 @@ class RequestTo1Rex
 
     protected function sendRequestTo1Rex()
     {
-        $curl = new Curl();
+        $id1Rex = 0;
+        $curl   = new Curl();
         try {
             $curl->setBasicAuthentication(
                 $this->app->getConfigByName('firstrex', 'api', 'user'),
@@ -112,7 +114,7 @@ class RequestTo1Rex
                 throw new \Exception(sprintf('Bad response have taken from 1REX. Response \'%s\'', $curl->response));
             }
 
-            return $curl->response->id;
+            $id1Rex = $curl->response->id;
         }
         catch (\Exception $e) {
             $this->app->getMonolog()->addError($e);
@@ -122,7 +124,7 @@ class RequestTo1Rex
             $curl->close();
         }
 
-        return 0;
+        return $id1Rex;
     }
 
     private function getData()

@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
 use LO\Controller\RequestApprovalBase;
+use LO\Common\RequestTo1Rex;
 
 class PropertyApproval extends RequestApprovalBase{
     use GetFormErrors;
@@ -47,7 +48,13 @@ class PropertyApproval extends RequestApprovalBase{
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $queue->getUser());
+            // Get first rex id
+            $id = (new RequestTo1Rex($app))
+                ->setAddress($firstRexForm->getData())
+                ->setUser($queue->getUser())
+                ->setQueue($queue)
+                ->setType(RequestTo1Rex::TYPE_PREQUAL)
+                ->send();
 
             $queue->set1RexId($id)
                   ->setAdditionalInfo($firstRexForm->getData());
