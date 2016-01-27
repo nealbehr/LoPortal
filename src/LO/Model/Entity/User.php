@@ -591,8 +591,13 @@ class User extends Base implements UserInterface{
     /**
      * @return bool
      */
-    public function isFirstTime()
+    public function inFirstTime()
     {
         return (bool)$this->first_time;
+    }
+
+    public function inDeleted()
+    {
+        return (bool)$this->deleted;
     }
 }
