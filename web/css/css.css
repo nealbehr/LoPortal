@@ -540,4 +540,7 @@ ul.navbar-nav{
     .navseparator a:before{
         display: none;
     }
+    .modal.in .modal-dialog{
+        min-width:0;
+    }
 }
