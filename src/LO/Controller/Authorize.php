@@ -25,6 +25,10 @@ class Authorize
             return $app->json(['message' => 'Your email address is not recognized'], Response::HTTP_BAD_REQUEST);
         }
 
+        if ($user->inDeleted()) {
+            return $app->json(['message' => 'User deleted.'], Response::HTTP_BAD_REQUEST);
+        }
+
         if (
             !$app->getEncoderFactory()->getEncoder($user)->isPasswordValid(
                 $user->getPassword(),
@@ -36,12 +40,12 @@ class Authorize
         }
 
         // Confirmed the agreement
-        if (!$user->isFirstTime() && (bool)$request->get('first_time')) {
+        if (!$user->inFirstTime() && (bool)$request->get('first_time')) {
             $user->setFirstTime($request->get('first_time'));
             $app->getEntityManager()->persist($user);
             $app->getEntityManager()->flush();
         }
-        if (!$user->isFirstTime()) {
+        if (!$user->inFirstTime()) {
             return $app->json(['message' => 'Confirm the introduction'], Response::HTTP_UNAUTHORIZED);
         }
 
