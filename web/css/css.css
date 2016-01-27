@@ -541,6 +541,6 @@ ul.navbar-nav{
         display: none;
     }
     .modal.in .modal-dialog{
-        min-width:0;
+        min-width:0 !important;
     }
 }
