@@ -7,9 +7,10 @@
  */
 namespace LO\Common\UploadS3;
 
-use LO\Exception\Http;
-use Symfony\Component\HttpFoundation\Response;
-use Aws\S3\S3Client;
+use \LO\Exception\Http,
+    Symfony\Component\HttpFoundation\Response,
+    Aws\S3\S3Client,
+    \Imagick;
 
 class File extends Base
 {
@@ -52,13 +53,14 @@ class File extends Base
      * @param int $height
      * @return $this
      */
-    public function createPreview($width = 400, $height = 400)
+    public function createPreview($width = 400, $height = 400, $quality = 60)
     {
         try{
-            $im = new \Imagick();
+            $im = new Imagick();
             $im->readimageblob($this->file);
             $im->setImageFormat('jpeg');
             $im->cropThumbnailImage($width, $height);
+            $im->setImageCompressionQuality($quality);
             $this->format       = $im->getImageFormat();
             $this->content_type = $im->getImageType();
             $this->file         = $im->getimageblob();
