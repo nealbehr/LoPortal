@@ -484,6 +484,9 @@ ul.navbar-nav{
     width: 1px;
     background: #ccc;
 }
+.modal.in .modal-dialog{
+    min-width: 665px;
+}
 @media (max-width: 1050px){
     .navbar-default .navbar-nav>li>a{
         font-size: 14px;
@@ -522,5 +525,8 @@ ul.navbar-nav{
     }
     .navseparator a:before{
         display: none;
+    }
+    .modal.in .modal-dialog{
+        min-width:0 !important;
     }
 }
