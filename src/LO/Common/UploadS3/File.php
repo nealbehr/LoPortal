@@ -51,19 +51,23 @@ class File extends Base
     /**
      * @param int $width
      * @param int $height
+     * @param int $quality
      * @return $this
      */
-    public function createPreview($width = 400, $height = 400, $quality = 60)
+    public function createPreview($width = 400, $height = 400, $quality = 80)
     {
         try{
             $im = new Imagick();
-            $im->readimageblob($this->file);
+            $im->readImageBlob($this->file);
             $im->setImageFormat('jpeg');
-            $im->cropThumbnailImage($width, $height);
+            $im->setImageCompression(Imagick::COMPRESSION_JPEG);
             $im->setImageCompressionQuality($quality);
+            $im->cropThumbnailImage($width, $height);
+
             $this->format       = $im->getImageFormat();
             $this->content_type = $im->getImageType();
             $this->file         = $im->getimageblob();
+
         } finally {
             $im->destroy();
         }
