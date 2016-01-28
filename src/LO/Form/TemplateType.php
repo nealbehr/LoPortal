@@ -6,7 +6,6 @@
  */
 namespace LO\Form;
 
-use LO\Form\Extension\S3Photo;
 use LO\Model\Entity\Template;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -42,15 +41,6 @@ class TemplateType extends AbstractType
             ->add('states_all', 'number', [
                 'precision'  => 0,
                 'empty_data' => '1'
-            ])
-            ->add('picture', new S3Photo($this->s3, '1rex/tamplate'), [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Picture should not be blank.']),
-                    new Assert\Length([
-                        'max'        => 255,
-                        'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
-                    ])
-                ]
             ])
             ->add('name', 'text', [
                'constraints' => [

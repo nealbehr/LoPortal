@@ -7,7 +7,7 @@
 namespace LO\Controller;
 
 use LO\Application;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use LO\Model\Entity\User;
 use LO\Model\Entity\Template;
 use LO\Model\Entity\TemplateCategory;
 use LO\Model\Entity\TemplateFormat;
@@ -20,52 +20,27 @@ class TemplateController
     public function downloadAction(Application $app, $id)
     {
         if ($template = $app->getTemplateManager()->getById($id)) {
-            $user    = $app->getSecurityTokenStorage()->getToken()->getUser();
-            $address = $user->getAddress();
-            $lender  = $user->getLender();
+            $user     = $app->getSecurityTokenStorage()->getToken()->getUser();
             try {
-                $pdf = new Pdf();
-                $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
-                $pdf->setOption('dpi', 300);
-                $pdf->setOption('page-width', '8.5in');
-                $pdf->setOption('page-height', '11in');
-                $pdf->setOption('margin-left', 0);
-                $pdf->setOption('margin-right', 0);
-                $pdf->setOption('margin-top', 0);
-                $pdf->setOption('margin-bottom', 0);
+                if ('pdf' === $template->getFileFormat()) {
+                    $content = file_get_contents($template->getFile());
+                }
+                else {
+                    $content = $this->createPdf($app, $template, $user);
+                }
 
-                $html = $app->getTwig()->render('request.template.pdf.twig', [
-                    'template' => [
-                        'picture' => $template->getPicture()
-                    ],
-                    'user' => [
-                        'firstName' => $user->getFirstName(),
-                        'lastName'  => $user->getLastName(),
-                        'title'     => $user->getTitle(),
-                        'picture'   => $user->getPicture(),
-                        'phone'     => $user->getPhone(),
-                        'email'     => $user->getEmail(),
-                        'nmls'      => $user->getNmls(),
-                        'address'   => $address->getFormattedAddress()
-                    ],
-                    'lender' => [
-                        'picture'    => $lender->getPicture(),
-                        'disclosure' => $lender->getDisclosureForState($user->getAddress()->getState())
-                    ]
-                ]);
+                $name = strtolower(str_replace (' ', '-', $template->getName()));
+                $time = time();
 
                 // Mixpanel analytics
                 $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
                 $mp->identify($user->getId());
                 $mp->track('Document Download', ['id' => $template->getId(), 'name' => $template->getName()]);
 
-                $name = strtolower(str_replace (' ', '-', $template->getName()));
-                $time = time();
-
                 header('Content-Type: application/pdf');
                 header("Content-Disposition: attachment; filename=\"$name-$time.pdf\"");
 
-                echo $pdf->getOutputFromHtml($html, [], true);
+                echo $content;
             }
             catch (\Exception $e) {
                 header_remove('Content-Type');
@@ -89,15 +64,43 @@ class TemplateController
         return $app->json($query->getQuery()->getResult(Query::HYDRATE_ARRAY));
     }
 
-    private function getById(Application $app, $id)
+    private function createPdf(Application $app, Template $template, User $user)
     {
-        if (!($model = $app->getEntityManager()->getRepository(Template::class)->find($id))
-            || $model->getDeleted() === '1'
-            || $model->getArchive() === '1'
-        ) {
-            throw new BadRequestHttpException('Collateral not found.');
-        }
+        $address = $user->getAddress();
+        $lender  = $user->getLender();
 
-        return $model;
+        $pdf = new Pdf();
+        $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
+        $pdf->setOption('dpi', 300);
+        $pdf->setOption('page-width', '8.5in');
+        $pdf->setOption('page-height', '11in');
+        $pdf->setOption('margin-left', 0);
+        $pdf->setOption('margin-right', 0);
+        $pdf->setOption('margin-top', 0);
+        $pdf->setOption('margin-bottom', 0);
+
+        $html = $app->getTwig()->render('request.template.pdf.twig', [
+            'template' => [
+                'picture'   => $template->getFile(),
+                'coBranded' => !((bool)$template->getLendersAll() && (bool)$template->getStatesAll()),
+
+            ],
+            'user' => [
+                'firstName' => $user->getFirstName(),
+                'lastName'  => $user->getLastName(),
+                'title'     => $user->getTitle(),
+                'picture'   => $user->getPicture(),
+                'phone'     => $user->getPhone(),
+                'email'     => $user->getEmail(),
+                'nmls'      => $user->getNmls(),
+                'address'   => $address->getFormattedAddress()
+            ],
+            'lender' => [
+                'picture'    => $lender->getPicture(),
+                'disclosure' => $lender->getDisclosureForState($user->getAddress()->getState())
+            ]
+        ]);
+
+        return $pdf->getOutputFromHtml($html, [], true);
     }
 }

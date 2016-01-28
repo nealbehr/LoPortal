@@ -140,24 +140,26 @@
             var self = this;
             
             // Variables
-            this.id          = null;
-            this.archive     = 0;
-            this.category_id = null;
-            this.format_id   = null;
-            this.lenders     = [];
-            this.lenders_all = 1;
-            this.states      = [];
-            this.states_all  = 1;
-            this.name        = null;
-            this.description = null;
-            this.picture     = null;
+            this.id              = null;
+            this.archive         = 0;
+            this.category_id     = null;
+            this.format_id       = null;
+            this.lenders         = [];
+            this.lenders_all     = 1;
+            this.states          = [];
+            this.states_all      = 1;
+            this.name            = null;
+            this.description     = null;
+            this.preview_picture = null;
+            this.file_type       = null;
+            this.file            = null;
 
-            this.getPicture = function() {
-                return this.picture;
+            this.getFile = function() {
+                return this.file;
             };
 
-            this.setPicture = function(param) {
-                this.picture = param;
+            this.setFile = function(param) {
+                this.file = param;
                 return this;
             };
 
@@ -250,9 +252,9 @@
                             scope.title = newVal? 'Edit Template': 'Add Template';
                         });
 
-                        angular.element('#picture-input').on('change', function(e) {
+                        angular.element('#file-input').on('change', function(e) {
                             loadFile(e).then(function(base64) {
-                                scope.template.setPicture(base64);
+                                scope.template.setFile(base64);
                             });
                         });
 

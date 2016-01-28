@@ -91,10 +91,28 @@ class Template extends Base
      * @Column(type="string", length=65536)
      * @Assert\Length(
      *              max = 65536,
-     *              maxMessage = "Picture url cannot be longer than {{ limit }} characters"
+     *              maxMessage = "Preview picture url cannot be longer than {{ limit }} characters"
      * )
      */
-    protected $picture;
+    protected $preview_picture;
+
+    /**
+     * @Column(type="string", length=65536)
+     * @Assert\Length(
+     *              max = 65536,
+     *              maxMessage = "Type cannot be longer than {{ limit }} characters"
+     * )
+     */
+    protected $file_format;
+
+    /**
+     * @Column(type="string", length=65536)
+     * @Assert\Length(
+     *              max = 65536,
+     *              maxMessage = "File url cannot be longer than {{ limit }} characters"
+     * )
+     */
+    protected $file;
 
     /**
      * @var ArrayCollection
@@ -226,14 +244,36 @@ class Template extends Base
         return $this;
     }
 
-    public function getPicture()
+    public function getPreviewPicture()
     {
-        return $this->picture;
+        return $this->preview_picture;
     }
 
-    public function setPicture($param)
+    public function setPreviewPicture($param)
     {
-        $this->picture = $param;
+        $this->preview_picture = $param;
+        return $this;
+    }
+
+    public function getFileFormat()
+    {
+        return $this->file_format;
+    }
+
+    public function setFileFormat($param)
+    {
+        $this->file_format = $param;
+        return $this;
+    }
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile($param)
+    {
+        $this->file = $param;
         return $this;
     }
 
@@ -264,17 +304,19 @@ class Template extends Base
         }
 
         return array(
-            'id'          => $this->id,
-            'archive'     => $this->archive,
-            'category_id' => $this->category_id,
-            'format_id'   => $this->format_id,
-            'lenders_all' => $this->lenders_all,
-            'states_all'  => $this->states_all,
-            'name'        => $this->name,
-            'description' => $this->description,
-            'picture'     => $this->picture,
-            'states'      => $states,
-            'lenders'     => $lenders
+            'id'              => $this->id,
+            'archive'         => $this->archive,
+            'category_id'     => $this->category_id,
+            'format_id'       => $this->format_id,
+            'lenders_all'     => $this->lenders_all,
+            'states_all'      => $this->states_all,
+            'name'            => $this->name,
+            'description'     => $this->description,
+            'preview_picture' => $this->preview_picture,
+            'file_format'     => $this->file_format,
+            'file'            => $this->file,
+            'states'          => $states,
+            'lenders'         => $lenders
         );
     }
 }

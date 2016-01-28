@@ -84,6 +84,7 @@
             <img src="{{template.picture}}" alt="description">
         </div>
     </div>
+    {% if template.coBranded %}
     <div id="footer">
         <div class="user-info">
             {% if user.picture %}
@@ -102,6 +103,7 @@
         <div class="logo" style="background: url({{lender.picture}}) no-repeat 50% 50%;background-size: 100% auto;"></div>
         <div class="copyright">{{lender.disclosure}}</div>
     </div>
+    {% endif %}
 </section>
 </body>
 </html>

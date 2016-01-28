@@ -1,3 +1,6 @@
+<div class="page-title">
+    <h1>[[ title ]]</h1>
+</div>
 <form ng-submit="submit(formUser, $event)" class="css-form" novalidate name="formUser">
     <div class="row edit-user">
         <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
@@ -20,8 +23,6 @@
                 <div ng-show="formUser.address.$invalid">Address is invalid.</div>
                 <div ng-show="formUser.password_confirm.$error.compareTo">Passwords are not equal.</div>
             </div>
-
-            <h2>[[ title ]]</h2>
             <select class="form-control input-lg"
                     ng-if="user.id != officer.id && user.isAdmin()"
                     ng-model="$parent.selected"

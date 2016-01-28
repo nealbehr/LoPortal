@@ -6,7 +6,7 @@
                 <div ng-show="!hideErrors && formTemplate.$submitted && !formTemplate.$valid"
                      class="alert alert-danger fade in">
                     <a ng-href="#" class="close" aria-label="Close" ng-click="showErrors($event)">close</a>
-                    <div ng-show="formTemplate.picture.$error.required">Picture is required</div>
+                    <div ng-show="formTemplate.file.$error.required">File is required</div>
                     <div ng-show="formTemplate.name.$error.required">Document name is required</div>
                     <div ng-show="formTemplate.category.$error.required">Category is required</div>
                     <div ng-show="formTemplate.format.$error.required">Format is required</div>
@@ -15,17 +15,17 @@
                 <div class="document-info">
                     <div class="thumbnail">
                         <div class="picture-box">
-                            <img ng-src="[[template.picture|defaultImage:'/images/empty-big.png']]" alt="">
+                            <img ng-src="[[template.preview_picture|defaultImage:'/images/empty-big.png']]" alt="">
                         </div>
                         <span class="upload">
                             Upload File
                             <div>
-                                <input ng-model="template.picture"
+                                <input ng-model="template.file"
                                        required=""
-                                       id="picture-input"
+                                       id="file-input"
                                        type="file"
                                        valid-file
-                                       name="picture">
+                                       name="file">
                             </div>
                         </span>
                     </div>

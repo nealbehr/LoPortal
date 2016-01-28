@@ -19,6 +19,8 @@ use LO\Model\Entity\Lender;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\EntityManager;
 use LO\Form\TemplateType;
+use LO\Common\UploadS3\File;
+use LO\Exception\Http;
 
 class TemplateController extends Base
 {
@@ -141,11 +143,27 @@ class TemplateController extends Base
             ['validation_groups' => ['Default']]
         );
         $form->submit($data);
-
         if (!$form->isValid()) {
             $app->getMonolog()->addError($form->getErrors(true));
             $this->errors = $this->getFormErrors($form);
             throw new BadRequestHttpException(implode(' ', $this->errors));
+        }
+
+        // Upload and set files
+        if (!empty($data['file'])) {
+            $fileName = time().mt_rand(1, 100000);
+            $file     = new File($app->getS3(), $data['file'], '1rex/tamplate/file');
+            $model->setFileFormat($file->getFormat());
+            $model->setFile($file->download($fileName));
+
+            $model->setPreviewPicture(
+                (new File($app->getS3(), $data['file'], '1rex/tamplate/preview'))
+                    ->createPreview()
+                    ->download($fileName)
+            );
+        }
+        else {
+            throw new Http('File content is empty.', Response::HTTP_BAD_REQUEST);
         }
 
         // Set template category
