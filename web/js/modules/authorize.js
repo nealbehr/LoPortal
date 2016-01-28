@@ -95,6 +95,9 @@
 
             this.errorMessage = null;
 
+            var pmpText = angular.element('#modal-introduction');
+            pmpText.modal('hide');
+
             waitingScreen.show();
 
             $http.post('/authorize/signin', this.user).success(function(data) {
@@ -103,7 +106,7 @@
             }).error(function(error, status) {
                 // Confirm the introduction
                 if ($scope.user.first_time == '0' && HTTP_CODES.UNAUTHORIZED == status) {
-                    angular.element('#modal-introduction').modal('show');
+                    pmpText.modal('show');
                 }
                 // Show error
                 else {
