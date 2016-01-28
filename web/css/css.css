@@ -487,6 +487,30 @@ ul.navbar-nav{
 .modal.in .modal-dialog{
     min-width: 665px;
 }
+.thumbnail{
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    padding-bottom: 66px;
+}
+.thumbnail .thumb-holder{
+    margin: 0;
+}
+.thumbnail .thumb-holder{
+    max-height: 300px;
+    overflow: hidden;
+}
+.thumbnail .description{
+    max-height: 88px;
+    overflow: hidden;
+}
+.thumbnail .item-control{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 @media (max-width: 1050px){
     .navbar-default .navbar-nav>li>a{
         font-size: 14px;
