@@ -1288,4 +1288,29 @@
             }
         };
     }]);
+
+    /**
+     * Count max-height for group divs
+     */
+    helperService.directive('setMaxHeight', ['$timeout', function($timeout) {
+        var height = 0;
+
+        return {
+            restrict: 'A',
+            link    : function(scope, element, attr) {
+                if (attr['setMaxHeight']) {
+                    $timeout(function() {
+                        var elementHeight = angular.element(element).find(attr['setMaxHeight']).height();
+                        if (height < elementHeight) {
+                            height = elementHeight;
+                        }
+
+                        if (scope.$last === true) {
+                            angular.element(attr['setMaxHeight']).height(height);
+                        }
+                    });
+                }
+            }
+        }
+    }]);
 })(settings);

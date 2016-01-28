@@ -16,16 +16,20 @@
     </div>
     <div id="category-[[category.id]]" class="panel-collapse collapse in">
         <div class="row thumbnails">
-            <div class="col-sm-4 col-lg-3" ng-repeat="template in templates[category.id]">
+            <div ng-repeat="template in templates[category.id]"
+                 set-max-height=".collatera-text-box"
+                 class="col-sm-4 col-lg-3">
                 <div class="thumbnail">
                     <div class="thumb-holder">
                         <img ng-src="[[template.preview_picture]]" alt="[[template.name]]">
                     </div>
-                    <div class="caption">
-                        [[template.name]]
-                    </div>
-                    <div class="description">
-                        [[template.description]]
+                    <div class="collatera-text-box">
+                        <div class="caption">
+                            [[template.name]]
+                        </div>
+                        <div class="description">
+                            [[template.description]]
+                        </div>
                     </div>
                     <div class="item-control">
                         <a target="_blank" href="/request/document/[[template.id]]/download">

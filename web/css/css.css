@@ -511,6 +511,9 @@ ul.navbar-nav{
     left: 0;
     right: 0;
 }
+.thumbnail .caption {
+    font-weight: bold;
+}
 @media (max-width: 1050px){
     .navbar-default .navbar-nav>li>a{
         font-size: 14px;
@@ -552,5 +555,8 @@ ul.navbar-nav{
     }
     .modal.in .modal-dialog{
         min-width:0 !important;
+    }
+    .collatera-text-box {
+        height: auto !important;
     }
 }
