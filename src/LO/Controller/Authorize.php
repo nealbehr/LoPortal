@@ -14,11 +14,17 @@ use LO\Common\Email;
 use LO\Model\Entity\RecoveryPassword;
 use \Mixpanel;
 use BaseCRM\Client as BaseCrmClient;
+use LO\Common\BaseCrm\UserAdapter;
 
 class Authorize
 {
     const MAX_EMAILS = 5;
 
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
     public function signinAction(Application $app, Request $request)
     {
         if (!($user = $app->getUserManager()->findByEmail($request->get('email')))) {
@@ -39,14 +45,8 @@ class Authorize
             return $app->json(['message' => 'Entered password is incorrect'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Confirmed the agreement
-        if (!$user->inFirstTime() && (bool)$request->get('first_time')) {
-            $user->setFirstTime($request->get('first_time'));
-            $app->getEntityManager()->persist($user);
-            $app->getEntityManager()->flush();
-        }
-        if (!$user->inFirstTime()) {
-            return $app->json(['message' => 'Confirm the introduction'], Response::HTTP_UNAUTHORIZED);
+        if (!$this->signedPMP($app, $user, $request)) {
+            return $app->json(['message' => 'Not signed PMP'], Response::HTTP_UNAUTHORIZED);
         }
 
         $token = $app->getFactory()->token()->setUserId(
@@ -163,6 +163,39 @@ class Authorize
         }
     }
 
+    /**
+     * @param Application $app
+     * @param User $model
+     * @param Request $request
+     * @return bool
+     */
+    private function signedPMP(Application $app, User $model, Request $request)
+    {
+        if ($model->inFirstTime()) {
+            return true;
+        }
+
+        if ('1' === $request->get('first_time')) {
+            $model->setFirstTime($request->get('first_time'));
+            $app->getEntityManager()->persist($model);
+            $app->getEntityManager()->flush();
+
+            // Update user data in Base CRM
+            $user   = new UserAdapter($model);
+            $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
+            $client->contacts->update($user->getId(), $user->toArray());
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param Application $app
+     * @param User $model
+     * @return bool
+     */
     private function logInLog(Application $app, User $model)
     {
         // Mixpanel analytics

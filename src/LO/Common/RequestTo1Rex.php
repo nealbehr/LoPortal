@@ -130,7 +130,7 @@ class RequestTo1Rex
     {
         return array_merge(
             $this->data,
-            // Other data
+            // Default data
             [
                 'product_type' => self::PRODUCT_TYPE,
                 'source'       => self::BILLBOARD_SOURCE,

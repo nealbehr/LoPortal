@@ -61,6 +61,11 @@ class UserAdapter
         return $this->user->getTitle();
     }
 
+    public function getSignedPMP()
+    {
+        return $this->user->getFirstTime();
+    }
+
     public function getSubCompanyName()
     {
         return $this->lender->getName();
@@ -110,7 +115,8 @@ class UserAdapter
             'custom_fields' => [
                 'NMLS'                   => $this->getNmls(),
                 'Sub-Company Name (DBA)' => $this->getSubCompanyName(),
-                'ESC Password'           => $this->getPassword()
+                'ESC Password'           => $this->getPassword(),
+                'Signed PMP'             => $this->getSignedPMP()
             ]
         ];
     }
