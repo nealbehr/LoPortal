@@ -511,6 +511,9 @@ ul.navbar-nav{
     left: 0;
     right: 0;
 }
+.resource-box {
+    padding: 0;
+}
 .thumbnail .caption {
     font-weight: bold;
 }
