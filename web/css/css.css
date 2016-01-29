@@ -460,6 +460,7 @@ ul.navbar-nav{
     color: #4c84ea;
     display: block;
     text-align: center;
+    padding: 10px 5px;
 }
 .navbar-nav>li.active>a{
     color: #626262;

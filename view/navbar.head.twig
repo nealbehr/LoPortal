@@ -37,7 +37,7 @@
                 </div>
                 <ul ng-show="isUserLoaded" class="nav navbar-nav">
                     <li ng-repeat="tab in headerTabs"
-                        ng-class="{active: tab.isActive(), navseparator: $index == 1 || $index == 4}">
+                        ng-class="{active: tab.isActive(), navseparator: $index == 2 || $index == 5}">
                         <a href="/#[[ tab.path ]]">[[ tab.title ]]</a>
                     </li>
                 </ul>

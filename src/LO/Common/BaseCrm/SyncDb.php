@@ -79,6 +79,7 @@ class SyncDb
                     $address = new Address;
                     $user->setBaseId($data['id']);
                     $user->setPassword(self::DEFAULT_PASSWORD);
+                    $user->setRoles([User::ROLE_USER]);
                     $this->countCreate++;
                 }
                 $originalAddress = implode(', ', $data['address']);

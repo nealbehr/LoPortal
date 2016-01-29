@@ -23,7 +23,8 @@
             'approvalModule',
             'googleAutoCompleteModule',
             'resourcesModule',
-            'collateralModule'
+            'collateralModule',
+            'calculatorModule'
         ]
     );
 
