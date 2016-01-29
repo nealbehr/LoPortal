@@ -16,9 +16,9 @@
         });
     }]);
 
-    module.controller('CalculatorController', function($scope) {
+    module.controller('CalculatorController', ['$scope', function($scope) {
         $scope.titles = {
             header: 'Calculators'
         };
-    });
+    }]);
 })();
