@@ -56,7 +56,6 @@ class Authorize
         $app->getEntityManager()->persist($token);
         $app->getEntityManager()->flush();
 
-        // Log for Mixpanel and BaseCRM
         $this->logInLog($app, $user);
 
         return $app->json($token->getHash());
@@ -192,6 +191,8 @@ class Authorize
     }
 
     /**
+     * Log for Mixpanel and BaseCRM
+     *
      * @param Application $app
      * @param User $model
      * @return bool
