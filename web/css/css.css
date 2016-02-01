@@ -412,6 +412,7 @@ input[type=number] {
 }
 /* Buttons end */
 
+/* Main menu start */
 .header-menu-box{
     padding: 5px 0 24px;
 }
@@ -428,7 +429,7 @@ input[type=number] {
 .header-menu-box .navbar {
     min-height: 44px;
 }
-/* user menu */
+/* Main menu end */
 .user-menu{
     padding: 3px 0;
 }
