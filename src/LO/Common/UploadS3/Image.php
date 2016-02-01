@@ -43,7 +43,7 @@ class Image extends Base{
             return $im->getimageblob();
         }
         catch (\Exception $e) {
-            throw new Http('This type is not supported.', Response::HTTP_BAD_REQUEST);
+            throw new Http('This is not a supported picture filetype.', Response::HTTP_BAD_REQUEST);
 
         }
         finally{
