@@ -17,8 +17,10 @@
     }]);
 
     module.controller('CalculatorController', ['$scope', function($scope) {
-        $scope.titles = {
-            header: 'Calculators'
+        $scope.title = {
+            header  : 'Calculators',
+            infoText: 'Use our calculators to determine how much extra home you can afford with REX, or see how much '
+                +'you can reduce your monthly payment.'
         };
     }]);
 })();

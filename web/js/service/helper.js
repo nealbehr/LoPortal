@@ -113,15 +113,11 @@
                 scope.container = angular.element('#userProfileMessage');
                 scope.userPicture = {};
                 scope.hideErrors = true;
-
-                scope.$watch('officer.id', function(newVal, oldVal){
-                    if(undefined != newVal && newVal == scope.user.id){
-                        scope.title = "Edit Profile";
-                        return;
-                    }
-
-                    scope.title = newVal? 'Edit User': 'Add User';
-                });
+                scope.title = {
+                    header  : 'Edit Profile',
+                    infoText: 'Change your information and photo here if needed. This will also automatically update '
+                        +'your customized collateral.'
+                };
 
                 scope.$watch('officer', function(newVal, oldVal){
                     if(newVal == undefined){
@@ -1314,4 +1310,15 @@
             }
         }
     }]);
+
+    helperService.directive('setTooltip', function() {
+        var height = 0;
+
+        return {
+            restrict: 'A',
+            link    : function(scope, element, attr) {
+                angular.element(element).popover({trigger: 'hover'});
+            }
+        }
+    });
 })(settings);

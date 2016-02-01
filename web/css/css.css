@@ -405,6 +405,13 @@ input[type=number] {
     margin: -3px 10px 0 0;
 }
 /* Collateral page end */
+
+/* Buttons start */
+.btn-info-link {
+    padding: 5px 11px;
+}
+/* Buttons end */
+
 .header-menu-box{
     padding: 5px 0 40px;
 }

@@ -71,6 +71,13 @@
     );
 
     dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', 'createDraftRequestFlyer', 'waitingScreen', function($scope, redirect, $http, data, createDraftRequestFlyer, waitingScreen){
+        $scope.title = {
+            header  : 'Requests Queue',
+            infoText: 'Looking for a specific inquiry? Filter through your current and past requests. If you have '
+                +'previously started a Listing Flyer, find that here as well under “Incomplete”.'
+        };
+
+
         $scope.dashboard    = data.dashboard;
 
         $scope.settingRows  = {};
@@ -164,7 +171,12 @@
                         templates : '=loTemplates'
                     },
                     link: function (scope, element, attrs, controllers) {
-                        scope.PATH = PATH;
+                        scope.PATH  = PATH;
+                        scope.title = {
+                            header  : 'Custom Collateral',
+                            infoText: 'Download one of our flyers from our Consumer, Real Estate Agent or Listing '
+                                +'Flyer section. These are customized with your photo and contact information.'
+                        };
                     }
                 }
             }

@@ -1,9 +1,14 @@
 <div id="wrapper">
     <lo-navbar-head></lo-navbar-head>
     <section class="container">
-        <div class="page-title">
-            <h1>Requests Queue</h1>
-        </div>
+        <header class="page-title">
+            <h1>[[title.header]]</h1>
+            <button set-tooltip
+                    type="button"
+                    class="btn btn-link btn-info-link"
+                    data-placement="right"
+                    data-content="[[title.infoText]]"><i class="fa fa-2x fa-info-circle"></i></button>
+        </header>
         <div class="panel-group queue">
             <lo-dashboard-row ng-repeat="(k,v) in settingRows"
                               lo-items="dashboard[k]"

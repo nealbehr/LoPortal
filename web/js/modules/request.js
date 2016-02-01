@@ -96,8 +96,11 @@
 
     request.controller('RequestController', ['$scope', 'redirect', '$http', '$q', '$timeout', 'getInfoFromGeocoder', 'waitingScreen', 'parseGoogleAddressComponents', "userService", "createRequestFlyer", function($scope, redirect, $http, $q, $timeout, getInfoFromGeocoder, waitingScreen, parseGoogleAddressComponents, userService, createRequestFlyer){
         $scope.titles = {
-            button: "Submit",
-            header: 'New Listing Flyer'
+            button  : 'Submit',
+            header  : 'New Listing Flyer',
+            infoText: 'Listing Flyers are a great way to show how REX HomeBuyer can provide half the down payment for '
+                +'a particular home. Use this tool to not only get a pre-approval but a cobranded flyer with your Real '
+                +'Estate Agent.'
         };
 
         $scope.realtor = {};
@@ -126,8 +129,10 @@
         $scope.lat     = 37.7749295;
         $scope.lng     = -122.41941550000001;
         $scope.titles  = {
-            button: "Submit",
-            header: 'New Property Prequalification'
+            button  : 'Submit',
+            header  : 'New Property Prequalification',
+            infoText: 'Have a property that needs to be prequalified? Simply type in the address. Don’t forget to '
+                +'indicate if you have a buyer for a quick and easy follow up!'
         };
 
         $scope.$on('propertyApprovalSaved', function(event, data) {

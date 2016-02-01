@@ -1,6 +1,11 @@
 <section class="container">
     <header class="page-title">
         <h1>[[ titles.header ]]</h1>
+        <button set-tooltip
+                type="button"
+                class="btn btn-link btn-info-link"
+                data-placement="right"
+                data-content="[[titles.infoText]]"><i class="fa fa-2x fa-info-circle"></i></button>
         <div class="link" ng-if="request.id">
             <a href="/request/flyer/[[ request.id ]]/download" target="_blank" class="download">Download Sample</a>
         </div>

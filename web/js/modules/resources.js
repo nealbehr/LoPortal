@@ -27,8 +27,10 @@
             mixpanel.track('Document Download', {'name': name});
         };
 
-        $scope.titles = {
-            header: 'Program Resources'
+        $scope.title = {
+            header  : 'Program Resources',
+            infoText: 'Learn more about REX HomeBuyer with our Brochure, Quick Reference and At A Glance flyer. Feel '
+                +'free to print these out as a resource at your finger tips!'
         };
 
         // Resources list
