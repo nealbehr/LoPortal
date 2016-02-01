@@ -1311,6 +1311,9 @@
         }
     }]);
 
+    /**
+     * Set tooltip
+     */
     helperService.directive('setTooltip', function() {
         var height = 0;
 
