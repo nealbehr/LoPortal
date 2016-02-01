@@ -41,7 +41,12 @@ class Image extends Base{
             $this->ext = $im->getImageFormat();
 
             return $im->getimageblob();
-        }finally{
+        }
+        catch (\Exception $e) {
+            throw new Http('This type is not supported.', Response::HTTP_BAD_REQUEST);
+
+        }
+        finally{
             $im->destroy();
         }
     }
