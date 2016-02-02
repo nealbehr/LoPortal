@@ -118,8 +118,9 @@ class LenderController extends Base
             $form->handleRequest($request);
 
             if (!$form->isValid()) {
+                $app->getMonolog()->addError($form->getErrors(true));
                 $this->errors = $this->getFormErrors($form);
-                throw new BadRequestHttpException("Lender info isn't valid");
+                throw new BadRequestHttpException(implode(' ', $this->errors));
             }
 
             $this->saleDisclosures($lender, $em, $requestLender);

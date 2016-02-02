@@ -15,6 +15,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
+use LO\Validator\Unique;
 
 class LenderType extends AbstractType {
 
@@ -43,7 +44,13 @@ class LenderType extends AbstractType {
                 new Assert\Length([
                     'max' => 50,
                     'maxMessage' => 'Lender name must be shorter than {{ limit }} chars.',
-                ])
+                ]),
+                new Unique([
+                    'groups'           => ['New'],
+                    'field'            => 'name',
+                    'entity'           => 'LO\\Model\\Entity\\Lender',
+                    'notUniqueMessage' => 'Lender name already exists.'
+                ]),
             ]
         ]);
 
