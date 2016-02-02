@@ -531,6 +531,27 @@ ul.navbar-nav{
 .thumbnail .caption {
     font-weight: bold;
 }
+.page-title .btn-info-link{
+    position: absolute;
+    right: 0;
+    top: -1px;
+}
+.page-title h1{
+    float: none;
+    overflow: hidden;
+}
+.page-title{
+    position: relative;
+    padding-right: 50px;
+}
+.approval-form .btn-holder{
+    width: 100%;
+}
+.approval-form .btn-holder .btn{
+    width: 45%;
+    margin-left: 5%;
+    margin-top: 0;
+}
 @media (max-width: 1050px){
     .navbar-default .navbar-nav>li>a{
         font-size: 14px;
