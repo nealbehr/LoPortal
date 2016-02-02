@@ -541,6 +541,7 @@ ul.navbar-nav{
     overflow: hidden;
 }
 .page-title{
+    overflow: visible;
     position: relative;
     padding-right: 50px;
 }
@@ -567,6 +568,7 @@ ul.navbar-nav{
         position: static;
         margin: 0;
     }
+    .page-title .btn-info-link{top: -9px;}
     .navbar-brand{
         position: relative;
         z-index: 10;
