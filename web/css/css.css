@@ -1,9 +1,9 @@
 #wrapper {
-    padding-bottom: 154px;
+    padding-bottom: 168px;
 }
 #footer {
-    margin-top: -154px;
-    height: 154px;
+    margin-top: -168px;
+    height: 168px;
     color: #818181;
 }
 #footer hr {
@@ -573,5 +573,8 @@ ul.navbar-nav{
     }
     .collatera-text-box {
         height: auto !important;
+    }
+    #footer {
+        padding-top: 30px;
     }
 }
