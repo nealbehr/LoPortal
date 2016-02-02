@@ -200,6 +200,9 @@ input[type=number] {
 /* Property page end */
 
 /* Collateral page start */
+.flyers-text-box, .collatera-text-box {
+    padding-bottom: 66px;
+}
 .item-control{
     padding: 10px 15px 15px    ;
     text-align: justify;
@@ -504,7 +507,6 @@ ul.navbar-nav{
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     position: relative;
-    padding-bottom: 66px;
 }
 .thumbnail .thumb-holder{
     margin: 0;
@@ -571,7 +573,7 @@ ul.navbar-nav{
     .modal.in .modal-dialog{
         min-width:0 !important;
     }
-    .collatera-text-box {
+    .flyers-text-box, .collatera-text-box {
         height: auto !important;
     }
     #footer {
