@@ -2,7 +2,7 @@
 
 use Phinx\Migration\AbstractMigration;
 
-class SalesDirectorNameUnique extends AbstractMigration
+class LenderNameUnique extends AbstractMigration
 {
     /**
      * Change Method.
@@ -22,7 +22,7 @@ class SalesDirectorNameUnique extends AbstractMigration
      */
     public function up()
     {
-        $this->execute('ALTER TABLE `sales_director` ADD UNIQUE `name_unique` (`name`);');
+        $this->execute('ALTER TABLE `lender` ADD UNIQUE `name_unique` (`name`);');
     }
 
     /**
