@@ -164,8 +164,13 @@ class SyncDb
                     $this->countDelete++;
                 }
 
-                $this->entityManager->persist($user);
-                $this->entityManager->flush();
+                try {
+                    $this->entityManager->persist($user);
+                    $this->entityManager->flush();
+                }
+                catch (\Exception $e) {
+                    $this->app->getMonolog()->addError($e->getMessage());
+                }
 
                 return Sync::ACK;
             }
