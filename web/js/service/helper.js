@@ -950,7 +950,7 @@
 
     }]);
 
-    helperService.factory("parseGoogleAddressComponents", [function(){
+    helperService.factory('parseGoogleAddressComponents', [function(){
         return function(data) {
 
             var result = {
@@ -960,28 +960,33 @@
                 zip:     null
             };
 
-            for(var i in data){
-                if($.inArray("street_number", data[i].types) != -1){
-                    result.address = data[i].long_name + ' ' + result.address;
+            for (var i in data) {
+                if ($.inArray('street_number', data[i].types) != -1) {
+                    result.address = data[i].long_name+' '+result.address;
                     continue;
                 }
 
-                if($.inArray("route", data[i].types) != -1){
-                    result.address += ' ' + data[i].long_name;
+                if ($.inArray('route', data[i].types) != -1) {
+                    result.address += ' '+data[i].long_name;
                     continue;
                 }
 
-                if($.inArray("locality", data[i].types) != -1){
+                if (result.address === '' && $.inArray('premise', data[i].types) != -1) {
+                    result.address = data[i].long_name;
+                    continue;
+                }
+
+                if ($.inArray('locality', data[i].types) != -1) {
                     result.city = data[i].long_name;
                     continue;
                 }
 
-                if($.inArray("administrative_area_level_1", data[i].types) != -1){
+                if ($.inArray('administrative_area_level_1', data[i].types) != -1) {
                     result.state = data[i].short_name;
                     continue;
                 }
 
-                if($.inArray("postal_code", data[i].types) != -1){
+                if ($.inArray('postal_code', data[i].types) != -1) {
                     result.zip = data[i].long_name;
                     continue;
                 }
