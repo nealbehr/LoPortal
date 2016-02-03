@@ -735,9 +735,9 @@
                         return false;
                     }
 
-                    scope.request.afterSave(function(){
+                    scope.request.afterSave(function() {
                         scope.oldRequest = angular.copy(scope.request);
-                        $rootScope.$broadcast('requestFlyerSaved');
+                        $rootScope.$broadcast('requestFlyerSaved', scope.request);
                     });
 
                     this.saveRequest(scope.request);

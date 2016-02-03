@@ -115,6 +115,7 @@
             this.realtor_id = null;
 
             this.property = {
+                id: null,
                 archive: '0',
                 address: null,
                 apartment: null,
@@ -215,8 +216,6 @@
                     }
 
                     if(i == "listing_price" && null != object[i]){
-                        console.log(i)
-                        console.log(object[i])
                         result[i] = (object[i] + "").replace(/(\$|,)/, "");
                         continue;
                     }
@@ -243,8 +242,8 @@
 
             this.save = function() {
                 var deferred = $q.defer();
-                (function(){ return self.id? self.update(): self.add();})()
-                    .success(function(data){
+                (function(){ return self.id? self.update(): self.add(); })().success(function(data){
+                        self.fillObject(data);
                         self.afterSave();
                         deferred.resolve(data);
                     })

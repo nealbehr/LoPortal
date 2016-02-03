@@ -219,7 +219,10 @@ class RequestFlyerController extends RequestFlyerBase
             return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $app->json("success");
+        return $app->json([
+            'id'       => $queue->getId(),
+            'property' => $queue->toArray()
+        ]);
     }
 
     public function updateAction(Application $app, Request $request, $id) {

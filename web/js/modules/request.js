@@ -105,8 +105,10 @@
 
         $scope.realtor = {};
 
-        $scope.$on('requestFlyerSaved', function () {
-            redirect('/request/success/flyer');
+        $scope.$on('requestFlyerSaved', function(event, data) {
+            if (typeof data === 'object' && data.hasOwnProperty('id')) {
+                redirect('/request-success/approval/'+data.id);
+            }
         });
 
         userService
