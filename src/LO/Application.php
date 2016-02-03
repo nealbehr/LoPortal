@@ -4,7 +4,6 @@ namespace LO;
 use LO\Common\Factory;
 use LO\Exception\Http;
 use LO\Model\Entity\User;
-use LO\Validator\UniqueValidator;
 use Silex\Application\SecurityTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider;
@@ -115,7 +114,6 @@ class Application extends \Silex\Application{
         )
             ->register(new Provider\DoctrineServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
-            ->register(new LOProvider\UniqueValidatorServiceProvider())
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\ValidatorServiceProvider())
             ->register(new Provider\FormServiceProvider())

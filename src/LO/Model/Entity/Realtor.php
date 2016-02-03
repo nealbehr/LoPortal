@@ -13,7 +13,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
-use LO\Validator\FullName;
 
 /**
  * @Entity
@@ -83,7 +82,6 @@ class Realtor extends Base
      *               message = "First name is invalid.",
      *               groups = {"main"}
      * )
-     * @FullName(groups = {"main"})
      */
     protected $first_name;
 
@@ -95,7 +93,6 @@ class Realtor extends Base
      *               message = "Last name is invalid.",
      *               groups = {"main"}
      * )
-     * @FullName(groups = {"main"})
      */
     protected $last_name;
 

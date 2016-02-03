@@ -15,13 +15,16 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
-use LO\Validator\Unique;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Doctrine\ORM\EntityManager;
 
-class LenderType extends AbstractType {
+class LenderType extends AbstractType
+{
+    private $em, $s3;
 
-    private $s3;
-
-    public function __construct(S3Client $s3){
+    public function __construct(EntityManager $em, S3Client $s3)
+    {
+        $this->em = $em;
         $this->s3 = $s3;
     }
 
@@ -35,7 +38,8 @@ class LenderType extends AbstractType {
         return 'lender';
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
         $builder->add('name', 'text', [
             'constraints' => [
                 new Assert\NotBlank([
@@ -45,12 +49,13 @@ class LenderType extends AbstractType {
                     'max' => 50,
                     'maxMessage' => 'Lender name must be shorter than {{ limit }} chars.',
                 ]),
-                new Unique([
-                    'groups'           => ['New'],
-                    'field'            => 'name',
-                    'entity'           => 'LO\\Model\\Entity\\Lender',
-                    'notUniqueMessage' => 'Lender name already exists.'
-                ]),
+                new Assert\Callback(function($param, ExecutionContextInterface $context) use ($options) {
+                    if (isset($options['method'])
+                        && 'POST' === strtoupper($options['method'])
+                        && !empty($this->em->getRepository(Lender::class)->findOneBy(['name' => $param]))) {
+                        $context->addViolation('Lender name already exists.');
+                    }
+                })
             ]
         ]);
 

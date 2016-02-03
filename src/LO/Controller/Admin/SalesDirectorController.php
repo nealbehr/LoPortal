@@ -87,7 +87,6 @@ class SalesDirectorController extends Base
     {
         try{
             $model = $this->getSalesDirectorById($app, $id);
-            $model->setUpdatedAt($model->getCurrentDate());
 
             $this->createForm($app, $request, $model);
 
@@ -125,14 +124,16 @@ class SalesDirectorController extends Base
     private function createForm(Application $app, Request $request, SalesDirector $model)
     {
         $formOptions = ['validation_groups' => ['Default']];
-        $data        = $request->request->get('salesDirector');
-
-        if (isset($data['email']) && $model->getEmail() !== $data['email']) {
-            $formOptions['validation_groups'] = array_merge($formOptions['validation_groups'], ['New']);
+        if ($model->getId()) {
+            $formOptions['method'] = 'PUT';
         }
 
-        $form = $app->getFormFactory()->create(new SalesDirectorType($app->getS3()), $model, $formOptions);
-        $form->submit($data);
+        $form = $app->getFormFactory()->create(
+            new SalesDirectorType($app->getEntityManager(), $app->getS3()),
+            $model,
+            $formOptions
+        );
+        $form->handleRequest($request);
 
         if (!$form->isValid()) {
             $app->getMonolog()->addError($form->getErrors(true));

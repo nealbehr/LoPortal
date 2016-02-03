@@ -88,9 +88,12 @@ class UserController {
                 throw new BadRequestHttpException("User not found.");
             }
 
-            $userManager = new UserManager($app);
-            $userFormType = empty($request->request->get('user')['password']['password'])? new UserFormType($app->getS3()): new UserFormChangePassword($app, $app->getS3());
-            $errors = $userManager->validateAndSaveUser($request, $user, $userFormType);
+            $userManager  = new UserManager($app);
+            $userFormType = empty($request->request->get('user')['password']['password'])
+                ? new UserFormType($app->getEntityManager(), $app->getS3())
+                : new UserFormChangePassword($app, $app->getS3());
+
+            $errors       = $userManager->validateAndSaveUser($request, $user, $userFormType);
 
             if(count($errors) > 0){
                 $this->errors['form_errors'] = $errors;

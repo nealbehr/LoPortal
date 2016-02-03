@@ -1313,8 +1313,6 @@
      * Set tooltip
      */
     helperService.directive('setTooltip', function() {
-        var height = 0;
-
         return {
             restrict: 'A',
             link    : function(scope, element, attr) {

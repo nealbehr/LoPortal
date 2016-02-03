@@ -17,8 +17,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class UserFormChangePassword extends UserFormType {
     private $app;
 
-    public function __construct(Application $app, S3Client $s3){
-        parent::__construct($s3);
+    public function __construct(Application $app, S3Client $s3)
+    {
+        parent::__construct($app->getEntityManager(), $s3);
         $this->app = $app;
     }
 
