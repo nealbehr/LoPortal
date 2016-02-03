@@ -1231,8 +1231,8 @@
                     return;
                 }
 
-                var valid = true;
                 ctrl.$validators.address_components = function(address) {
+                    var valid = true;
                     if (ctrl.$isEmpty(address)) {
                         // consider empty models to be valid
                         return valid;
@@ -1267,18 +1267,16 @@
                 var geocoder = new google.maps.Geocoder(),
                     deferred = $q.defer();
 
-                geocoder.geocode({ 'address': address }, function(results, status) {
-                    var data = [];
-
+                geocoder.geocode({ address: address }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         for (var i in results) {
                             if (address === results[i].formatted_address) {
-                                data = results[i].address_components;
+                                return deferred.resolve(results[i].address_components);
                             }
                         }
                     }
 
-                    return deferred.resolve(data);
+                    return deferred.resolve([]);
                 });
 
                 return deferred.promise;
