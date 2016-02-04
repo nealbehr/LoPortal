@@ -19,7 +19,7 @@
                     isFree: false
                 }
             })
-            .when('/request-success/:type/:id',{
+            .when('/request/success/:type/:id',{
                 templateUrl: '/partials/request.success',
                 controller:  'RequestSuccessController',
                 access: {
@@ -105,10 +105,8 @@
 
         $scope.realtor = {};
 
-        $scope.$on('requestFlyerSaved', function(event, data) {
-            if (typeof data === 'object' && data.hasOwnProperty('id')) {
-                redirect('/request-success/approval/'+data.id);
-            }
+        $scope.$on('requestFlyerSaved', function() {
+            redirect('/request/success/flyer');
         });
 
         userService
@@ -139,7 +137,7 @@
 
         $scope.$on('propertyApprovalSaved', function(event, data) {
             if (typeof data === 'object' && data.hasOwnProperty('id')) {
-                redirect('/request-success/approval/'+data.id);
+                redirect('/request/success/property/'+data.id);
             }
         });
     }]);
@@ -149,18 +147,23 @@
         ['redirect', '$scope', '$routeParams', '$http', '$timeout', 'progressBar',
         function(redirect, $scope, $routeParams, $http, $timeout, progressBar)
     {
-        $scope.statusId      = null;
-        $scope.endProcessing = false;
-        $scope.request       = getRequestByType($routeParams.type);
+        $scope.statusId   = null;
+        $scope.queueId    = null;
+        $scope.processing = false;
+        $scope.request    = getRequestByType();
 
-        var interval         = 1000,
-            endTime          = 10000,
-            timeCounter      = 0,
-            text             = '';
+        var interval      = 1000,
+            endTime       = 10000,
+            timeCounter   = 0,
+            text          = '';
 
         if ($routeParams.id) {
+            $scope.queueId = $routeParams.id;
             progressBar.setText(text).show();
             handleQueue();
+        }
+        else {
+            $scope.processing = true;
         }
 
         function handleQueue() {
@@ -191,19 +194,20 @@
                 $timeout(handleQueue, interval);
             }
             else {
-                $scope.endProcessing = true;
+                $scope.processing = true;
                 progressBar.setProgress(100).hide();
             }
         }
 
-        function getRequestByType(type) {
-            return type == 'approval'
-                        ? new RequestBase('Request property approval', '/')
-                        : new RequestBase('Request Another Flyer', 'flyer/new')
-            ;
+        function getRequestByType()
+        {
+            return $routeParams.type === 'property'
+                ? new RequestBase('Request Property Approval', '')
+                : new RequestBase('Request Another Flyer', 'flyer/new');
         }
 
-        function RequestBase(title, url) {
+        function RequestBase(title, url)
+        {
             this.title = title;
             this.url   = url;
         }

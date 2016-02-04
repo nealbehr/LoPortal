@@ -1,7 +1,7 @@
 <div id="wrapper">
     <lo-navbar-head></lo-navbar-head>
-    <section class="container ng-hide" ng-show="endProcessing">
-        <div class="row">
+    <section class="container" ng-if="processing">
+        <div class="row" ng-if="queueId">
             <div class="row ng-hide" ng-show="statusId == 1 || statusId == 2 || statusId == 3">
                 <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
                     <img ng-src="/images/sprite.png">
@@ -41,10 +41,23 @@
                     <strong>What do you want to do next?</strong>
                     <div class="btn-holder">
                         <a ng-href="/#/dashboard/requests" class="btn btn-default">Requests Queue</a>
-                        <a ng-href="/#/" class="btn btn-default" style="min-width: 270px">
-                            Request another property approval
+                        <a ng-href="/#/[[request.url]]" class="btn btn-default" style="min-width: 270px">
+                            [[request.title]]
                         </a>
                     </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-if="!queueId">
+            <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+                <img ng-src="/images/sprite.png">
+                <h1>Thank You for submitting the Property Info!</h1>
+                <em>We will notify you by email when the request is approved.</em>
+                <hr>
+                <strong>What do you want to do next?</strong>
+                <div class="btn-holder">
+                    <a ng-href="/#/dashboard/requests" class="btn btn-default">Requests Queue</a>
+                    <a ng-href="/#/[[request.url]]" class="btn btn-default">[[request.title]]</a>
                 </div>
             </div>
         </div>
