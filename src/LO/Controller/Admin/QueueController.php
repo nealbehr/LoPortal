@@ -152,7 +152,10 @@ class QueueController extends Base
             $realtor = $queue->getRealtor();
 
             if (!$realtor) {
-                throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, sprintf("Realtor \'%s\' not found for flyer .", $queue->getId()));
+                throw new HttpException(
+                    Response::HTTP_INTERNAL_SERVER_ERROR,
+                    sprintf("Realtor '%s' not found for flyer.", $queue->getId())
+                );
             }
 
             (new RequestChangeStatus(

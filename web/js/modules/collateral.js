@@ -267,6 +267,12 @@
                             });
                         });
 
+                        angular.element('#file-input').on('change', function(e) {
+                            loadFile(e).then(function(base64) {
+                                scope.template.setFile(base64);
+                            });
+                        });
+
                         scope.submit = function(form) {
                             if (!form.$valid) {
                                 scope.hideErrors = false;

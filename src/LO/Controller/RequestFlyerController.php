@@ -51,16 +51,8 @@ class RequestFlyerController extends RequestFlyerBase
      */
     public function download(Application $app, $id)
     {
-        // Mixpanel analytics
-        if (null !== ($user = $app->getSecurityTokenStorage()->getToken()->getUser())) {
-            $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
-            $mp->identify($user->getId());
-            $mp->track('Flyer Download');
-        }
-
         $queue = $this->getQueueById($app, $id);
         if($queue) {
-
             try {
                 $pdf = new Pdf();
                 $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
@@ -75,6 +67,13 @@ class RequestFlyerController extends RequestFlyerBase
                 $time = time();
                 $pdfFile = 'flyer-' . $id . '-'. $time . '.pdf';
                 $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData($queue));
+
+                // Mixpanel analytics
+                if (null !== ($user = $app->getSecurityTokenStorage()->getToken()->getUser())) {
+                    $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+                    $mp->identify($user->getId());
+                    $mp->track('Flyer Download');
+                }
 
                 header('Content-Type: application/pdf');
                 header('Content-Disposition: attachment; filename="' . $pdfFile . '"');

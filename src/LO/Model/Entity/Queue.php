@@ -421,6 +421,14 @@ class Queue extends Base
     }
 
     /**
+     * @return bool
+     */
+    public function isOmitRealtor()
+    {
+        return (bool)$this->omit_realtor_info;
+    }
+
+    /**
      * @Assert\Callback(groups = {"main"})
      */
     public function isStateValid(ExecutionContextInterface $context){

@@ -1325,20 +1325,4 @@
             }
         }
     });
-
-    /**
-     * Set load file
-     */
-    helperService.directive('setLoadFile', function() {
-        return {
-            restrict: 'A',
-            link    : function(scope, element, attr) {
-                angular.element(element).on('change', function(e) {
-                    loadFile(e).then(function(base64) {
-                        scope.template.setFile(base64);
-                    });
-                });
-            }
-        }
-    });
 })(settings);
