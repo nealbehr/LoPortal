@@ -4,15 +4,14 @@
  * Date: 1/4/16
  * Time: 11:56
  */
+
 namespace LO\Common\BaseCrm;
 
 use LO\Model\Entity\User;
 
 class UserAdapter
 {
-    private $user;
-    private $lender;
-    private $address;
+    private $user, $lender, $address;
 
     public function __construct(User $model)
     {
@@ -66,6 +65,21 @@ class UserAdapter
         return $this->user->getFirstTime();
     }
 
+    public function getSalesDirector()
+    {
+        return $this->user->getSalesDirector();
+    }
+
+    public function getSalesDirectorPhoneNumber()
+    {
+        return $this->user->getSalesDirectorPhone();
+    }
+
+    public function getSalesDirectorEmail()
+    {
+        return $this->user->getSalesDirectorEmail();
+    }
+
     public function getSubCompanyName()
     {
         return $this->lender->getName();
@@ -113,10 +127,13 @@ class UserAdapter
                 'state'       => $this->getState()
             ],
             'custom_fields' => [
-                'NMLS'                   => $this->getNmls(),
-                'Sub-Company Name (DBA)' => $this->getSubCompanyName(),
-                'ESC Password'           => $this->getPassword(),
-                'Signed PMP'             => $this->getSignedPMP()
+                'NMLS'                        => $this->getNmls(),
+                'Sub-Company Name (DBA)'      => $this->getSubCompanyName(),
+                'ESC Password'                => $this->getPassword(),
+                'Signed PMP'                  => $this->getSignedPMP(),
+                'Sales Director'              => $this->getSalesDirector(),
+                'Sales Director Phone Number' => $this->getSalesDirectorPhoneNumber(),
+                'Sales Director Email'        => $this->getSalesDirectorEmail()
             ]
         ];
     }

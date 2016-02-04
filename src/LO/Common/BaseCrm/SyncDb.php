@@ -152,6 +152,12 @@ class SyncDb
                     if (isset($data['custom_fields']['Sales Director'])) {
                         $user->setSalesDirector($data['custom_fields']['Sales Director']);
                     }
+                    if (isset($data['custom_fields']['Sales Director Phone Number'])) {
+                        $user->setSalesDirectorPhone($data['custom_fields']['Sales Director Phone Number']);
+                    }
+                    if (isset($data['custom_fields']['Sales Director Email'])) {
+                        $user->setSalesDirectorEmail($data['custom_fields']['Sales Director Email']);
+                    }
                     $user->setTitle($data['title']);
                     $user->setFirstName($data['first_name']);
                     $user->setLastName($data['last_name']);
