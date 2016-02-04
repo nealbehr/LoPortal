@@ -397,6 +397,10 @@ class Queue extends Base
      */
     public function getRealtor()
     {
+        if (empty($this->realtor)) {
+            $this->realtor = new Realtor();
+        }
+
         return $this->realtor;
     }
 
