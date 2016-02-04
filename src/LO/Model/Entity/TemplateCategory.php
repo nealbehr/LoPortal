@@ -12,6 +12,8 @@ namespace LO\Model\Entity;
  */
 class TemplateCategory
 {
+    const ARCHIVE_CATEGORY = '0';
+
     /**
      * @Id
      * @Column(type="bigint")

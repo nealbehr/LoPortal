@@ -82,8 +82,7 @@ class TemplateController
         $html = $app->getTwig()->render('request.template.pdf.twig', [
             'template' => [
                 'picture'   => $template->getFile(),
-                'coBranded' => !((bool)$template->getLendersAll() && (bool)$template->getStatesAll()),
-
+                'coBranded' => $template->isCoBranded(),
             ],
             'user' => [
                 'firstName' => $user->getFirstName(),

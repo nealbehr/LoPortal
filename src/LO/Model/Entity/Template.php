@@ -64,6 +64,11 @@ class Template extends Base
     /**
      * @Column(type="string")
      */
+    protected $co_branded  = '0';
+
+    /**
+     * @Column(type="string")
+     */
     protected $lenders_all = '1';
 
     /**
@@ -199,6 +204,17 @@ class Template extends Base
         return $this;
     }
 
+    public function getCoBranded()
+    {
+        return $this->co_branded;
+    }
+
+    public function setCoBranded($param)
+    {
+        $this->co_branded = $param;
+        return $this;
+    }
+
     public function getLendersAll()
     {
         return $this->lenders_all;
@@ -286,27 +302,41 @@ class Template extends Base
         return $this->addresses;
     }
 
+    /**
+     * @return bool
+     */
+    public function isCoBranded()
+    {
+        return (bool)$this->co_branded;
+    }
+
+    /**
+     * @return bool
+     */
+    public function forAllLenders()
+    {
+        return (bool)$this->lenders_all;
+    }
+
+    /**
+     * @return bool
+     */
+    public function forAllStates()
+    {
+        return (bool)$this->states_all;
+    }
+
     public function toFullArray()
     {
-        $states = [];
-        if (($objects = $this->getAddresses()) !== null) {
-            foreach($objects as $object) {
-                $states[] = $object->getState();
-            }
-        }
-
-        $lenders = [];
-        if (($objects = $this->getLenders()) !== null) {
-            foreach($objects as $object) {
-                $lenders[] = $object->getId();
-            }
-        }
+        $states  = array_map(function($object) { return $object->getState(); }, $this->getAddresses()->getValues());
+        $lenders = array_map(function($object) { return $object->getId(); }, $this->getLenders()->getValues());
 
         return array(
             'id'              => $this->id,
             'archive'         => $this->archive,
             'category_id'     => $this->category_id,
             'format_id'       => $this->format_id,
+            'co_branded'      => $this->co_branded,
             'lenders_all'     => $this->lenders_all,
             'states_all'      => $this->states_all,
             'name'            => $this->name,

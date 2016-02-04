@@ -4,6 +4,7 @@
  * Date: 12/21/15
  * Time: 14:58
  */
+
 namespace LO\Controller\Admin;
 
 use LO\Application;
@@ -26,8 +27,6 @@ class TemplateController extends Base
 {
     use GetFormErrors;
 
-    const ARCHIVE_CATEGORY = '0';
-
     public function getListAction(Application $app)
     {
         try {
@@ -44,7 +43,7 @@ class TemplateController extends Base
                     $data[$template['category_id']][] = $template;
                 }
                 else {
-                    $data[self::ARCHIVE_CATEGORY][] = $template;
+                    $data[TemplateCategory::ARCHIVE_CATEGORY][] = $template;
                 }
             }
 
@@ -59,7 +58,7 @@ class TemplateController extends Base
     public function getAction(Application $app, $id)
     {
         try {
-            return $app->json($this->getById($app, $id)->toFullArray());
+            return $app->json($app->getTemplateManager()->getById($id)->toFullArray());
         }
         catch (HttpException $e) {
             $app->getMonolog()->addWarning($e);
@@ -96,7 +95,7 @@ class TemplateController extends Base
         $em = $app->getEntityManager();
         try {
             $em->beginTransaction();
-            $model = $this->getById($app, $id);
+            $model = $app->getTemplateManager()->getById($id);
 
             $this->validation($em, $app, $request, $model);
 
@@ -117,7 +116,7 @@ class TemplateController extends Base
     public function deleteAction(Application $app, $id)
     {
         try {
-            $model = $this->getById($app, $id);
+            $model = $app->getTemplateManager()->getById($id);
             $model->setDeleted('1');
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
@@ -220,17 +219,6 @@ class TemplateController extends Base
                     $em->persist($address);
                 }
             }
-        }
-
-        return $model;
-    }
-
-    private function getById(Application $app, $id)
-    {
-        if (!($model = $app->getEntityManager()->getRepository(Template::class)->find($id))
-            || $model->getDeleted() === '1'
-        ) {
-            throw new BadRequestHttpException('Collateral not found.');
         }
 
         return $model;

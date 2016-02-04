@@ -4,14 +4,15 @@
  * Date: 12/22/15
  * Time: 12:31
  */
+
 namespace LO\Form;
 
-use LO\Model\Entity\Template;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Aws\S3\S3Client;
+use LO\Model\Entity\Template,
+    Symfony\Component\Form\AbstractType,
+    Symfony\Component\Form\FormBuilderInterface,
+    Symfony\Component\Validator\Constraints as Assert,
+    Symfony\Component\OptionsResolver\OptionsResolverInterface,
+    Aws\S3\S3Client;
 
 class TemplateType extends AbstractType
 {
@@ -33,6 +34,10 @@ class TemplateType extends AbstractType
             ->add('archive', 'number', [
                 'precision'  => 0,
                 'empty_data' => '0'
+            ])
+            ->add('co_branded', 'number', [
+                'precision'  => 0,
+                'empty_data' => '1'
             ])
             ->add('lenders_all', 'number', [
                 'precision'  => 0,

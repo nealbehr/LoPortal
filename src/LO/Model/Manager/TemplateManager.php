@@ -4,14 +4,15 @@
  * Date: 1/19/16
  * Time: 17:57
  */
+
 namespace LO\Model\Manager;
 
-use Doctrine\ORM\Query;
-use Doctrine\ORM\Query\Expr;
-use LO\Model\Entity\User;
-use LO\Model\Entity\Template;
-use LO\Model\Entity\TemplateLender;
-use LO\Model\Entity\TemplateAddress;
+use Doctrine\ORM\Query,
+    Doctrine\ORM\Query\Expr,
+    LO\Model\Entity\User,
+    LO\Model\Entity\Template,
+    LO\Model\Entity\TemplateLender,
+    LO\Model\Entity\TemplateAddress;
 
 class TemplateManager extends Base
 {
@@ -21,25 +22,12 @@ class TemplateManager extends Base
      */
     public function getList(User $model)
     {
-        $query = $this->getApp()
-            ->getEntityManager()
-            ->createQueryBuilder()
-            ->select('t')
-            ->from(Template::class, 't')
-            ->leftJoin(TemplateLender::class, 'tl', Expr\Join::WITH, 't.id = tl.template_id')
-            ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
-            ->where("t.deleted = '0'")
-            ->andWhere("t.archive = '0'")
-            ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
-            ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)")
-            ->groupBy('t.id');
-
-        $query->setParameters([
+        $query = $this->getQueryBuild()->setParameters([
             'lenderId'  => $model->getLenderId(),
             'stateCode' => $model->getAddress()->getState()
         ]);
 
-        $data = [];
+        $data  = [];
         foreach ($query->getQuery()->getResult(Query::HYDRATE_ARRAY) as $template) {
             $data[$template['category_id']][] = $template;
         }
@@ -66,21 +54,7 @@ class TemplateManager extends Base
         // Role user
         else {
             $user  = $this->getApp()->getSecurityTokenStorage()->getToken()->getUser();
-            $query = $this->getApp()
-                ->getEntityManager()
-                ->createQueryBuilder()
-                ->select('t')
-                ->from(Template::class, 't')
-                ->leftJoin(TemplateLender::class, 'tl', Expr\Join::WITH, 't.id = tl.template_id')
-                ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
-                ->where("t.id = :templateId")
-                ->andWhere("t.deleted = '0'")
-                ->andWhere("t.archive = '0'")
-                ->andWhere("(t.lenders_all = '1' OR tl.lender_id = :lenderId)")
-                ->andWhere("(t.states_all = '1' OR ta.state = :stateCode)")
-                ->groupBy('t.id');
-
-            $query->setParameters([
+            $query = $this->getQueryBuild()->andWhere('t.id = :templateId')->setParameters([
                 'lenderId'   => $user->getLenderId(),
                 'stateCode'  => $user->getAddress()->getState(),
                 'templateId' => $id
@@ -90,5 +64,23 @@ class TemplateManager extends Base
         }
 
         return null;
+    }
+
+    private function getQueryBuild()
+    {
+        return $this->getApp()
+            ->getEntityManager()
+            ->createQueryBuilder()
+            ->select('t')
+            ->from(Template::class, 't')
+            ->leftJoin(TemplateLender::class, 'tl', Expr\Join::WITH, 't.id = tl.template_id')
+            ->leftJoin(TemplateAddress::class, 'ta', Expr\Join::WITH, 't.id = ta.template_id')
+            ->where("t.deleted = '0'")
+            ->andWhere("t.archive = '0'")
+            ->andWhere(
+                "t.co_branded = '0' OR (t.lenders_all = '1' OR tl.lender_id = :lenderId) AND (t.states_all = '1'"
+                    ." OR ta.state = :stateCode)"
+            )
+            ->groupBy('t.id');
     }
 }

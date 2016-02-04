@@ -144,6 +144,7 @@
             this.archive         = 0;
             this.category_id     = null;
             this.format_id       = null;
+            this.co_branded      = 0;
             this.lenders         = [];
             this.lenders_all     = 1;
             this.states          = [];
@@ -235,27 +236,15 @@
                     templateUrl: '/partials/admin.collateral.form',
                     scope      : { template: '=loTemplate' },
                     link       : function(scope, element, attrs, controllers) {
-                        scope.$watch('template.id', function(newVal, oldVal) {
-                            scope.coBranded =
-                                scope.template.lenders_all == '0' || scope.template.states_all == '0' ? '1' : '0';
-                        });
-
                         // Variables
                         scope.message    = angular.element('#message-box');
                         scope.hideErrors = true;
                         scope.formats    = [];
                         scope.categories = [];
                         scope.states     = USA_STATES;
-                        scope.coBranded  = '0';
 
                         scope.$watch('template.id', function(newVal, oldVal) {
                             scope.title = newVal? 'Edit Template': 'Add Template';
-                        });
-
-                        angular.element('#file-input').on('change', function(e) {
-                            loadFile(e).then(function(base64) {
-                                scope.template.setFile(base64);
-                            });
                         });
 
                         // Get options
@@ -286,12 +275,6 @@
                             }
 
                             waitingScreen.show();
-
-                            if (scope.coBranded  == '0') {
-                                scope.template.lenders_all = '1';
-                                scope.template.states_all  = '1';
-                            }
-
                             scope.template.save().then(function() {
                                 sessionMessages.addSuccess('Successfully saved.');
                                 history.back();
