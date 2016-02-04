@@ -33,6 +33,7 @@ firstrex:
     url: http://stage.1rex.com/inquiries.json
   additional.emails:
     - eugene.lysenko@appsorama.com
+    - viktor.pokhilko@appsorama.com
 mixpanel:
   token: 99c782fcf128d5e0d6498f003c406d4c
   api_key: 47afda250711194435962149b3b01528
