@@ -215,8 +215,9 @@
                         continue;
                     }
 
-                    if(i == "listing_price" && null != object[i]){
-                        result[i] = (object[i] + "").replace(/(\$|,)/, "");
+                    // Replase commas and symbol $
+                    if (i == 'listing_price' && null != object[i]) {
+                        result[i] = (''+object[i]).replace(/(\$|,)/g, '');
                         continue;
                     }
 

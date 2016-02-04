@@ -63,7 +63,9 @@
                     <div ng-show="newFlyer.address.$error.address_components">The Property address is invalid.</div>
                     <!-- Listing price -->
                     <div ng-show="newFlyer.listing_price.$error.required">The Listing price is required.</div>
-                    <div ng-show="newFlyer.listing_price.$error.pattern">The Listing price should look like $100,0000,000.</div>
+                    <div ng-show="newFlyer.listing_price.$error.pattern">
+                        The Listing price should look like $1,000,000.
+                    </div>
                     <!-- realtor first name -->
                     <div ng-show="newFlyer.first_name.$error.required">The First name is required.</div>
                     <div ng-show="newFlyer.first_name.$error.pattern">The First name is invalid.</div>
@@ -263,25 +265,16 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
                 <h4 class="modal-title">Select Company Logo</h4>
-                {#<p>Upload a new logo</p>#}
-                {#<div class="" style="width: 456px; margin: 0 auto;">#}
-                    {#<div class="upload-holder">#}
-                        {#<button type="button" id="realtyLogo" class="btn btn-default">Choose File</button>#}
-                    {#</div>#}
-                {#</div>#}
             </div>
 
           <div class="modal-body">
               <div class="logo-box">
-                  {#Choose an existing company:#}
-                  {#<div class="top-bar">#}
                   <div class="input-group">
                       <input type="text" class="form-control" placeholder="Search by company name" data-ng-model="test.realtyName">
                         <span class="input-group-btn">
                             <button class="btn btn-default" type="submit">Go!</button>
                        </span>
                   </div>
-                  {#</div>#}
                   <ul>
                       <li data-ng-click="selectRealtyLogo(realtyCompany)" data-ng-repeat="realtyCompany in realtyCompanies | filter:{name:test.realtyName||''} | orderBy:name | limitTo:9">
                           <a><img data-ng-src="{{ '{{realtyCompany.logo }}' }}" alt="{{ '{{realtyCompany.name }}' }}"></a>
