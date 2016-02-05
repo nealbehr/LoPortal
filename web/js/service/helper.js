@@ -1228,7 +1228,9 @@
      */
     helperService.directive(
         'validateGoogleAddress',
-        ['geoCode', 'parseGoogleAddressComponents', function(geoCode, parseGoogleAddressComponents) {
+        ['addressValidation', 'parseGoogleAddressComponents',
+            function(addressValidation, parseGoogleAddressComponents)
+    {
         return {
             require : 'ngModel',
             restrict: 'A',
@@ -1243,15 +1245,11 @@
                         // consider empty models to be valid
                         return valid;
                     }
-                    geoCode.isValid(address).then(function(data) {
+                    addressValidation.stringIsValid(address).then(function(data) {
                         if (data.length > 0) {
                             scope.request.property.address = address;
                             scope.request.address.set(parseGoogleAddressComponents(data));
-                            for (var i in scope.request.address) {
-                                if (scope.request.address[i] == '' || scope.request.address[i] == null) {
-                                    valid = false;
-                                }
-                            }
+                            valid = addressValidation.arrayIsValid(scope.request.address);
                         }
                         else {
                             scope.request.address.clear();
@@ -1265,11 +1263,14 @@
     }]);
 
     /**
-     * Checks address format
+     * Tools for address validation
      */
-    helperService.factory('geoCode', ['$q', function($q) {
+    helperService.factory('addressValidation', ['$q', function($q) {
+
+        var requiredFields = ['address', 'city', 'state', 'zip'];
+
         return {
-            isValid: function(address) {
+            stringIsValid: function(address) {
                 var geocoder = new google.maps.Geocoder(),
                     deferred = $q.defer();
 
@@ -1286,6 +1287,19 @@
                 });
 
                 return deferred.promise;
+            },
+            arrayIsValid: function(array) {
+                if (Array.isArray(array)) {
+                    return false;
+                }
+
+                for (var i in requiredFields) {
+                    if (!array[requiredFields[i]]) {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         };
     }]);

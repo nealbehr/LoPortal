@@ -104,9 +104,10 @@
         'loPropertyApprovalEdit',
         ['$location', 'createAdminRequestFlyer', '$routeParams', 'parseGoogleAddressComponents', 'loadFile', '$timeout', 
             'redirect', 'waitingScreen', 'getInfoFromGeocoder', '$q', 'loadGoogleMapsApi', '$rootScope', 
-            'sessionMessages', 
+            'sessionMessages', 'addressValidation',
         function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, 
-                 redirect, waitingScreen, getInfoFromGeocoder, $q, loadGoogleMapsApi, $rootScope, sessionMessages)
+                 redirect, waitingScreen, getInfoFromGeocoder, $q, loadGoogleMapsApi, $rootScope, sessionMessages,
+                 addressValidation)
         {
         return {
             restrict: 'EA',
@@ -164,14 +165,10 @@
                         return;
                     }
 
-                    for(var i in scope.request.address){
-                        if(scope.request.address[i] == '' || scope.request.address[i] == null){
-                            scope.isValid = false;
-                            message.addDanger('Address is invalid.')
-                                .show()
-                            ;
-                            return;
-                        }
+                    if (!addressValidation.arrayIsValid(scope.request.address)) {
+                        scope.isValid = false;
+                        message.addDanger('Address is invalid.').show();
+                        return;
                     }
 
                     scope.isValid = true;
