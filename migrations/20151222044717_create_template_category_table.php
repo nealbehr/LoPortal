@@ -32,7 +32,7 @@ PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 INSERT INTO `template_category` (`name`, `admin_name`, `user_name`)
 VALUES ('Consumer', 'Consumer Collateral', 'Collateral for Homebuyers'),
 ('Real Estate', 'Real Estate Collateral', 'Collateral for real Estate Agents'),
-('Affinity', 'Affinity', null),
+('Affinity', 'Affinity', Affinity),
 ('Program Reference', 'Program Reference', 'Program Reference');
 EOL
         );
