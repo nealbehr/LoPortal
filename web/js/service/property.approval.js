@@ -165,7 +165,7 @@
                         return;
                     }
 
-                    if (!addressValidation.arrayIsValid(scope.request.address)) {
+                    if (!addressValidation.objectIsValid(scope.request.address)) {
                         scope.isValid = false;
                         message.addDanger('Address is invalid.').show();
                         return;

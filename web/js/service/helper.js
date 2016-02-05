@@ -1249,7 +1249,7 @@
                         if (data.length > 0) {
                             scope.request.property.address = address;
                             scope.request.address.set(parseGoogleAddressComponents(data));
-                            valid = addressValidation.arrayIsValid(scope.request.address);
+                            valid = addressValidation.objectIsValid(scope.request.address);
                         }
                         else {
                             scope.request.address.clear();
@@ -1288,8 +1288,8 @@
 
                 return deferred.promise;
             },
-            arrayIsValid: function(array) {
-                if ('object' === typeof(array)) {
+            objectIsValid: function(object) {
+                if ('object' === typeof(object)) {
                     return false;
                 }
 
