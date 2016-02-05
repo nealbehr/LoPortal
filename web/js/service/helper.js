@@ -654,7 +654,8 @@
                             maxCropBoxWidth: 350,
                             maxCropBoxHeight: 100
                         }},
-                        scope.request.realtor.realty
+                        scope.request.realtor,
+                        'setRealtyLogo'
                     );
 
                     scope.oldRequest = angular.copy(scope.request);

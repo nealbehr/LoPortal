@@ -8,12 +8,9 @@
 
 namespace LO\Controller;
 
-
 use LO\Application;
 use LO\Exception\Http;
-use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
-use LO\Form\RealtorForm;
 use LO\Model\Entity\Queue;
 use LO\Model\Entity\Realtor;
 use LO\Model\Entity\User;
@@ -21,8 +18,8 @@ use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use \Mixpanel;
+use \Mixpanel,
+    LO\Form\RealtorType;
 
 class RequestFlyerBase extends RequestBaseController {
 
@@ -57,7 +54,7 @@ class RequestFlyerBase extends RequestBaseController {
             }
             // Create realtor
             else {
-                $form = $app->getFormFactory()->create(new RealtorForm($app->getS3()), $realtor, $formOptions);
+                $form = $app->getFormFactory()->create(new RealtorType($app->getS3()), $realtor, $formOptions);
                 $form->handleRequest($request);
                 if (!$form->isValid()) {
                     $this->getMessage()->replace('realtor', $this->getFormErrors($form));

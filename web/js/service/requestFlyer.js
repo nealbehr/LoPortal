@@ -143,26 +143,23 @@
                 phone: null,
                 email: null,
                 photo: null,
-                getPicture: function(){
+                realty_name: null,
+                realty_logo: null,
+
+                getPicture: function() {
                     return this.photo;
                 },
-                setPicture: function(param){
+                setPicture: function(param) {
                     this.photo = param;
-
                     return this;
                 },
-                realty: {
-                    logo: null,
-                    name: null,
-                    getPicture: function() {
-                        return this.logo;
-                    },
-                    setPicture: function(param) {
-                        this.logo = param;
-                        return this;
-                    }
+                getRealtyLogo: function() {
+                    return this.realty_logo;
+                },
+                setRealtyLogo: function(param) {
+                    this.realty_logo = param;
+                    return this;
                 }
-
             };
 
             this.address = {
