@@ -364,15 +364,6 @@
                             );
                         });
 
-                        scope.isValidEmail = function(form) {
-                            if (!form.email) {
-                                return;
-                            }
-
-                            return (form.$submitted || form.email.$touched)
-                                && (form.email.$error.email || form.email.$error.required);
-                        };
-
                         scope.showErrors = function(e) {
                             e.preventDefault();
                             this.hideErrors = true;

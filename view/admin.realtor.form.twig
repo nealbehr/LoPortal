@@ -14,10 +14,8 @@
                 <div ng-show="formRealtor.$submitted && formRealtor.phone.$error.usaPhoneFormat">
                     Please input a valid US phone number including 3 digit area code and 7 digit number.
                 </div>
-                <div ng-show="isValidEmail(formRealtor)">
-                    <span ng-show="formRealtor.email.$error.email">The entered email is invalid.</span>
-                    <span ng-show="formRealtor.email.$error.required">Email is required.</span>
-                </div>
+                <span ng-show="formRealtor.email.$error.required">Email is required.</span>
+                <span ng-show="formRealtor.email.$invalid">The entered email is invalid.</span>
                 <div ng-show="formRealtor.$submitted && formRealtor.realty_name.$invalid">
                     Realtor company name is invalid.
                 </div>
@@ -83,7 +81,8 @@
                            ng-model="realtor.email"
                            required=""
                            name="email"
-                           ng-model-options="{updateOn: 'blur'}">
+                           ng-model-options="{updateOn: 'blur'}"
+                           ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/">
                 </div>
                 <div class="input">
                     <input class="input-lg" type="text" placeholder="BRE number" ng-model="realtor.bre_number" name="bre">

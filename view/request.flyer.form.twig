@@ -78,7 +78,7 @@
 
                     <!-- realtor email -->
                     <div ng-show="newFlyer.email.$error.required">The Email is required.</div>
-                    <div ng-show="newFlyer.email.$error.email">The Email is invalid.</div>
+                    <div ng-show="newFlyer.email.$invalid">The Email is invalid.</div>
 
                     <!-- realtor company -->
                     <div ng-show="newFlyer.realty_logo.$error.required">The Realty logo is required.</div>
@@ -201,11 +201,12 @@
                                    name="phone">
                         </div>
                         <div ng-class="{'input':true, 'error':newFlyer.email.$dirty && newFlyer.email.$invalid}">
-                            <input class="input-lg"
+                            <input ng-model="request.realtor.email"
+                                   ng-required="realtorSelect == 'add'"
+                                   ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/"
+                                   class="input-lg"
                                    type="email"
                                    placeholder="Email address"
-                                   ng-model="request.realtor.email"
-                                   ng-required="realtorSelect == 'add'"
                                    name="email">
                         </div>
                         <div class="input">
