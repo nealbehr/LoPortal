@@ -1289,7 +1289,7 @@
                 return deferred.promise;
             },
             arrayIsValid: function(array) {
-                if (Array.isArray(array)) {
+                if ('object' === typeof(array)) {
                     return false;
                 }
 
