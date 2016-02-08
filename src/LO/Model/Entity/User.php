@@ -24,16 +24,17 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @Table(name="users",
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
-class User extends Base implements UserInterface{
-
+class User extends Base implements UserInterface
+{
     /**
      * Roles list
      */
-    const ROLE_USER  = "ROLE_USER";
-    const ROLE_ADMIN = "ROLE_ADMIN";
+    const ROLE_USER        = "ROLE_USER";
+    const ROLE_ADMIN       = "ROLE_ADMIN";
+    const DEFAULT_PASSWORD = '123456';
 
-    const STATE_ACTIVE  = 1;
-    const STATE_BANNED  = 2;
+    const STATE_ACTIVE     = 1;
+    const STATE_BANNED     = 2;
 
     /**
      * @Id

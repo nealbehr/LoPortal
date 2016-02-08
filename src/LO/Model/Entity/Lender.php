@@ -21,6 +21,8 @@ use Doctrine\ORM\Mapping\OneToMany;
  */
 class Lender extends Base
 {
+    const NOT_LENDER_NAME  = 'Not Lender';
+
     public function __construct()
     {
         parent::__construct();

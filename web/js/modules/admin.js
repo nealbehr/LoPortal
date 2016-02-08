@@ -402,7 +402,7 @@
                                 });
 
                                 message = 'Finished sync. (Created: '+data.create+' | Updated: '+data.update
-                                    +' | Deleted '+data.delete+')';
+                                    +' | Deleted '+data.delete+' | Errors '+data.errors+')';
 
                                 break;
                             }

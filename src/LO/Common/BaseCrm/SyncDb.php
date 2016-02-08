@@ -4,43 +4,45 @@
  * Date: 1/13/16
  * Time: 19:42
  */
+
 namespace LO\Common\BaseCrm;
 
-use LO\Application;
-use LO\Model\Entity\User;
-use LO\Model\Entity\Lender;
-use LO\Model\Entity\Address;
-use \BaseCRM\Client;
-use \BaseCRM\Sync;
-use Doctrine\ORM\NoResultException;
+use LO\Application,
+    LO\Model\Entity\User,
+    LO\Model\Entity\Lender,
+    LO\Model\Entity\Address,
+    \BaseCRM\Client,
+    \BaseCRM\Sync,
+    Doctrine\ORM\NoResultException,
+    Doctrine\ORM\NonUniqueResultException;
 
 class SyncDb
 {
-    const DEFAULT_PASSWORD = '123456';
-    const GOOGLE_API       = 'https://maps.googleapis.com/maps/api/place/';
+    const GOOGLE_API      = 'https://maps.googleapis.com/maps/api/place/';
 
-    const NOT_LENDER_NAME  = 'Not Lender';
-
-    private $syncAddress   = true;
-
-    private $app;
-    private $entityManager;
-    private $sync;
+    private $syncAddress  = true;
 
     /**
      * Counters
      *
      * @var int
      */
-    private $countUpdate   = 0;
-    private $countCreate   = 0;
-    private $countDelete   = 0;
+    private $countUpdate  = 0;
+    private $countCreate  = 0;
+    private $countDelete  = 0;
+    private $countErrors  = 0;
+
+    private $app;
+    private $em;
+    private $sync;
+    private $notLender;
+    private $log          = [];
 
     function __construct(Application $app)
     {
-        $this->app           = $app;
-        $this->entityManager = $app->getEntityManager();
-        $this->sync          = new Sync(
+        $this->app  = $app;
+        $this->em   = $app->getEntityManager();
+        $this->sync = new Sync(
             (new Client(['accessToken' => $this->app->getConfigByName('basecrm', 'accessToken')])),
             $this->app->getConfigByName('basecrm', 'devicesUuid')
         );
@@ -48,145 +50,209 @@ class SyncDb
 
     public function user()
     {
-        $qUser   = $this->entityManager->getRepository(User::class)->createQueryBuilder('u')->where('u.base_id = :id');
-        $qLender = $this->entityManager->getRepository(Lender::class)->createQueryBuilder('l')->where('l.name = :name');
-
-        // Get or create "Not Lender" company
-        try {
-            $notLender = $qLender->setParameter('name', self::NOT_LENDER_NAME)->getQuery()->getSingleResult();
-        }
-        catch (NoResultException $e) {
-            $notLender = new Lender;
-            $notLender->setName(self::NOT_LENDER_NAME);
-            $this->entityManager->persist($notLender);
-            $this->entityManager->flush();
-        }
-
-        $this->sync->fetch(function($meta, $data) use ($qUser, $qLender, $notLender) {
-            // Sync contacts
+        // Sync contacts
+        $this->sync->fetch(function($meta, $data) {
             if ($meta['type'] === 'contact' && isset($data['id']) && !empty($data['email'])) {
-                // Update user
                 try {
-                    $user    = $qUser->setParameter('id', $data['id'])->getQuery()->getSingleResult();
-                    $address = $user->getAddress();
-                    $user->setDeleted('0');
-                    $user->setUpdatedAt(null);
-                    $this->countUpdate++;
-                }
-                // Create user
-                catch (NoResultException $e) {
-                    $user    = new User;
-                    $address = new Address;
-                    $user->setBaseId($data['id']);
-                    $user->setPassword(self::DEFAULT_PASSWORD);
-                    $user->setRoles([User::ROLE_USER]);
-                    $this->countCreate++;
-                }
-                $originalAddress = implode(', ', $data['address']);
-                $address->setBaseOriginalAddress($originalAddress);
+                    $user = $this->em->createQueryBuilder()
+                        ->select('u')
+                        ->from(User::class, 'u')
+                        ->where('u.base_id = :id OR u.email = :email')->setParameters([
+                            'id'    => $data['id'],
+                            'email' => $data['email']
+                        ])
+                        ->getQuery()
+                        ->getSingleResult();
 
-                // Set lender data
-                if (isset($data['custom_fields']['Sub-Company Name (DBA)'])) {
-                    try {
-                        $lender = $qLender->setParameter('name', $data['custom_fields']['Sub-Company Name (DBA)'])
-                            ->getQuery()
-                            ->getSingleResult();
-                    }
-                    catch (NoResultException $e) {
-                        $lender = $notLender;
-                    }
-                }
-                else {
-                    $lender = $notLender;
-                }
-                $user->setLender($lender);
+                    // Error
+                    if ($user->getBaseId() != $data['id']) {
+                        $this->countErrors++;
+                        $user->setEmail(sprintf('%s-%s-sync-error', $data['email'], strtotime('now')));
+                        $user->setDeleted('1');
+                        $this->add($user, $data);
 
-                // Create/update full user data
-                if (
-                    (
-                        isset($data['custom_fields']['Active PMP'])
-                        && 'yes' === strtolower($data['custom_fields']['Active PMP'])
-                    )
-                    || (
-                        isset($data['custom_fields']['Sub-Company Name (DBA)'])
-                        && 'firstrex' === strtolower($data['custom_fields']['Sub-Company Name (DBA)'])
-                    )
-                ) {
-                    // Set address data
-                    if ($this->syncAddress
-                        && $address->getBaseOriginalAddress() !== $originalAddress
-                        && ($googleAddress = $this->getAddressViaTextSearch($originalAddress))
-                    ) {
-                        $address->setBaseOriginalAddress($originalAddress);
-                        $address->setFormattedAddress($googleAddress->formatted_address);
-                        $address->setPlaceId($googleAddress->place_id);
-                        foreach ($googleAddress->address_components as $component) {
-                            if (in_array('locality', $component->types)) {
-                                $address->setCity($component->long_name);
-                            }
-                            if (in_array('street_number', $component->types)) {
-                                $address->setStreetNumber($component->short_name);
-                            }
-                            if (in_array('route', $component->types)) {
-                                $address->setStreet($component->long_name);
-                            }
-                            if (in_array('administrative_area_level_1', $component->types)) {
-                                $address->setState($component->short_name);
-                            }
-                            if (in_array('postal_code', $component->types)) {
-                                $address->setPostalCode($component->long_name);
-                            }
-                        }
-                        $this->entityManager->persist($address);
-                        $this->entityManager->flush();
+                        return Sync::NACK;
                     }
-                    $user->setAddress($address);
-
-                    // Set user data
-                    $user->setEmail($data['email']);
-                    $user->setPhone($data['phone']);
-                    $user->setMobile($data['mobile']);
-                    if (isset($data['custom_fields']['NMLS'])) {
-                        $user->setNmls($data['custom_fields']['NMLS']);
-                    }
-                    if (isset($data['custom_fields']['Sales Director'])) {
-                        $user->setSalesDirector($data['custom_fields']['Sales Director']);
-                    }
-                    if (isset($data['custom_fields']['Sales Director Phone Number'])) {
-                        $user->setSalesDirectorPhone($data['custom_fields']['Sales Director Phone Number']);
-                    }
-                    if (isset($data['custom_fields']['Sales Director Email'])) {
-                        $user->setSalesDirectorEmail($data['custom_fields']['Sales Director Email']);
-                    }
-                    $user->setTitle($data['title']);
-                    $user->setFirstName($data['first_name']);
-                    $user->setLastName($data['last_name']);
                 }
-                // Delete
-                else {
-                    $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
-                    $user->setUpdatedAt(null);
+                catch (NonUniqueResultException $e) {
+                    // Error
+                    $this->countErrors++;
+                    $user = $this->em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+                    $user->setEmail(sprintf('%s-%s-sync-error', $data['email'], strtotime('now')));
                     $user->setDeleted('1');
-                    $this->countDelete++;
+                    $this->add($user, $data);
+
+                    $this->app->getMonolog()->addError($e->getMessage());
+
+                    return Sync::NACK;
+                }
+                catch (NoResultException $e) {
+                    $user = new User;
                 }
 
-                try {
-                    $this->entityManager->persist($user);
-                    $this->entityManager->flush();
-                }
-                catch (\Exception $e) {
-                    $this->app->getMonolog()->addError($e->getMessage());
-                }
+                $user->setEmail($data['email']);
+                $this->add($user, $data);
 
                 return Sync::ACK;
             }
         });
 
+        try {
+            $this->em->flush();
+        }
+        catch (\Exception $e) {
+            $this->app->getMonolog()->addError($e->getMessage());
+        }
+
         return [
             'create' => $this->countCreate,
             'update' => $this->countUpdate,
-            'delete' => $this->countDelete
+            'delete' => $this->countDelete,
+            'errors' => $this->countErrors
         ];
+    }
+
+    /**
+     * @param User $user
+     * @param array $data
+     * @return $this
+     */
+    private function add(User $user, array $data)
+    {
+        // Set lender data
+        $lenderName = isset($data['custom_fields']['Sub-Company Name (DBA)'])
+            ? $data['custom_fields']['Sub-Company Name (DBA)']
+            : Lender::NOT_LENDER_NAME;
+        if (!($lender = $this->em->getRepository(Lender::class)->findOneBy(['name' => $lenderName]))) {
+            $lender = $this->getNotLender();
+        }
+        $user->setLender($lender);
+
+        // Create
+        if (!$user->getId()) {
+            $this->countCreate++;
+            $user->setBaseId($data['id']);
+            $user->setPassword(User::DEFAULT_PASSWORD);
+            $user->setRoles([User::ROLE_USER]);
+        }
+
+        // Update
+        if (
+            (
+                isset($data['custom_fields']['Active PMP'])
+                && 'yes' === strtolower($data['custom_fields']['Active PMP'])
+            )
+            || (
+                isset($data['custom_fields']['Sub-Company Name (DBA)'])
+                && 'firstrex' === strtolower($data['custom_fields']['Sub-Company Name (DBA)'])
+            )
+        ) {
+            $this->countUpdate++;
+            $user->setDeleted('0');
+            $user = $this->fill($user, $data);
+        }
+        // Delete
+        else {
+            $this->countDelete++;
+            $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
+            $user->setDeleted('1');
+        }
+
+        if (!isset($this->log[$user->getEmail()])) {
+            $this->log[$user->getEmail()] = [];
+        }
+        else {
+            $this->countErrors++;
+            $email = sprintf('%s-%s-sync-error', $user->getEmail(), strtotime('now'));
+            $this->log[$email] = [];
+            $user->setEmail($email);
+            $user->setDeleted('1');
+        }
+
+        $this->em->persist($user);
+
+        return $this;
+    }
+
+    /**
+     * Get or create "Not Lender" company
+     *
+     * @return Lender
+     */
+    private function getNotLender()
+    {
+       if ($this->notLender) {
+           return $this->notLender;
+       }
+
+        $this->notLender = $this->em->getRepository(Lender::class)->findOneBy(['name' => Lender::NOT_LENDER_NAME]);
+        if ($this->notLender === null) {
+            $this->notLender = new Lender;
+            $this->notLender->setName(Lender::NOT_LENDER_NAME);
+            $this->em->persist($this->notLender);
+            $this->em->flush();
+        }
+
+        return $this->notLender;
+    }
+
+    /**
+     * @param User $user
+     * @param array $data
+     * @return User
+     */
+    private function fill(User $user, array $data)
+    {
+        // Set address data
+        $address         = $user->getAddress() ? $user->getAddress() : new Address;
+        $originalAddress = implode(', ', $data['address']);
+        if ($this->syncAddress
+            && $address->getBaseOriginalAddress() !== $originalAddress
+            && ($googleAddress = $this->getAddressViaTextSearch($originalAddress))
+        ) {
+            $address->setBaseOriginalAddress($originalAddress);
+            $address->setFormattedAddress($googleAddress->formatted_address);
+            $address->setPlaceId($googleAddress->place_id);
+            foreach ($googleAddress->address_components as $component) {
+                if (in_array('locality', $component->types)) {
+                    $address->setCity($component->long_name);
+                }
+                if (in_array('street_number', $component->types)) {
+                    $address->setStreetNumber($component->short_name);
+                }
+                if (in_array('route', $component->types)) {
+                    $address->setStreet($component->long_name);
+                }
+                if (in_array('administrative_area_level_1', $component->types)) {
+                    $address->setState($component->short_name);
+                }
+                if (in_array('postal_code', $component->types)) {
+                    $address->setPostalCode($component->long_name);
+                }
+            }
+            $user->setAddress($address);
+        }
+
+        // Set user data
+        $user->setFirstName($data['first_name']);
+        $user->setLastName($data['last_name']);
+        $user->setTitle($data['title']);
+        $user->setPhone($data['phone']);
+        $user->setMobile($data['mobile']);
+        if (isset($data['custom_fields']['NMLS'])) {
+            $user->setNmls($data['custom_fields']['NMLS']);
+        }
+        if (isset($data['custom_fields']['Sales Director'])) {
+            $user->setSalesDirector($data['custom_fields']['Sales Director']);
+        }
+        if (isset($data['custom_fields']['Sales Director Phone Number'])) {
+            $user->setSalesDirectorPhone($data['custom_fields']['Sales Director Phone Number']);
+        }
+        if (isset($data['custom_fields']['Sales Director Email'])) {
+            $user->setSalesDirectorEmail($data['custom_fields']['Sales Director Email']);
+        }
+
+        return $user;
     }
 
     /**
