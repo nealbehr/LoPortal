@@ -382,33 +382,24 @@
                 scope.searchingString;
                 scope.isLoaded = false;
                 scope.searchKey;
+                scope.container = angular.element("#userMessage");
+                scope.syncLog;
 
                 scope.syncWithBase = function(e) {
                     e.preventDefault();
 
                     waitingScreen.show();
-
                     $http.get('/admin/user-sync').success(function(data) {
-                        var message = 'Up to date.';
-                        for (var i in data) {
-                            if (data[i] > 0) {
+                        scope.syncLog = data;
 
-                                // Get users
-                                scope.getUsers().then(function(data) {
-                                    scope.users = [];
-                                    for (var i in data.users) {
-                                        scope.users.push(createUser().fill(data.users[i]));
-                                    }
-                                });
-
-                                message = 'Finished sync. (Created: '+data.create+' | Updated: '+data.update
-                                    +' | Deleted '+data.delete+' | Errors '+data.errors+')';
-
-                                break;
+                         // Update user list
+                        scope.getUsers().then(function(data) {
+                            scope.users = [];
+                            for (var i in data.users) {
+                                scope.users.push(createUser().fill(data.users[i]));
                             }
-                        }
+                        });
 
-                        renderMessage(message, 'success', scope.container, scope);
                     }).finally(function() {
                         waitingScreen.hide();
                     });
@@ -476,7 +467,6 @@
                     })
                 ;
 
-                scope.container = angular.element("#userMessage");
                 scope.delete = function(e, key, user){
                     e.preventDefault();
                     if(!confirm("Are you sure?")){

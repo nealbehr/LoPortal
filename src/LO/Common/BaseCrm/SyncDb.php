@@ -20,7 +20,7 @@ use LO\Application,
 class SyncDb
 {
     const GOOGLE_API     = 'https://maps.googleapis.com/maps/api/place/';
-    private $saveLog     = true;
+
     private $syncAddress = true;
 
     /**
@@ -124,8 +124,12 @@ class SyncDb
         }
 
         // Save log
-        $file = $this->createCsvBase64($this->log);
-        $file = (new File($this->app->getS3(), $file, '1rex/sync/log', ['text/plain' => 'csv']))->download('fulllog');
+        $file = (
+            new File($this->app->getS3(),
+            $this->createCsvBase64($this->log),
+            '1rex/sync/log',
+            ['text/plain' => 'csv'])
+        )->download('fulllog-'.strtotime('now'));
 
         return [
             'up_today'  => empty($this->log),

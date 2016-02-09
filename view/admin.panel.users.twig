@@ -1,6 +1,18 @@
+<!-- sync users start -->
 <div class="admin-panel btn-holder">
     <a href="#" ng-click="syncWithBase($event)" class="btn btn-default">Sync with Base</a>
 </div>
+<div ng-show="syncLog.short_log"
+     ng-class="{'alert-danger': (syncLog.short_log.errors != 0), 'alert-success': (syncLog.short_log.errors == 0)}"
+     style="z-index: 5;"
+     class="alert fade in"
+     role="alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="Close">close</a>
+    <p>Sync finished: created [[syncLog.short_log.create]], updated: [[syncLog.short_log.update]], deleted [[syncLog.short_log.delete]], errors [[syncLog.short_log.errors]].</p>
+    <a ng-href="[[syncLog.full_log]]" download="download">Full log</a>
+</div>
+<!-- sync users end -->
+
 <div id="userMessage"></div>
 <div class="row top-bar">
     <div class="col-sm-4 col-lg-3">
