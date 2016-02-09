@@ -11,7 +11,6 @@ use LO\Application,
     Symfony\Component\HttpFoundation\Request,
     Symfony\Component\HttpFoundation\Response,
     LO\Traits\GetFormErrors,
-    Symfony\Component\HttpKernel\Exception\BadRequestHttpException,
     Symfony\Component\HttpKernel\Exception\HttpException,
     LO\Model\Entity\Template,
     LO\Model\Entity\TemplateCategory,
@@ -146,7 +145,7 @@ class TemplateController extends Base
         if (!$form->isValid()) {
             $app->getMonolog()->addError($form->getErrors(true));
             $this->errors = $this->getFormErrors($form);
-            throw new BadRequestHttpException(implode(' ', $this->errors));
+            throw new Http(implode(' ', $this->errors), Response::HTTP_BAD_REQUEST);
         }
 
         // Upload and set files
@@ -180,7 +179,7 @@ class TemplateController extends Base
             $model->setCategory($category);
         }
         else {
-            throw new BadRequestHttpException('Category not exist.');
+            throw new Http('Category not exist.', Response::HTTP_BAD_REQUEST);
         }
 
         // Set template format
@@ -191,7 +190,7 @@ class TemplateController extends Base
             $model->setFormat($format);
         }
         else {
-            throw new BadRequestHttpException('Format not exist.');
+            throw new Http('Format not exist.', Response::HTTP_BAD_REQUEST);
         }
 
         // Set lenders
