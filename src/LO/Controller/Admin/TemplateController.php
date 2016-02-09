@@ -195,7 +195,7 @@ class TemplateController extends Base
         }
 
         // Set lenders
-        if (isset($data['lenders_all']) && $data['lenders_all'] === '0') {
+        if (!$model->forAllLenders()) {
             $model->getLenders()->clear();
 
             if (!empty($data['lenders'])) {
@@ -213,7 +213,7 @@ class TemplateController extends Base
         }
 
         // Set states
-        if (isset($data['states_all']) && $data['states_all'] === '0') {
+        if (!$model->forAllStates()) {
             foreach ($model->getAddresses() as $address) {
                 $em->remove($address);
             }
