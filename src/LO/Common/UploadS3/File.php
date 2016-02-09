@@ -5,6 +5,7 @@
  * Date: 1/28/16
  * Time: 11:39
  */
+
 namespace LO\Common\UploadS3;
 
 use \LO\Exception\Http,
@@ -14,7 +15,12 @@ use \LO\Exception\Http,
 
 class File extends Base
 {
-    private $allowedContentType = [
+    /**
+     * Default ContentTypes
+     *
+     * @var array
+     */
+    private $allowedContentTypes = [
         'application/pdf' => 'pdf',
         'image/jpeg'      => 'jpg',
         'image/png'       => 'png',
@@ -22,21 +28,26 @@ class File extends Base
         'image/bmp'       => 'bmp'
     ];
 
-    private $file, $format, $content_type;
+    private $file, $format, $contentType;
 
     /**
      * @param S3Client $s3
-     * @param $base64String
-     * @param $bucket
+     * @param string $base64String
+     * @param string $bucket
+     * @param array $contentTypes set allowed types
      * @throws Http
      */
-    public function __construct(S3Client $s3, $base64String, $bucket)
+    public function __construct(S3Client $s3, $base64String, $bucket, array $contentTypes = [])
     {
         parent::__construct($s3, $bucket);
         if (empty($base64String)) {
             throw new Http('File content is empty.', Response::HTTP_BAD_REQUEST);
         }
 
+        if (!empty($contentTypes)) {
+            $this->allowedContentTypes = $contentTypes;
+        }
+        
         $this->prepare($base64String);
     }
 
@@ -64,9 +75,9 @@ class File extends Base
             $im->setImageCompressionQuality($quality);
             $im->cropThumbnailImage($width, $height);
 
-            $this->format       = $im->getImageFormat();
-            $this->content_type = $im->getImageType();
-            $this->file         = $im->getimageblob();
+            $this->format      = $im->getImageFormat();
+            $this->contentType = $im->getImageType();
+            $this->file        = $im->getimageblob();
 
         } finally {
             $im->destroy();
@@ -91,12 +102,12 @@ class File extends Base
      */
     protected function prepare($base64String)
     {
-        $this->file         = file_get_contents(str_replace(' ', '+', $base64String));
-        $this->content_type = strtolower((new \finfo(FILEINFO_MIME_TYPE))->buffer($this->file));
-        if (!isset($this->allowedContentType[$this->content_type])) {
-            throw new Http(sprintf("Content type '%s' not allowed.", $this->content_type), Response::HTTP_BAD_REQUEST);
+        $this->file        = file_get_contents(str_replace(' ', '+', $base64String));
+        $this->contentType = strtolower((new \finfo(FILEINFO_MIME_TYPE))->buffer($this->file));
+        if (!isset($this->allowedContentTypes[$this->contentType])) {
+            throw new Http(sprintf("Content type '%s' not allowed.", $this->contentType), Response::HTTP_BAD_REQUEST);
         }
-        $this->format       = $this->allowedContentType[$this->content_type];
+        $this->format      = $this->allowedContentTypes[$this->contentType];
 
         return $this;
     }
@@ -114,6 +125,6 @@ class File extends Base
      */
     protected function getContentType()
     {
-        return $this->content_type;
+        return $this->contentType;
     }
 }

@@ -11,6 +11,7 @@ use LO\Application,
     LO\Model\Entity\User,
     LO\Model\Entity\Lender,
     LO\Model\Entity\Address,
+    LO\Common\UploadS3\File,
     \BaseCRM\Client,
     \BaseCRM\Sync,
     Doctrine\ORM\NoResultException,
@@ -18,26 +19,34 @@ use LO\Application,
 
 class SyncDb
 {
-    const GOOGLE_API      = 'https://maps.googleapis.com/maps/api/place/';
-
-    private $syncAddress  = true;
+    const GOOGLE_API     = 'https://maps.googleapis.com/maps/api/place/';
+    private $saveLog     = true;
+    private $syncAddress = true;
 
     /**
      * Counters
      *
      * @var int
      */
-    private $countUpdate  = 0;
-    private $countCreate  = 0;
-    private $countDelete  = 0;
-    private $countErrors  = 0;
+    private $countUpdate = 0;
+    private $countCreate = 0;
+    private $countDelete = 0;
+    private $countErrors = 0;
 
+    /**
+     * Variables
+     *
+     * @var
+     */
     private $app;
     private $em;
     private $sync;
     private $notLender;
-    private $log          = [];
+    private $log         = [];
 
+    /**
+     * @param Application $app
+     */
     function __construct(Application $app)
     {
         $this->app  = $app;
@@ -48,11 +57,25 @@ class SyncDb
         );
     }
 
+    /**
+     * @return array
+     */
     public function user()
     {
         // Sync contacts
         $this->sync->fetch(function($meta, $data) {
             if ($meta['type'] === 'contact' && isset($data['id']) && !empty($data['email'])) {
+                $notDelete = (
+                    (
+                        isset($data['custom_fields']['Active PMP'])
+                        && 'yes' === strtolower($data['custom_fields']['Active PMP'])
+                    )
+                    || (
+                        isset($data['custom_fields']['Sub-Company Name (DBA)'])
+                        && 'firstrex' === strtolower($data['custom_fields']['Sub-Company Name (DBA)'])
+                    )
+                );
+
                 try {
                     $user = $this->em->createQueryBuilder()
                         ->select('u')
@@ -64,39 +87,35 @@ class SyncDb
                         ->getQuery()
                         ->getSingleResult();
 
-                    // Error
+                    // Duplicate email address
                     if ($user->getBaseId() != $data['id']) {
-                        $this->countErrors++;
-                        $user->setEmail(sprintf('%s-%s-sync-error', $data['email'], strtotime('now')));
-                        $user->setDeleted('1');
-                        $this->add($user, $data);
+                        $this->add($user, $data, 'duplicate');
 
                         return Sync::NACK;
                     }
+
+                    $this->add($user, $data, ($notDelete ? 'update' : 'update_delete'));
+
+                    return Sync::ACK;
                 }
                 catch (NonUniqueResultException $e) {
-                    // Error
-                    $this->countErrors++;
+                    // Duplicate email address
                     $user = $this->em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
-                    $user->setEmail(sprintf('%s-%s-sync-error', $data['email'], strtotime('now')));
-                    $user->setDeleted('1');
-                    $this->add($user, $data);
+                    $this->add($user, $data, 'duplicate');
 
                     $this->app->getMonolog()->addError($e->getMessage());
 
                     return Sync::NACK;
                 }
                 catch (NoResultException $e) {
-                    $user = new User;
+                    $this->add(new User, $data, ($notDelete ? 'create' : 'create_delete'));
+
+                    return Sync::ACK;
                 }
-
-                $user->setEmail($data['email']);
-                $this->add($user, $data);
-
-                return Sync::ACK;
             }
         });
 
+        // Save date
         try {
             $this->em->flush();
         }
@@ -104,21 +123,66 @@ class SyncDb
             $this->app->getMonolog()->addError($e->getMessage());
         }
 
+        // Save log
+        $file = $this->createCsvBase64($this->log);
+        $file = (new File($this->app->getS3(), $file, '1rex/sync/log', ['text/plain' => 'csv']))->download('fulllog');
+
         return [
-            'create' => $this->countCreate,
-            'update' => $this->countUpdate,
-            'delete' => $this->countDelete,
-            'errors' => $this->countErrors
+            'up_today'  => empty($this->log),
+            'short_log' => [
+                'create' => $this->countCreate,
+                'update' => $this->countUpdate,
+                'delete' => $this->countDelete,
+                'errors' => $this->countErrors,
+            ],
+            'full_log'  => $file,
         ];
     }
 
     /**
+     * Add for saving
+     *
      * @param User $user
      * @param array $data
      * @return $this
      */
-    private function add(User $user, array $data)
+    private function add(User $user, array $data, $event)
     {
+        switch ($event) {
+            case 'create';
+                $this->countCreate++;
+                $user->setEmail($data['email']);
+                $user->setBaseId($data['id']);
+                $user->setPassword(User::DEFAULT_PASSWORD);
+                $user->setRoles([User::ROLE_USER]);
+                $user = $this->fill($user, $data);
+                break;
+            case 'create_delete';
+                $this->countDelete++;
+                $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
+                $user->setDeleted('1');
+                $user->setBaseId($data['id']);
+                $user->setPassword(User::DEFAULT_PASSWORD);
+                $user->setRoles([User::ROLE_USER]);
+                break;
+            case 'update':
+                $this->countUpdate++;
+                $user->setEmail($data['email']);
+                $user->setDeleted('0');
+                $user = $this->fill($user, $data);
+                break;
+            case 'update_delete':
+                $this->countDelete++;
+                $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
+                $user->setDeleted('1');
+                break;
+            case 'duplicate':
+                $this->countErrors++;
+                $user->setEmail(sprintf('%s-%s-sync-error', $data['email'], strtotime('now')));
+                $user->setDeleted('1');
+                break;
+        }
+
         // Set lender data
         $lenderName = isset($data['custom_fields']['Sub-Company Name (DBA)'])
             ? $data['custom_fields']['Sub-Company Name (DBA)']
@@ -128,46 +192,17 @@ class SyncDb
         }
         $user->setLender($lender);
 
-        // Create
-        if (!$user->getId()) {
-            $this->countCreate++;
-            $user->setBaseId($data['id']);
-            $user->setPassword(User::DEFAULT_PASSWORD);
-            $user->setRoles([User::ROLE_USER]);
-        }
-
-        // Update
-        if (
-            (
-                isset($data['custom_fields']['Active PMP'])
-                && 'yes' === strtolower($data['custom_fields']['Active PMP'])
-            )
-            || (
-                isset($data['custom_fields']['Sub-Company Name (DBA)'])
-                && 'firstrex' === strtolower($data['custom_fields']['Sub-Company Name (DBA)'])
-            )
-        ) {
-            $this->countUpdate++;
-            $user->setDeleted('0');
-            $user = $this->fill($user, $data);
-        }
-        // Delete
-        else {
-            $this->countDelete++;
-            $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
-            $user->setDeleted('1');
-        }
-
-        if (!isset($this->log[$user->getEmail()])) {
-            $this->log[$user->getEmail()] = [];
-        }
-        else {
+        // Duplicate email address
+        if (isset($this->log[$user->getEmail()])) {
             $this->countErrors++;
-            $email = sprintf('%s-%s-sync-error', $user->getEmail(), strtotime('now'));
-            $this->log[$email] = [];
+            $event = 'duplicate';
+            $email = sprintf('%s-%s-sync-error', $data['email'], strtotime('now'));
             $user->setEmail($email);
             $user->setDeleted('1');
         }
+
+        // Sync log
+        $this->log[$user->getEmail()] = [$data['id'], $event, $data['email'], $user->getEmail()];
 
         $this->em->persist($user);
 
@@ -175,28 +210,8 @@ class SyncDb
     }
 
     /**
-     * Get or create "Not Lender" company
+     * Fill user model
      *
-     * @return Lender
-     */
-    private function getNotLender()
-    {
-       if ($this->notLender) {
-           return $this->notLender;
-       }
-
-        $this->notLender = $this->em->getRepository(Lender::class)->findOneBy(['name' => Lender::NOT_LENDER_NAME]);
-        if ($this->notLender === null) {
-            $this->notLender = new Lender;
-            $this->notLender->setName(Lender::NOT_LENDER_NAME);
-            $this->em->persist($this->notLender);
-            $this->em->flush();
-        }
-
-        return $this->notLender;
-    }
-
-    /**
      * @param User $user
      * @param array $data
      * @return User
@@ -256,6 +271,51 @@ class SyncDb
     }
 
     /**
+     * Get "Not Lender" company
+     *
+     * @return Lender
+     */
+    private function getNotLender()
+    {
+        if ($this->notLender) {
+            return $this->notLender;
+        }
+
+        $this->notLender = $this->em->getRepository(Lender::class)->findOneBy(['name' => Lender::NOT_LENDER_NAME]);
+        if ($this->notLender === null) {
+            $this->notLender = new Lender;
+            $this->notLender->setName(Lender::NOT_LENDER_NAME);
+            $this->em->persist($this->notLender);
+            $this->em->flush();
+        }
+
+        return $this->notLender;
+    }
+
+    /**
+     * @param array $array
+     * @param array $headers
+     * @return bool|string
+     */
+    private function createCsvBase64(array $array, array $headers = ['Id', 'Event', 'Original email', 'New email'])
+    {
+        if (!($fp = fopen('php://filter/read=convert.base64-encode/resource=php://temp', 'w'))) {
+            return false;
+        }
+        fputcsv($fp, $headers);
+        foreach ($array as $line) {
+            fputcsv($fp, $line);
+        }
+        rewind($fp);
+        $csv = stream_get_contents($fp);
+        fclose($fp);
+
+        return 'data:text/csv;base64,'.$csv;
+    }
+
+    /**
+     * Get address by text string
+     *
      * @param $text
      * @return null or object
      */
