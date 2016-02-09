@@ -7,22 +7,22 @@
 
 namespace LO\Controller\Admin;
 
-use LO\Application;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use LO\Traits\GetFormErrors;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use LO\Model\Entity\Template;
-use LO\Model\Entity\TemplateCategory;
-use LO\Model\Entity\TemplateFormat;
-use LO\Model\Entity\TemplateAddress;
-use LO\Model\Entity\Lender;
-use Doctrine\ORM\Query;
-use Doctrine\ORM\EntityManager;
-use LO\Form\TemplateType;
-use LO\Common\UploadS3\File;
-use LO\Exception\Http;
+use LO\Application, 
+    Symfony\Component\HttpFoundation\Request,
+    Symfony\Component\HttpFoundation\Response,
+    LO\Traits\GetFormErrors,
+    Symfony\Component\HttpKernel\Exception\BadRequestHttpException,
+    Symfony\Component\HttpKernel\Exception\HttpException,
+    LO\Model\Entity\Template,
+    LO\Model\Entity\TemplateCategory,
+    LO\Model\Entity\TemplateFormat,
+    LO\Model\Entity\TemplateAddress,
+    LO\Model\Entity\Lender,
+    Doctrine\ORM\Query,
+    Doctrine\ORM\EntityManager,
+    LO\Form\TemplateType,
+    LO\Common\UploadS3\File,
+    LO\Exception\Http;
 
 class TemplateController extends Base
 {
@@ -151,11 +151,17 @@ class TemplateController extends Base
 
         // Upload and set files
         if (!empty($data['file'])) {
+            $file = new File($app->getS3(), $data['file'], '1rex/tamplate/file');
+
+            // Co-branded is not allowed for pdf files
+            if ('pdf' === $file->getFormat() && $model->isCoBranded()) {
+                throw new Http('Co-branded PDF is not allowed for upload. Images only.', Response::HTTP_BAD_REQUEST);
+            }
+
             $fileName = time().mt_rand(1, 100000);
-            $file     = new File($app->getS3(), $data['file'], '1rex/tamplate/file');
+
             $model->setFileFormat($file->getFormat());
             $model->setFile($file->download($fileName));
-
             $model->setPreviewPicture(
                 (new File($app->getS3(), $data['file'], '1rex/tamplate/preview'))
                     ->createPreview()
