@@ -149,6 +149,14 @@ input[type=number] {
 }
 /* Header end */
 
+/* Flyer edit page start */
+.download-sample-flyer {
+    border-bottom: 1px solid #ededed;
+    text-align: right;
+    padding: 10px 0 30px;
+}
+/* Flyer edit page end */
+
 /* Thanks box start */
 .thanks-box {
     padding-top: 0;

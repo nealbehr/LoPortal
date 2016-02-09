@@ -6,10 +6,12 @@
                 class="btn btn-link btn-info-link"
                 data-placement="left"
                 data-content="[[titles.infoText]]"><i class="fa fa-2x fa-info-circle"></i></button>
-        <div class="link" ng-if="request.id">
-            <a href="/request/flyer/[[ request.id ]]/download" target="_blank" class="download">Download Sample</a>
-        </div>
     </header>
+    <div class="download-sample-flyer">
+        <a href="/docs/resources/sample-flyer.jpg" download="sample-flyer">
+            <i class="fa fa-download"></i> Download Sample
+        </a>
+    </div>
     <div class="row listing">
         <aside class="sidebar col-sm-3">
             <h2>Loan Officer Info</h2>
