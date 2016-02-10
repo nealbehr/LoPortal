@@ -104,10 +104,10 @@
         'loPropertyApprovalEdit',
         ['$location', 'createAdminRequestFlyer', '$routeParams', 'parseGoogleAddressComponents', 'loadFile', '$timeout', 
             'redirect', 'waitingScreen', 'getInfoFromGeocoder', '$q', 'loadGoogleMapsApi', '$rootScope', 
-            'sessionMessages', 'addressValidation',
+            'sessionMessages', 'googleAddress',
         function($location, createAdminRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, 
                  redirect, waitingScreen, getInfoFromGeocoder, $q, loadGoogleMapsApi, $rootScope, sessionMessages,
-                 addressValidation)
+                 googleAddress)
         {
         return {
             restrict: 'EA',
@@ -123,17 +123,27 @@
                 scope.request  = {};
                 scope.userType = settings.queue.userType;
 
-                scope.$watch('requestIn', function(newVal, oldVal){
-//                    if(newVal != oldVal){
-                        scope.request = scope.requestIn;
-                        if(scope.request.property && scope.request.property.address){
-                            scope.isValid = true;
-                        }
-//                    }
+                scope.$watch('requestIn', function(newVal, oldVal) {
+                    scope.request = scope.requestIn;
+                    if (scope.request.property && scope.request.property.address) {
+                        scope.isValid = true;
+                    }
                 });
 
-                scope.changeSearchField = function(o){
+                // Validation address string
+                scope.changeSearchField = function() {
                     scope.isValid = false;
+                    googleAddress.stringIsValid(scope.request.property.address).then(function(data) {
+                        if (data.length > 0) {
+                            scope.request.address = parseGoogleAddressComponents(data);
+                            scope.isValid         = googleAddress.objectIsValid(scope.request.address);
+
+                        }
+                        else {
+                            scope.request.address = {};
+                            scope.isValid         = false;
+                        }
+                    });
                 };
 
                 scope.cancel = function(e){
@@ -160,46 +170,17 @@
 
                 var message = new Message(sessionMessages);
 
-                scope.$watch('request.address', function(newVal, oldVal){
-                    if(newVal == oldVal){
-                        return;
-                    }
-
-                    if (!addressValidation.objectIsValid(scope.request.address)) {
-                        scope.isValid = false;
-                        message.addDanger('Address is invalid.').show();
-                        return;
-                    }
-
-                    scope.isValid = true;
-                });
-
-                scope.checkAddress = function(){
-                    getInfoFromGeocoder({address: this.request.property.address})
-                        .then(function(data){
-                            scope.request.address = parseGoogleAddressComponents(data[0].address_components);
-
-                            scope.request.property.address = data[0].formatted_address;
-                        })
-                        .catch(function(e){
-                            scope.isValid = false;
-                            message.addDanger(typeof e == 'string'? e: e.message)
-                                .show()
-                            ;
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        })
-                    ;
-                };
-
                 scope.save = function(e) {
                     e.preventDefault();
 
                     waitingScreen.show();
-                    if(this.isValid == false){
-                        this.checkAddress();
-                        return;
+
+                    // Validation address object
+                    if (!googleAddress.objectIsValid(scope.request.address)) {
+                        waitingScreen.hide();
+                        scope.isValid = false;
+                        message.addDanger('Address is invalid.').show();
+                        return false;
                     }
 
                     scope.request.save()

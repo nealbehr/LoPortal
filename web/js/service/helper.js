@@ -1051,27 +1051,6 @@
         }
     }]);
 
-    helperService.factory("getInfoFromGeocoder", ['$q', "loadGoogleMapsApi", function($q, loadGoogleMapsApi){
-        return function(request){
-            var deferred = $q.defer();
-
-            loadGoogleMapsApi()
-                .then(function(){
-                    var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode( request, function(results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            deferred.resolve(results);
-                        } else {
-                            console.log("Geocode was not successful for the following reason: " + status);
-                            deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
-                        }
-                    });
-                });
-
-            return deferred.promise;
-        }
-    }]);
-
     helperService.factory("renderMessage", ['$compile', function($compile){
         return function(message, type, container, scope){
             var angularDomEl = angular.element('<div lo-message></div>')
@@ -1228,8 +1207,8 @@
      */
     helperService.directive(
         'validateGoogleAddress',
-        ['addressValidation', 'parseGoogleAddressComponents',
-            function(addressValidation, parseGoogleAddressComponents)
+        ['googleAddress', 'parseGoogleAddressComponents',
+            function(googleAddress, parseGoogleAddressComponents)
     {
         return {
             require : 'ngModel',
@@ -1245,11 +1224,11 @@
                         // consider empty models to be valid
                         return valid;
                     }
-                    addressValidation.stringIsValid(address).then(function(data) {
+                    googleAddress.stringIsValid(address).then(function(data) {
                         if (data.length > 0) {
                             scope.request.property.address = address;
                             scope.request.address.set(parseGoogleAddressComponents(data));
-                            valid = addressValidation.objectIsValid(scope.request.address);
+                            valid = googleAddress.objectIsValid(scope.request.address);
                         }
                         else {
                             scope.request.address.clear();
@@ -1262,10 +1241,31 @@
         };
     }]);
 
+    helperService.factory("getInfoFromGeocoder", ['$q', "loadGoogleMapsApi", function($q, loadGoogleMapsApi){
+        return function(request){
+            var deferred = $q.defer();
+
+            loadGoogleMapsApi()
+                .then(function(){
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( request, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            deferred.resolve(results);
+                        } else {
+                            console.log("Geocode was not successful for the following reason: " + status);
+                            deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
+                        }
+                    });
+                });
+
+            return deferred.promise;
+        }
+    }]);
+
     /**
      * Tools for address validation
      */
-    helperService.factory('addressValidation', ['$q', function($q) {
+    helperService.factory('googleAddress', ['$q', function($q) {
 
         var requiredFields = ['address', 'city', 'state', 'zip'];
 
@@ -1289,12 +1289,12 @@
                 return deferred.promise;
             },
             objectIsValid: function(object) {
-                if ('object' === typeof(object)) {
+                if ('object' !== typeof object) {
                     return false;
                 }
 
                 for (var i in requiredFields) {
-                    if (!array[requiredFields[i]]) {
+                    if (!object[requiredFields[i]]) {
                         return false;
                     }
                 }
