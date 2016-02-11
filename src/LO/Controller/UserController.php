@@ -8,7 +8,6 @@
 
 namespace LO\Controller;
 
-
 use LO\Application;
 use LO\Exception\Http;
 use LO\Form\UserFormChangePassword;
@@ -121,8 +120,6 @@ class UserController
                 throw new Http('Lender not found.', Response::HTTP_BAD_REQUEST);
             }
             $user->setLender($lender);
-
-            throw new Http('Ololo.', Response::HTTP_BAD_REQUEST);
 
             // Save user
             $em->persist($user);
