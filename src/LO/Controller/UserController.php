@@ -13,16 +13,20 @@ use LO\Application;
 use LO\Exception\Http;
 use LO\Form\UserFormChangePassword;
 use LO\Form\UserFormType;
-use LO\Model\Manager\UserManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Model\Entity\User as UserEntity;
+use LO\Model\Entity\Lender;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use BaseCRM\Client as BaseCrmClient;
 use LO\Common\BaseCrm\UserAdapter;
+use LO\Traits\GetFormErrors;
 
-class UserController {
+class UserController
+{
+    use GetFormErrors;
+
     /** @var array  */
     private $errors = [];
 
@@ -81,24 +85,48 @@ class UserController {
      */
     public function updateAction(Application $app, Request $request, $id) {
         $user = null;
+        $em   = $app->getEntityManager();
         try{
-            /** @var UserEntity $user */
-            $user = $app->getEntityManager()->getRepository(UserEntity::class)->find($id);
-            if(!$user){
+
+            if(!($user = $em->getRepository(UserEntity::class)->find($id))){
                 throw new BadRequestHttpException("User not found.");
             }
 
-            $userManager  = new UserManager($app);
             $userFormType = empty($request->request->get('user')['password']['password'])
-                ? new UserFormType($app->getEntityManager(), $app->getS3())
+                ? new UserFormType($em, $app->getS3())
                 : new UserFormChangePassword($app, $app->getS3());
 
-            $errors       = $userManager->validateAndSaveUser($request, $user, $userFormType);
+            // Validation user
+            $form = $app->getFormFactory()->create(
+                $userFormType,
+                $user,
+                [
+                    'validation_groups' => ['Default'],
+                    'method'            => 'PUT'
+                ]
+            );
 
-            if(count($errors) > 0){
-                $this->errors['form_errors'] = $errors;
-                throw new BadRequestHttpException('User info is not valid.');
+            $form->submit($request);
+            if (!$form->isValid()) {
+                $app->getMonolog()->addError($form->getErrors(true));
+                $this->errors = $this->getFormErrors($form);
+                throw new Http(implode(' ', $this->errors), Response::HTTP_BAD_REQUEST);
             }
+
+            // Set lender
+            if (
+                !isset($request->get('user')['lender']['id'])
+                || !($lender = $em->getRepository(Lender::class)->find($request->get('user')['lender']['id']))
+            ) {
+                throw new Http('Lender not found.', Response::HTTP_BAD_REQUEST);
+            }
+            $user->setLender($lender);
+
+            throw new Http('Ololo.', Response::HTTP_BAD_REQUEST);
+
+            // Save user
+            $em->persist($user);
+            $em->flush();
 
             // Update BaseCRM
             $this->updateBaseCrm($app, $user);
@@ -114,7 +142,7 @@ class UserController {
             return $app->json($this->errors, $e->getStatusCode());
         }finally{
             if($app->getSecurityTokenStorage()->getToken()->getUser()->getId() == $id && $user instanceof UserEntity){
-                $app->getEntityManager()->refresh($user);
+                $em->refresh($user);
             }
         }
 

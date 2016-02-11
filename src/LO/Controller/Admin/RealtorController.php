@@ -165,7 +165,6 @@ class RealtorController extends Base
             ->createQueryBuilder()
             ->select($alias)
             ->from(Realtor::class, $alias)
-            //->where("$alias.deleted = '0'")
             ->setMaxResults(self::LIMIT)
             ->orderBy(
                 $alias.'.'.$this->getOrderKey($request->query->get(self::KEY_SORT)),
@@ -212,10 +211,7 @@ class RealtorController extends Base
      */
     private function getById(Application $app, $id)
     {
-        $model = $app->getEntityManager()->getRepository(Realtor::class)->find($id);
-        if (!$model
-            //|| $model->getDeleted() !== '0'
-        ) {
+        if (!($model = $app->getEntityManager()->getRepository(Realtor::class)->find($id))) {
             throw new BadRequestHttpException('Realtor not found.');
         }
 

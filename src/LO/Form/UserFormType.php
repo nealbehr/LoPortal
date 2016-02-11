@@ -9,7 +9,6 @@ namespace LO\Form;
 
 use LO\Form\Extension\S3Photo;
 use LO\Model\Entity\User;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,7 +16,7 @@ use Aws\S3\S3Client;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Doctrine\ORM\EntityManager;
 
-class UserFormType extends AbstractType
+class UserFormType extends BaseForm
 {
     private $em, $s3;
 
@@ -27,7 +26,8 @@ class UserFormType extends AbstractType
         $this->s3 = $s3;
     }
 
-    public function getName() {
+    public function getName()
+    {
         return 'user';
     }
 
@@ -36,7 +36,7 @@ class UserFormType extends AbstractType
         $builder->add('first_name', 'text', [
             'constraints' => [
                 new Assert\Regex([
-                    'pattern' => "/^([A-Za-z_\s]+)$/",
+                    'pattern' => '/^([A-Za-z_\s]+)$/',
                     'message' => 'First name is invalid'
                 ]),
                 new Assert\Length([
@@ -49,7 +49,7 @@ class UserFormType extends AbstractType
         $builder->add('last_name', 'text', [
             'constraints' => [
                 new Assert\Regex([
-                    'pattern' => "/^([A-Za-z-_\s]+)$/",
+                    'pattern' => '/^([A-Za-z-_\s]+)$/',
                     'message' => 'Last name is invalid'
                 ]),
                 new Assert\Length([
@@ -99,7 +99,10 @@ class UserFormType extends AbstractType
         $builder->add('email', 'text', [
             'constraints' => [
                 new Assert\NotBlank(['message' => 'Email should not be blank.']),
-                new Assert\Email(),
+                new Assert\Regex([
+                    'pattern' => self::PATTERN_EMAIL,
+                    'message' => 'This value is not a valid email address.'
+                ]),
                 new Assert\Callback(function($param, ExecutionContextInterface $context) use ($options) {
                     if (isset($options['method'])
                         && 'POST' === strtoupper($options['method'])

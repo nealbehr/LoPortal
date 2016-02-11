@@ -2,14 +2,13 @@
 
 use Aws\S3\S3Client;
 use LO\Model\Entity\SalesDirector;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Doctrine\ORM\EntityManager;
 
-class SalesDirectorType extends AbstractType
+class SalesDirectorType extends BaseForm
 {
     /**
      * @var \Aws\S3\S3Client $s3
@@ -45,19 +44,26 @@ class SalesDirectorType extends AbstractType
                     'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                 ])
             ]
-        ])->add('email', 'text', [
-            'constraints' => [
-                new Assert\NotBlank(['message' => 'Email should not be blank.']),
-                new Assert\Email(),
-                new Assert\Callback(function($param, ExecutionContextInterface $context) use ($options) {
-                    if (isset($options['method'])
-                        && 'POST' === strtoupper($options['method'])
-                        && !empty($this->em->getRepository(SalesDirector::class)->findOneBy(['email' => $param]))) {
-                        $context->addViolation('Email address is already registered.');
-                    }
-                })
+        ])->add(
+            'email',
+            'text',
+            [
+                'constraints' => [
+                    new Assert\NotBlank(['message' => 'Email should not be blank.']),
+                    new Assert\Regex([
+                        'pattern' => self::PATTERN_EMAIL,
+                        'message' => 'This value is not a valid email address.'
+                    ]),
+                    new Assert\Callback(function($param, ExecutionContextInterface $context) use ($options) {
+                        if (isset($options['method'])
+                            && 'POST' === strtoupper($options['method'])
+                            && !empty($this->em->getRepository(SalesDirector::class)->findOneBy(['email' => $param]))) {
+                            $context->addViolation('Email address is already registered.');
+                        }
+                    })
+                ]
             ]
-        ])->add('phone', 'text', [
+        )->add('phone', 'text', [
             'constraints' => [
                 new Assert\Length([
                     'max'        => 100,

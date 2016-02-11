@@ -35,11 +35,18 @@ class UserAdminFormType extends UserFormType {
             ]
         ])
 
-        ->add('sales_director_email', 'text', [
-              'constraints' => [
-                new Assert\Email(),
-              ]
-        ])
+        ->add(
+            'sales_director_email',
+            'text',
+            [
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => self::PATTERN_EMAIL,
+                        'message' => 'This value is not a valid email address.'
+                    ])
+                ]
+            ]
+        )
 
         ->add('sales_director_phone', 'text', [
                 'constraints' => [

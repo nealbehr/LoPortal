@@ -2,13 +2,12 @@
 
 use LO\Form\Extension\S3Photo;
 use LO\Model\Entity\Realtor;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Aws\S3\S3Client;
 
-class RealtorType extends AbstractType
+class RealtorType extends BaseForm
 {
     private $s3;
 
@@ -51,12 +50,19 @@ class RealtorType extends AbstractType
                 ]
             ])
             ->add('photo', new S3Photo($this->s3, '1rex/realtor'))
-            ->add('email', 'text', [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Email should not be blank.']),
-                    new Assert\Email()
+            ->add(
+                'email',
+                'text',
+                [
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'Email should not be blank.']),
+                        new Assert\Regex([
+                            'pattern' => self::PATTERN_EMAIL,
+                            'message' => 'This value is not a valid email address.'
+                        ]),
+                    ]
                 ]
-            ])
+            )
             ->add('phone', 'text', [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Phone should not be blank.']),
