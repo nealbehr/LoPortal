@@ -120,6 +120,7 @@ class SyncDb
             $this->em->flush();
         }
         catch (\Exception $e) {
+            $this->countErrors++;
             $this->app->getMonolog()->addError($e->getMessage());
         }
 

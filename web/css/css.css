@@ -460,6 +460,11 @@ input[type=number] {
 .user-menu>span>span{
     display: block;
 }
+.user-menu a:hover {
+    color: #0d0d0d;
+    background-color: transparent;
+    text-decoration: none;
+}
 .nav-container{
     max-width: 1170px;
     padding: 0;
