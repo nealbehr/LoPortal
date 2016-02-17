@@ -87,9 +87,10 @@ class AdminUserController extends Base {
                 throw new BadRequestHttpException('User info not valid.');
             }
 
-            (new NewUserWelcomeEmail($app, $app->getConfigByName('amazon', 'ses', 'source'), $password, $user->getEmail()))
-                ->setDestinationList($user->getEmail())
-                ->send();
+//            // Disable a welcome email
+//            (new NewUserWelcomeEmail($app, $app->getConfigByName('amazon', 'ses', 'source'), $password, $user->getEmail()))
+//                ->setDestinationList($user->getEmail())
+//                ->send();
 
             $app->getEntityManager()->commit();
 
