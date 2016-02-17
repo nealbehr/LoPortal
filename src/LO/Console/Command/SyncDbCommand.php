@@ -14,7 +14,7 @@ use LO\Application,
     Symfony\Component\Console\Input\InputInterface,
     Symfony\Component\Console\Output\OutputInterface;
 
-class SyncCommand extends Command
+class SyncDbCommand extends Command
 {
     function __construct(Application $app)
     {

@@ -21,7 +21,16 @@ class SyncDb
 {
     const GOOGLE_API     = 'https://maps.googleapis.com/maps/api/place/';
 
-    private $syncAddress = true;
+    /**
+     * Variables
+     *
+     * @var
+     */
+    private $app;
+    private $em;
+    private $sync;
+    private $notLender;
+    private $log         = [];
 
     /**
      * Counters
@@ -33,16 +42,7 @@ class SyncDb
     private $countDelete = 0;
     private $countErrors = 0;
 
-    /**
-     * Variables
-     *
-     * @var
-     */
-    private $app;
-    private $em;
-    private $sync;
-    private $notLender;
-    private $log         = [];
+    private $syncAddress = true;
 
     /**
      * @param Application $app
@@ -160,7 +160,8 @@ class SyncDb
                 $user->setBaseId($data['id']);
                 $user->setPassword(User::DEFAULT_PASSWORD);
                 $user->setRoles([User::ROLE_USER]);
-                $user = $this->fill($user, $data);
+                $user = $this->fillAddress($user, $data['address']);
+                $user = $this->fillUser($user, $data);
                 break;
             case 'create_delete';
                 $this->countDelete++;
@@ -169,12 +170,14 @@ class SyncDb
                 $user->setBaseId($data['id']);
                 $user->setPassword(User::DEFAULT_PASSWORD);
                 $user->setRoles([User::ROLE_USER]);
+                $user = $this->fillUser($user, $data);
                 break;
             case 'update':
                 $this->countUpdate++;
                 $user->setEmail($data['email']);
                 $user->setDeleted('0');
-                $user = $this->fill($user, $data);
+                $user = $this->fillAddress($user, $data['address']);
+                $user = $this->fillUser($user, $data);
                 break;
             case 'update_delete':
                 $this->countDelete++;
@@ -215,17 +218,17 @@ class SyncDb
     }
 
     /**
-     * Fill user model
+     * Fill address data
      *
      * @param User $user
      * @param array $data
      * @return User
      */
-    private function fill(User $user, array $data)
+    private function fillAddress(User $user, $address)
     {
         // Set address data
         $address         = $user->getAddress() ? $user->getAddress() : new Address;
-        $originalAddress = implode(', ', $data['address']);
+        $originalAddress = implode(', ', $address);
         if ($this->syncAddress
             && $address->getBaseOriginalAddress() !== $originalAddress
             && ($googleAddress = $this->getAddressViaTextSearch($originalAddress))
@@ -253,22 +256,37 @@ class SyncDb
             $user->setAddress($address);
         }
 
+        return $user;
+    }
+
+    /**
+     * Fill user data
+     *
+     * @param User $user
+     * @param array $data
+     * @return User
+     */
+    private function fillUser(User $user, array $data)
+    {
         // Set user data
         $user->setFirstName($data['first_name']);
         $user->setLastName($data['last_name']);
         $user->setTitle($data['title']);
         $user->setPhone($data['phone']);
         $user->setMobile($data['mobile']);
-        if (isset($data['custom_fields']['NMLS'])) {
+        if (!empty($data['custom_fields']['Portal Password'])) {
+            $user->setPassword($data['custom_fields']['Portal Password']);
+        }
+        if (!empty($data['custom_fields']['NMLS'])) {
             $user->setNmls($data['custom_fields']['NMLS']);
         }
-        if (isset($data['custom_fields']['Sales Director'])) {
+        if (!empty($data['custom_fields']['Sales Director'])) {
             $user->setSalesDirector($data['custom_fields']['Sales Director']);
         }
-        if (isset($data['custom_fields']['Sales Director Phone Number'])) {
+        if (!empty($data['custom_fields']['Sales Director Phone Number'])) {
             $user->setSalesDirectorPhone($data['custom_fields']['Sales Director Phone Number']);
         }
-        if (isset($data['custom_fields']['Sales Director Email'])) {
+        if (!empty($data['custom_fields']['Sales Director Email'])) {
             $user->setSalesDirectorEmail($data['custom_fields']['Sales Director Email']);
         }
 

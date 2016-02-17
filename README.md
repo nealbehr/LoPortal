@@ -21,3 +21,4 @@ PARAM1=stage
 
 ## Console commands
 Sync from BaseCRM: `/vagrant/bin/console portal:sync`
+Upload to BaseCRM: `/vagrant/bin/console base:upload`

@@ -129,7 +129,7 @@ class UserAdapter
             'custom_fields' => [
                 'NMLS'                        => $this->getNmls(),
                 'Sub-Company Name (DBA)'      => $this->getSubCompanyName(),
-                'ESC Password'                => $this->getPassword(),
+                'Portal Password'             => $this->getPassword(),
                 'Signed PMP'                  => $this->getSignedPMP(),
                 'Sales Director'              => $this->getSalesDirector(),
                 'Sales Director Phone Number' => $this->getSalesDirectorPhoneNumber(),
