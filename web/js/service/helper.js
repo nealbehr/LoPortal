@@ -1277,7 +1277,7 @@
                 geocoder.geocode({ address: address }, function(results, status) {
                     if (status == google.maps.GeocoderStatus.OK) {
                         for (var i in results) {
-                            if (address === results[i].formatted_address) {
+                            if (address.toLowerCase() === results[i].formatted_address.toLowerCase()) {
                                 return deferred.resolve(results[i].address_components);
                             }
                         }
