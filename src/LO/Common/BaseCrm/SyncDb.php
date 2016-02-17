@@ -100,7 +100,7 @@ class SyncDb
                 }
                 catch (NonUniqueResultException $e) {
                     // Duplicate email address
-                    $user = $this->em->getRepository(User::class)->findOneBy(['email' => $data['email']]);
+                    $user = $this->em->getRepository(User::class)->findOneBy(['base_id' => $data['id']]);
                     $this->add($user, $data, 'duplicate');
 
                     $this->app->getMonolog()->addError($e->getMessage());
@@ -221,14 +221,14 @@ class SyncDb
      * Fill address data
      *
      * @param User $user
-     * @param array $data
+     * @param string $addressStr
      * @return User
      */
-    private function fillAddress(User $user, $address)
+    private function fillAddress(User $user, $addressStr)
     {
         // Set address data
+        $originalAddress = implode(', ', $addressStr);
         $address         = $user->getAddress() ? $user->getAddress() : new Address;
-        $originalAddress = implode(', ', $address);
         if ($this->syncAddress
             && $address->getBaseOriginalAddress() !== $originalAddress
             && ($googleAddress = $this->getAddressViaTextSearch($originalAddress))
