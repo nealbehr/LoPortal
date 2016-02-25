@@ -19,7 +19,7 @@ use LO\Model\Entity\Lender;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use BaseCRM\Client as BaseCrmClient;
-use LO\Common\BaseCrm\UserAdapter;
+use LO\Common\BaseCrm\ContactAdapter;
 use LO\Traits\GetFormErrors;
 
 class UserController
@@ -157,9 +157,9 @@ class UserController
             return false;
         }
 
-        $user   = new UserAdapter($model);
-        $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
+        $client  = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
+        $contact = new ContactAdapter($model);
 
-        return $client->contacts->update($user->getId(), $user->toArray());
+        return $client->contacts->update($contact->getId(), $contact->toArray());
     }
 }

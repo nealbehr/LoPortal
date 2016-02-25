@@ -9,7 +9,7 @@ namespace LO\Common\BaseCrm;
 
 use LO\Model\Entity\User;
 
-class UserAdapter
+class ContactAdapter
 {
     private $user, $lender, $address;
 
@@ -62,7 +62,7 @@ class UserAdapter
 
     public function getSignedPMP()
     {
-        return $this->user->getFirstTime();
+        return (bool)$this->user->getFirstTime() ? 'Yes' : 'No';
     }
 
     public function getSalesDirector()

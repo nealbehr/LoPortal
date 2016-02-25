@@ -14,7 +14,7 @@ use LO\Common\Email;
 use LO\Model\Entity\RecoveryPassword;
 use \Mixpanel;
 use BaseCRM\Client as BaseCrmClient;
-use LO\Common\BaseCrm\UserAdapter;
+use LO\Common\BaseCrm\ContactAdapter;
 
 class Authorize
 {
@@ -179,10 +179,10 @@ class Authorize
             $app->getEntityManager()->persist($model);
             $app->getEntityManager()->flush();
 
-            // Update user data in Base CRM
-            $user   = new UserAdapter($model);
-            $client = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
-            $client->contacts->update($user->getId(), $user->toArray());
+            // Update contact data in Base CRM
+            $client  = new BaseCrmClient(['accessToken' => $app->getConfigByName('basecrm', 'accessToken')]);
+            $contact = new ContactAdapter($model);
+            $client->contacts->update($contact->getId(), $contact->toArray());
 
             return true;
         }
