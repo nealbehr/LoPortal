@@ -144,8 +144,8 @@
 
     request.controller(
         'RequestSuccessController',
-        ['redirect', '$scope', '$routeParams', '$http', '$timeout', 'progressBar',
-        function(redirect, $scope, $routeParams, $http, $timeout, progressBar)
+        ['redirect', '$scope', '$routeParams', '$http', '$timeout', 'progressBar', '$rootScope',
+        function(redirect, $scope, $routeParams, $http, $timeout, progressBar, $rootScope)
     {
         $scope.statusId   = null;
         $scope.queueId    = null;
@@ -196,6 +196,17 @@
             else {
                 $scope.processing = true;
                 progressBar.setProgress(100).hide();
+
+                // Mixpanel analytics
+                if ($rootScope.currentUser) {
+                    mixpanel.identify($rootScope.currentUser.id);
+                    if ($scope.statusId == 1 || $scope.statusId == 2 || $scope.statusId == 3) {
+                        mixpanel.track('Approval page is viewed');
+                    }
+                    else {
+                        mixpanel.track('Additional due diligence page is viewed');
+                    }
+                }
             }
         }
 

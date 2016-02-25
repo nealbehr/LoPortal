@@ -130,23 +130,29 @@
                 }
             };
         }]);
-    }]).run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location',
-            function($rootScope, TOKEN_KEY, $cookies, redirect, $location
+    }]).run(['$rootScope', 'TOKEN_KEY', '$cookies', 'redirect', '$location', 'userService',
+            function($rootScope, TOKEN_KEY, $cookies, redirect, $location, userService
         ) {
-            $rootScope.debug = settings.debug;
-
-            $rootScope.history = [];
-
-            $rootScope.historyGet = function(){
+            $rootScope.debug       = settings.debug;
+            $rootScope.history     = [];
+            $rootScope.currentUser = null;
+            $rootScope.historyGet  = function(){
                 return this.history.length > 1 ? this.history.splice(-2)[0] : "/";
             };
 
-            /**
-             * Tracking google analytics
-             */
+            // Tracking analytics
             $rootScope.$on('$locationChangeSuccess', function(e, next, current) {
+                // Google
                 if (typeof window.ga === 'function') {
                     ga('send', 'pageview', $location.url());
+                }
+
+                // Mixpanel
+                if ($rootScope.currentUser) {
+                    if ('/calculators' === $location.url()) {
+                        mixpanel.identify($rootScope.currentUser.id);
+                        mixpanel.track('Calculator page is viewed');
+                    }
                 }
             });
 
@@ -155,8 +161,17 @@
                 if($rootScope.history.length > 3){
                     $rootScope.history = $rootScope.history.slice(-2);
                 }
+
                 if ('access' in next && !next.access.isFree && $cookies[TOKEN_KEY] == undefined) {
+                    $rootScope.currentUser = null;
                     redirect('/login', $location.url());
+                }
+
+                // Set current user
+                if ($cookies[TOKEN_KEY] !== undefined && !$rootScope.currentUser) {
+                    userService.get().then(function(user) {
+                        $rootScope.currentUser = user;
+                    });
                 }
             });
         }

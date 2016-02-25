@@ -20,7 +20,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use BaseCRM\Client as BaseCrmClient;
 use LO\Common\BaseCrm\ContactAdapter;
-use LO\Traits\GetFormErrors;
+use LO\Traits\GetFormErrors,
+    \Mixpanel;
 
 class UserController
 {
@@ -125,6 +126,9 @@ class UserController
             $em->persist($user);
             $em->flush();
 
+            // Mixpanel analytics
+            $this->editedProfileLog($app, $user);
+
             // Update BaseCRM
             $this->updateBaseCrm($app, $user);
 
@@ -147,6 +151,24 @@ class UserController
     }
 
     /**
+     * Mixpanel analytics
+     *
+     * @param Application $app
+     * @param User $model
+     * @return bool
+     */
+    private function editedProfileLog(Application $app, UserEntity $model)
+    {
+        $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+        $mp->identify($model->getId());
+        $mp->track('User profile edited');
+
+        return true;
+    }
+
+    /**
+     * Update contact in BaseCRM
+     *
      * @param Application $app
      * @param User $model
      * @return array

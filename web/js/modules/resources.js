@@ -24,7 +24,7 @@
         // Mixpanel analytics
         $scope.logMixpanel = function(name) {
             mixpanel.identify($scope.user.id);
-            mixpanel.track('Document Download', {'name': name});
+            mixpanel.track('Download program reference', {'name': name});
         };
 
         $scope.title = {
