@@ -81,7 +81,7 @@ class RealtorType extends BaseForm
             ->add('realty_name', 'text', [
                 'constraints' => [
                     new Assert\Regex([
-                        'pattern' => '/^[a-zA-Z0-9][a-zA-Z0-9()\.\-#&\s]*$/',
+                        'pattern' => '/^[a-zA-Z0-9][a-zA-Z0-9()\'\.\-#&\s]*$/',
                         'message' => 'Name is invalid.'
                     ]),
                     new Assert\Length([

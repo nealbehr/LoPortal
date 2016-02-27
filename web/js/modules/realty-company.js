@@ -178,8 +178,8 @@
             if($scope.realtyLogo) {
                 $scope.realtyLogo.cropperDestroy();
             }
-            $scope.request.realtor.realty.name = realtyCompany.name;
-            $scope.request.realtor.realty.logo = realtyCompany.logo;
+            $scope.request.realtor.realty_name = realtyCompany.name;
+            $scope.request.realtor.realty_logo = realtyCompany.logo;
             $('#chooseRealtyCompanyLogo').modal('hide');
         };
     }]);
