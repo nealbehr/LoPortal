@@ -130,7 +130,7 @@ module.exports = function(grunt) {
             app: {
                 cwd:  'web',
                 src:  'template/**/**.html',
-                dest: '<%= yeoman.dist %>/web/build/template-cache.js'
+                dest: '<%= yeoman.dist %>/web/<%= grunt.nameTemplateCacheFile %>'
             }
         },
         // Concat js files
@@ -145,8 +145,6 @@ module.exports = function(grunt) {
                     'web/js/modules/*.js',
                     'web/js/service/*.js',
                     'web/js/directive/*.js'
-
-                    //'<%= yeoman.dist %>/web/build/template-cache.js'
                 ],
                 dest: '<%= yeoman.dist %>/web/build/scripts.js'
             }
