@@ -56,8 +56,8 @@ angular.module('loApp').directive(
             scope.getDialogByRequest = function (request) {
                 return ngDialog.open({
                     template: (request.request_type == settings.queue.type.flyer 
-                        ? '/partials/admin.request.approve.flyer' 
-                        : '/partials/admin.request.approve'),
+                        ? 'template/directive/admin-request-approve-flyer.html'
+                        : 'template/directive/admin-request-approve.html'),
                     showClose: false,
                     controller: (request.request_type == settings.queue.type.flyer 
                         ? 'adminApproveFlyerCtrl' 
@@ -91,7 +91,7 @@ angular.module('loApp').directive(
             scope.decline = function (e, request) {
                 e.preventDefault();
                 var dialog = ngDialog.open({
-                    template: '/partials/admin.request.decline',
+                    template: 'template/directive/admin-request-decline.html',
                     showClose: false,
                     controller: 'adminDiscardCtrl',
                     data: {

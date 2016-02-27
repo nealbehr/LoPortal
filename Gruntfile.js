@@ -118,36 +118,18 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        // Deploy on elastic beanstalk
-        ebDeploy: {
+        // Cached templates
+        ngtemplates:  {
             options: {
-                region: 'us-west-1'
+                module: 'loApp'
             },
-            stage: {
-                options: {
-                    profile    : 'eb-client',
-                    application: 'portal-1rex-com',
-                    environment: 'portal1rexcom-stage'
-                },
-                files: [
-                    { src: ['.ebextensions/*'] },
-                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true},
-                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
-                ]
-            },
-            prod: {
-                options: {
-                    profile    : 'eb-client',
-                    application: 'first-rex-lo-portal',
-                    environment: 'firstRexLoPortal'
-                },
-                files: [
-                    { src: ['.ebextensions/*'] },
-                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true },
-                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
-                ]
+            app: {
+                cwd:  'web',
+                src:  'template/**/**.html',
+                dest: '<%= yeoman.dist %>/web/build/template-cache.js'
             }
         },
+        // Concat js files
         concat: {
             options: {
                 separator: ';'
@@ -157,7 +139,8 @@ module.exports = function(grunt) {
                     'web/js/lib/*.js',
                     'web/js/modules/*.js',
                     'web/js/service/*.js',
-                    'web/js/*.js'
+                    'web/js/*.js',
+                    'web/build/template-cache.js'
                 ],
                 dest: '<%= yeoman.dist %>/web/build/scripts.js'
             }
@@ -230,14 +213,34 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        ngtemplates:  {
+        // Deploy on elastic beanstalk
+        ebDeploy: {
             options: {
-                module: 'loApp'
+                region: 'us-west-1'
             },
-            app: {
-                cwd:  'web',
-                src:  'template/**/**.html',
-                dest: '<%= yeoman.dist %>/web/build/template-cache.js'
+            stage: {
+                options: {
+                    profile    : 'eb-client',
+                    application: 'portal-1rex-com',
+                    environment: 'portal1rexcom-stage'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true},
+                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
+                ]
+            },
+            prod: {
+                options: {
+                    profile    : 'eb-client',
+                    application: 'first-rex-lo-portal',
+                    environment: 'firstRexLoPortal'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true },
+                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
+                ]
             }
         }
     });
@@ -258,13 +261,13 @@ module.exports = function(grunt) {
     grunt.registerTask('build', [
         'clean:before',
         'copy:dist',
+        'ngtemplates',
         'concat',
         'uglify',
         'string-replace',
         'processhtml',
         'imagemin',
         'cssmin',
-        'ngtemplates',
         'clean:after'
     ]);
 
