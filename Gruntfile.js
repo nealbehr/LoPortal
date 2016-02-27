@@ -4,9 +4,10 @@
  * Create build and deploy on amazon elastic beanstalk
  */
 module.exports = function(grunt) {
-    grunt.versionFiles   = new Date().getTime();
-    grunt.nameJsMinFile  = 'build/scripts.min.'+grunt.versionFiles+'.js';
-    grunt.nameCSSMinFile = 'build/css.min.'+grunt.versionFiles+'.css';
+    grunt.versionFiles          = new Date().getTime();
+    grunt.nameJsMinFile         = 'build/scripts-'+grunt.versionFiles+'.min.js';
+    grunt.nameCSSMinFile        = 'build/css-'+grunt.versionFiles+'.min.css';
+    grunt.nameTemplateCacheFile = 'build/template-cache-'+grunt.versionFiles+'.js';
 
     // Tasks
     grunt.initConfig({
@@ -121,7 +122,10 @@ module.exports = function(grunt) {
         // Cached templates
         ngtemplates:  {
             options: {
-                module: 'loApp'
+                module : 'loApp',
+                htmlmin:  {
+                    collapseWhitespace       : true,
+                    collapseBooleanAttributes: true }
             },
             app: {
                 cwd:  'web',
@@ -137,10 +141,12 @@ module.exports = function(grunt) {
             main: {
                 src: [
                     'web/js/lib/*.js',
+                    'web/js/*.js',
                     'web/js/modules/*.js',
                     'web/js/service/*.js',
-                    'web/js/*.js',
-                    'web/build/template-cache.js'
+                    'web/js/directive/*.js'
+
+                    //'<%= yeoman.dist %>/web/build/template-cache.js'
                 ],
                 dest: '<%= yeoman.dist %>/web/build/scripts.js'
             }
@@ -171,6 +177,9 @@ module.exports = function(grunt) {
                     }, {
                         pattern: /< CSS_FILENAME >/g,
                         replacement: '<%= grunt.nameCSSMinFile %>'
+                    }, {
+                        pattern: /< JS_TEMPLATE_CACHE >/g,
+                        replacement: '<%= grunt.nameTemplateCacheFile %>'
                     }]
                 }
             }
