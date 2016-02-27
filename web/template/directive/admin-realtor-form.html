@@ -155,7 +155,7 @@
                         <li data-ng-click="selectRealtyLogo($event, realtyCompany)"
                             data-ng-repeat="realtyCompany in realtyCompanies | filter:{name:test.realtyName||''} | orderBy:name | limitTo:9">
                             <a href="#">
-                                <img data-ng-src="{{'{{realtyCompany.logo}}' }}" alt="{{'{{realtyCompany.name }}'}}">
+                                <img data-ng-src="{{realtyCompany.logo}}" alt="{{realtyCompany.name }}">
                             </a>
                         </li>
                     </ul>
