@@ -3,22 +3,6 @@
 
     var user = angular.module('userProfileModule', []);
 
-    user.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.
-            when('/user/:id/edit', {
-                templateUrl: '/partials/profile',
-                controller:  'userProfileCtrl',
-                resolve: {
-                    officerData: ["$q", "$http", '$route', 'waitingScreen', 'userService', 'createProfileUser', function($q, $http, $route, waitingScreen, userService, createProfileUser) {
-                        return userService.get()
-                    }]
-                },
-                access: {
-                    isFree: false
-                }
-            })
-    }]);
-
     user.controller('userProfileCtrl', ['$scope', '$route', 'createProfileUser', '$routeParams', 'userService', "$q", "officerData", function($scope, $route, createProfileUser, $routeParams, userService, $q, officerData) {
         $scope.officer = officerData;
 

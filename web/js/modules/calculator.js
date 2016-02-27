@@ -6,16 +6,6 @@
 
     var module = angular.module('calculatorModule', []);
 
-    module.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/calculators', {
-            templateUrl: '/partials/calculator',
-            controller:  'CalculatorController',
-            access: {
-                isFree: false
-            }
-        });
-    }]);
-
     module.controller('CalculatorController', ['$scope', function($scope) {
         $scope.title = {
             header  : 'Calculators',

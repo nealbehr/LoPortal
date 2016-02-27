@@ -4,32 +4,6 @@
 
     var realtyCompanyModule = angular.module('realtyCompanyModule', ['adminModule']);
 
-    realtyCompanyModule.config(['$routeProvider', function($routeProvider) {
-        $routeProvider
-            .when('/admin/realty', {
-                templateUrl: '/partials/admin.panel.realty',
-                controller:  'AdminCompaniesController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/realty/new', {
-                templateUrl: '/partials/admin.panel.realty.company',
-                controller:  'AdminRealtyNewController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/realty/:id/edit', {
-                templateUrl: '/partials/admin.panel.realty.company',
-                controller:  'AdminRealtyEditController',
-                access: {
-                    isFree: false
-                }
-            })
-        ;
-    }]);
-
     realtyCompanyModule.service("createRealtyCompany", ["$q","$http", "createRealtyCompanyBase", function($q, $http, createRealtyCompanyBase){
         return function() {
             var realtyBase = new createRealtyCompanyBase();

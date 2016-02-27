@@ -3,53 +3,6 @@
 
     var request = angular.module('requestModule', ['helperService']);
 
-    request.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.
-            when('/flyer/new', {
-                templateUrl: '/partials/request.flyer.new',
-                controller:  'RequestController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/request/success/:type',{
-                templateUrl: '/partials/request.success',
-                controller:  'RequestSuccessController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/request/success/:type/:id',{
-                templateUrl: '/partials/request.success',
-                controller:  'RequestSuccessController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/', {
-                templateUrl: '/partials/request.property.approval',
-                controller:  'RequestPropertyApprovalController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/flyer/:id/edit', {
-                templateUrl: '/partials/request.flyer.edit',
-                controller:  'RequestFlyerEditController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/flyer/from/approval/:id/edit', {
-                templateUrl: '/partials/request.flyer.edit',
-                controller:  'RequestFromApprovalController',
-                access: {
-                    isFree: false
-                }
-            })
-        ;
-    }]);
-
     request.controller('RequestFromApprovalController', ['$scope', 'createFromPropertyApproval', '$routeParams', "createProfileUser", 'sessionMessages', '$http', function($scope, createFromPropertyApproval, $routeParams, createProfileUser, sessionMessages, $http){
         $scope.request = {};
         $scope.realtor = {};

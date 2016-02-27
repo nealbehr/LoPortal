@@ -4,71 +4,6 @@
 
     var admin = angular.module('adminModule', ['headColumnModule']);
 
-    admin.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.
-            when('/admin/user/new', {
-                templateUrl: '/partials/admin.panel.user',
-                controller:  'adminUserNewCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/user/:id/edit', {
-                templateUrl: '/partials/admin.panel.user',
-                controller:  'AdminUserEditController',
-                resolve: {
-                    officerData: ['$route', 'createUser', function($route, createUser) {
-                        return createUser().get($route.current.params.id);
-                    }]
-                },
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin', {
-                templateUrl: '/partials/admin',
-                controller:  'adminCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/queue', {
-                templateUrl: '/partials/admin.queue',
-                controller:  'adminQueueCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/flyer/:id/edit', {
-                templateUrl: '/partials/admin.request.flyer.edit',
-                controller:  'AdminRequestFlyerEditController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/approval/:id/edit', {
-                templateUrl: '/partials/admin.request.property.approval',
-                controller:  'propertyApprovalEditCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/realtors', {
-                templateUrl: '/partials/admin.realtors',
-                controller:  'realtorsCtrl',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/realtor/:id/edit', {
-                templateUrl: '/partials/admin.realtor.edit',
-                controller:  'realtorEditCtrl',
-                access: {
-                    isFree: false
-                }
-            });
-    }]);
-
     admin.controller('realtorsCtrl', ['$scope', 'createAdminRequestFlyer', '$routeParams', "createProfileUser", 'sessionMessages', "$http", function($scope, createAdminRequestFlyer, $routeParams, createProfileUser, sessionMessages, $http){
 
     }]);
@@ -687,14 +622,4 @@
             }
         };
     });
-
-    admin.directive('loFooter', ['userService', function(userService) {
-        return {
-            restrict   : 'EA',
-            templateUrl: '/partials/footer',
-            link       : function(scope, element, attrs, controllers) {
-
-            }
-        }
-    }]);
 })(settings);

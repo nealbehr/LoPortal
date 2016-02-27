@@ -6,16 +6,6 @@
 
     var module = angular.module('resourcesModule', []);
 
-    module.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/resources', {
-            templateUrl: '/partials/resources.list',
-            controller:  'ResourcesController',
-            access: {
-                isFree: false
-            }
-        });
-    }]);
-
     module.controller('ResourcesController', ['$scope', 'userService', function($scope, userService) {
         userService.get().then(function(data) {
             $scope.user = data;

@@ -6,22 +6,6 @@
 
     var module = angular.module('queueRealtorModule', ['adminModule']);
 
-    module.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when(PATH, {
-            templateUrl: '/partials/admin.realtor.tab',
-            controller : 'queueRealtorCtrl',
-            access     : { isFree: false }
-        }).when(PATH+'/new', {
-            templateUrl: '/partials/admin.realtor',
-            controller :  'queueRealtorCtrl',
-            access     : { isFree: false }
-        }).when(PATH+'/:id/edit', {
-            templateUrl: '/partials/admin.realtor',
-            controller :  'queueRealtorEditCtrl',
-            access     : { isFree: false }
-        });
-    }]);
-
     module.factory('getRealtor', ['$q', '$http', function($q, $http) {
         var realtors = [];
 

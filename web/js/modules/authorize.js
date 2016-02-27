@@ -4,25 +4,6 @@
 
     var authorize = angular.module('authModule', []);
 
-    authorize.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.
-            when('/login', {
-                templateUrl: '/partials/login',
-                controller:  'authorizeCtrl',
-                access: {
-                    isFree: true
-                }
-            })
-            .when('/recover/:id/:signature', {
-                templateUrl: '/partials/recovery',
-                controller:  'recoverCtrl',
-                access: {
-                    isFree: true
-                }
-            })
-        ;
-    }]);
-
     authorize.controller('recoverCtrl', ['$http', 'waitingScreen', '$routeParams', '$scope', 'renderMessage', function($http, waitingScreen, $routeParams, $scope, renderMessage){
         waitingScreen.show();
         $scope.password;

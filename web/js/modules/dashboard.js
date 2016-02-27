@@ -9,43 +9,6 @@
 
     var dashboard = angular.module('dashboardModule', ['helperService']);
 
-    dashboard.config(['$routeProvider', function($routeProvider) {
-                $routeProvider.
-                    when(PATH+'/requests', {
-                        templateUrl: '/partials/dashboard',
-                        controller:  'dashboardCtrl',
-                        access: {
-                            isFree: false
-                        },
-                        resolve: {
-                            data: ["$q", "$http", 'waitingScreen', function($q, $http, waitingScreen){
-                                   var deferred = $q.defer();
-                                   waitingScreen.show();
-                                   $http.get('/dashboard/')
-                                    .success(function(data){
-                                        deferred.resolve(data)
-                                    })
-                                    .error(function(data){
-                                        deferred.reject(data);
-                                    })
-                                    .finally(function(){
-                                        waitingScreen.hide();
-                                    })
-                                ;
-
-                                return deferred.promise;
-                            }]
-                        }
-                    }).when('/dashboard/collateral', {
-                        templateUrl: '/partials/dashboard.collateral',
-                        controller:  'dashboardCollateralCtrl',
-                        access: {
-                            isFree: false
-                        }
-                    })
-                ;
-    }]);
-
     dashboard.controller(
         'dashboardCollateralCtrl',
         ['$scope', 'waitingScreen', '$http', '$q',

@@ -19,25 +19,6 @@
         };
 
     /**
-     * Routes list
-     */
-    module.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when(PATH, {
-            templateUrl: '/partials/admin.collateral.tab',
-            controller : 'adminCollateralListCtrl',
-            access     : { isFree: false }
-        }).when(PATH+'/new', {
-            templateUrl: '/partials/admin.collateral',
-            controller :  'adminCollateralEditCtrl',
-            access     : { isFree: false }
-        }).when(PATH+'/:id/edit', {
-            templateUrl: '/partials/admin.collateral',
-            controller :  'adminCollateralEditCtrl',
-            access     : { isFree: false }
-        });
-    }]);
-
-    /**
      * Controllers
      */
     module.controller(

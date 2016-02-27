@@ -4,32 +4,6 @@
 
     var lenderModule = angular.module('lenderModule', ['adminModule']);
 
-    lenderModule.config(['$routeProvider', function($routeProvider) {
-        $routeProvider
-            .when('/admin/lender', {
-                templateUrl: '/partials/admin.lender',
-                controller:  'AdminLendersController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/lender/new', {
-                templateUrl: '/partials/admin.panel.lender',
-                controller:  'AdminNewLenderController',
-                access: {
-                    isFree: false
-                }
-            })
-            .when('/admin/lender/:id/edit', {
-                templateUrl: '/partials/admin.panel.lender',
-                controller:  'AdminEditLenderController',
-                access: {
-                    isFree: false
-                }
-            })
-        ;
-    }]);
-
     lenderModule.service("createLender", ["$q","$http", "createLenderBase", function($q, $http, createLenderBase){
         return function() {
             var lenderBase = new createLenderBase();

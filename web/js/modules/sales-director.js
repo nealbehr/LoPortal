@@ -6,22 +6,6 @@
 
     var salesDirectorModule = angular.module('salesDirectorModule', ['adminModule']);
 
-    salesDirectorModule.config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when(PATH, {
-            templateUrl: '/partials/admin.sales.director.tab',
-            controller : 'salesDirectorCtrl',
-            access     : { isFree: false }
-        }).when(PATH+'/new', {
-            templateUrl: '/partials/admin.sales.director',
-            controller :  'salesDirectorCtrl',
-            access     : { isFree: false }
-        }).when(PATH+'/:id/edit', {
-            templateUrl: '/partials/admin.sales.director',
-            controller :  'salesDirectorEditCtrl',
-            access     : { isFree: false }
-        });
-    }]);
-
     salesDirectorModule.factory('getSalesDirectors', ['$q', '$http', function($q, $http) {
         var salesDirectors = [];
 

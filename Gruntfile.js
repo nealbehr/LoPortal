@@ -229,6 +229,16 @@ module.exports = function(grunt) {
                     ]
                 }]
             }
+        },
+        ngtemplates:  {
+            options: {
+                module: 'loApp'
+            },
+            app: {
+                cwd:  'web',
+                src:  'template/**/**.html',
+                dest: '<%= yeoman.dist %>/web/build/template-cache.js'
+            }
         }
     });
 
@@ -242,6 +252,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-string-replace');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-angular-templates');
 
     // Register tasks
     grunt.registerTask('build', [
@@ -253,6 +264,7 @@ module.exports = function(grunt) {
         'processhtml',
         'imagemin',
         'cssmin',
+        'ngtemplates',
         'clean:after'
     ]);
 
