@@ -1,7 +1,7 @@
 debug: true
 name: STAGE Loan Officers portal
 monolog.config:
-    monolog.logfile: ../logs/stage.log
+    monolog.logfile: /var/app/current/logs/stage.log
     monolog.level:   DEBUG
     s3.logs: s3://1rex/app/stage.log
 db.options:

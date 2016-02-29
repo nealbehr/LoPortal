@@ -2,7 +2,7 @@ debug: false
 name: Loan Officers portal
 monolog.config:
     monolog.name:    loportal
-    monolog.logfile: logs/prod.log
+    monolog.logfile: /var/app/current/logs/prod.log
     monolog.level:   WARNING
     isSaveLocal:     false
     s3.logs: s3://1rex/app/prod.log
