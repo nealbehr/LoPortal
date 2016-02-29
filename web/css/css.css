@@ -212,7 +212,8 @@ input[type=number] {
 
 /* Collateral page start */
 .flyers-text-box, .collatera-text-box {
-    padding-bottom: 66px;
+    overflow: hidden;
+    margin-bottom: 66px;
 }
 .item-control{
     padding: 10px 15px 15px    ;
