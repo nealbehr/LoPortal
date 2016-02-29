@@ -71,6 +71,10 @@ class RequestFlyerBase extends RequestBaseController {
                 $queue->setRealtor($realtor);
             }
         }
+        // Omit realtor info
+        else {
+            $queue->setRealtor(null);
+        }
 
         // Save queue
         $app->getEntityManager()->persist($queue);
