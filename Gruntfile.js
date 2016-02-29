@@ -220,6 +220,29 @@ module.exports = function(grunt) {
                 }]
             }
         },
+        // Create log files
+        'file-creator': {
+            stage: {
+                files: [
+                    {
+                        file: "<%= yeoman.dist %>/logs/stage.log",
+                        method: function(fs, fd, done) {
+                            done();
+                        }
+                    }
+                ]
+            },
+            prod: {
+                files: [
+                    {
+                        file: "<%= yeoman.dist %>/logs/prod.log",
+                        method: function(fs, fd, done) {
+                            done();
+                        }
+                    }
+                ]
+            }
+        },
         // Deploy on elastic beanstalk
         ebDeploy: {
             options: {
@@ -263,6 +286,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-imagemin');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-file-creator');
 
     // Register tasks
     grunt.registerTask('build', [
@@ -284,12 +308,14 @@ module.exports = function(grunt) {
 
     grunt.registerTask('deploy-stage', [
         'build',
+        'file-creator:stage',
         'ebDeploy:stage',
         'clean:distFolder'
     ]);
 
     grunt.registerTask('deploy-prod', [
         'build',
+        'file-creator:prod',
         'ebDeploy:prod',
         'clean:distFolder'
     ]);
