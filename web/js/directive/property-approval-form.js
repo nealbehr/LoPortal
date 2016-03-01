@@ -2,7 +2,7 @@
  * Created by Eugene Lysenko on 2/26/16.
  */
 angular.module('loApp').directive(
-    'loPropertyApprovalEdit',
+    'loPropertyApprovalForm',
     ['$location', 'createAdminRequestFlyer', '$routeParams', 'parseGoogleAddressComponents', 'loadFile', '$timeout',
         'redirect', 'waitingScreen', 'getInfoFromGeocoder', '$q', 'loadGoogleMapsApi', '$rootScope', 'sessionMessages',
         'googleAddress',
@@ -12,7 +12,7 @@ angular.module('loApp').directive(
 {
     return {
         restrict   : 'EA',
-        templateUrl: 'template/directive/property-approval-edit.html',
+        templateUrl: 'template/directive/property-approval-form.html',
         scope      : {
             requestIn: "=loRequest",
             titles: "=loTitles",
@@ -20,6 +20,13 @@ angular.module('loApp').directive(
             lng: "=loLng"
         },
         link: function (scope, element, attrs, controllers) {
+            // Information text
+            scope.infoText = {
+                buttonBuyer : 'There is an active buyer, or a homeowner looking to Refi.',
+                buttonSeller: 'This property is being listed for sale. You can also make a listing flyer for these '
+                    +'properties.'
+            };
+
             scope.isValid = false;
             scope.request = {};
             scope.userType = settings.queue.userType;

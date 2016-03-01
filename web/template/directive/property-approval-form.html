@@ -34,16 +34,27 @@
                    required="">
         </div>
         <div class="col-sm-6 text-center">
-            <label class="control-label" for="">Submit for a:</label>
+            <label class="control-label">Submit for a:</label>
             <div class="btn-holder">
-                <a ng-click="request.property.user_type = userType.buyer;save($event)"
+                <a set-tooltip
+                   data-placement="top"
+                   data-content="[[infoText.buttonBuyer]]"
+                   ng-click="request.property.user_type = userType.buyer;save($event)"
                    href="#"
                    class="btn btn-default btn-lg">Buyer</a>
-                <a ng-click="request.property.user_type = userType.seller;save($event)"
+                <a set-tooltip
+                   data-placement="top"
+                   data-content="[[infoText.buttonSeller]]"
+                   ng-click="request.property.user_type = userType.seller;save($event)"
                    href="#"
                    class="btn btn-default btn-lg">Seller</a>
             </div>
         </div>
     </div>
     <div id="location"></div>
+    <div class="info-text">
+        <p class="bg-info">
+            Property prequalification is subject to additional review of title, actual property conditions and other factors.
+        </p>
+    </div>
 </section>

@@ -211,6 +211,9 @@ input[type=number] {
 /* Property page end */
 
 /* Collateral page start */
+.info-text p {
+    padding: 10px;
+}
 .flyers-text-box, .collatera-text-box {
     overflow: hidden;
     margin-bottom: 66px;

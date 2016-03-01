@@ -52,8 +52,8 @@
             button  : 'Submit',
             header  : 'New Listing Flyer',
             infoText: 'Listing Flyers are a great way to show how REX HomeBuyer can provide half the down payment for '
-                +'a particular home. Use this tool to not only get a pre-approval but a cobranded flyer with your Real '
-                +'Estate Agent.'
+                +'a particular home. Use this tool to not only get a prequalification but a cobranded flyer with your '
+                +'Real Estate Agent.'
         };
 
         $scope.realtor = {};
