@@ -48,9 +48,9 @@
             overflow: hidden;
             font-size: 9pt;
         }
-        #footer .user-info strong{
+        #footer .user-info .name{
             font-size: 10pt;
-            font-weight: normal;
+            font-weight: bold;
             display: block;
         }
         #footer .user-info strong span{
@@ -90,12 +90,13 @@
         <div class="user-info">
             {% if user.picture %}
             <div class="photo">
-                <img src="{{user.picture}}" alt="">
+                <img src="{{user.picture}}" alt="description">
             </div>
             {% endif %}
             <div class="holder">
-                <strong>{{user.firstName}} {{user.lastName}}<br><span>{{user.title}}</span></strong>
-                <span>Phone: {{user.phone}}</span><br>
+                <div class="name">{{user.firstName}} {{user.lastName}}</div>
+                <div>{{user.title}}</div>
+                <div>Phone: {{user.phone}}</div>>
                 <a href="mailto:{{user.email}}">{{user.email}}</a>
                 <address>{{user.address}}</address>
                 <span>NMLS # {{user.nmls}}</span>
