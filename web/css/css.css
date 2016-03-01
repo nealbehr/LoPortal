@@ -535,10 +535,10 @@ ul.navbar-nav{
     max-height: 300px;
     overflow: hidden;
 }
-.thumbnail .description{
+/*.thumbnail .description{
     max-height: 88px;
     overflow: hidden;
-}
+}*/
 .thumbnail .item-control{
     position: absolute;
     bottom: 0;
