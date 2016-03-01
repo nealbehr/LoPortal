@@ -148,27 +148,26 @@ class TemplateController extends Base
             throw new Http(implode(' ', $this->errors), Response::HTTP_BAD_REQUEST);
         }
 
-        // Upload and set files
-        if (!empty($data['file'])) {
+        // Processing file
+        if (empty($data['file'])) {
+            throw new Http('File content is empty.', Response::HTTP_BAD_REQUEST);
+        }
+        if ($data['file'] !== $model->getFile()) {
             $file = new File($app->getS3(), $data['file'], '1rex/tamplate/file');
-
-            // Co-branded is not allowed for pdf files
             if ('pdf' === $file->getFormat() && $model->isCoBranded()) {
                 throw new Http('Co-branded PDF is not allowed for upload. Images only.', Response::HTTP_BAD_REQUEST);
             }
-
             $fileName = time().mt_rand(1, 100000);
-
             $model->setFileFormat($file->getFormat());
             $model->setFile($file->download($fileName));
             $model->setPreviewPicture(
-                (new File($app->getS3(), $data['file'], '1rex/tamplate/preview'))
-                    ->createPreview()
-                    ->download($fileName)
+                (new File($app->getS3(), $data['file'], '1rex/tamplate/preview'))->createPreview()->download($fileName)
             );
         }
-        else {
-            throw new Http('File content is empty.', Response::HTTP_BAD_REQUEST);
+
+        // Co-branded is not allowed for pdf files
+        if ('pdf' === $model->getFileFormat() && $model->isCoBranded()) {
+            throw new Http('Co-branded PDF is not allowed for upload. Images only.', Response::HTTP_BAD_REQUEST);
         }
 
         // Set template category

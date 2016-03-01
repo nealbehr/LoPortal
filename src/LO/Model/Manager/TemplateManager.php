@@ -12,7 +12,9 @@ use Doctrine\ORM\Query,
     LO\Model\Entity\User,
     LO\Model\Entity\Template,
     LO\Model\Entity\TemplateLender,
-    LO\Model\Entity\TemplateAddress;
+    LO\Model\Entity\TemplateAddress,
+    Symfony\Component\HttpFoundation\Response,
+    LO\Exception\Http;
 
 class TemplateManager extends Base
 {
@@ -44,12 +46,7 @@ class TemplateManager extends Base
     {
         // Role admin
         if ($this->getApp()->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)) {
-            if (($model = $this->getApp()->getEntityManager()->getRepository(Template::class)->find($id))
-                && $model->getDeleted() === '0'
-                && $model->getArchive() === '0'
-            ) {
-                return $model;
-            }
+            $model = $this->getApp()->getEntityManager()->getRepository(Template::class)->find($id);
         }
         // Role user
         else {
@@ -59,11 +56,14 @@ class TemplateManager extends Base
                 'stateCode'  => $user->getAddress()->getState(),
                 'templateId' => $id
             ]);
-
-            return $query->getQuery()->getOneOrNullResult();
+            $model = $query->getQuery()->getOneOrNullResult();
         }
 
-        return null;
+        if (!($model instanceof Template) || $model->getDeleted() === '1') {
+            throw new Http('Document not found.', Response::HTTP_BAD_REQUEST);
+        }
+
+        return $model;
     }
 
     private function getQueryBuild()
