@@ -617,6 +617,14 @@ ul.navbar-nav{
     }
     .modal.in .modal-dialog{
         min-width:0 !important;
+        width: auto !important;
+    }
+    .logo-box ul{
+        text-align: center;
+    }
+    .logo-box ul li{
+        float: none;
+        display: inline-block;
     }
     .flyers-text-box, .collatera-text-box {
         height: auto !important;
