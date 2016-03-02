@@ -1,0 +1,27 @@
+<div id="wrapper">
+    <lo-navbar-head></lo-navbar-head>
+    <section class="container">
+        <header class="page-title">
+            <h1>[[title.header]]</h1>
+            <button set-tooltip
+                    type="button"
+                    class="btn btn-link btn-info-link"
+                    data-placement="left"
+                    data-content="[[title.infoText]]"><i class="fa fa-2x fa-info-circle"></i></button>
+        </header>
+        <div class="row thumbnails">
+            <div class="col-sm-4 col-lg-3" ng-repeat="item in resources">
+                <div class="thumbnail resource-box">
+                    <div class="link">
+                        <a target="_blank"
+                           ng-click="logMixpanel(item.title)"
+                           href="[[item.link]]"
+                           class="download"
+                           download>[[item.title]]</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<lo-footer lo-user="user"></lo-footer>

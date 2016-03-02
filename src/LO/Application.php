@@ -4,7 +4,6 @@ namespace LO;
 use LO\Common\Factory;
 use LO\Exception\Http;
 use LO\Model\Entity\User;
-use LO\Validator\UniqueValidator;
 use Silex\Application\SecurityTrait;
 use Silex\Application\UrlGeneratorTrait;
 use Silex\Provider;
@@ -108,14 +107,18 @@ class Application extends \Silex\Application{
     }
 
     public function bootstrap(){
-        $this->register($this->getConfigByName('monolog.config', 'isSaveLocal')
-                                        ? new Provider\MonologServiceProvider()
-                                        : new LOProvider\MonologS3ServiceProvider(),
-                        $this->getConfigByName('monolog.config')
+//        S3 log
+//        $this->register($this->getConfigByName('monolog.config', 'isSaveLocal')
+//                                        ? new Provider\MonologServiceProvider()
+//                                        : new LOProvider\MonologS3ServiceProvider(),
+//                        $this->getConfigByName('monolog.config')
+//        )
+        $this->register(
+            new Provider\MonologServiceProvider(),
+            $this->getConfigByName('monolog.config')
         )
             ->register(new Provider\DoctrineServiceProvider())
             ->register(new Provider\UrlGeneratorServiceProvider())
-            ->register(new LOProvider\UniqueValidatorServiceProvider())
             ->register(new Provider\ServiceControllerServiceProvider())
             ->register(new Provider\ValidatorServiceProvider())
             ->register(new Provider\FormServiceProvider())
@@ -284,6 +287,14 @@ class Application extends \Silex\Application{
      */
     public function getDashboardManager(){
         return $this['manager.dashboard'];
+    }
+
+    /**
+     * @return TemplateManager
+     */
+    public function getTemplateManager()
+    {
+        return $this['manager.template'];
     }
 
     /**

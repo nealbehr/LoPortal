@@ -47,8 +47,12 @@
     }]);
 
     flyerService.service("createDraftRequestFlyer", ["$http", "createRequestFlyerBase", function($http, createRequestFlyerBase){
-        return function(){
+        return function(id) {
             var flyer = new createRequestFlyerBase();
+
+            if (id) {
+                flyer.id = id;
+            }
 
             flyer.update = function() {
                 return $http.put('/request/flyer/' + this.id, this.getFields4Save());
@@ -107,11 +111,14 @@
         return function flyerBase(){
             var self = this;
 
-            this.id = null;
+            this.id         = null;
+            this.realtor_id = null;
 
             this.property = {
+                id: null,
+                archive: '0',
                 address: null,
-                apartment : null,
+                apartment: null,
                 mls_number: null,
                 state: null,
                 omit_realtor_info: '1',
@@ -136,26 +143,23 @@
                 phone: null,
                 email: null,
                 photo: null,
-                getPicture: function(){
+                realty_name: null,
+                realty_logo: null,
+
+                getPicture: function() {
                     return this.photo;
                 },
-                setPicture: function(param){
+                setPicture: function(param) {
                     this.photo = param;
-
                     return this;
                 },
-                realty: {
-                    logo: null,
-                    name: null,
-                    getPicture: function() {
-                        return this.logo;
-                    },
-                    setPicture: function(param) {
-                        this.logo = param;
-                        return this;
-                    }
+                getRealtyLogo: function() {
+                    return this.realty_logo;
+                },
+                setRealtyLogo: function(param) {
+                    this.realty_logo = param;
+                    return this;
                 }
-
             };
 
             this.address = {
@@ -208,10 +212,9 @@
                         continue;
                     }
 
-                    if(i == "listing_price" && null != object[i]){
-                        console.log(i)
-                        console.log(object[i])
-                        result[i] = (object[i] + "").replace(/(\$|,)/, "");
+                    // Replase commas and symbol $
+                    if (i == 'listing_price' && null != object[i]) {
+                        result[i] = (''+object[i]).replace(/(\$|,)/g, '');
                         continue;
                     }
 
@@ -223,10 +226,22 @@
                 return result;
             };
 
+            this.get = function(id) {
+                var deferred = $q.defer();
+                $http.get('/request/'+id).success(function(data) {
+                    self.fill(data);
+                    deferred.resolve(self)
+                }).error(function(data) {
+                    deferred.reject(data);
+                });
+
+                return deferred.promise;
+            };
+
             this.save = function() {
                 var deferred = $q.defer();
-                (function(){ return self.id? self.update(): self.add();})()
-                    .success(function(data){
+                (function(){ return self.id? self.update(): self.add(); })().success(function(data){
+                        self.fillObject(data);
                         self.afterSave();
                         deferred.resolve(data);
                     })

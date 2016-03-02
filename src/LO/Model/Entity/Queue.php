@@ -33,6 +33,11 @@ class Queue extends Base
     const TYPE_USER_BUYER  = 1;
 
     /**
+     * @Column(type="string")
+     */
+    protected $archive = '0';
+
+    /**
      * @Column(type="integer")
      * @Assert\NotBlank(message="Firstrex id should not be blank.", groups = {"main"})
      * @Assert\Type(type="numeric")
@@ -146,7 +151,7 @@ class Queue extends Base
     protected $omit_realtor_info = '1';
 
     /**
-     * @OneToOne(targetEntity="QueueRealtor", fetch="LAZY")
+     * @OneToOne(targetEntity="Realtor", fetch="LAZY")
      * @JoinColumn(name="realtor_id", referencedColumnName="id")
      */
     private $realtor;
@@ -164,6 +169,17 @@ class Queue extends Base
         $this->maximum_loan = self::DEFAULT_MAXIMUM_LOAN;
         $this->photo = '';
         $this->state = self::STATE_REQUESTED;
+    }
+
+    public function getArchive()
+    {
+        return $this->archive;
+    }
+
+    public function setArchive($param)
+    {
+        $this->archive = $param;
+        return $this;
     }
 
     public function getAddress(){
@@ -326,9 +342,10 @@ class Queue extends Base
     /**
      * @param mixed $listing_price
      */
-    public function setListingPrice($listing_price)
+    public function setListingPrice($param)
     {
-        $this->listing_price = $listing_price;
+        $this->listing_price = $param;
+        return $this;
     }
 
     /**
@@ -380,6 +397,10 @@ class Queue extends Base
      */
     public function getRealtor()
     {
+        if (empty($this->realtor)) {
+            $this->realtor = new Realtor();
+        }
+
         return $this->realtor;
     }
 
@@ -401,6 +422,14 @@ class Queue extends Base
         $this->status = $param;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOmitRealtor()
+    {
+        return (bool)$this->omit_realtor_info;
     }
 
     /**

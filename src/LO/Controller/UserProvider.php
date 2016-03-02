@@ -21,8 +21,8 @@ class UserProvider implements ControllerProviderInterface {
      *
      * @return ControllerCollection A ControllerCollection instance
      */
-    public function connect(Application $app) {
-
+    public function connect(Application $app)
+    {
         $app['user.controller'] = $app->share(function() use ($app) {
             return new UserController();
         });
@@ -30,11 +30,12 @@ class UserProvider implements ControllerProviderInterface {
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
-        $controllers
-            ->get("/{id}", "user.controller:getByIdAction");
-
-        $controllers
-            ->put("/{id}", "user.controller:updateAction");
+        /**
+         * Routes for UserController
+         */
+        $controllers->get('/search/{param}', 'user.controller:searchAction');
+        $controllers->get('/{id}', 'user.controller:getByIdAction');
+        $controllers->put('/{id}', 'user.controller:updateAction');
 
         return $controllers;
     }

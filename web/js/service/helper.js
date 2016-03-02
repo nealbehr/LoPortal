@@ -4,383 +4,6 @@
 
     var helperService = angular.module('helperService', ['headColumnModule', 'pictureModule']);
 
-    helperService.run(['$templateCache', function($templateCache){
-        $templateCache.put('message.html', "<div class=\"alert fade in\" style=\"z-index: 5;\" role=\"alert\" ng-class=\"{'alert-danger': isDanger(), 'alert-success': !isDanger()}\">" +
-                                               "<a href=\"#\" class=\"close\"  data-dismiss=\"alert\" aria-label=\"Close\">close</a>" +
-                                               "[[ loBody ]]" +
-                                           "</div>");
-    }]);
-
-    helperService.directive('loMessage', [function(){
-        return { restrict: 'EA',
-            templateUrl: 'message.html',
-            scope: {
-                'loType':        "@",
-                'loBody':        "@"
-            },
-            link: function(scope, element, attrs, controllers) {
-
-                scope.isDanger = function(){
-                    return scope.loType == 'danger';
-                };
-
-                scope.$watch('loType', function (newValue) {
-                    scope.loType = newValue;
-                });
-
-                scope.$watch('loBody', function (newValue) {
-                    scope.loBody = newValue;
-                });
-
-            }
-        }
-    }]);
-
-    helperService.directive('loNavbarHead', ['$http', '$cookieStore', 'redirect', 'TOKEN_KEY', 'userService', function($http, $cookieStore, redirect, TOKEN_KEY, userService){
-        return { restrict: 'EA',
-            templateUrl: '/partials/navbar.head',
-            link: function(scope, element, attrs, controllers){
-                scope.user         = {};
-                scope.isUserLoaded = false;
-                userService.get().then(function(user){
-                    scope.user         = user;
-                    scope.isUserLoaded = true;
-                });
-
-                angular.element('.dropdown-toggle').click(function(e){
-                    var target = $(e.target);
-                    if(target.is('a')){
-                        e.stopPropagation();
-                    }
-                });
-
-                scope.logout = function(e){
-                    e.preventDefault();
-                    $http.delete('/logout')
-                        .success(function(data){
-                            $cookieStore.remove(TOKEN_KEY)
-                            userService.get().then(function(user){
-                                user.clear();
-                                redirect('/login');
-                            });
-                        })
-                        .finally(function(){
-
-                        })
-                    ;
-
-                    return false;
-                }
-            }
-        }
-    }]);
-
-    helperService.directive(
-        'loUserInfo',
-        ["redirect", "userService", "$http", "waitingScreen", "renderMessage", "getRoles", "getLenders", "$location", "$q", "sessionMessages", "$anchorScroll", "loadFile", "$timeout", "pictureObject",
-            function(redirect, userService, $http, waitingScreen, renderMessage, getRoles, getLenders, $location, $q, sessionMessages, $anchorScroll, loadFile, $timeout, pictureObject)
-        {
-        return { restrict: 'EA',
-            templateUrl: '/partials/user.form',
-            scope: {
-                officer:   "=loOfficer"
-            },
-            link: function(scope, element, attrs, controllers){
-                scope.roles = [];
-                scope.lenders = [];
-                scope.selected = {};
-                scope.selectedLender = {};
-                scope.masterUserData = {};
-                scope.user = {};
-                scope.container = angular.element('#userProfileMessage');
-                scope.userPicture = {};
-                scope.hideErrors = true;
-
-                scope.$watch('officer.id', function(newVal, oldVal){
-                    if(undefined != newVal && newVal == scope.user.id){
-                        scope.title = "Edit Profile";
-                        return;
-                    }
-
-                    scope.title = newVal? 'Edit User': 'Add User';
-                });
-
-                scope.$watch('officer', function(newVal, oldVal){
-                    if(newVal == undefined){
-                        return;
-                    }
-                    scope.userPicture = new pictureObject(
-                        angular.element('#userPhoto'),
-                        {container: $(".realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
-                        scope.officer
-                    );
-                });
-
-                scope.itsMe = function(){
-                    return this.officer.id && this.user.id == this.officer.id;
-                };
-
-                scope.resetUserData = function() {
-                    angular.copy(scope.masterUserData, scope.user);
-                };
-
-                scope.cancel = function(e) {
-                    e.preventDefault();
-                    scope.resetUserData();
-                    history.back();
-                };
-
-                scope.autoComplete = function(event) {
-                    var element = $(event.target);
-
-                    element.autocomplete({
-                        source: function(request, response) {
-                            $http.get(
-                                '/admin/salesdirector',
-                                {
-                                    params: {
-                                        'filterValue': element.val().toLowerCase(),
-                                        'searchBy'   : 'name'
-                                    },
-                                    cache : true
-                                }
-                            ).then(function(resp) {
-                                response($.map(resp.data.salesDirectors, function(item) {
-                                    return {
-                                        label        : item.name,
-                                        value        : item.name,
-                                        salesDirector: item
-                                    };
-                                }));
-                            });
-                        },
-                        minLength: 0,
-                        delay: 500,
-                        select: function(event, ui) {
-                            if (ui.item !== undefined) {
-                                scope.officer.sales_director       = ui.item.value;
-                                scope.officer.sales_director_phone = ui.item.salesDirector.phone;
-                                scope.officer.sales_director_email = ui.item.salesDirector.email;
-                                scope.$apply();
-                            }
-                            return false;
-                        }
-                    }).autocomplete('search', element.val().toLowerCase());
-                };
-
-                userService.get()
-                    .then(function(user){
-                        scope.masterUserData = angular.copy(user);
-                        scope.user           = user;
-
-                        return scope.user.isAdmin() && scope.roles.length == 0 ? getRoles() : $q.when({});
-                    })
-                    .then(function(data){
-                        scope.roles = [];
-                        for(var i in data){
-                            scope.roles.push({'title': i, key: data[i]});
-                        }
-
-                        if(scope.roles.length == 0){
-                            return;
-                        }
-
-                        if(!scope.selected.key){
-                            scope.selected =  scope.roles[0];
-                        }
-                    })
-                    .then(function(){
-                        if(scope.user.isAdmin() && scope.lenders.length == 0) {
-                            getLenders(true).then(function(data) {
-                                scope.lenders = data;
-                                if(scope.officer && !scope.officer.lender) {
-                                    scope.officer.lender =  scope.lenders[0];
-                                }
-                            })
-
-                        }
-                    })
-                ;
-
-                scope.$watch('officer', function(newVal){
-                    scope.setSelected(newVal);
-                });
-                scope.$watch('roles', function(newVal){
-                    scope.setSelected(newVal);
-                });
-
-                scope.isValidEmail = function(form){
-                    if(!form.email){
-                        return;
-                    }
-
-                    return (form.$submitted || form.email.$touched) && (form.email.$error.email || form.email.$error.required);
-                };
-
-                scope.showErrors = function(e){
-                    e.preventDefault();
-
-                    this.hideErrors = true;
-                };
-
-                scope.gotoErrorMessage = function(){
-                    $anchorScroll(scope.container.attr("id"));
-                };
-
-                scope.submit = function(formUser, $event) {
-                    if(!formUser.$valid) {
-                        this.hideErrors = false;
-                        this.gotoErrorMessage();
-                        return false;
-                    }
-                    this.save();
-                };
-
-                scope.delete = function(e){
-                    e.preventDefault();
-
-                    if(!confirm("Are you sure?")){
-                        return false;
-                    }
-
-                    waitingScreen.show();
-                    scope.officer.delete().
-                        then(function(data){
-                            sessionMessages.addSuccess("User was deleted.");
-                            scope.officer.clear();
-                            history.back();
-                        })
-                        .catch(function(data){
-                            if('message' in data){
-                                renderMessage(data.message, "danger", scope.container, scope);
-                                scope.gotoErrorMessage();
-                            }
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        });
-                };
-
-                scope.save = function(){
-                    waitingScreen.show();
-                    scope.officer.roles = [scope.selected.key];
-
-                    if(scope.officer.picture){
-                        scope.userPicture.prepareImage(800, 400, 600, 300);
-                    }
-
-                    scope.officer.save()
-                        .then(function(data){
-                            if(scope.user.id == scope.officer.id){
-                                scope.user.fill(scope.officer.getFields4Save());
-                            }
-                            sessionMessages.addSuccess("Successfully saved.");
-                            history.back();
-                        })
-                        .catch(function(data){
-                            var errors = "";
-                            if("message" in data){
-                                errors = data.message + " ";
-                            }
-
-                            if("form_errors" in data){
-                                errors += data.form_errors.join(" ");
-                            }
-
-                            renderMessage(errors, "danger", scope.container, scope);
-                            scope.gotoErrorMessage();
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        }
-                    );
-                };
-
-                scope.setSelected = function(newVal){
-                    if(!newVal || !scope.officer || !scope.officer.roles || scope.roles.length < 1){
-                        return;
-                    }
-
-                    var officerRole;
-                    for(var i in scope.officer.roles){
-                        officerRole = scope.officer.roles[i];
-                        break;
-                    }
-
-                    for(var i in scope.roles){
-                        if(scope.roles[i].key == officerRole){
-                            scope.selected =  scope.roles[i];
-                            break;
-                        }
-                    }
-                }
-
-            }
-        }
-    }]);
-
-    helperService.directive('loDashboardRow', ['$timeout', 'tableHeadColSample', function($timeout, tableHeadColSample){
-        return { restrict: 'EA',
-            templateUrl: '/partials/dashboard.row',
-            scope: {
-                items: '=loItems',
-                id:    '@loId',
-                title: '@loTitle',
-                isExpand: '=loIsExpand',
-                state: "@loState"
-            },
-            link: function(scope, element, attrs, controllers){
-                scope.requestType = settings.queue.type;
-                function params (key, title){
-                    this.key = key;
-                    this.title = title;
-                }
-                params.prototype.directionKey     = 'reverse';
-                params.prototype.scope     = scope;
-                params.prototype.sortKey          = 'predicate';
-                params.prototype.defaultDirection = true;
-                params.prototype.defaultSortKey   = 'created_at';
-
-
-                scope.headParams = [
-                    new tableHeadColSample(new params("created_at.date", "Created")),
-                    new tableHeadColSample(new params("address", "Property Address")),
-                    new tableHeadColSample(new params("request_type", "Type"))
-                ];
-
-                scope.predicate = scope.headParams[0].key;
-                scope.reverse = true;
-
-                $timeout(function(){
-//                    angular.element("#" + scope.id + " > table").tablesorter();
-                });
-
-                scope.$watch("isExpand", function(newValue){
-                    if(newValue){
-                        $('#' + scope.id).collapse('show');
-                    }
-                });
-
-                scope.isApprovedProperty = function(item){
-                    return item.request_type == this.requestType.propertyApproval && item.state == settings.queue.state.approved;
-                };
-                scope.isApprovedFlyer= function(item){
-                    return item.request_type == this.requestType.flyer && item.state == settings.queue.state.approved
-                };
-                scope.canCancel = function(item){
-                    return item.state == settings.queue.state.requested || item.state == settings.queue.state.draft;
-                };
-                scope.isComplete = function(item){
-                    return item.state == settings.queue.state.draft;
-                };
-                scope.isDeclined = function(item){
-                    return item.state == settings.queue.state.declined;
-                };
-
-            }
-        }
-    }]);
-
     helperService.directive('validFile', function () {
         return {
             require: 'ngModel',
@@ -398,44 +21,6 @@
             }
         };
     });
-
-    helperService.directive('dashboardCollateral', function () {
-        return {
-            restrict: 'EA',
-            templateUrl: '/partials/dashboard.collateral.row',
-            scope: {
-                items: '=loItems'
-            },
-            link: function (scope, el, attrs, ngModel) {
-                scope.$watch('items', function(newValue){
-                    scope.items = newValue;
-                });
-            }
-        };
-    });
-
-    helperService.directive('loDashboardHead', ['Tab', 'redirect', function(Tab, redirect){
-        return {
-            restrict: 'EA',
-            templateUrl: '/partials/dashboard.head',
-            link: function (scope, el, attrs, ngModel) {
-                scope.tabs = [
-                    new Tab({path: '/', title: "Requests Queue"}),
-                    new Tab({path: '/dashboard/collateral', title: "Custom Collateral"})
-                ];
-
-                scope.createListingFlyerRequest = function(e){
-                    e.preventDefault();
-                    redirect("/flyer/new");
-                }
-
-                scope.createNewApproval = function(e){
-                    e.preventDefault();
-                    redirect('/request/approval');
-                }
-            }
-        };
-    }]);
 
     helperService.directive('googleAddress', ['getInfoFromGeocoder', '$q', "parseGoogleAddressComponents", function(getInfoFromGeocoder, $q, parseGoogleAddressComponents) {
         return {
@@ -471,33 +56,6 @@
 
                     return deferred.promise;
                 };
-            }
-        };
-    }]);
-
-    helperService.directive('validateGoogleAddress', ["parseGoogleAddressComponents", function(parseGoogleAddressComponents) {
-        return {
-            require: 'ngModel',
-            restrict: '',
-            link: function(scope, elm, attrs, ctrl) {
-                if (!ctrl) {
-                    return;
-                }
-
-                ctrl.$validators.address_components = function(modelValue) {
-                    if (ctrl.$isEmpty(modelValue)) {
-                        // consider empty models to be valid
-                        return true;
-                    }
-
-                    for(var i in scope.request.address){
-                        if(scope.request.address[i] == '' || scope.request.address[i] == null){
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
             }
         };
     }]);
@@ -562,20 +120,6 @@
         };
     }]);
 
-    helperService.directive('loMessageContainer', ['sessionMessages', '$compile', function(sessionMessages){
-        return {
-            restrict: 'EA',
-            templateUrl: '/partials/session.messages',
-            link: function(scope, elm, attrs, ctrl) {
-                scope.$on('renderSessionMesages', function () {
-                    scope.messages = sessionMessages.get();
-                });
-
-                scope.messages = sessionMessages.get();
-            }
-        };
-    }]);
-
     helperService.directive('loFilereader', ["$q", function($q) {
         var slice = Array.prototype.slice;
 
@@ -621,274 +165,6 @@
                 });
             }
         };
-    }]);
-
-    helperService.directive(
-        'loRequestFlyerEdit', 
-        ['$location', 'createRequestFlyer', '$routeParams', 'parseGoogleAddressComponents', 'loadFile', '$timeout', 
-            'redirect', 'waitingScreen', 'getInfoFromGeocoder', 'loadImage', '$q', '$rootScope', 'sessionMessages', 
-            'pictureObject', 'createFromPropertyApproval', 'loadGoogleMapsApi', 'createDraftRequestFlyer', 
-            '$anchorScroll', 'renderMessage', 'createProfileUser', 'createDraftFromPropertyApproval', '$http', 
-            function($location, createRequestFlyer, $routeParams, parseGoogleAddressComponents, loadFile, $timeout, 
-                     redirect, waitingScreen, getInfoFromGeocoder, loadImage, $q, $rootScope, sessionMessages, 
-                     pictureObject, createFromPropertyApproval, loadGoogleMapsApi, createDraftRequestFlyer, 
-                     $anchorScroll, renderMessage, createProfileUser, createDraftFromPropertyApproval, $http) {
-        return {
-            restrict: 'EA',
-            templateUrl: '/partials/request.flyer.form',
-            scope: {
-                request: "=loRequest",
-                titles: "=loTitles",
-                officer: '=loOfficer',
-                user: '=loUser'
-
-            },
-            link: function(scope, element, attrs, controllers){
-                scope.states = settings.queue.state;
-                scope.realtorPicture = {};
-                scope.propertyPicture = {};
-                scope.realtyLogo = {};
-                scope.oldRequest = {};
-                scope.hideErrors = true;
-                scope.container = angular.element("#errors");
-
-                scope.$watch('request', function(newVal){
-                    if(undefined == newVal || !("id" in newVal)){
-                        return;
-                    }
-                    scope.realtorPicture = new pictureObject(
-                        angular.element("#realtorImage"),
-                        {container: $(".realtor.realtor-photo > img"), options: {aspectRatio: 3 / 4, minContainerWidth: 100}},
-                        scope.request.realtor
-                    );
-
-                    scope.propertyPicture = new pictureObject(
-                        angular.element("#propertyImage"),
-                        {container: $(".property-photo > img"), options: {aspectRatio: 3 / 2}},
-                        scope.request.property
-                    );
-
-                    scope.realtyLogo = new pictureObject(
-                        angular.element('#realtyLogo'),
-                        {container: $("#realtyLogoImage"), options: {
-                            minCropBoxWidth: 100,
-                            minCropBoxHeight: 100,
-                            maxCropBoxWidth: 350,
-                            maxCropBoxHeight: 100
-                        }},
-                        scope.request.realtor.realty
-                    );
-
-                    scope.oldRequest = angular.copy(scope.request);
-
-                    scope.$on('$locationChangeStart', function (event, next, current) {
-                        if (!angular.equals(scope.oldRequest, scope.request)) {
-                            var answer = confirm("Are you sure you want to leave without saving changes?");
-                            if (!answer) {
-                                event.preventDefault();
-                            }
-                        }
-                    });
-                });
-
-                $('[data-toggle="tooltip"]').tooltip();
-
-                scope.cancel = function(e){
-                    e.preventDefault();
-
-                    history.back();
-                };
-
-                scope.saveDraftOrApproved = function(e) {
-                    e.preventDefault();
-
-                    if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
-                        return false;
-                    }
-
-                    if(scope.request.property.state != settings.queue.state.approved) {
-                        scope.request.property.state = settings.queue.state.draft;
-                    }
-
-                    scope.requestDraft = this.request instanceof createFromPropertyApproval
-                                                        ? (new createDraftFromPropertyApproval())
-                                                        : (new createDraftRequestFlyer());
-
-                    scope.requestDraft.fill(scope.request.getFields4Save());
-                    scope.realtorPicture.setObjectImage(scope.requestDraft.realtor);
-                    scope.propertyPicture.setObjectImage(scope.requestDraft.property);
-
-                    scope.requestDraft.afterSave(function(){
-                        sessionMessages.addSuccess("Successfully saved.");
-                        scope.oldRequest = angular.copy(scope.request);
-                        if($rootScope.historyGet().indexOf('/request/success') != -1){
-                            redirect('/');
-                        }else{
-                            history.back();
-                        }
-                    });
-
-                    this.saveRequest(scope.requestDraft);
-                };
-
-                scope.autoComplete = function(event, searchBy) {
-                    var element = $(event.target);
-
-                    element.autocomplete({
-                        source: function(request, response) {
-                            $http.get(
-                                '/request/flyer/realtor',
-                                {
-                                    params: {
-                                        'filterValue': element.val().toLowerCase(),
-                                        'searchBy'   : searchBy
-                                    },
-                                    cache : true
-                                }
-                            ).then(function(resp) {
-                                response($.map(resp.data.realtors, function(item) {
-                                    if (item.first_name && item.last_name) {
-                                        return {
-                                            label  : item.first_name+' '+item.last_name,
-                                            value  : item[searchBy],
-                                            realtor: item
-                                        };
-                                    }
-                                }));
-                            });
-                        },
-                        minLength: 0,
-                        delay: 500,
-                        select: function(event, ui) {
-                            if (ui.item !== undefined) {
-                                scope.request.realtor.first_name  =  ui.item.realtor.first_name;
-                                scope.request.realtor.last_name   =  ui.item.realtor.last_name;
-                                scope.request.realtor.photo       =  ui.item.realtor.photo;
-                                scope.request.realtor.phone       =  ui.item.realtor.phone;
-                                scope.request.realtor.email       =  ui.item.realtor.email;
-                                scope.request.realtor.bre_number  =  ui.item.realtor.bre_number;
-                                scope.request.realtor.realty.logo =  ui.item.realtor.company.logo;
-                                scope.request.realtor.realty.name =  ui.item.realtor.company.name;
-                                scope.$apply();
-                            }
-                            return false;
-                        }
-                    }).autocomplete('search', element.val().toLowerCase());
-                };
-
-                scope.showErrors = function(e){
-                    e.preventDefault();
-
-                    this.hideErrors = true;
-                };
-
-                scope.gotoErrorMessage = function(){
-                    $anchorScroll(scope.container.attr("id"));
-                };
-
-                scope.save = function(form) {
-                    if (!form.$valid) {
-                        this.hideErrors = false;
-                        this.gotoErrorMessage();
-                        return false;
-                    }
-
-                    if (scope.request.property.omit_realtor_info === '1' && !confirm('Did you mean to omit realtor?')) {
-                        return false;
-                    }
-
-                    scope.request.afterSave(function(){
-                        scope.oldRequest = angular.copy(scope.request);
-                        $rootScope.$broadcast('requestFlyerSaved');
-                    });
-
-                    this.saveRequest(scope.request);
-                };
-
-                scope.saveRequest = function(request){
-                    waitingScreen.show();
-                    scope.propertyPicture.prepareImage(2000, 649, 3000, 974);
-                    if (request.realtor.hasOwnProperty('photo') && request.realtor.photo !== null) {
-                        scope.realtorPicture.prepareImage(800, 400, 600, 300);
-                    }
-
-
-                    request.save()
-                        .catch(function(e){
-                            var messages = [];
-                            messages.push('message' in e? e.message: "We have some problems. Please try later.");
-
-                            for(var i in e){
-                                if(e[i].constructor === Array){
-                                    for(var j in e[i]){
-                                        if(e[i][j] != ""){
-                                            messages.push(e[i][j]);
-                                        }
-                                    }
-                                }
-                            }
-
-                            if(messages.length > 0){
-                                renderMessage(messages.join(" "), "danger", scope.container, scope);
-                                scope.gotoErrorMessage();
-                            }
-
-                            scope.realtorPicture.setObjectImage(scope.request.realtor);
-                            scope.propertyPicture.setObjectImage(scope.request.property);
-                        })
-                        .finally(function(){
-                            waitingScreen.hide();
-                        })
-                    ;
-                };
-
-                scope.isAddressReadOnly = function() {
-
-                    if(typeof this.request.property === 'object' && this.request.property.state == settings.queue.state.approved) {
-                        if(angular.isFunction(scope.user.isAdmin)) {
-                            return !scope.user.isAdmin();
-                        }
-                        return true;
-                    }
-                    return this.request instanceof createFromPropertyApproval;
-                };
-
-                scope.clearAddress = function(e){
-                    if(e.keyCode != 13){
-                        this.request.address.clear();
-                    }
-                };
-
-                loadGoogleMapsApi()
-                    .then(function(){
-                        initialize();
-                    })
-                ;
-
-                var placeSearch, autocomplete;
-                function initialize() {
-                    autocomplete = new google.maps.places.Autocomplete(
-                        (document.getElementById('pac-input')),
-                        { types: ['geocode'] }
-                    );
-                    google.maps.event.addListener(autocomplete, 'place_changed', function() {
-                        fillInAddress();
-                    });
-                }
-
-                function fillInAddress() {
-                    var place = autocomplete.getPlace();
-                    scope.$apply(function(){
-                        if("address_components" in place){
-                            scope.request.address.set(parseGoogleAddressComponents(place.address_components));
-                            scope.request.property.address = place.formatted_address;
-                        }else{
-                            scope.request.address.clear();
-                        }
-                    });
-                }
-            }
-        }
     }]);
 
     helperService.filter('fullName', function(){
@@ -1012,7 +288,7 @@
 
     }]);
 
-    helperService.factory("parseGoogleAddressComponents", [function(){
+    helperService.factory('parseGoogleAddressComponents', [function(){
         return function(data) {
 
             var result = {
@@ -1022,28 +298,33 @@
                 zip:     null
             };
 
-            for(var i in data){
-                if($.inArray("street_number", data[i].types) != -1){
-                    result.address = data[i].long_name + ' ' + result.address;
+            for (var i in data) {
+                if ($.inArray('street_number', data[i].types) != -1) {
+                    result.address = data[i].long_name+' '+result.address;
                     continue;
                 }
 
-                if($.inArray("route", data[i].types) != -1){
-                    result.address += ' ' + data[i].long_name;
+                if ($.inArray('route', data[i].types) != -1) {
+                    result.address += ' '+data[i].long_name;
                     continue;
                 }
 
-                if($.inArray("locality", data[i].types) != -1){
+                if (result.address === '' && $.inArray('premise', data[i].types) != -1) {
+                    result.address = data[i].long_name;
+                    continue;
+                }
+
+                if ($.inArray('locality', data[i].types) != -1) {
                     result.city = data[i].long_name;
                     continue;
                 }
 
-                if($.inArray("administrative_area_level_1", data[i].types) != -1){
+                if ($.inArray('administrative_area_level_1', data[i].types) != -1) {
                     result.state = data[i].short_name;
                     continue;
                 }
 
-                if($.inArray("postal_code", data[i].types) != -1){
+                if ($.inArray('postal_code', data[i].types) != -1) {
                     result.zip = data[i].long_name;
                     continue;
                 }
@@ -1102,27 +383,6 @@
                     deferred.reject(data);
                 }
             );
-
-            return deferred.promise;
-        }
-    }]);
-
-    helperService.factory("getInfoFromGeocoder", ['$q', "loadGoogleMapsApi", function($q, loadGoogleMapsApi){
-        return function(request){
-            var deferred = $q.defer();
-
-            loadGoogleMapsApi()
-                .then(function(){
-                    var geocoder = new google.maps.Geocoder();
-                    geocoder.geocode( request, function(results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            deferred.resolve(results);
-                        } else {
-                            console.log("Geocode was not successful for the following reason: " + status);
-                            deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
-                        }
-                    });
-                });
 
             return deferred.promise;
         }
@@ -1250,7 +510,7 @@
     });
 
     /**
-     * Global progress bar
+     * Show progress bar
      */
     helperService.factory('progressBar', function() {
         var element = angular.element('#progress-bar-screen');
@@ -1277,5 +537,142 @@
                 element.addClass('hide');
             }
         };
+    });
+
+    /**
+     * Validate address
+     */
+    helperService.directive(
+        'validateGoogleAddress',
+        ['googleAddress', 'parseGoogleAddressComponents',
+            function(googleAddress, parseGoogleAddressComponents)
+    {
+        return {
+            require : 'ngModel',
+            restrict: 'A',
+            link    : function(scope, elm, attrs, ctrl) {
+                if (!ctrl) {
+                    return;
+                }
+
+                ctrl.$validators.address_components = function(address) {
+                    var valid = true;
+                    if (ctrl.$isEmpty(address)) {
+                        // consider empty models to be valid
+                        return valid;
+                    }
+                    googleAddress.stringIsValid(address).then(function(data) {
+                        if (data.length > 0) {
+                            scope.request.property.address = address;
+                            scope.request.address.set(parseGoogleAddressComponents(data));
+                            valid = googleAddress.objectIsValid(scope.request.address);
+                        }
+                        else {
+                            scope.request.address.clear();
+                            valid = false;
+                        }
+                        ctrl.$setValidity('address_components', valid);
+                    });
+                }
+            }
+        };
+    }]);
+
+    helperService.factory("getInfoFromGeocoder", ['$q', "loadGoogleMapsApi", function($q, loadGoogleMapsApi){
+        return function(request){
+            var deferred = $q.defer();
+
+            loadGoogleMapsApi()
+                .then(function(){
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode( request, function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            deferred.resolve(results);
+                        } else {
+                            console.log("Geocode was not successful for the following reason: " + status);
+                            deferred.reject(status == "ZERO_RESULTS"? "Invalid address": "Unknown Google maps error.");
+                        }
+                    });
+                });
+
+            return deferred.promise;
+        }
+    }]);
+
+    /**
+     * Tools for address validation
+     */
+    helperService.factory('googleAddress', ['$q', function($q) {
+
+        var requiredFields = ['address', 'city', 'state', 'zip'];
+
+        return {
+            stringIsValid: function(address) {
+                var geocoder = new google.maps.Geocoder(),
+                    deferred = $q.defer();
+
+                geocoder.geocode({ address: address }, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        for (var i in results) {
+                            if (address.toLowerCase() === results[i].formatted_address.toLowerCase()) {
+                                return deferred.resolve(results[i].address_components);
+                            }
+                        }
+                    }
+
+                    return deferred.resolve([]);
+                });
+
+                return deferred.promise;
+            },
+            objectIsValid: function(object) {
+                if ('object' !== typeof object) {
+                    return false;
+                }
+
+                for (var i in requiredFields) {
+                    if (!object[requiredFields[i]]) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        };
+    }]);
+
+    /**
+     * Count max-height for group divs
+     */
+    helperService.directive('setMaxHeight', ['$timeout', function($timeout) {
+        var height = 0;
+
+        return {
+            restrict: 'A',
+            link    : function(scope, element, attr) {
+                $timeout(function() {
+                    var elementHeight = angular.element(attr['setMaxHeight'], element).removeAttr('style').height();
+                    if (height < elementHeight) {
+                        height = elementHeight;
+                    }
+
+                    if (scope.$last === true) {
+                        angular.element(attr['setMaxHeight']).height(height);
+                    }
+                });
+            }
+        }
+    }]);
+
+    /**
+     * Set tooltip
+     */
+    helperService.directive('setTooltip', function() {
+        return {
+            restrict: 'A',
+            link    : function(scope, element, attr) {
+                angular.element(element).popover({trigger: 'hover'});
+            }
+        }
     });
 })(settings);

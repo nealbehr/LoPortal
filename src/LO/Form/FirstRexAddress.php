@@ -47,6 +47,14 @@ class FirstRexAddress extends AbstractType {
                         'message' => 'Zip can not be empty.'
                     ]),
                 ]
+            ])
+            ->add('apt', 'text', [
+                'constraints' => [
+                    new Assert\Length([
+                        'max'        => 50,
+                        'maxMessage' => 'Apartment must be shorter than {{ limit }} chars.',
+                    ])
+                ]
             ]);
     }
 

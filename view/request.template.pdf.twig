@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style type="text/css">
+        body{
+            font:12px/16px Arial, sans-serif;
+            background-color: #dddddd;
+            margin: 0;
+            padding: 0;
+
+        }
+        #container {
+            width: 828px;
+            background: #fff;
+            margin: 0 auto;
+            padding: 30px 53px 10px;
+        }
+        .content .img-holder img{
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        #footer{
+            font-size: 8pt;
+            line-height: 12pt;
+            padding: 17px 0;
+            overflow: hidden;
+        }
+        #footer .user-info{
+            width: 39%;
+            float: left;
+        }
+        #footer .photo{
+            width: 91px;
+            float: left;
+            margin: 0 14px 0 0;
+        }
+        #footer .photo img{
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+        #footer .user-info .holder{
+            width: 210px;
+            padding: 5px 0 0;
+            overflow: hidden;
+            font-size: 9pt;
+        }
+        #footer .user-info .name{
+            font-size: 10pt;
+            font-weight: bold;
+            display: block;
+        }
+        #footer .user-info strong span{
+            font-size: 9pt;
+        }
+        #footer .user-info a{
+            color: #191919;
+            text-decoration: none;
+        }
+        #footer .user-info address{
+            font-style: normal;
+        }
+        #footer .logo{
+            height: 125px;
+            white-space: nowrap;
+            width:222px;
+            margin: 0 10px;
+            float: left;
+        }
+        #footer .copyright{
+            font-size: 8pt;
+            float: right;
+            width: 30%;
+            margin-right: 1%;
+        }
+    </style>
+</head>
+<body>
+<section id="container">
+    <div class="content">
+        <div class="img-holder">
+            <img src="{{template.picture}}" alt="description">
+        </div>
+    </div>
+    {% if template.coBranded %}
+    <div id="footer">
+        <div class="user-info">
+            {% if user.picture %}
+            <div class="photo">
+                <img src="{{user.picture}}" alt="description">
+            </div>
+            {% endif %}
+            <div class="holder">
+                <div class="name">{{user.firstName}} {{user.lastName}}</div>
+                <div>{{user.title}}</div>
+                <div>Phone: {{user.phone}}</div>
+                <div>{{user.email}}</div>
+                <address>{{user.address}}</address>
+                <span>NMLS # {{user.nmls}}</span>
+            </div>
+        </div>
+        <div class="logo" style="background: url({{lender.picture}}) no-repeat 50% 50%;background-size: 100% auto;"></div>
+        <div class="copyright">{{lender.disclosure}}</div>
+    </div>
+    {% endif %}
+</section>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<div id="wrapper">
+    <lo-navbar-head></lo-navbar-head>
+    <section class="container" ng-if="processing">
+        <div class="row" ng-if="queueId">
+            <div class="row ng-hide" ng-show="statusId == 1 || statusId == 2 || statusId == 3">
+                <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+                    <img ng-src="/images/sprite.png">
+                    <div class="ng-hide" ng-show="statusId == 1 || statusId == 3">
+                        <h1>Congratulations. This property has been prequalified.</h1>
+                        <em>For next steps please see the resources below or reach out to Mike Lyon, your Regional Sales Manager.</em>
+                    </div>
+                    <div class="ng-hide" ng-show="statusId == 2">
+                        <h1>This property has been prequalified, but special pricing may be required.</h1>
+                        <em>You should contact Mike Lyon, your Regional Sales Manager, at 925-548-5157 to discuss the special pricing before conveying this approval to your client.</em>
+                    </div>
+                    <hr>
+                    <strong>What do you want to do next?</strong>
+                    <div class="btn-holder">
+                        <p>
+                            <a ng-href="/#/"
+                               class="btn btn-default">Back to Dashboard</a>
+                            <a ng-href="/docs/resources/RHB_at_a_glance.pdf"
+                               class="btn btn-default">REX HomeBuyer at a glance</a>
+                        </p>
+                        <p>
+                            <a ng-href="/docs/resources/quick_reference_v7.pdf"
+                               class="btn btn-default">Quick reference guide</a>
+                            <a ng-href="/docs/resources/Brochure.pdf"
+                               class="btn btn-default">REX HomeBuyer Brochure</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row ng-hide" ng-show="statusId == 7 || !statusId">
+                <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+                    <img ng-src="/images/question.png">
+                    <h1>Your property requires additional due diligence</h1>
+                    <em>You should receive an email notification shortly with a prequalification decision.</em>
+                    <em>In the meanwhile, please reach out to [[user.sales_director]], your Regional Sales Manager, with any other questions.</em>
+                    <hr>
+                    <strong>What do you want to do next?</strong>
+                    <div class="btn-holder">
+                        <a ng-href="/#/dashboard/requests" class="btn btn-default">Requests Queue</a>
+                        <a ng-href="/#/[[request.url]]" class="btn btn-default" style="min-width: 270px">
+                            [[request.title]]
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-if="!queueId">
+            <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3 thanks-box">
+                <img ng-src="/images/sprite.png">
+                <h1>Thank You for submitting the Property Info!</h1>
+                <em>We will notify you by email when the request is approved.</em>
+                <hr>
+                <strong>What do you want to do next?</strong>
+                <div class="btn-holder">
+                    <a ng-href="/#/dashboard/requests" class="btn btn-default">Requests Queue</a>
+                    <a ng-href="/#/[[request.url]]" class="btn btn-default">[[request.title]]</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<lo-footer lo-user="user"></lo-footer>

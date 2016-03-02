@@ -17,7 +17,7 @@ class QueueManager extends Base{
                     ->createQueryBuilder()
                     ->select('q, u, r')
                     ->from(Queue::class, 'q')
-                    ->join('q.realtor', 'r')
+                    ->leftJoin('q.realtor', 'r')
                     ->join('q.user', 'u')
                     ->where('q.id = :id')
                     ->setParameter('id', $id)

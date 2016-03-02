@@ -1,0 +1,123 @@
+<div class="container">
+    <div class="row">
+        <div class="ligin-form col-sm-6 col-lg-4 col-sm-offset-3 col-lg-offset-4">
+            <form ng-submit="formLogin.$valid && signin($event)" class="css-form" novalidate name="formLogin">
+                <div class="alert alert-danger fade in" role="alert" ng-show="errorMessage">
+                    [[ errorMessage ]]
+                </div>
+
+                <div class="alert alert-danger fade in" role="alert" ng-show="isValidEmail(formLogin)">
+                    <span ng-show="formLogin.email.$error.email">The entered email is invalid.</span>
+                    <span ng-show="formLogin.email.$error.required">Email can't be empty.</span>
+                </div>
+                <div class="alert alert-danger fade in" role="alert" ng-show="isValidPassword(formLogin)">
+                    <span ng-show="formLogin.password.$error.required">Password can't be empty.</span>
+                </div>
+
+                <div class="logo-holder">
+                    <a href="/#/"><img src="images/logo.png" width="135" height="70" alt="firstREX"></a>
+                </div>
+                <div class="welcome-msg">
+                    <strong>Welcome to the FirstREX Loan Officer Portal.</strong>
+                </div>
+                <div class="inputs-holder">
+                    <div class="input" ng-class="{error: isValidEmail(formLogin)}">
+                        <input class="input-lg" type="email" placeholder="Email" ng-model="user.email" name="email" required="" ng-keyup="complete($event)">
+                    </div>
+                    <div class="input" ng-class="{error: isValidPassword(formLogin)}">
+                        <input class="input-lg" type="password" placeholder="Password" ng-model="user.password" required="" name="password">
+                    </div>
+                </div>
+                <div class="wrap">
+                    <a href="#"  data-toggle="modal" data-target="#resetPass">Reset password</a>
+                </div>
+                <button class="btn btn-default btn-lg">Log in</button>
+                <p class="note">Do not have an account yet? <a href="mailto:info@1rex.com">Register</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Introduction start -->
+<div class="modal fade" id="modal-introduction" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button ng-click="user.first_time = '0'"
+                        type="button"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">close</button>
+                <h4 class="modal-title">REX HOMEBUYER PREFERRED MORTGAGE PROFESSIONAL AGREEMENT</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    By obtaining access to this portal, I agree to become a REX HomeBuyer Preferred Mortgage
+                    Professional and obtain access to informational materials about the REX HomeBuyer program. These
+                    informational materials have been prepared by FirstREX Agreement Corp. ("FirstREX") as its
+                    exclusive, approved general introductory information on the REX HomeBuyer program.
+                </p>
+                <p>
+                    As a REX HomeBuyer Preferred Mortgage Professional, I will be authorized to distribute this
+                    information, as designated on this portal, to prospective home buyers and real estate agents.
+                    However, I will not be authorized to make any representations, or provide additional information to
+                    prospective homebuyers about the REX HomeBuyer program beyond the materials and instructions
+                    provided by FirstREX on this portal, or as may be provided to me directly by FirstREX for such
+                    purposes from time to time. I may introduce interested home buyers to FirstREX and/or its product
+                    specialists; however, only FirstREX and/or its product specialists can provide further information
+                    to and answer additional questions by prospective homebuyers which are not covered in the materials
+                    available to me.
+                </p>
+                <p>
+                    I give FirstREX permission to send me emails and other informational materials about the REX
+                    HomeBuyer program from time to time at email address I have used to access this portal. I also
+                    acknowledge that all phone conversations I may have with FirstREX’s employees, agents, and
+                    affiliates may be recorded for quality assurance and training purposes.
+                </p>
+                <p>
+                    As a REX HomeBuyer Preferred Mortgage Professional I will not receive compensation from FirstREX
+                    and will not be an employee, agent, partner or affiliate of FirstREX.
+                </p>
+                <hr>
+                <div class="checkholder">
+                    <input ng-model="user.first_time"
+                           ng-true-value="'1'"
+                           ng-false-value="'0'"
+                           type="checkbox"
+                           name="first_time"
+                           id="first_time">
+                    <label for="first_time">I agree to all of the terms and conditions above.</label>
+                </div>
+                <button ng-disabled="user.first_time == 0"
+                        ng-click="signin($event)"
+                        ng-class="user.first_time == 0 ? 'btn-danger' : 'btn-default'"
+                        class="btn center-block"
+                        style="min-width: 260px;"
+                        type="submit">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Introduction end -->
+
+<div class="modal fade" id="resetPass" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Reset password</h4>
+                <p>Enter your email address and we will send you a new password.</p>
+            </div>
+            <form ng-submit="formResetPassword.$valid && resetPassword(formResetPassword)" novalidate name="formResetPassword">
+                <div class="modal-body">
+                    <div class="input" ng-class="{error: isValidEmail(formResetPassword)}">
+                        <input type="email" placeholder="Email" class="form-control input-lg" required="" name="email" value="" ng-model="emailForResetPassword">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default btn-lg">Reset password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

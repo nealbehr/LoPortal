@@ -135,7 +135,7 @@
             line-height: 1.2;
         }
         .card strong {
-            font-size: 18px;
+            font-size: 18px;;
         }
         .left-card {
             padding-left: 0;
@@ -225,7 +225,9 @@
         <h2>INTRODUCED BY:</h2>
         <div class="card left-card">
             <div class="wrap">
+                {% if photoCard1 %}
                 <img class="photo" src="{{photoCard1}}" alt="">
+                {% endif %}
                 <strong>{{nameCard1}}</strong><br />
                 {{infoCard1|raw}}
             </div>
@@ -234,7 +236,9 @@
         {% if omitRealtorInfo %}
         <div class="card">
             <div class="wrap">
+                {% if photoCard2 %}
                 <img class="photo" src="{{photoCard2}}" alt="">
+                {% endif %}
                 <strong>{{nameCard2}}</strong>
                 {{infoCard2|raw}}
             </div>

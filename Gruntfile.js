@@ -4,9 +4,10 @@
  * Create build and deploy on amazon elastic beanstalk
  */
 module.exports = function(grunt) {
-    grunt.versionFiles   = grunt.template.today('m-d-yyyy');
-    grunt.nameJsMinFile  = 'build/scripts.min.'+grunt.versionFiles+'.js';
-    grunt.nameCSSMinFile = 'build/css.min.'+grunt.versionFiles+'.css';
+    grunt.versionFiles          = new Date().getTime();
+    grunt.nameJsMinFile         = 'build/scripts-'+grunt.versionFiles+'.min.js';
+    grunt.nameCSSMinFile        = 'build/css-'+grunt.versionFiles+'.min.css';
+    grunt.nameTemplateCacheFile = 'build/template-cache-'+grunt.versionFiles+'.js';
 
     // Tasks
     grunt.initConfig({
@@ -97,6 +98,12 @@ module.exports = function(grunt) {
                 }, {
                     expand: true,
                     dot: true,
+                    cwd: 'web/fonts',
+                    dest: '<%= yeoman.dist %>/web/build/fonts',
+                    src: '**'
+                }, {
+                    expand: true,
+                    dot: true,
                     cwd: 'web',
                     dest: '<%= yeoman.dist %>/web',
                     src: '**'
@@ -112,45 +119,33 @@ module.exports = function(grunt) {
                 }]
             }
         },
-        // Deploy on elastic beanstalk
-        ebDeploy: {
+        // Cached templates
+        ngtemplates:  {
             options: {
-                region: 'us-west-1'
+                module : 'loApp',
+                htmlmin:  {
+                    collapseWhitespace       : true,
+                    collapseBooleanAttributes: true
+                }
             },
-            stage: {
-                options: {
-                    profile    : 'eb-client',
-                    application: 'portal-1rex-com',
-                    environment: 'portal1rexcom-stage'
-                },
-                files: [
-                    { src: ['.ebextensions/*'] },
-                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true},
-                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
-                ]
-            },
-            prod: {
-                options: {
-                    profile    : 'eb-client',
-                    application: 'first-rex-lo-portal',
-                    environment: 'firstRexLoPortal'
-                },
-                files: [
-                    { src: ['.ebextensions/*'] },
-                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true },
-                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
-                ]
+            app: {
+                cwd:  'web',
+                src:  'template/**/**.html',
+                dest: '<%= yeoman.dist %>/web/<%= grunt.nameTemplateCacheFile %>'
             }
         },
+        // Concat js files
         concat: {
             options: {
                 separator: ';'
             },
             main: {
                 src: [
+                    'web/js/lib/*.js',
+                    'web/js/*.js',
                     'web/js/modules/*.js',
                     'web/js/service/*.js',
-                    'web/js/*.js'
+                    'web/js/directive/*.js'
                 ],
                 dest: '<%= yeoman.dist %>/web/build/scripts.js'
             }
@@ -181,6 +176,9 @@ module.exports = function(grunt) {
                     }, {
                         pattern: /< CSS_FILENAME >/g,
                         replacement: '<%= grunt.nameCSSMinFile %>'
+                    }, {
+                        pattern: /< JS_TEMPLATE_CACHE >/g,
+                        replacement: '<%= grunt.nameTemplateCacheFile %>'
                     }]
                 }
             }
@@ -214,12 +212,66 @@ module.exports = function(grunt) {
                         'web/css/jquery-ui.structure.min.css',
                         'web/css/jquery-ui.min.css',
                         'web/css/bootstrap.min.css',
+                        'web/css/font-awesome.min.css',
                         'web/css/all.min.css',
                         '<%= cssmin.target.files[0].dest %>/ng-dialog.min.css',
                         '<%= cssmin.target.files[0].dest %>/css.min.css',
                         '<%= cssmin.target.files[0].dest %>/cropper.min.css'
                     ]
                 }]
+            }
+        },
+        // Create log files
+        'file-creator': {
+            stage: {
+                files: [
+                    {
+                        file: "<%= yeoman.dist %>/logs/stage.log",
+                        method: function(fs, fd, done) {
+                            done();
+                        }
+                    }
+                ]
+            },
+            prod: {
+                files: [
+                    {
+                        file: "<%= yeoman.dist %>/logs/prod.log",
+                        method: function(fs, fd, done) {
+                            done();
+                        }
+                    }
+                ]
+            }
+        },
+        // Deploy on elastic beanstalk
+        ebDeploy: {
+            options: {
+                region: 'us-west-1'
+            },
+            stage: {
+                options: {
+                    profile    : 'eb-client',
+                    application: 'portal-1rex-com',
+                    environment: 'portal1rexcom-stage'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true},
+                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
+                ]
+            },
+            prod: {
+                options: {
+                    profile    : 'eb-client',
+                    application: 'first-rex-lo-portal',
+                    environment: 'firstRexLoPortal'
+                },
+                files: [
+                    { src: ['.ebextensions/*'] },
+                    { cwd: '<%= yeoman.dist %>/', src: ['**'], expand: true },
+                    { cwd: '<%= yeoman.dist %>/web/', src: ['.*'], expand: true, dest: 'web/' }
+                ]
             }
         }
     });
@@ -234,11 +286,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-string-replace');
     grunt.loadNpmTasks('grunt-contrib-imagemin');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-angular-templates');
+    grunt.loadNpmTasks('grunt-file-creator');
 
     // Register tasks
     grunt.registerTask('build', [
         'clean:before',
         'copy:dist',
+        'ngtemplates',
         'concat',
         'uglify',
         'string-replace',
@@ -254,12 +309,14 @@ module.exports = function(grunt) {
 
     grunt.registerTask('deploy-stage', [
         'build',
+        'file-creator:stage',
         'ebDeploy:stage',
         'clean:distFolder'
     ]);
 
     grunt.registerTask('deploy-prod', [
         'build',
+        'file-creator:prod',
         'ebDeploy:prod',
         'clean:distFolder'
     ]);

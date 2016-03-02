@@ -1,48 +1,19 @@
 <section class="container">
     <header class="page-title">
-        <div class="col-sm-9">
-            <h1>[[ titles.header ]]</h1>
-        </div>
-        <div class="col-sm-3 text-right property-back-box">
-            <a ng-if="!request.id" href="/#/" class="back">Back to dashboard</a>
-            <a ng-if="request.id" ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
-        </div>
+        <h1>[[ titles.header ]]</h1>
     </header>
     <div class="alert alert-danger fade in" role="alert" ng-show="newApproval.$submitted && (newApproval.searchPlace.$error.required || newApproval.searchPlace.$error.googleAddress)">
         <div ng-show="newApproval.searchPlace.$error.required">Property Address is required.</div>
         <div ng-show="newApproval.searchPlace.$error.googleAddress">Property address is incorrect.</div>
     </div>
     <div class="row approval-form">
-        <div class="col-sm-4 text-center">
-            <label class="control-label" for="searchPlace">Address:</label>
-            <input ng-change="changeSearchField()"
-                   ng-model="request.property.address"
-                   name="searchPlace"
-                   type="text"
-                   placeholder=""
-                   class="form-control input-lg"
-                   id="searchPlace"
-                   required="">
+        <div class="col-sm-4">
+            <input ng-change="changeSearchField()" ng-model="request.property.address" class="form-control input-lg" name="searchPlace" id="searchPlace" type="text" placeholder="Property Address" required="">
         </div>
-        <div class="col-sm-2 text-center">
-            <label class="control-label" for="fild-apartment">Unit #:</label>
-            <input ng-model="request.property.apartment"
-                   name="apartment"
-                   type="text"
-                   class="form-control input-lg"
-                   id="fild-apartment"
-                   required="">
-        </div>
-        <div class="col-sm-6 text-center">
-            <label class="control-label" for="">Submit for a:</label>
-            <div class="btn-holder">
-                <a ng-click="request.property.user_type = userType.buyer;save($event)"
-                   href="#"
-                   class="btn btn-default btn-lg">Buyer</a>
-                <a ng-click="request.property.user_type = userType.seller;save($event)"
-                   href="#"
-                   class="btn btn-default btn-lg">Seller</a>
-            </div>
+        <div class="col-sm-2"><button type="button" ng-click="save()" class="btn btn-default btn-lg">[[ isValid? titles.button: "Check" ]]</button></div>
+        <div class="col-sm-3 col-sm-offset-3 text-right">
+            <a ng-if="!request.id" href="/#/" class="back">Back to dashboard</a>
+            <a ng-if="request.id" ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
         </div>
     </div>
     <div id="location"></div>

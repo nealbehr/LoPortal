@@ -1,0 +1,48 @@
+<div class="header-menu-box">
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/#/"><img src="/images/logo.png" width="94" height="49" alt="firstREX"></a>
+                <div class="hidden-xs user-menu">
+                    <img ng-show="isUserLoaded" ng-src="[[ user.picture| defaultImage:'/images/empty-user.png' ]]" width="45" height="60" alt="ava">
+                    <span>
+                        <span ng-if="user.isSwitched()">You are logged in as </span>
+                        <span ng-show="isUserLoaded" class="">[[ user|fullName ]] </span>
+                        <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
+                        <a href="#"  ng-click="logout($event)">Log out <span class="fa fa-sign-out"></span></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <nav class="navbar navbar-default">
+        <div class="nav-container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+               <div class="user-menu hidden-sm hidden-md hidden-lg">
+                    <img ng-show="isUserLoaded" ng-src="[[ user.picture| defaultImage:'/images/empty-user.png' ]]" width="45" height="60" alt="ava">
+                    <span>
+                        <span ng-if="user.isSwitched()">You are logged in as </span>
+                        <span ng-show="isUserLoaded" class="">[[ user|fullName ]] </span>
+                        <span ng-if="user.isSwitched()"> ( <a href="/switch?_switch_user=_exit" >exit</a> ) </span>
+                        <a href="#"  ng-click="logout($event)">Log out <span class="fa fa-sign-out"></span></a>
+                    </span>
+                </div>
+                <ul ng-show="isUserLoaded" class="nav navbar-nav">
+                    <li ng-repeat="tab in headerTabs"
+                        ng-class="{active: tab.isActive(), navseparator: $index == 2 || $index == 5}">
+                        <a href="/#[[ tab.path ]]">[[ tab.title ]]</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+<lo-message-container></lo-message-container>

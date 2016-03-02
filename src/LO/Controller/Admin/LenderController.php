@@ -110,7 +110,7 @@ class LenderController extends Base
             $em->beginTransaction();
             $lender = new Lender();
             $requestLender = $request->request->get('lender');
-            $lenderType = new LenderType($app->getS3());
+            $lenderType = new LenderType($em, $app->getS3());
             $formOptions = [
                 'validation_groups' => ['Default', 'New'],
             ];
@@ -118,8 +118,9 @@ class LenderController extends Base
             $form->handleRequest($request);
 
             if (!$form->isValid()) {
+                $app->getMonolog()->addError($form->getErrors(true));
                 $this->errors = $this->getFormErrors($form);
-                throw new BadRequestHttpException("Lender info isn't valid");
+                throw new BadRequestHttpException(implode(' ', $this->errors));
             }
 
             $this->saleDisclosures($lender, $em, $requestLender);
@@ -143,7 +144,7 @@ class LenderController extends Base
             $lender = $em->getRepository(Lender::class)->find($id);
             /* @var Lender $lender */
             $requestLender = $request->request->get('lender');
-            $lenderType = new LenderType($app->getS3());
+            $lenderType = new LenderType($em, $app->getS3());
             $formOptions = [
                 'validation_groups' => ['Default'],
                 'method' => 'PUT'

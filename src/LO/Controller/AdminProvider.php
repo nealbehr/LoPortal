@@ -5,16 +5,16 @@
  * Date: 4/1/15
  * Time: 2:46 PM
  */
-
 namespace LO\Controller;
 
 use Silex\Application;
 use Silex\ControllerCollection;
 use Silex\ControllerProviderInterface;
 
-class AdminProvider implements ControllerProviderInterface {
-    public function connect(Application $app) {
-
+class AdminProvider implements ControllerProviderInterface
+{
+    public function connect(Application $app)
+    {
         $app['admin.controller'] = $app->share(function() use ($app) {
             return new Admin\AdminUserController();
         });
@@ -51,26 +51,23 @@ class AdminProvider implements ControllerProviderInterface {
             return new Admin\StatusController();
         });
 
+        $app['admin.template.controller'] = $app->share(function() use ($app) {
+            return new Admin\TemplateController();
+        });
+
         /** @var ControllerCollection $controllers */
         $controllers = $app["controllers_factory"];
 
-        $controllers
-            ->get("/roles", "admin.controller:getRolesAction");
-
-        $controllers
-            ->get("/user", "admin.controller:getUsersAction");
-
-        $controllers
-            ->post("/user", "admin.controller:addUserAction");
-
-        $controllers
-            ->put("/user/{id}", "admin.controller:updateUserAction");
-
-        $controllers
-            ->patch("/user/{userId}", "admin.controller:resetPasswordAction");
-
-        $controllers
-            ->delete("/user/{id}", "admin.controller:deleteAction");
+        /**
+         * Routes for AdminUserController
+         */
+        $controllers->get('/user-sync', 'admin.controller:syncDbAction');
+        $controllers->get('/roles', 'admin.controller:getRolesAction');
+        $controllers->get('/user', 'admin.controller:getUsersAction');
+        $controllers->post('/user', 'admin.controller:addUserAction');
+        $controllers->put('/user/{id}', 'admin.controller:updateUserAction');
+        $controllers->patch('/user/{userId}', 'admin.controller:resetPasswordAction');
+        $controllers->delete('/user/{id}', 'admin.controller:deleteAction');
 
         $controllers->get('/queue', "admin.queue.controller:getAction");
         $controllers->patch('/queue/decline/{id}', "admin.queue.controller:declineAction");
@@ -111,8 +108,7 @@ class AdminProvider implements ControllerProviderInterface {
          * Routes for RealtorController
          */
         $controllers->get('/realtor', 'admin.realtor.controller:getListAction');
-        $controllers->get('/realtor/{id}', 'admin.realtor.controller:getByIdAction');
-        $controllers->post('/realtor', 'admin.realtor.controller:addAction');
+        $controllers->get('/realtor/{id}', 'admin.realtor.controller:getAction');
         $controllers->put('/realtor/{id}', 'admin.realtor.controller:updateAction');
         $controllers->delete('/realtor/{id}', 'admin.realtor.controller:deleteAction');
 
@@ -120,7 +116,16 @@ class AdminProvider implements ControllerProviderInterface {
          * Routes for StatysController
          */
         $controllers->get('/status/all', 'admin.status.controller:getAllByTypeAction');
-        
+
+        /**
+         * Routes for TemplateController
+         */
+        $controllers->get('/collateral', 'admin.template.controller:getListAction');
+        $controllers->get('/collateral/{id}', 'admin.template.controller:getAction');
+        $controllers->post('/collateral', 'admin.template.controller:addAction');
+        $controllers->put('/collateral/{id}', 'admin.template.controller:updateAction');
+        $controllers->delete('/collateral/{id}', 'admin.template.controller:deleteAction');
+
         return $controllers;
     }
 }

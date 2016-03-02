@@ -24,16 +24,17 @@ use Doctrine\ORM\Mapping\UniqueConstraint;
  * @Table(name="users",
  *      uniqueConstraints={@UniqueConstraint(name="email_unique",columns={"email"})})
  */
-class User extends Base implements UserInterface{
-
+class User extends Base implements UserInterface
+{
     /**
      * Roles list
      */
-    const ROLE_USER  = "ROLE_USER";
-    const ROLE_ADMIN = "ROLE_ADMIN";
+    const ROLE_USER        = "ROLE_USER";
+    const ROLE_ADMIN       = "ROLE_ADMIN";
+    const DEFAULT_PASSWORD = '123456';
 
-    const STATE_ACTIVE  = 1;
-    const STATE_BANNED  = 2;
+    const STATE_ACTIVE     = 1;
+    const STATE_BANNED     = 2;
 
     /**
      * @Id
@@ -43,9 +44,21 @@ class User extends Base implements UserInterface{
     protected $id;
 
     /**
+     * Used to sync from BaseCRM
+     *
+     * @Column(type="integer")
+     */
+    protected $base_id;
+
+    /**
      * @Column(type="string")
      */
-    protected $deleted = '0';
+    protected $deleted  = '0';
+
+    /**
+     * @Column(type="string")
+     */
+    private $first_time = '0';
 
     /**
      * @ManyToOne(targetEntity="Address", inversedBy="user", cascade={"persist", "remove", "merge"})
@@ -92,6 +105,11 @@ class User extends Base implements UserInterface{
      * @Column(type="smallint")
      */
     protected $state;
+
+    /**
+     * @Column(type="integer")
+     */
+    private $lender_id;
 
     /**
      * @ManyToOne(targetEntity="Lender")
@@ -146,13 +164,43 @@ class User extends Base implements UserInterface{
         $this->state  = self::STATE_ACTIVE;
     }
 
-    public function getDeleted() {
+    public function setBaseId($param)
+    {
+        $this->base_id = $param;
+        return $this;
+    }
+
+    public function getBaseId()
+    {
+        return $this->base_id;
+    }
+
+    public function getDeleted()
+    {
         return $this->deleted;
     }
 
-    public function setDeleted($param) {
+    public function setDeleted($param)
+    {
         $this->deleted = $param;
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getFirstTime()
+    {
+        return $this->first_time;
+    }
+
+    /**
+     * @param string $param '0' or '1'
+     * @return $this
+     */
+    public function setFirstTime($param)
+    {
+        $this->first_time = $param;
         return $this;
     }
 
@@ -179,6 +227,17 @@ class User extends Base implements UserInterface{
     public function setState($sate){
         $this->state = $sate;
 
+        return $this;
+    }
+
+    public function getLenderId()
+    {
+        return $this->lender_id;
+    }
+
+    public function setLenderId($param)
+    {
+        $this->lender_id = $param;
         return $this;
     }
 
@@ -530,4 +589,16 @@ class User extends Base implements UserInterface{
         $this->sales_director_phone = $sales_director_phone;
     }
 
+    /**
+     * @return bool
+     */
+    public function inFirstTime()
+    {
+        return (bool)$this->first_time;
+    }
+
+    public function inDeleted()
+    {
+        return (bool)$this->deleted;
+    }
 }

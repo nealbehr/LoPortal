@@ -10,7 +10,7 @@ namespace LO\Common\Email\Request;
 
 
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\QueueRealtor;
+use LO\Model\Entity\Realtor;
 
 class RequestFlyerApproval implements RequestInterface{
     private $realtor;
@@ -18,7 +18,7 @@ class RequestFlyerApproval implements RequestInterface{
     private $url;
     private $data;
 
-    public function __construct(QueueRealtor $realtor, Queue $queue, $url, $data = []) {
+    public function __construct(Realtor $realtor, Queue $queue, $url, $data = []) {
         $this->realtor      = $realtor;
         $this->queue        = $queue;
         $this->url          = $url;

@@ -5,14 +5,16 @@
     var pictureService = angular.module('pictureModule', []);
 
     pictureService.factory("pictureObject", ["loadFile", "$timeout", function(loadFile, $timeout){
-        return function(inputFile, imageSettings, inObjectForImage){
-            if(!("setPicture" in inObjectForImage)){
-                throw new Error("setPicture not found.");
+        return function(inputFile, imageSettings, inObjectForImage, setterName) {
+
+            var setterName = setterName || 'setPicture';
+
+            if (!(setterName in inObjectForImage)) {
+                throw new Error(setterName+' not found.');
             }
 
-            var objectForImage = inObjectForImage;
-
-            var self = this;
+            var objectForImage = inObjectForImage,
+                self           = this;
 
             this.setObjectImage = function(newImageObject){
                 objectForImage = newImageObject;
@@ -22,13 +24,11 @@
                 inputFile.click();
             };
 
-            inputFile.on('change',function(e){
-                loadFile(e)
-                    .then(function(base64){
-                        objectForImage.setPicture(base64);
-                        self.cropperInit(imageSettings);
-                    })
-                ;
+            inputFile.on('change',function(e) {
+                loadFile(e).then(function(base64) {
+                    objectForImage[setterName](base64);
+                    self.cropperInit(imageSettings);
+                });
             });
 
             this.getBetween = function(number, max, min){
@@ -67,8 +67,8 @@
                         "height": height
                     })
                     .toDataURL("image/jpeg");
-                if(result !== null){
-                    objectForImage.setPicture(result);
+                if (result !== null) {
+                    objectForImage[setterName](result);
                 }
             };
 
@@ -83,8 +83,9 @@
                         "height": this.getBetween(info.height, heightMax, heightMin)
                     })
                     .toDataURL("image/jpeg");
-                if(result !== null){
-                    objectForImage.setPicture(result);
+
+                if (result !== null) {
+                    objectForImage[setterName](result);
                 }
             }
         }

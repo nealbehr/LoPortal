@@ -1,0 +1,167 @@
+<form ng-submit="submit(formRealtor, $event)" class="css-form" novalidate name="formRealtor">
+    <div class="row edit-user">
+        <div class="col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3 col-lg-4 col-lg-offset-4">
+
+            <div id="realtorMessage"></div>
+
+            <div class="alert alert-danger fade in" ng-show="!hideErrors && formRealtor.$submitted && !formRealtor.$valid">
+                <a ng-href="#" class="close" ng-click="showErrors($event)">close</a>
+                <div ng-show="formRealtor.first_name.$error.required">First name is required.</div>
+                <div ng-show="formRealtor.$submitted && formRealtor.first_name.$error.loName">First name is invalid.</div>
+                <div ng-show="formRealtor.last_name.$error.required">Last name is required.</div>
+                <div ng-show="formRealtor.$submitted && formRealtor.last_name.$error.loName">Last name is required.</div>
+                <div ng-show="formRealtor.phone.$error.required">Phone is required.</div>
+                <div ng-show="formRealtor.$submitted && formRealtor.phone.$error.usaPhoneFormat">
+                    Please input a valid US phone number including 3 digit area code and 7 digit number.
+                </div>
+                <span ng-show="formRealtor.email.$error.required">Email is required.</span>
+                <span ng-show="formRealtor.email.$invalid">The entered email is invalid.</span>
+                <div ng-show="formRealtor.$submitted && formRealtor.realty_name.$invalid">
+                    Realtor company name is invalid.
+                </div>
+            </div>
+
+            <h2>[[title]]</h2>
+            <div class="main-info">
+                <div class="user-photo">
+                    <div class="realtor realtor-photo">
+                        <img ng-src="[[realtor.photo|defaultImage:'/images/empty-user.png']]"
+                             alt=""
+                             ng-click="realtorPicture.choosePhoto()">
+                    </div>
+                    <span class="upload">
+                        Upload Photo
+                        <div>
+                            <input id="realtorImage"
+                                   type="file"
+                                   valid-file
+                                   name="photo"
+                                   ng-model="realtor.photo">
+                        </div>
+                    </span>
+                </div>
+                <div class="inputs-holder">
+                    <div class="input">
+                        <input class="input-lg"
+                               type="text"
+                               placeholder="First name"
+                               lo-name-validator
+                               ng-model="realtor.first_name"
+                               required=""
+                               name="first_name"
+                               ng-model-options="{updateOn: 'blur'}">
+                    </div>
+                    <div class="input">
+                        <input class="input-lg"
+                               type="text"
+                               lo-name-validator
+                               placeholder="Last name"
+                               ng-model="realtor.last_name"
+                               required=""
+                               name="last_name"
+                               ng-model-options="{updateOn: 'blur'}">
+                    </div>
+                </div>
+            </div>
+            <div class="inputs-holder">
+                <div class="input">
+                    <input class="input-lg"
+                           type="text"
+                           placeholder="Phone number"
+                           usa-phone
+                           ng-model="realtor.phone"
+                           required=""
+                           name="phone"
+                           ng-model-options="{updateOn: 'blur'}">
+                </div>
+                <div class="input">
+                    <input class="input-lg"
+                           type="email"
+                           placeholder="Email address"
+                           ng-model="realtor.email"
+                           required=""
+                           name="email"
+                           ng-model-options="{updateOn: 'blur'}"
+                           ng-pattern="/^[_a-z0-9]+(\.[_a-z0-9]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/">
+                </div>
+                <div class="input">
+                    <input class="input-lg" type="text" placeholder="BRE number" ng-model="realtor.bre_number" name="bre">
+                </div>
+            </div>
+            <div class="thumbnail">
+                <div class="realtor-photo"  style="text-align: center; height: 130px;overflow: hidden;">
+                    <img id="realtyLogoImage"
+                         data-ng-src="[[realtor.realty_logo|defaultImage:'/images/empty-company-150x525.png' ]]">
+                </div>
+                <div class="caption">
+                            <span class="upload">
+                                Upload
+                                <div>
+                                    <input class="upload"
+                                           id="realtyLogo"
+                                           type="file"
+                                           valid-file
+                                           name="realtyLogo"
+                                           ng-model="realtor.realty_logo">
+                                </div>
+                            </span>
+                    <span class="upload"
+                          style="float: right;"
+                          data-toggle="modal"
+                          data-target="#chooseRealtyCompanyLogo">Select</span>
+                </div>
+            </div>
+            <div class="inputs-holder">
+                <div class="input">
+                    <input class="input-lg"
+                           type="text"
+                           placeholder="Realtor company"
+                           name="realty_name"
+                           ng-model="realtor.realty_name"
+                           ng-pattern="/^[a-zA-Z0-9][a-zA-Z0-9()'\.\-#&\s]*$/">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-default btn-lg">Save</button>
+            <div class="bottom-nav">
+                <!--a ng-if="realtor.id" ng-href="#" ng-click="delete($event)" class="delete pull-right">Delete</a-->
+                <a ng-href="/#/" ng-click="cancel($event)" class="back">Cancel</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- start select realty company -->
+<div class="modal fade"
+     id="chooseRealtyCompanyLogo"
+     tabindex="-1"
+     role="dialog"
+     aria-hidden="true"
+     data-ng-controller="selectRealtyCompanyCtrl">
+    <div class="modal-dialog" style="width: 665px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">close</button>
+                <h4 class="modal-title">Select Company Logo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="logo-box">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search by company name" data-ng-model="test.realtyName">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">Go!</button>
+                       </span>
+                    </div>
+                    <ul>
+                        <li data-ng-click="selectRealtyLogo($event, realtyCompany)"
+                            data-ng-repeat="realtyCompany in realtyCompanies | filter:{name:test.realtyName||''} | orderBy:name | limitTo:9">
+                            <a href="#">
+                                <img data-ng-src="{{realtyCompany.logo}}" alt="{{realtyCompany.name }}">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end select realty company -->

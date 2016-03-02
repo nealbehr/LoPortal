@@ -30,6 +30,10 @@ class QueueType extends AbstractType {
 
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder
+            ->add('archive', 'number', [
+                'precision'  => 0,
+                'empty_data' => '0'
+            ])
             ->add('address', 'text')
             ->add('apartment', 'text')
             ->add('mls_number', 'text')

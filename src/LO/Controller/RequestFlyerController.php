@@ -16,28 +16,30 @@ use LO\Exception\Http;
 use LO\Form\FirstRexAddress;
 use LO\Form\QueueType;
 use LO\Model\Entity\Queue;
-use LO\Model\Entity\QueueRealtor;
-use LO\Model\Entity\User;
 use LO\Model\Entity\Realtor;
+use LO\Model\Entity\User;
 use LO\Model\Manager\QueueManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Knp\Snappy\Pdf;
 use \Doctrine\ORM\Query;
+use LO\Common\RequestTo1Rex;
+use \Mixpanel;
 
 
-class RequestFlyerController extends RequestFlyerBase {
-
-    public function getAction(Application $app, $id){
-        $queue = $this->getQueueById($app, $id);
+class RequestFlyerController extends RequestFlyerBase
+{
+    public function getAction(Application $app, $id)
+    {
+        $queue     = $this->getQueueById($app, $id);
         $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
-        $realtor = $queue->getRealtor();
 
         return $app->json([
-            'property' => array_merge($this->getFormFieldsAsArray($queueForm), ['state' => $queue->getState()]),
-            'realtor'  => $realtor->getPublicInfo(),
-            'address'  => $queue->getAdditionalInfo(),
-            'user'     => $queue->getUser()->getPublicInfo(),
+            'realtor_id' => ($realtor = $queue->getRealtor()) ? $realtor->getId() : null,
+            'property'   => array_merge($this->getFormFieldsAsArray($queueForm), ['state' => $queue->getState()]),
+            //'realtor'    => $realtor->getPublicInfo(),
+            'address'    => $queue->getAdditionalInfo(),
+            'user'       => $queue->getUser()->getPublicInfo(),
         ]);
     }
 
@@ -47,10 +49,10 @@ class RequestFlyerController extends RequestFlyerBase {
      * @param $id
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function download(Application $app, $id) {
+    public function download(Application $app, $id)
+    {
         $queue = $this->getQueueById($app, $id);
         if($queue) {
-
             try {
                 $pdf = new Pdf();
                 $pdf->setBinary('/usr/local/bin/wkhtmltopdf');
@@ -65,6 +67,13 @@ class RequestFlyerController extends RequestFlyerBase {
                 $time = time();
                 $pdfFile = 'flyer-' . $id . '-'. $time . '.pdf';
                 $html = $app->getTwig()->render('request.flyer.pdf.twig', $this->getPDFData($queue));
+
+                // Mixpanel analytics
+                if (null !== ($user = $app->getSecurityTokenStorage()->getToken()->getUser())) {
+                    $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+                    $mp->identify($user->getId());
+                    $mp->track('Flyer Download');
+                }
 
                 header('Content-Type: application/pdf');
                 header('Content-Disposition: attachment; filename="' . $pdfFile . '"');
@@ -158,6 +167,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $formOptions = ['validation_groups' => ["Default", "main"]];
             $app->getEntityManager()->beginTransaction();
 
+            $user         = $app->getSecurityTokenStorage()->getToken()->getUser();
             $firstRexForm = $app->getFormFactory()->create(new FirstRexAddress());
             $firstRexForm->handleRequest($request);
 
@@ -165,10 +175,29 @@ class RequestFlyerController extends RequestFlyerBase {
                 throw new Http('Additional info is not valid', Response::HTTP_BAD_REQUEST);
             }
 
-            $id = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $app->getSecurityTokenStorage()->getToken()->getUser());
+            $queue = (new Queue())
+                ->setListingPrice(0)
+                ->setAdditionalInfo($firstRexForm->getData())
+                ->setUserType(Queue::TYPE_USER_SELLER);
 
-            $realtor      = new QueueRealtor();
-            $queue        = (new Queue())->set1RexId($id)->setAdditionalInfo($firstRexForm->getData());
+            // Do not change queue user when edited by admin
+            if ($queue->getUser() == null) {
+                $queue->setUser($user);
+            }
+
+            $app->getEntityManager()->persist($queue);
+            $app->getEntityManager()->flush();
+
+            // Get first rex id
+            $rexId = (new RequestTo1Rex($app))
+                ->setAddress($firstRexForm->getData())
+                ->setUser($user)
+                ->setQueue($queue)
+                ->setType(RequestTo1Rex::TYPE_LISTING_FLYER)
+                ->send();
+            $queue->set1RexId($rexId);
+
+            $realtor = new Realtor();
 
             $this->saveFlyer(
                 $app,
@@ -189,7 +218,10 @@ class RequestFlyerController extends RequestFlyerBase {
             return $app->json($this->getMessage()->get(), $e instanceof Http? $e->getStatusCode(): Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $app->json("success");
+        return $app->json([
+            'id'       => $queue->getId(),
+            'property' => $queue->toArray()
+        ]);
     }
 
     public function updateAction(Application $app, Request $request, $id) {
@@ -207,8 +239,14 @@ class RequestFlyerController extends RequestFlyerBase {
             $firstRexForm->handleRequest($request);
             $queue->setAdditionalInfo($firstRexForm->getData());
 
-            $user = $app->getSecurityTokenStorage()->getToken()->getUser();
-            $billboardID = $this->sendRequestTo1Rex($app, $firstRexForm->getData(), $user);
+            // Get first rex id
+            $billboardID = (new RequestTo1Rex($app))
+                ->setAddress($firstRexForm->getData())
+                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
+                ->setQueue($queue)
+                ->setType(RequestTo1Rex::TYPE_LISTING_FLYER)
+                ->send();
+
             $app->getMonolog()->addInfo("billboard id: " . $billboardID);
             $queue->set1RexId($billboardID);
             $queue->setState(Queue::STATE_REQUESTED);
@@ -245,7 +283,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->saveFlyer(
                 $app,
                 $request,
-                new QueueRealtor(),
+                new Realtor(),
                 (new Queue())->setState(Queue::STATE_DRAFT)->setAdditionalInfo($firstRexForm->getData()),
                 ['validation_groups' => ["Default", "draft"]]
             );
@@ -343,7 +381,7 @@ class RequestFlyerController extends RequestFlyerBase {
             $this->saveFlyer(
                 $app,
                 $request,
-                new QueueRealtor(),
+                new Realtor(),
                 $queue,
                 [
                     'validation_groups' => ["Default", "draft"],
@@ -379,7 +417,7 @@ class RequestFlyerController extends RequestFlyerBase {
 
             $queue->setType(Queue::TYPE_FLYER)->setState(Queue::STATE_REQUESTED);
 
-            $realtor = new QueueRealtor();
+            $realtor = new Realtor();
 
             $this->saveFlyer(
                 $app,
@@ -403,30 +441,18 @@ class RequestFlyerController extends RequestFlyerBase {
         return $app->json("success");
     }
 
-    public function getRealtorListAction(Application $app, Request $request)
+    public function getRealtorListAction(Application $app)
     {
-        $alias = 'r';
-        $query = $app->getEntityManager()->createQueryBuilder()
-            ->select($alias, 'c')
-            ->from(Realtor::class, $alias)
-            ->join($alias.'.company', 'c')
-            ->where("$alias.deleted = '0'")
-            ->setMaxResults(Admin\RealtorController::LIMIT)
-            ->orderBy("$alias.first_name", 'asc');
+        $user  = $app->getSecurityTokenStorage()->getToken()->getUser();
+        $query = $app->getEntityManager()
+            ->createQueryBuilder()
+            ->select('r')
+            ->from(Realtor::class, 'r')
+            ->orderBy('r.first_name', 'asc');
 
-        if ($request->get(Admin\RealtorController::KEY_SEARCH)) {
-            if (in_array($request->get(Admin\RealtorController::KEY_SEARCH_BY), ['first_name', 'last_name'], true)) {
-                $where = $app->getEntityManager()->createQueryBuilder()->expr()->orX(
-                    $app->getEntityManager()->createQueryBuilder()->expr()->like(
-                        "LOWER($alias.".$request->get(Admin\RealtorController::KEY_SEARCH_BY).")",
-                        ':param'
-                    )
-                );
-            }
-            $query->andWhere($where)->setParameter(
-                'param',
-                '%'.strtolower($request->get(Admin\RealtorController::KEY_SEARCH)).'%'
-            );
+        // if = admin, show all realtors
+        if (!$app->getAuthorizationChecker()->isGranted(User::ROLE_ADMIN)) {
+            $query->where('r.user_id = :id')->setParameter('id', $user->getId());
         }
 
         return $app->json(['realtors' => $query->getQuery()->getResult(Query::HYDRATE_ARRAY)]);

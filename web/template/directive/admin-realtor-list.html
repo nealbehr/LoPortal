@@ -1,0 +1,49 @@
+<div class="row top-bar">
+    <div id="realtorMessage"></div>
+    <div class="col-sm-4 col-lg-3">
+        <lo-admin-panel-search lo-search-key="searchKey" lo-searching-string="searchingString"></lo-admin-panel-search>
+    </div>
+    <div class="paging col-sm-4 col-sm-offset-4 col-lg-offset-5">
+        <lo-admin-panel-pagination lo-pagination="pagination"></lo-admin-panel-pagination>
+    </div>
+</div>
+<div class="admin-table">
+    <div class="table-holder">
+        <table class="table table-striped" ng-show="isLoaded">
+            <thead>
+            <tr>
+                <th class="header"
+                    ng-click="param.sort()"
+                    ng-repeat="param in headParams"
+                    ng-class="{headerSortUp: param.isSortedUp(), headerSortDown: param.isSortedDown(), isSortable: param.isSortable}">
+                    <span ng-bind-html="param.title"></span>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="(key, val) in realtors">
+                <td>[[val.id]]</td>
+                <td>
+                    <img ng-src="[[val.photo|defaultImage:'/images/empty-user.png']]" width="45" height="60" alt="ava">
+                </td>
+                <td>[[val.first_name]]</td>
+                <td>[[val.last_name]]</td>
+                <td><a href="mailto:[[val.email]]">[[val.email]]</a></td>
+                <td>[[val.phone]]</td>
+                <td>[[val.bre_number]]</td>
+                <td>
+                    <div>[[val.created_at|fromMysqlDate|date:"MMM d yyyy"]]</div>
+                    [[val.created_at|fromMysqlDate|date:"hh:mm a"]]
+                <td>
+                    <div class="dropdown">
+                        <button class="action" type="button" data-toggle="dropdown">action</button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="/#[[PATH]]/[[val.id]]/edit" class="change">Edit</a></li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

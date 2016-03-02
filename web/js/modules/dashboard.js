@@ -4,61 +4,38 @@
 
     var dashboard = angular.module('dashboardModule', ['helperService']);
 
-    dashboard.config(['$routeProvider', function($routeProvider) {
-                $routeProvider.
-                    when('/', {
-                        templateUrl: '/partials/dashboard',
-                        controller:  'dashboardCtrl',
-                        access: {
-                            isFree: false
-                        },
-                        resolve: {
-                            data: ["$q", "$http", 'waitingScreen', function($q, $http, waitingScreen){
-                                   var deferred = $q.defer();
-                                   waitingScreen.show();
-                                   $http.get('/dashboard/')
-                                    .success(function(data){
-                                        deferred.resolve(data)
-                                    })
-                                    .error(function(data){
-                                        deferred.reject(data);
-                                    })
-                                    .finally(function(){
-                                        waitingScreen.hide();
-                                    })
-                                ;
+    dashboard.controller(
+        'dashboardCollateralCtrl',
+        ['$scope', 'waitingScreen', '$http', '$q',
+            function($scope, waitingScreen, $http, $q) {
+                $scope.data       = [];
+                $scope.categories = [];
+                $scope.templates  = [];
 
-                                return deferred.promise;
-                            }]
-                        }
-                    })
-                    .when('/dashboard/collateral', {
-                        templateUrl: '/partials/dashboard.collateral',
-                        controller:  'dashboardCustomCollateral',
-                        access: {
-                            isFree: false
-                        }
-                    })
-                ;
-    }]);
+                waitingScreen.show();
 
-    dashboard.controller('dashboardCustomCollateral', ["$scope", "waitingScreen", "$http", function($scope, waitingScreen, $http){
-        $scope.data ={}
-
-        waitingScreen.show();
-
-        $http.get("/dashboard/collateral")
-            .success(function(data){
-                $scope.data = data;
-            })
-            .finally(function(){
-                waitingScreen.hide();
-            })
-
-
-    }]);
+                var categories = $http.get('/request/template/categories', {cache: true}),
+                    templates  = $http.get('/dashboard/templates'),
+                    flyer      = $http.get('/dashboard/collateral');
+                $q.all([categories, templates, flyer]).then(function(response) {
+                    $scope.categories = response[0].data;
+                    $scope.templates  = response[1].data;
+                    $scope.data       = response[2].data;
+                }).finally(function() {
+                    waitingScreen.hide();
+                });
+            }
+        ]
+    );
 
     dashboard.controller('dashboardCtrl', ['$scope', 'redirect', '$http', 'data', 'createDraftRequestFlyer', 'waitingScreen', function($scope, redirect, $http, data, createDraftRequestFlyer, waitingScreen){
+        $scope.title = {
+            header  : 'Requests Queue',
+            infoText: 'Looking for a specific inquiry? Filter through your current and past requests. If you have '
+                +'previously started a Listing Flyer, find that here as well under “Incomplete”.'
+        };
+
+
         $scope.dashboard    = data.dashboard;
 
         $scope.settingRows  = {};
@@ -96,7 +73,7 @@
                     waitingScreen.hide();
                 })
             ;
-        }
+        };
 
         $scope.moveToDeclined = function(target){
             $http.patch('/queue/cancel/' + target.data('id'), [])
@@ -110,7 +87,7 @@
                     console.log(data);
                 })
             ;
-        }
+        };
 
         angular.element('.queue').click(function(e) {
             var target = angular.element(e.target);

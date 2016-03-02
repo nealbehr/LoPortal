@@ -2,7 +2,7 @@ debug: false
 name: Loan Officers portal
 monolog.config:
     monolog.name:    loportal
-    monolog.logfile: logs/prod.log
+    monolog.logfile: /var/app/current/logs/prod.log
     monolog.level:   WARNING
     isSaveLocal:     false
     s3.logs: s3://1rex/app/prod.log
@@ -59,3 +59,10 @@ knp_paginator:
     template:
         pagination: pagination.twig,
         sortable:   Pagination/sortable_link.html.twig
+mixpanel:
+  token: 99c782fcf128d5e0d6498f003c406d4c
+  api_key: 47afda250711194435962149b3b01528
+  api_secret: 7a850e0337002267e4c412d8ca8f1659
+basecrm:
+  accessToken: 0fa7e03e63b3e3042226029420a973d32003219dc172bb40df96023c2c64c0b8
+  devicesUuid: lo-portal-prod

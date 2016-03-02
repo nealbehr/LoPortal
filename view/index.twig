@@ -6,31 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- build:css < CSS_FILENAME > -->
-        <link rel="stylesheet" href="/css/jquery-ui.structure.min.css" type="text/css">
-        <link rel="stylesheet" href="/css/jquery-ui.min.css" type="text/css">
-        <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
-        <link rel="stylesheet" href="/css/all.min.css" type="text/css">
-        <link rel="stylesheet" href="/css/ng-dialog.css" type="text/css">
-        <link rel="stylesheet" href="/css/css.css" type="text/css">
-        <link rel="stylesheet" href="/css/cropper.css" type="text/css">
+    <link rel="stylesheet" href="/css/jquery-ui.structure.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/all.min.css" type="text/css">
+    <link rel="stylesheet" href="/css/ng-dialog.css" type="text/css">
+    <link rel="stylesheet" href="/css/css.css" type="text/css">
+    <link rel="stylesheet" href="/css/cropper.css" type="text/css">
     <!-- /build -->
 </head>
 <body>
-    <div id="wrapper" ng-view><!-- --></div>
+    <!-- Page content start -->
+    <div ng-view><!-- --></div>
+    <!-- Page content end -->
 
-    <footer id="footer">
-        <div class="container">
-            <a class="hidden-xs" href="/#/"><img src="images/logo-footer.png" width="77" height="40" alt="firstREX"></a>
-            <ul>
-                <li><a href="http://rexhomebuyer.com/privacy-security/" target="_blank">Privacy Policy</a></li>
-                <li><a href="http://rexhomebuyer.com/terms-of-use/" target="_blank">Terms of Use</a></li>
-                <li><a href="http://rexhomebuyer.com/disclosures-2/" target="_blank">Disclosure</a></li>
-            </ul>
-        </div>
-    </footer>
+    <!-- Waiting screen start -->
     <div class="waiting" id="waiting"><img src="/images/waiting.gif" width="32" height="32" alt=""></div>
+    <!-- Waiting screen end -->
 
-    <!-- Progress bar -->
+    <!-- Progress bar start -->
     <div id="progress-bar-screen" class="hide">
         <div class="progress">
             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 1%;">
@@ -39,6 +34,7 @@
         </div>
         <div class="text"></div>
     </div>
+    <!-- Progress bar end -->
 
     <script>
         var settings = {
@@ -65,7 +61,6 @@
         }
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-messages.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-route.min.js"></script>
@@ -73,48 +68,86 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular-cookies.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key={{ app.getConfigByName('google', 'apiKey') }}&libraries=places&language=en"></script>
 
-    <script>
+    <!-- Start Google analytics -->
+    <script type="text/javascript">
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
         ga('create', '{{ app.getConfigByName('google', 'analytics') }}', 'auto');
-        //ga('send', 'pageview');
     </script>
+    <!-- End Google analytics -->
+
+    <!-- Start Mixpanel analytics -->
+    <script type="text/javascript">
+        (function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+            for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,e,d])};b.__SV=1.2;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f)}})(document,window.mixpanel||[]);
+        mixpanel.init('{{ app.getConfigByName('mixpanel', 'token') }}');
+    </script>
+    <!-- End Mixpanel analytics -->
 
     <!-- build:js < JS_FILENAME > -->
-        <script src="/js/jquery-ui.min.js"></script>
-        <script src="/js/app.js"></script>
-        <script src="/js/service/helper.js"></script>
-        <script src="/js/service/user.js"></script>
-        <script src="/js/service/requestFlyer.js"></script>
-        <script src="/js/service/property.approval.js"></script>
-        <script src="/js/service/picture.js"></script>
-        <script src="/js/service/headColumn.js"></script>
-        <script src="/js/modules/dashboard.js"></script>
-        <script src="/js/modules/authorize.js"></script>
-        <script src="/js/modules/request.js"></script>
-        <script src="/js/modules/user.js"></script>
-        <script src="/js/modules/admin.js"></script>
-        <script src="/js/modules/lender.js"></script>
-        <script src="/js/modules/realty-company.js"></script>
-        <script src="/js/modules/sales-director.js"></script>
-        <script src="/js/modules/realtor.js"></script>
-        <script src="/js/cropper.js"></script>
-        <script src="/js/ngDialog.0.3.7.js"></script>
-        <script src="/js/vs-google-autocomplete.js"></script>
+    <script src="/js/lib/bootstrap.min.js"></script>
+    <script src="/js/lib/checklist-model.js"></script>
+    <script src="/js/jquery-ui.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/service/helper.js"></script>
+    <script src="/js/service/user.js"></script>
+    <script src="/js/service/requestFlyer.js"></script>
+    <script src="/js/service/property.approval.js"></script>
+    <script src="/js/service/picture.js"></script>
+    <script src="/js/service/headColumn.js"></script>
+    <script src="/js/modules/dashboard.js"></script>
+    <script src="/js/modules/authorize.js"></script>
+    <script src="/js/modules/request.js"></script>
+    <script src="/js/modules/user.js"></script>
+    <script src="/js/modules/admin.js"></script>
+    <script src="/js/modules/lender.js"></script>
+    <script src="/js/modules/realty-company.js"></script>
+    <script src="/js/modules/sales-director.js"></script>
+    <script src="/js/modules/realtor.js"></script>
+    <script src="/js/modules/resources.js"></script>
+    <script src="/js/modules/collateral.js"></script>
+    <script src="/js/modules/calculator.js"></script>
+    <script src="/js/cropper.js"></script>
+    <script src="/js/ngDialog.0.3.7.js"></script>
+    <script src="/js/vs-google-autocomplete.js"></script>
+    <script src="/js/routes.js"></script>
+    <script src="/js/directive/admin-collateral-form.js"></script>
+    <script src="/js/directive/admin-collateral-list.js"></script>
+    <script src="/js/directive/admin-lender-form.js"></script>
+    <script src="/js/directive/admin-lenders.js"></script>
+    <script src="/js/directive/admin-nav-bar.js"></script>
+    <script src="/js/directive/admin-panel-pagination.js"></script>
+    <script src="/js/directive/admin-panel-search.js"></script>
+    <script src="/js/directive/admin-realtor-form.js"></script>
+    <script src="/js/directive/admin-realtor-list.js"></script>
+    <script src="/js/directive/admin-realty-companies.js"></script>
+    <script src="/js/directive/admin-realty-company-info.js"></script>
+    <script src="/js/directive/admin-requests.js"></script>
+    <script src="/js/directive/admin-sales-director-form.js"></script>
+    <script src="/js/directive/admin-sales-director-list.js"></script>
+    <script src="/js/directive/admin-users.js"></script>
+    <script src="/js/directive/dashboard-collateral.js"></script>
+    <script src="/js/directive/dashboard-collateral-list.js"></script>
+    <script src="/js/directive/dashboard-row.js"></script>
+    <script src="/js/directive/footer.js"></script>
+    <script src="/js/directive/message.js"></script>
+    <script src="/js/directive/message-container.js"></script>
+    <script src="/js/directive/navbar-head.js"></script>
+    <script src="/js/directive/property-approval-form.js"></script>
+    <script src="/js/directive/request-flyer-edit.js"></script>
+    <script src="/js/directive/user-info.js"></script>
+    <!-- /build -->
 
+    <!-- build:js < JS_TEMPLATE_CACHE > -->
+    <!--<script src="build/template-cache-version.js"></script>-->
     <!-- /build -->
 
     <script type="text/javascript">
-        angular.element(document).ready(function(){
+        angular.element(document).ready(function() {
             angular.bootstrap(document, ['loApp']);
-//            var script = document.createElement('script');
-//            script.type = 'text/javascript';
-//            script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
-//                    '&signed_in=true&libraries=places';
-//            document.body.appendChild(script);
         });
     </script>
 </body>

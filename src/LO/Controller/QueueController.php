@@ -80,9 +80,15 @@ class QueueController
     {
         $em = $app->getEntityManager();
         try {
-            $queue = $em->find(Queue::class, (int)$request->get('id'));
+            $queue    = $em->find(Queue::class, $request->get('id'));
+            $statusId = $request->get('status_id');
 
-            $queue->setStatusId((int)$request->get('status_id'));
+            // TODO You need refactor the code to work with all statuses
+            if ($statusId == '1' || $statusId == '3') {
+                $queue->setState(Queue::STATE_APPROVED);
+            }
+
+            $queue->setStatusId($statusId);
             $queue->setStatusOtherText(filter_var($request->get('status_other_text'), FILTER_SANITIZE_STRING));
 
             $em->persist($queue);

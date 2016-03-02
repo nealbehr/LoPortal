@@ -1,4 +1,10 @@
-<?php namespace LO\Common;
+<?php
+/**
+ * User: Eugene Lysenko
+ * Date: 12/11/15
+ * Time: 11:14
+ */
+namespace LO\Common;
 
 use Curl\Curl;
 use LO\Application;
@@ -7,18 +13,40 @@ use LO\Model\Entity\Queue;
 
 class RequestTo1Rex
 {
-    const BILLBOARD_SOURCE = 'LO Portal';
+    const PRODUCT_TYPE       = 'HB';
+    const BILLBOARD_SOURCE   = 'LO Portal';
 
-    protected $data = [];
+    const TYPE_PREQUAL       = 0;
+    const TYPE_LISTING_FLYER = 1;
 
-    private $inQuiryText = [
+    private $inQuiryText     = [
         Queue::TYPE_USER_SELLER => 'Seller of home',
         Queue::TYPE_USER_BUYER  => 'Buyer of home'
     ];
 
+    private $requestTypeText = [
+        self::TYPE_PREQUAL       => 'Prequal',
+        self::TYPE_LISTING_FLYER => 'Listing Flyer'
+    ];
+
+    protected $data          = [];
+
     public function __construct(Application $app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * @param $param
+     * @return $this
+     */
+    public function setType($param)
+    {
+        $this->data = array_merge($this->data, [
+            'request_type' => $this->requestTypeText[$param]
+        ]);
+
+        return $this;
     }
 
     public function setAddress(array $address)
@@ -45,6 +73,7 @@ class RequestTo1Rex
     public function setQueue(Queue $queue)
     {
         $this->data = array_merge($this->data, [
+            'apt'          => $queue->getApartment(),
             'external_id'  => $queue->getId(),
             'inquiry_type' => $this->inQuiryText[$queue->getUserType()]
         ]);
@@ -59,7 +88,8 @@ class RequestTo1Rex
 
     protected function sendRequestTo1Rex()
     {
-        $curl = new Curl();
+        $id1Rex = 0;
+        $curl   = new Curl();
         try {
             $curl->setBasicAuthentication(
                 $this->app->getConfigByName('firstrex', 'api', 'user'),
@@ -83,7 +113,7 @@ class RequestTo1Rex
                 throw new \Exception(sprintf('Bad response have taken from 1REX. Response \'%s\'', $curl->response));
             }
 
-            return $curl->response->id;
+            $id1Rex = $curl->response->id;
         }
         catch (\Exception $e) {
             $this->app->getMonolog()->addError($e);
@@ -93,16 +123,17 @@ class RequestTo1Rex
             $curl->close();
         }
 
-        return 0;
+        return $id1Rex;
     }
 
     private function getData()
     {
         return array_merge(
             $this->data,
+            // Default data
             [
-                'product_type' => 'HB',
-                'source'       => self::BILLBOARD_SOURCE
+                'product_type' => self::PRODUCT_TYPE,
+                'source'       => self::BILLBOARD_SOURCE,
             ]
         );
     }

@@ -5,17 +5,21 @@
  * Date: 3/27/15
  * Time: 2:15 PM
  */
-
 namespace LO\Model\Manager;
-
 
 use Doctrine\ORM\Query;
 use LO\Model\Entity\Queue;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query\Expr;
+use LO\Model\Entity\User;
+use LO\Model\Entity\Template;
+use LO\Model\Entity\TemplateLender;
+use LO\Model\Entity\TemplateAddress;
 
-class DashboardManager extends Base{
-    public function getByUserId($userId, $withoutCanceled = true){
+class DashboardManager extends Base
+{
+    public function getByUserId($userId, $withoutCanceled = true)
+    {
         $q = $this->getApp()->getEntityManager()
             ->createQueryBuilder()
             ->select('q')
@@ -48,7 +52,8 @@ class DashboardManager extends Base{
         return $result;
     }
 
-    public function getCollateralByUserId($userId, $hydrate = AbstractQuery::HYDRATE_OBJECT){
+    public function getCollateralByUserId($userId, $hydrate = AbstractQuery::HYDRATE_OBJECT)
+    {
         return  $this->getApp()
             ->getEntityManager()
             ->createQueryBuilder()

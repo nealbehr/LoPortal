@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use LO\Traits\GetFormErrors;
 use LO\Common\RequestTo1Rex;
+use Mixpanel;
 
 class RequestApprovalController extends RequestApprovalBase
 {
@@ -31,10 +32,12 @@ class RequestApprovalController extends RequestApprovalBase
         try{
             $em->beginTransaction();
 
+            $user = $app->getSecurityTokenStorage()->getToken()->getUser();
+
             // Create queue
             $queue = new Queue();
             $queue->setType(Queue::TYPE_PROPERTY_APPROVAL);
-            $queue->setUser($app->getSecurityTokenStorage()->getToken()->getUser());
+            $queue->setUser($user);
 
             // Validate queue data
             $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue);
@@ -61,8 +64,9 @@ class RequestApprovalController extends RequestApprovalBase
 
             $rexId = (new RequestTo1Rex($app))
                 ->setAddress($firstRexForm->getData())
-                ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
+                ->setUser($user)
                 ->setQueue($queue)
+                ->setType(RequestTo1Rex::TYPE_PREQUAL)
                 ->send();
 
             // Setting rex id and update this queue
@@ -72,6 +76,13 @@ class RequestApprovalController extends RequestApprovalBase
             $em->flush();
 
             (new RequestChangeStatus($app, $queue, new PropertyApprovalSubmission()))->send();
+
+            // Mixpanel analytics
+            if ($user !== null) {
+                $mp = Mixpanel::getInstance($app->getConfigByName('mixpanel', 'token'));
+                $mp->identify($user->getId());
+                $mp->track('Property Request', ['id' => $queue->getId(), 'address' => $queue->getAddress()]);
+            }
 
             $em->commit();
         }

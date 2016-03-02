@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use LO\Model\Entity\User as EntityUser;
+use LO\Common\BaseCrm\SyncDb;
 
 class AdminUserController extends Base {
     const USER_LIMIT    = 20;
@@ -80,7 +81,12 @@ class AdminUserController extends Base {
                  ->setPassword($app->encodePassword($user, $password));
 
             $this->getRequestLender($app, $request, $user);
-            $errors = (new UserManager($app))->validateAndSaveUser($request, $user, new UserAdminFormType($app->getS3()), 'POST');
+            $errors = (new UserManager($app))->validateAndSaveUser(
+                $request,
+                $user,
+                new UserAdminFormType($app->getEntityManager(), $app->getS3()),
+                'POST'
+            );
 
             if(count($errors) > 0){
                 $this->setErrorsForm($errors);
@@ -110,7 +116,7 @@ class AdminUserController extends Base {
             $errors = (new UserManager($app))->validateAndSaveUser(
                 $request,
                 $user,
-                new UserAdminFormType($app->getS3())
+                new UserAdminFormType($app->getEntityManager(), $app->getS3())
             );
 
             if(count($errors) > 0){
@@ -163,6 +169,16 @@ class AdminUserController extends Base {
             return $app->json("success");
         }catch(HttpException $e){
             $app->getEntityManager()->rollback();
+            return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
+        }
+    }
+
+    public function syncDbAction(Application $app)
+    {
+        try {
+            return $app->json((new SyncDb($app))->user());
+        }
+        catch(HttpException $e) {
             return $app->json(['message' => $e->getMessage()], $e->getStatusCode());
         }
     }

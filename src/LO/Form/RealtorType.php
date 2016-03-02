@@ -2,13 +2,12 @@
 
 use LO\Form\Extension\S3Photo;
 use LO\Model\Entity\Realtor;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Aws\S3\S3Client;
 
-class RealtorType extends AbstractType
+class RealtorType extends BaseForm
 {
     private $s3;
 
@@ -36,7 +35,8 @@ class RealtorType extends AbstractType
                         'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
                     ])
                ]
-            ])->add('first_name', 'text', [
+            ])
+            ->add('first_name', 'text', [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'First name should not be blank.']),
                     new Assert\Regex([
@@ -49,18 +49,20 @@ class RealtorType extends AbstractType
                     ])
                 ]
             ])
-            ->add('realty_company_id', 'number', [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Realty company should not be blank.']),
-                ]
-            ])
             ->add('photo', new S3Photo($this->s3, '1rex/realtor'))
-            ->add('email', 'text', [
-                'constraints' => [
-                    new Assert\NotBlank(['message' => 'Email should not be blank.']),
-                    new Assert\Email()
+            ->add(
+                'email',
+                'text',
+                [
+                    'constraints' => [
+                        new Assert\NotBlank(['message' => 'Email should not be blank.']),
+                        new Assert\Regex([
+                            'pattern' => self::PATTERN_EMAIL,
+                            'message' => 'This value is not a valid email address.'
+                        ]),
+                    ]
                 ]
-            ])
+            )
             ->add('phone', 'text', [
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Phone should not be blank.']),
@@ -73,7 +75,21 @@ class RealtorType extends AbstractType
                         'message' => 'Please input a valid US phone number including 3 digit area code and 7 digit number.'
                     ])
                 ]
-            ])->add('bre_number', 'text');
+            ])
+            ->add('bre_number', 'text')
+            ->add('realty_logo', new S3Photo($this->s3, '1rex/realty'))
+            ->add('realty_name', 'text', [
+                'constraints' => [
+                    new Assert\Regex([
+                        'pattern' => '/^[a-zA-Z0-9][a-zA-Z0-9()\'\.\-#&\s]*$/',
+                        'message' => 'Name is invalid.'
+                    ]),
+                    new Assert\Length([
+                        'max'        => 50,
+                        'maxMessage' => 'Name must be shorter than {{ limit }} chars.',
+                    ])
+                ]
+            ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

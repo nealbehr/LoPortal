@@ -1,0 +1,22 @@
+<div id="wrapper">
+    <lo-navbar-head></lo-navbar-head>
+    <section class="container">
+        <header class="page-title">
+            <h1>[[title.header]]</h1>
+            <button set-tooltip
+                    type="button"
+                    class="btn btn-link btn-info-link"
+                    data-placement="left"
+                    data-content="[[title.infoText]]"><i class="fa fa-2x fa-info-circle"></i></button>
+        </header>
+        <div class="panel-group queue">
+            <lo-dashboard-row ng-repeat="(k,v) in settingRows"
+                              lo-items="dashboard[k]"
+                              lo-id="[[ v.id ]]"
+                              lo-title="[[ v.title ]]"
+                              lo-is-expand="v.isExpand"
+                              lo-state="[[ k ]]"></lo-dashboard-row>
+        </div>
+    </section>
+</div>
+<lo-footer></lo-footer>
