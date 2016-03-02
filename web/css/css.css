@@ -324,6 +324,9 @@ input[type=number] {
     position: relative;
     margin: 0 0 20px;
 }
+.add-template .select-holder label {
+    margin: 0 0 5px 4px;
+}
 .add-template .select-holder.loading-options:after{
     content: '';
     background: rgba(0,0,0,0);
