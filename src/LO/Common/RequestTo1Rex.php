@@ -16,17 +16,14 @@ class RequestTo1Rex
     const PRODUCT_TYPE       = 'HB';
     const BILLBOARD_SOURCE   = 'LO Portal';
 
-    const TYPE_PREQUAL       = 0;
-    const TYPE_LISTING_FLYER = 1;
-
     private $inQuiryText     = [
         Queue::TYPE_USER_SELLER => 'Seller of home',
         Queue::TYPE_USER_BUYER  => 'Buyer of home'
     ];
 
     private $requestTypeText = [
-        self::TYPE_PREQUAL       => 'Prequal',
-        self::TYPE_LISTING_FLYER => 'Listing Flyer'
+        Queue::TYPE_PROPERTY_APPROVAL => 'Prequal',
+        Queue::TYPE_FLYER             => 'Listing Flyer'
     ];
 
     protected $data          = [];
@@ -34,19 +31,6 @@ class RequestTo1Rex
     public function __construct(Application $app)
     {
         $this->app = $app;
-    }
-
-    /**
-     * @param $param
-     * @return $this
-     */
-    public function setType($param)
-    {
-        $this->data = array_merge($this->data, [
-            'request_type' => $this->requestTypeText[$param]
-        ]);
-
-        return $this;
     }
 
     public function setAddress(array $address)
@@ -75,7 +59,8 @@ class RequestTo1Rex
         $this->data = array_merge($this->data, [
             'apt'          => $queue->getApartment(),
             'external_id'  => $queue->getId(),
-            'inquiry_type' => $this->inQuiryText[$queue->getUserType()]
+            'inquiry_type' => $this->inQuiryText[$queue->getUserType()],
+            'request_type' => $this->requestTypeText[$queue->getType()]
         ]);
 
         return $this;

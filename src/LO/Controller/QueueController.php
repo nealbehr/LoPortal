@@ -80,7 +80,14 @@ class QueueController
     {
         $em = $app->getEntityManager();
         try {
-            $queue    = $em->find(Queue::class, $request->get('id'));
+            if (!($queue = $em->find(Queue::class, $request->get('id')))) {
+                throw new Http(sprintf('Queue \'%s\' not found', $request->get('id')), Response::HTTP_BAD_REQUEST);
+            }
+
+            if ($queue->getType() == Queue::TYPE_FLYER) {
+                throw new Http(sprintf('Allowed only for property prequalification'), Response::HTTP_BAD_REQUEST);
+            }
+
             $statusId = $request->get('status_id');
 
             // TODO You need refactor the code to work with all statuses

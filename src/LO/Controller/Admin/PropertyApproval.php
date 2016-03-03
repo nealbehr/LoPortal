@@ -49,14 +49,13 @@ class PropertyApproval extends RequestApprovalBase{
             }
 
             // Get first rex id
-            $id = (new RequestTo1Rex($app))
+            $rexId = (new RequestTo1Rex($app))
                 ->setAddress($firstRexForm->getData())
                 ->setUser($queue->getUser())
                 ->setQueue($queue)
-                ->setType(RequestTo1Rex::TYPE_PREQUAL)
                 ->send();
 
-            $queue->set1RexId($id)
+            $queue->set1RexId($rexId)
                   ->setAdditionalInfo($firstRexForm->getData());
 
             $queueForm = $app->getFormFactory()->create(new QueueType($app->getS3()), $queue, ["method" => "PUT"]);

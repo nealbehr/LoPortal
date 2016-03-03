@@ -178,6 +178,7 @@ class RequestFlyerController extends RequestFlyerBase
             $queue = (new Queue())
                 ->setListingPrice(0)
                 ->setAdditionalInfo($firstRexForm->getData())
+                ->setType(Queue::TYPE_FLYER)
                 ->setUserType(Queue::TYPE_USER_SELLER);
 
             // Do not change queue user when edited by admin
@@ -193,7 +194,6 @@ class RequestFlyerController extends RequestFlyerBase
                 ->setAddress($firstRexForm->getData())
                 ->setUser($user)
                 ->setQueue($queue)
-                ->setType(RequestTo1Rex::TYPE_LISTING_FLYER)
                 ->send();
             $queue->set1RexId($rexId);
 
@@ -240,15 +240,14 @@ class RequestFlyerController extends RequestFlyerBase
             $queue->setAdditionalInfo($firstRexForm->getData());
 
             // Get first rex id
-            $billboardID = (new RequestTo1Rex($app))
+            $rexId = (new RequestTo1Rex($app))
                 ->setAddress($firstRexForm->getData())
                 ->setUser($app->getSecurityTokenStorage()->getToken()->getUser())
                 ->setQueue($queue)
-                ->setType(RequestTo1Rex::TYPE_LISTING_FLYER)
                 ->send();
 
-            $app->getMonolog()->addInfo("billboard id: " . $billboardID);
-            $queue->set1RexId($billboardID);
+            $app->getMonolog()->addInfo("billboard id: ".$rexId);
+            $queue->set1RexId($rexId);
             $queue->setState(Queue::STATE_REQUESTED);
 
             $this->saveFlyer(
