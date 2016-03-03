@@ -22,7 +22,12 @@
                 </div>
                 <div class="inputs-holder">
                     <div class="input" ng-class="{error: isValidEmail(formLogin)}">
-                        <input class="input-lg" type="email" placeholder="Email" ng-model="user.email" name="email" required="" ng-keyup="complete($event)">
+                        <input ng-model="user.email"
+                               name="email"
+                               type="email"
+                               class="input-lg"
+                               placeholder="Email"
+                               required="">
                     </div>
                     <div class="input" ng-class="{error: isValidPassword(formLogin)}">
                         <input class="input-lg" type="password" placeholder="Password" ng-model="user.password" required="" name="password">

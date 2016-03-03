@@ -55,22 +55,6 @@
             return (form.$submitted || form.password.$touched) && (form.password.$error.required);
         };
 
-        $scope.complete = function($event) {
-            angular.element($event.target).autocomplete({
-                source: function( request, response ) {
-                    $http.get('/authorize/autocomplete/' + request.term)
-                        .success(function(data){
-                            response(data);
-                        })
-                    ;
-                },
-                minLength: 3,
-                select: function(event, ui){
-                    $scope.user.email = ui.item.value;
-                }
-            });
-        };
-
         $scope.signin = function(e) {
             e.preventDefault();
 

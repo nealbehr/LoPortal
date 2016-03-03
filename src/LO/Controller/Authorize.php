@@ -61,24 +61,6 @@ class Authorize
         return $app->json($token->getHash());
     }
 
-    public function autocompleteAction(Application $app, $email){
-        $app->getEntityManager()->getConfiguration()->addCustomHydrationMode('ListItems', '\LO\Bridge\Doctrine\Hydrator\ListItems');
-        $expr = $app->getEntityManager()->createQueryBuilder()->expr();
-        $emails = $app->getEntityManager()->createQueryBuilder()
-            ->select('u.email')
-            ->from(User::class, 'u')
-            ->where($expr->like('u.email', ':email'))
-            ->setMaxResults(static::MAX_EMAILS)
-            ->getQuery()
-            ->execute(
-                ['email' => '%'.$email.'%'],
-                 'ListItems'
-            )
-        ;
-
-        return $app->json($emails);
-    }
-
     public function resetPasswordAction(Application $app, $email){
         try{
             $app->getEntityManager()->beginTransaction();
