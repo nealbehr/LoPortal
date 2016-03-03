@@ -650,18 +650,16 @@
         return {
             restrict: 'A',
             link    : function(scope, element, attr) {
-                if (attr['setMaxHeight']) {
-                    $timeout(function() {
-                        var elementHeight = angular.element(element).find(attr['setMaxHeight']).height();
-                        if (height < elementHeight) {
-                            height = elementHeight;
-                        }
+                $timeout(function() {
+                    var elementHeight = angular.element(attr['setMaxHeight'], element).removeAttr('style').height();
+                    if (height < elementHeight) {
+                        height = elementHeight;
+                    }
 
-                        if (scope.$last === true) {
-                            angular.element(attr['setMaxHeight']).height(height);
-                        }
-                    });
-                }
+                    if (scope.$last === true) {
+                        angular.element(attr['setMaxHeight']).height(height);
+                    }
+                });
             }
         }
     }]);

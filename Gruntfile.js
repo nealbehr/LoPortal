@@ -125,7 +125,8 @@ module.exports = function(grunt) {
                 module : 'loApp',
                 htmlmin:  {
                     collapseWhitespace       : true,
-                    collapseBooleanAttributes: true }
+                    collapseBooleanAttributes: true
+                }
             },
             app: {
                 cwd:  'web',
