@@ -4,16 +4,17 @@
  * Date: 12/21/15
  * Time: 14:58
  */
+
 namespace LO\Controller;
 
-use LO\Application;
-use LO\Model\Entity\User;
-use LO\Model\Entity\Template;
-use LO\Model\Entity\TemplateCategory;
-use LO\Model\Entity\TemplateFormat;
-use Doctrine\ORM\Query;
-use Knp\Snappy\Pdf;
-use Mixpanel;
+use LO\Application,
+    LO\Model\Entity\User,
+    LO\Model\Entity\Template,
+    LO\Model\Entity\TemplateCategory,
+    LO\Model\Entity\TemplateFormat,
+    Doctrine\ORM\Query,
+    Knp\Snappy\Pdf,
+    Mixpanel;
 
 class TemplateController
 {
@@ -135,7 +136,7 @@ class TemplateController
     }
 
     /**
-     * @param $html
+     * @param string $html
      * @return string
      */
     private function createPdf($html)
