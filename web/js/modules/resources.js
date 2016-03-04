@@ -7,6 +7,12 @@
     var module = angular.module('resourcesModule', []);
 
     module.controller('ResourcesController', ['$scope', 'userService', function($scope, userService) {
+        $scope.title = {
+            header  : 'Program Resources',
+            infoText: 'Learn more about REX HomeBuyer with our Brochure, Quick Reference and At A Glance flyer. Feel '
+                +'free to print these out as a resource at your finger tips!'
+        };
+
         userService.get().then(function(data) {
             $scope.user = data;
         });
@@ -17,12 +23,6 @@
             mixpanel.track('Download program reference', {'name': name});
         };
 
-        $scope.title = {
-            header  : 'Program Resources',
-            infoText: 'Learn more about REX HomeBuyer with our Brochure, Quick Reference and At A Glance flyer. Feel '
-                +'free to print these out as a resource at your finger tips!'
-        };
-
         // Resources list
         $scope.resources = [
             {
@@ -30,7 +30,7 @@
                 title: 'Brochure'
             },
             {
-                link : '/docs/resources/quick_reference_v7.pdf',
+                link : '/docs/resources/RHB_Quick_Reference_2016.pdf',
                 title: 'Quick Reference Guide'
             },
             {
