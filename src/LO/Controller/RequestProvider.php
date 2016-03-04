@@ -82,6 +82,7 @@ class RequestProvider implements ControllerProviderInterface{
          * Routes for TemplateController
          */
         $controllers->get('/document/{id}/download', 'template.controller:downloadAction');
+        $controllers->get('/document/{id}/html', 'template.controller:htmlAction');
         $controllers->get('/template/categories', 'template.controller:getCategoriesAction');
         $controllers->get('/template/formats', 'template.controller:getFormatsAction');
 
