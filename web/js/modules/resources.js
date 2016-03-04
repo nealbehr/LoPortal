@@ -1,5 +1,5 @@
 /**
- * Created by zh-l on 12/10/15.
+ * Created by Eugene Lysenko on 12/10/15.
  */
 (function(){
     'use strict';
@@ -35,7 +35,7 @@
             },
             {
                 link : '/docs/resources/RHB_at_a_glance.pdf',
-                title: 'REX HomeBuyer Argeement'
+                title: 'At A Glance'
             }
         ]
     }]);
