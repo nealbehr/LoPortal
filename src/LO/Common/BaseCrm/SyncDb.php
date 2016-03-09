@@ -11,6 +11,7 @@ use LO\Application,
     LO\Model\Entity\User,
     LO\Model\Entity\Lender,
     LO\Model\Entity\Address,
+    LO\Model\Entity\SyncLog,
     LO\Common\UploadS3\File,
     \BaseCRM\Client,
     \BaseCRM\Sync,
@@ -42,7 +43,7 @@ class SyncDb
     private $countDelete = 0;
     private $countErrors = 0;
 
-    private $syncAddress = true;
+    private $syncAddress = false;
 
     /**
      * @param Application $app
@@ -62,6 +63,8 @@ class SyncDb
      */
     public function user()
     {
+        $syncLog = (new SyncLog)->setStartTime(new \DateTime('now'));
+
         // Sync contacts
         $this->sync->fetch(function($meta, $data) {
             if ($meta['type'] === 'contact' && isset($data['id']) && !empty($data['email'])) {
@@ -76,20 +79,20 @@ class SyncDb
                     )
                 );
 
+                $queryBuild = $this->em->createQueryBuilder()
+                    ->select('u')
+                    ->from(User::class, 'u')
+                    ->where('u.base_id = :id OR u.email = :email')->setParameters([
+                        'id'    => $data['id'],
+                        'email' => $data['email']
+                    ]);
+
                 try {
-                    $user = $this->em->createQueryBuilder()
-                        ->select('u')
-                        ->from(User::class, 'u')
-                        ->where('u.base_id = :id OR u.email = :email')->setParameters([
-                            'id'    => $data['id'],
-                            'email' => $data['email']
-                        ])
-                        ->getQuery()
-                        ->getSingleResult();
+                    $user = $queryBuild->getQuery()->getSingleResult();
 
                     // Duplicate email address
                     if ($user->getBaseId() != $data['id']) {
-                        $this->add($user, $data, 'duplicate');
+                        $this->add(new User, $data, 'create_duplicate');
 
                         return Sync::NACK;
                     }
@@ -101,7 +104,7 @@ class SyncDb
                 catch (NonUniqueResultException $e) {
                     // Duplicate email address
                     $user = $this->em->getRepository(User::class)->findOneBy(['base_id' => $data['id']]);
-                    $this->add($user, $data, 'duplicate');
+                    $this->add($user, $data, 'update_duplicate');
 
                     $this->app->getMonolog()->addError($e->getMessage());
 
@@ -115,22 +118,16 @@ class SyncDb
             }
         });
 
-        // Save date
-        try {
-            $this->em->flush();
-        }
-        catch (\Exception $e) {
-            $this->countErrors++;
-            $this->app->getMonolog()->addError($e->getMessage());
-        }
-
         // Save log
-        $file = (
-            new File($this->app->getS3(),
+        $path = (new File(
+            $this->app->getS3(),
             $this->createCsvBase64($this->log),
             '1rex/sync/log',
-            ['text/plain' => 'csv'])
-        )->download('fulllog-'.strtotime('now'));
+            ['text/plain' => 'csv']
+        ))->download('fulllog-'.strtotime('now'));
+        $syncLog->setEndTime(new \DateTime('now'))->setFullLog($path);
+        $this->em->persist($syncLog);
+        $this->em->flush();
 
         return [
             'up_today'  => empty($this->log),
@@ -140,7 +137,7 @@ class SyncDb
                 'delete' => $this->countDelete,
                 'errors' => $this->countErrors,
             ],
-            'full_log'  => $file,
+            'full_log'  => $path,
         ];
     }
 
@@ -165,7 +162,16 @@ class SyncDb
                 break;
             case 'create_delete';
                 $this->countDelete++;
-                $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
+                $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], time().mt_rand(1, 100000)));
+                $user->setDeleted('1');
+                $user->setBaseId($data['id']);
+                $user->setPassword(User::DEFAULT_PASSWORD);
+                $user->setRoles([User::ROLE_USER]);
+                $user = $this->fillUser($user, $data);
+                break;
+            case 'create_duplicate':
+                $this->countErrors++;
+                $user->setEmail(sprintf('%s-%s-sync-duplicate', $data['email'], time().mt_rand(1, 100000)));
                 $user->setDeleted('1');
                 $user->setBaseId($data['id']);
                 $user->setPassword(User::DEFAULT_PASSWORD);
@@ -181,12 +187,12 @@ class SyncDb
                 break;
             case 'update_delete':
                 $this->countDelete++;
-                $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], strtotime('now')));
+                $user->setEmail(sprintf('%s-%s-sync-deleted', $data['email'], time().mt_rand(1, 100000)));
                 $user->setDeleted('1');
                 break;
-            case 'duplicate':
+            case 'update_duplicate':
                 $this->countErrors++;
-                $user->setEmail(sprintf('%s-%s-sync-error', $data['email'], strtotime('now')));
+                $user->setEmail(sprintf('%s-%s-sync-duplicate', $data['email'], time().mt_rand(1, 100000)));
                 $user->setDeleted('1');
                 break;
         }
@@ -200,19 +206,28 @@ class SyncDb
         }
         $user->setLender($lender);
 
-        // Duplicate email address
-        if (isset($this->log[$user->getEmail()])) {
-            $this->countErrors++;
-            $event = 'duplicate';
-            $email = sprintf('%s-%s-sync-error', $data['email'], strtotime('now'));
-            $user->setEmail($email);
-            $user->setDeleted('1');
-        }
-
         // Sync log
         $this->log[$user->getEmail()] = [$data['id'], $event, $data['email'], $user->getEmail()];
 
-        $this->em->persist($user);
+        // Save date
+        try {
+            $this->em->persist($user);
+            $this->em->flush();
+        }
+        catch (\Exception $e) {
+            $this->countErrors++;
+            $this->app->getMonolog()->addError($e->getMessage());
+
+            $this->log[$user->getEmail()] = [$data['id'], 'saving_error', $data['email'], $user->getEmail()];
+
+            // Reopen connect
+            if (!$this->em->isOpen()) {
+                $this->em = $this->em->create(
+                    $this->em->getConnection(),
+                    $this->em->getConfiguration()
+                );
+            }
+        }
 
         return $this;
     }
