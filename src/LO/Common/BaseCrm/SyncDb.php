@@ -43,7 +43,7 @@ class SyncDb
     private $countDelete = 0;
     private $countErrors = 0;
 
-    private $syncAddress = false;
+    private $syncAddress = true;
 
     /**
      * @param Application $app
