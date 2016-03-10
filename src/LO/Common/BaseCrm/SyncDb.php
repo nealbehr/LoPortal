@@ -79,16 +79,14 @@ class SyncDb
                     )
                 );
 
-                $queryBuild = $this->em->createQueryBuilder()
-                    ->select('u')
-                    ->from(User::class, 'u')
-                    ->where('u.base_id = :id OR u.email = :email')->setParameters([
-                        'id'    => $data['id'],
-                        'email' => $data['email']
-                    ]);
-
                 try {
-                    $user = $queryBuild->getQuery()->getSingleResult();
+                    $user = $this->em->createQueryBuilder()
+                        ->select('u')
+                        ->from(User::class, 'u')
+                        ->where('u.base_id = :id OR u.email = :email')
+                        ->setParameters(['id' => $data['id'], 'email' => $data['email']])
+                        ->getQuery()
+                        ->getSingleResult();
 
                     // Duplicate email address
                     if ($user->getBaseId() != $data['id']) {

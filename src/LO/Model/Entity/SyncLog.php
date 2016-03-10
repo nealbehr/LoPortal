@@ -1,4 +1,11 @@
-<?php namespace LO\Model\Entity;
+<?php
+/**
+ * User: Eugene Lysenko
+ * Date: 2/9/16
+ * Time: 10:42
+ */
+
+namespace LO\Model\Entity;
 
 /**
  * @Entity
